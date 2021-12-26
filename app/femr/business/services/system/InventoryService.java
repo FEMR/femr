@@ -336,6 +336,7 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public ServiceResponse<String> exportCSV(int tripId) {
+        callPredictor(1,1);
         List<? extends IMedicationInventory> medicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
         // Convert result of query to a list to export
         List<InventoryExportItem> inventoryExport = new ArrayList<>();
@@ -531,7 +532,7 @@ public class InventoryService implements IInventoryService {
         DateTime currentTime = DateTime.now();
         DateTime startDT = new DateTime(currentTime.getMillis() - (7 * 3 * 24 * 3600000L));
         Long timeSlot = 24 * 3600000L;
-        Long diffTime = currentTime.getMillis() - burnRate.getCalculatedTime().getMillis();
+        Long diffTime = timeSlot*7*3;
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
 
         // If we are in new time slot
@@ -558,13 +559,13 @@ public class InventoryService implements IInventoryService {
 
             Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / 2; // XBar (count of time slices)
             int avgPrescriptions = sum(arrPP) / arrPP.length; // YBar
-
+            System.out.println("im here 1");
             // initiate matrix
             int dim = 4;
             double[][] mX = new double[dim][dim];
             double[][] mY = new double[dim][1];
             for (int i = 0; i < dim; i++) {
-                for (int j = 0; j < dim; i++) {
+                for (int j = 0; j < dim; j++) {
                     mX[i][j] = sumL(piL(power(arrPP, i), arrTS));
                 }
                 mY[i][0] = sumL(piL(power(arrPP, 0), arrTS));
@@ -574,7 +575,7 @@ public class InventoryService implements IInventoryService {
             smX = smX.invert();
             SimpleMatrix smY = new SimpleMatrix(mY);
             SimpleMatrix result = smX.mult(smY);
-
+            System.out.println("im here 2");
             String results ="";
             for (int k=0;k<result.numRows();k++){
                 results.concat(String.valueOf(result.get(k,0)));
@@ -583,6 +584,8 @@ public class InventoryService implements IInventoryService {
             }
             // Updating burn-rate
             burnRate.setAs(results);
+            System.out.println("im here : \n");
+            System.out.println(burnRate.getAs());
             DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
@@ -649,7 +652,7 @@ public class InventoryService implements IInventoryService {
         for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
 
-            if (medicationInventory != null && burnRate.getAs() != null) {
+            if (medicationInventory != null && burnRate.getAs() != "") {
                 quantity = getRequiredQuantity(burnRate.getMedId(), desiredWeeksOnHand);
                 if (quantity > medicationInventory.getQuantityCurrent()) {
                     shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(

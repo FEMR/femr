@@ -37,7 +37,6 @@ public class BurnRateRepository implements IBurnRateRepository {
         britem.setMedId(medID);
         britem.setCalculatedTime(calculatedDateTime);
         britem.setTripId(tripId);
-
         try {
 
             Ebean.save(britem);

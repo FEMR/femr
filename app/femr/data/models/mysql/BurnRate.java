@@ -18,7 +18,7 @@ public class BurnRate implements IBurnRate {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @Column(name = "as")
+    @Column(name = "a_s")
     private String as;
 
     @Column(name = "med_id")

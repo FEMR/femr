@@ -575,7 +575,14 @@ public class InventoryService implements IInventoryService {
             SimpleMatrix smY = new SimpleMatrix(mY);
             SimpleMatrix result = smX.mult(smY);
 
+            String results ="";
+            for (int k=0;k<result.numRows();k++){
+                results.concat(String.valueOf(result.get(k,0)));
+                if(k!=result.numRows()-1)
+                    results.concat("-");
+            }
             // Updating burn-rate
+            burnRate.setAs(results);
             DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);

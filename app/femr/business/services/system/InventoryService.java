@@ -491,30 +491,30 @@ public class InventoryService implements IInventoryService {
 
     }
 
-    public int sum(int[] arr){
+    public int sum(int[] arr) {
         return Arrays.stream(arr).sum();
     }
 
-    public Long sumL(Long[] arr){
+    public Long sumL(Long[] arr) {
         Long all = 0L;
-        for (int i = 0; i<arr.length;i++){
-            Long.sum(all,arr[i]);
+        for (int i = 0; i < arr.length; i++) {
+            Long.sum(all, arr[i]);
         }
         return all;
     }
 
-    public Long[] piL(int[] x, Long[] y){
+    public Long[] piL(int[] x, Long[] y) {
         Long[] pi = new Long[x.length];
-        for (int i = 0; i<x.length;i++){
+        for (int i = 0; i < x.length; i++) {
             pi[i] = x[i] * y[i];
         }
         return pi;
     }
 
-    public int[] power(int[] arr, int deg){
+    public int[] power(int[] arr, int deg) {
         int[] po = new int[arr.length];
-        for (int i = 0; i<arr.length;i++){
-            po[i] = (int) Math.pow(arr[i],deg + i);
+        for (int i = 0; i < arr.length; i++) {
+            po[i] = (int) Math.pow(arr[i], deg + i);
         }
         return po;
     }
@@ -540,11 +540,11 @@ public class InventoryService implements IInventoryService {
             int[] arrPP = new int[countTS.intValue()]; // X
             Long[] arrTS = new Long[countTS.intValue()]; // Y
 
-            for (int c = 0; c < countTS;c++) {
+            for (int c = 0; c < countTS; c++) {
 
                 List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
-                        medId, new DateTime(Long.sum(startDT.getMillis(),c * timeSlot))
-                        , new DateTime(Long.sum(startDT.getMillis(),(c+1) * timeSlot)));
+                        medId, new DateTime(Long.sum(startDT.getMillis(), c * timeSlot))
+                        , new DateTime(Long.sum(startDT.getMillis(), (c + 1) * timeSlot)));
 
                 int quantity = 0; // Accumulated quantity
                 for (IPatientPrescription pp : listPP) {
@@ -552,22 +552,22 @@ public class InventoryService implements IInventoryService {
                 }
 
                 arrPP[c] = quantity;
-                arrTS[c] = Long.sum(startDT.getMillis(),Long.sum(c*10L , 5L)/10L * timeSlot);
+                arrTS[c] = Long.sum(startDT.getMillis(), Long.sum(c * 10L, 5L) / 10L * timeSlot);
 
             }
 
             Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / 2; // XBar (count of time slices)
-            int avgPrescriptions = sum(arrPP)/arrPP.length; // YBar
+            int avgPrescriptions = sum(arrPP) / arrPP.length; // YBar
 
             // initiate matrix
             int dim = 4;
             double[][] mX = new double[dim][dim];
             double[][] mY = new double[dim][1];
-            for (int i=0; i<dim; i++){
-                for (int j=0; j<dim;i++){
-                    mX[i][j] = sumL(piL(power(arrPP,i),arrTS));
+            for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < dim; i++) {
+                    mX[i][j] = sumL(piL(power(arrPP, i), arrTS));
                 }
-                mY[i][0] = sumL(piL(power(arrPP,0),arrTS));
+                mY[i][0] = sumL(piL(power(arrPP, 0), arrTS));
             }
 
             SimpleMatrix smX = new SimpleMatrix(mX);
@@ -604,6 +604,33 @@ public class InventoryService implements IInventoryService {
 
         return response;
     }
+
+    @Override
+    public int getRequiredQuantity(int medId, int weeksCount) {
+        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedId(medId);
+        if (burnRate == null){
+            return -1; //no prediction found
+        }
+        String as = burnRate.getAs();
+        String[] asArray = as.split("-");
+        Long yS = 0L;
+        Long yE = 0L;
+        Long xS = DateTime.now().getMillis();
+        Long xE = xS + (weeksCount * 7 * 24 * 3600000l);
+        for (int i = 0; i < asArray.length; i++) {
+            Double asI = Double.parseDouble(asArray[i]);
+            int ci = (int) Math.ceil(asI / (i + 1) * 1000);
+            yS = Long.sum(yS, (long) (ci * (Math.pow(xS, i + 1))));
+            yE = Long.sum(yE, (long) (ci * (Math.pow(xE, i + 1))));
+        }
+        int requiredQ=(int) (Long.sum(yE, -yS));
+        if (requiredQ >0){
+            return (int) (Long.sum(yE, -yS));
+        }else {
+            return (int) (Long.sum(yE, 0));
+        }
+    }
+
     @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
         int desiredDaysOnHand = desiredWeeksOnHand * 7;

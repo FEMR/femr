@@ -7,8 +7,8 @@ public interface IBurnRate {
 
     int getId();
 
-    Float getRate();
-    void setRate(Float rate);
+    String getAs();
+    void setAs(String as);
 
     int getMedId();
     void setMedId(int id);

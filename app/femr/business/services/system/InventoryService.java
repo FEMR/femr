@@ -525,7 +525,7 @@ public class InventoryService implements IInventoryService {
         // Initiate burn-rate
         BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId, tripId);
         if (burnRate == null)
-            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(), tripId);
+            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, null, DateTime.now(), tripId);
 
         // Check Time slot passed
         DateTime currentTime = DateTime.now();
@@ -604,7 +604,6 @@ public class InventoryService implements IInventoryService {
 
         return response;
     }
-
     @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
         int desiredDaysOnHand = desiredWeeksOnHand * 7;
@@ -617,7 +616,7 @@ public class InventoryService implements IInventoryService {
         for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
             // On change
-            if (medicationInventory != null && burnRate.getRate() != 0) {
+            if (medicationInventory != null && burnRate.getAs() != null) {
                 daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
                 if (daysOnHand < desiredDaysOnHand) {
                     quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);

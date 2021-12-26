@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IBurnRateRepository {
 
-    IBurnRate createBurnRate (int medID, float burnRate, DateTime calculatedDateTime,int tripId);
+    IBurnRate createBurnRate (int medID, String as, DateTime calculatedDateTime,int tripId);
 
     IBurnRate updateBurnRate (IBurnRate burnRate);
     IBurnRate deleteBurnRate (IBurnRate burnRate);

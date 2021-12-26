@@ -503,9 +503,9 @@ public class InventoryService implements IInventoryService {
         return all;
     }
 
-    public Long[] piL(Long[] x, Long[] y){
+    public Long[] piL(int[] x, Long[] y){
         Long[] pi = new Long[x.length];
-        for (int i = 0; i<x.length;i++){
+        for (int i = 0; i < x.length; i++) {
             pi[i] = x[i] * y[i];
         }
         return pi;
@@ -525,7 +525,7 @@ public class InventoryService implements IInventoryService {
         // Initiate burn-rate
         BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId, tripId);
         if (burnRate == null)
-            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(), tripId);
+            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, null, DateTime.now(), tripId);
 
         // Check Time slot passed
         DateTime currentTime = DateTime.now();
@@ -540,11 +540,11 @@ public class InventoryService implements IInventoryService {
             int[] arrPP = new int[countTS.intValue()]; // X
             Long[] arrTS = new Long[countTS.intValue()]; // Y
 
-            for (int c = 0; c < countTS;c++) {
+            for (int c = 0; c < countTS; c++) {
 
                 List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
-                        medId, new DateTime(Long.sum(startDT.getMillis(),c * timeSlot))
-                        , new DateTime(Long.sum(startDT.getMillis(),(c+1) * timeSlot)));
+                        medId, new DateTime(Long.sum(startDT.getMillis(), c * timeSlot))
+                        , new DateTime(Long.sum(startDT.getMillis(), (c + 1) * timeSlot)));
 
                 int quantity = 0; // Accumulated quantity
                 for (IPatientPrescription pp : listPP) {
@@ -552,12 +552,12 @@ public class InventoryService implements IInventoryService {
                 }
 
                 arrPP[c] = quantity;
-                arrTS[c] = Long.sum(startDT.getMillis(),Long.sum(c*10L , 5L)/10L * timeSlot);
+                arrTS[c] = Long.sum(startDT.getMillis(), Long.sum(c * 10L, 5L) / 10L * timeSlot);
 
             }
 
             Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / 2; // XBar (count of time slices)
-            int avgPrescriptions = sum(arrPP)/arrPP.length; // YBar
+            int avgPrescriptions = sum(arrPP) / arrPP.length; // YBar
 
             // initiate matrix
             int dim = 4;
@@ -575,7 +575,14 @@ public class InventoryService implements IInventoryService {
             SimpleMatrix smY = new SimpleMatrix(mY);
             SimpleMatrix result = smX.mult(smY);
 
+            String results ="";
+            for (int k=0;k<result.numRows();k++){
+                results.concat(String.valueOf(result.get(k,0)));
+                if(k!=result.numRows()-1)
+                    results.concat("-");
+            }
             // Updating burn-rate
+            burnRate.setAs(results);
             DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
@@ -606,6 +613,32 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
+    public int getRequiredQuantity(int medId, int weeksCount) {
+        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedId(medId);
+        if (burnRate == null){
+            return -1; //no prediction found
+        }
+        String as = burnRate.getAs();
+        String[] asArray = as.split("-");
+        Long yS = 0L;
+        Long yE = 0L;
+        Long xS = DateTime.now().getMillis();
+        Long xE = xS + (weeksCount * 7 * 24 * 3600000l);
+        for (int i = 0; i < asArray.length; i++) {
+            Double asI = Double.parseDouble(asArray[i]);
+            int ci = (int) Math.ceil(asI / (i + 1) * 1000);
+            yS = Long.sum(yS, (long) (ci * (Math.pow(xS, i + 1))));
+            yE = Long.sum(yE, (long) (ci * (Math.pow(xE, i + 1))));
+        }
+        int requiredQ=(int) (Long.sum(yE, -yS));
+        if (requiredQ >0){
+            return (int) (Long.sum(yE, -yS));
+        }else {
+            return (int) (Long.sum(yE, 0));
+        }
+    }
+
+    @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
         int desiredDaysOnHand = desiredWeeksOnHand * 7;
 
@@ -613,14 +646,13 @@ public class InventoryService implements IInventoryService {
 
 
         List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
-        int daysOnHand, quantity;
+        int quantity;
         for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
-            // On change
-            if (medicationInventory != null && burnRate.getRate() != 0) {
-                daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
-                if (daysOnHand < desiredDaysOnHand) {
-                    quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);
+
+            if (medicationInventory != null && burnRate.getAs() != null) {
+                quantity = getRequiredQuantity(burnRate.getMedId(), desiredWeeksOnHand);
+                if (quantity > medicationInventory.getQuantityCurrent()) {
                     shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
                             medicationInventory.getMedication(),
                             null,
@@ -628,7 +660,7 @@ public class InventoryService implements IInventoryService {
                             null,
                             null,
                             null
-                    ), quantity));
+                    ), quantity - medicationInventory.getQuantityCurrent()));
                 }
             }
         }

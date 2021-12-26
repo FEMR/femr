@@ -30,10 +30,10 @@ public class BurnRateRepository implements IBurnRateRepository {
 
 
     @Override
-    public IBurnRate createBurnRate(int medID, float burnRate, DateTime calculatedDateTime,int tripId) {
+    public IBurnRate createBurnRate(int medID, String as, DateTime calculatedDateTime,int tripId) {
 
         IBurnRate britem = burnRateProvider.get();
-        britem.setRate(burnRate);
+        britem.setAs(as);
         britem.setMedId(medID);
         britem.setCalculatedTime(calculatedDateTime);
         britem.setTripId(tripId);

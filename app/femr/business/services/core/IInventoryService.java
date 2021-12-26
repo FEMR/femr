@@ -164,5 +164,5 @@ public interface IInventoryService {
      * @return a list containing shopping list items for the provided trip and desired weeks on hand
      */
     List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand);
-
+    public int getRequiredQuantity(int medId,int weeksCount);
 }

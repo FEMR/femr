@@ -17,8 +17,10 @@ public class BurnRate implements IBurnRate {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "burn_rate")
-    private Float burnRate;
+
+    @Column(name = "as")
+    private String as;
+
     @Column(name = "med_id")
     private int medId;
     @Column(name = "trip_id")
@@ -31,15 +33,6 @@ public class BurnRate implements IBurnRate {
         return id;
     }
 
-    @Override
-    public Float getRate() {
-        return burnRate;
-    }
-
-    @Override
-    public void setRate(Float rate) {
-        this.burnRate=rate;
-    }
 
     @Override
     public int getMedId() {
@@ -70,4 +63,14 @@ public class BurnRate implements IBurnRate {
     public void setTripId(int id) {
         this.tripId=id;
     }
+    @Override
+    public String getAs() {
+        return as;
+    }
+
+    @Override
+    public void setAs(String as ) {
+        this.as=as;
+    }
+
 }

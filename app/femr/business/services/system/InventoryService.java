@@ -640,20 +640,18 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
-        int desiredDaysOnHand = desiredWeeksOnHand * 7;
 
         List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRatesByTripId(tripId);
 
 
         List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
-        int daysOnHand, quantity;
+        int quantity;
         for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
-            // On change
+
             if (medicationInventory != null && burnRate.getAs() != null) {
-                daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
-                if (daysOnHand < desiredDaysOnHand) {
-                    quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);
+                quantity = getRequiredQuantity(burnRate.getMedId(), desiredWeeksOnHand);
+                if (quantity > medicationInventory.getQuantityCurrent()) {
                     shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
                             medicationInventory.getMedication(),
                             null,
@@ -661,7 +659,7 @@ public class InventoryService implements IInventoryService {
                             null,
                             null,
                             null
-                    ), quantity));
+                    ), quantity - medicationInventory.getQuantityCurrent()));
                 }
             }
         }

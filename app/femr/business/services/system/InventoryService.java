@@ -38,14 +38,12 @@ import femr.data.models.mysql.BurnRate;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
+import org.ejml.simple.SimpleMatrix;
 import org.joda.time.DateTime;
 import play.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class InventoryService implements IInventoryService {
@@ -378,7 +376,6 @@ public class InventoryService implements IInventoryService {
     }
 
 
-
     /**
      * {@inheritDoc}
      */
@@ -494,34 +491,92 @@ public class InventoryService implements IInventoryService {
 
     }
 
+    public int sum(int[] arr){
+        return Arrays.stream(arr).sum();
+    }
+
+    public Long sumL(Long[] arr){
+        Long all = 0L;
+        for (int i = 0; i<arr.length;i++){
+            Long.sum(all,arr[i]);
+        }
+        return all;
+    }
+
+    public Long[] piL(int[] x, Long[] y){
+        Long[] pi = new Long[x.length];
+        for (int i = 0; i<x.length;i++){
+            pi[i] = x[i] * y[i];
+        }
+        return pi;
+    }
+
+    public int[] power(int[] arr, int deg){
+        int[] po = new int[arr.length];
+        for (int i = 0; i<arr.length;i++){
+            po[i] = (int) Math.pow(arr[i],deg + i);
+        }
+        return po;
+    }
+
     @Override
-    public IBurnRate callPredictor(int medId,int tripId) {
-        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId,tripId);
+    public IBurnRate callPredictor(int medId, int tripId) {
+
+        // Initiate burn-rate
+        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId, tripId);
         if (burnRate == null)
-            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(),tripId);
+            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(), tripId);
 
         // Check Time slot passed
         DateTime currentTime = DateTime.now();
-        Long timeSlot = 7200000L;
+        DateTime startDT = new DateTime(currentTime.getMillis() - (7 * 3 * 24 * 3600000L));
+        Long timeSlot = 24 * 3600000L;
         Long diffTime = currentTime.getMillis() - burnRate.getCalculatedTime().getMillis();
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
 
-        // if we are in new time slot
+        // If we are in new time slot
         if (countTS >= 1L) {
 
-            // create new burn rate
-                DateTime startDT = burnRate.getCalculatedTime();
-                DateTime endDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), timeSlot));
+            int[] arrPP = new int[countTS.intValue()]; // X
+            Long[] arrTS = new Long[countTS.intValue()]; // Y
+
+            for (int c = 0; c < countTS;c++) {
 
                 List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
-                        medId, startDT, endDT);
+                        medId, new DateTime(Long.sum(startDT.getMillis(),c * timeSlot))
+                        , new DateTime(Long.sum(startDT.getMillis(),(c+1) * timeSlot)));
 
-                int quantity = 0;
-                for (IPatientPrescription pp : listPP) quantity += pp.getAmount();
-                if (quantity!=0)
-                burnRate.setRate( (4*burnRate.getRate())/10 + (6*quantity)/10 );
-            // updating burnrate
-            DateTime firstOfCurrentDt=new DateTime(Long.sum(startDT.getMillis(),countTS*timeSlot));
+                int quantity = 0; // Accumulated quantity
+                for (IPatientPrescription pp : listPP) {
+                    quantity += pp.getAmount();
+                }
+
+                arrPP[c] = quantity;
+                arrTS[c] = Long.sum(startDT.getMillis(),Long.sum(c*10L , 5L)/10L * timeSlot);
+
+            }
+
+            Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / 2; // XBar (count of time slices)
+            int avgPrescriptions = sum(arrPP)/arrPP.length; // YBar
+
+            // initiate matrix
+            int dim = 4;
+            double[][] mX = new double[dim][dim];
+            double[][] mY = new double[dim][1];
+            for (int i=0; i<dim; i++){
+                for (int j=0; j<dim;i++){
+                    mX[i][j] = sumL(piL(power(arrPP,i),arrTS));
+                }
+                mY[i][0] = sumL(piL(power(arrPP,0),arrTS));
+            }
+
+            SimpleMatrix smX = new SimpleMatrix(mX);
+            smX = smX.invert();
+            SimpleMatrix smY = new SimpleMatrix(mY);
+            SimpleMatrix result = smX.mult(smY);
+
+            // Updating burn-rate
+            DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
         }
@@ -533,7 +588,6 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
 
         List<ShoppingListExportItem> shoppingListExportItems = createShoppingList(tripId, desiredWeeksOnHand);
-
 
 
         // Convert export shopping list to json
@@ -560,10 +614,10 @@ public class InventoryService implements IInventoryService {
 
         List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
         int daysOnHand, quantity;
-        for (IBurnRate burnRate: medicationBurnRates) {
+        for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
             // On change
-            if (medicationInventory != null && burnRate.getRate()!=0) {
+            if (medicationInventory != null && burnRate.getRate() != 0) {
                 daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
                 if (daysOnHand < desiredDaysOnHand) {
                     quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);

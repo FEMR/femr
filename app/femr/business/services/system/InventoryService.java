@@ -531,7 +531,7 @@ public class InventoryService implements IInventoryService {
         // Check Time slot passed
         DateTime currentTime = DateTime.now();
         DateTime startDT = new DateTime(currentTime.getMillis() - (7 * 3 * 24 * 3600000L));
-        Long timeSlot = 24 * 3600000L;
+        Long timeSlot = 24L;
         Long diffTime = timeSlot*7*3;
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
 
@@ -544,8 +544,8 @@ public class InventoryService implements IInventoryService {
             for (int c = 0; c < countTS; c++) {
 
                 List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
-                        medId, new DateTime(Long.sum(startDT.getMillis(), c * timeSlot))
-                        , new DateTime(Long.sum(startDT.getMillis(), (c + 1) * timeSlot)));
+                        medId, new DateTime(Long.sum(startDT.getMillis(), c * timeSlot*3600000L))
+                        , new DateTime(Long.sum(startDT.getMillis(), (c + 1) * timeSlot*3600000L)));
 
                 int quantity = 0; // Accumulated quantity
                 for (IPatientPrescription pp : listPP) {
@@ -553,15 +553,15 @@ public class InventoryService implements IInventoryService {
                 }
 
                 arrPP[c] = quantity;
-                arrTS[c] = Long.sum(startDT.getMillis(), Long.sum(c * 10L, 5L) / 10L * timeSlot);
+                arrTS[c] = Long.sum(startDT.getMillis()/3600000L, Long.sum(c * 10L, 5L) / 10L * timeSlot);
 
             }
 
-            Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / 2; // XBar (count of time slices)
+            Long avgTime = Long.sum(currentTime.getMillis(), startDT.getMillis()) / (2*3600000L); // XBar (count of time slices)
             int avgPrescriptions = sum(arrPP) / arrPP.length; // YBar
 
             // initiate matrix
-            int dim = 4;
+            int dim = 2;
             double[][] mX = new double[dim][dim];
             double[][] mY = new double[dim][1];
             for (int i=0; i<dim; i++){
@@ -584,7 +584,7 @@ public class InventoryService implements IInventoryService {
             }
             // Updating burn-rate
             burnRate.setAs(results);
-            DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot));
+            DateTime firstOfCurrentDt = new DateTime(Long.sum(startDT.getMillis(), countTS * timeSlot*3600000L));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
         }
@@ -624,8 +624,8 @@ public class InventoryService implements IInventoryService {
         String[] asArray = as.split(":",0);
         Long yS = 0L;
         Long yE = 0L;
-        Long xS = DateTime.now().getMillis();
-        Long xE = xS + (weeksCount * 7 * 24 * 3600000l);
+        Long xS = DateTime.now().getMillis()/3600000L;
+        Long xE = xS + (weeksCount * 7 * 24);
         for (int i = 0; i < asArray.length; i++) {
             Double asI = Double.parseDouble(asArray[i]);
             int ci = (int) Math.ceil(asI / (i + 1) * 1000);

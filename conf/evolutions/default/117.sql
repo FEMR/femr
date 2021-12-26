@@ -5,7 +5,7 @@ CREATE  TABLE `burn_rates`
     `id`              INT NOT NULL AUTO_INCREMENT,
     `med_id`          INT,
     `trip_id`          INT,
-    `as`       VARCHAR (255),
+    `a_s`       VARCHAR(255) NULL ,
     `calculated_time` DATETIME,
 
     PRIMARY KEY (`id`),

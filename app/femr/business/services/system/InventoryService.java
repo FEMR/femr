@@ -336,6 +336,7 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public ServiceResponse<String> exportCSV(int tripId) {
+        callPredictor(1,1);
         List<? extends IMedicationInventory> medicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
         // Convert result of query to a list to export
         List<InventoryExportItem> inventoryExport = new ArrayList<>();
@@ -531,7 +532,7 @@ public class InventoryService implements IInventoryService {
         DateTime currentTime = DateTime.now();
         DateTime startDT = new DateTime(currentTime.getMillis() - (7 * 3 * 24 * 3600000L));
         Long timeSlot = 24 * 3600000L;
-        Long diffTime = currentTime.getMillis() - burnRate.getCalculatedTime().getMillis();
+        Long diffTime = timeSlot*7*3;
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
 
         // If we are in new time slot
@@ -640,7 +641,6 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
-        int desiredDaysOnHand = desiredWeeksOnHand * 7;
 
         List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRatesByTripId(tripId);
 
@@ -650,7 +650,7 @@ public class InventoryService implements IInventoryService {
         for (IBurnRate burnRate : medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
 
-            if (medicationInventory != null && burnRate.getAs() != null) {
+            if (medicationInventory != null && burnRate.getAs() != "") {
                 quantity = getRequiredQuantity(burnRate.getMedId(), desiredWeeksOnHand);
                 if (quantity > medicationInventory.getQuantityCurrent()) {
                     shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(

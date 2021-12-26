@@ -499,12 +499,12 @@ public class InventoryService implements IInventoryService {
     public Long sumL(Long[] arr){
         Long all = 0L;
         for (int i = 0; i<arr.length;i++){
-            Long.sum(all,arr[i]);
+            all=Long.sum(all,arr[i]);
         }
         return all;
     }
 
-    public Long[] piL(int[] x, Long[] y){
+    public Long[] piL(Long[] x, Long[] y){
         Long[] pi = new Long[x.length];
         for (int i = 0; i < x.length; i++) {
             pi[i] = x[i] * y[i];
@@ -515,7 +515,7 @@ public class InventoryService implements IInventoryService {
     public Long[] power(int[] arr, int deg){
         Long[] po = new Long[arr.length];
         for (int i = 0; i<arr.length;i++){
-            po[i] = (long) Math.pow(arr[i],deg + i);
+            po[i] = (long) Math.pow(arr[i],deg);
         }
         return po;
     }
@@ -565,10 +565,10 @@ public class InventoryService implements IInventoryService {
             double[][] mX = new double[dim][dim];
             double[][] mY = new double[dim][1];
             for (int i=0; i<dim; i++){
-                for (int j=0; j<dim;i++){
-                    mX[i][j] = sumL(power(arrPP,i)); // Sigma X^ deg+i
+                for (int j=0; j<dim;j++){
+                    mX[i][j] = sumL(power(arrPP,i+j)); // Sigma X^ deg+i
                 }
-                mY[i][0] = sumL(piL(power(arrPP,0),arrTS)); // Sigma X^i * Y
+                mY[i][0] = sumL(piL(power(arrPP,i),arrTS)); // Sigma X^i * Y
             }
 
             SimpleMatrix smX = new SimpleMatrix(mX);
@@ -578,9 +578,9 @@ public class InventoryService implements IInventoryService {
 
             String results ="";
             for (int k=0;k<result.numRows();k++){
-                results.concat(String.valueOf(result.get(k,0)));
+                results=results.concat(String.valueOf(result.get(k,0)));
                 if(k!=result.numRows()-1)
-                    results.concat("-");
+                    results=results.concat(":");
             }
             // Updating burn-rate
             burnRate.setAs(results);
@@ -615,12 +615,13 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public int getRequiredQuantity(int medId, int weeksCount) {
+        System.out.println("asdasda");
         BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedId(medId);
         if (burnRate == null){
             return -1; //no prediction found
         }
         String as = burnRate.getAs();
-        String[] asArray = as.split("-");
+        String[] asArray = as.split(":",0);
         Long yS = 0L;
         Long yE = 0L;
         Long xS = DateTime.now().getMillis();
@@ -652,6 +653,7 @@ public class InventoryService implements IInventoryService {
 
             if (medicationInventory != null && burnRate.getAs() != "") {
                 quantity = getRequiredQuantity(burnRate.getMedId(), desiredWeeksOnHand);
+                System.out.println(quantity);
                 if (quantity > medicationInventory.getQuantityCurrent()) {
                     shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
                             medicationInventory.getMedication(),

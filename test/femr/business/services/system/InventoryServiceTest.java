@@ -57,7 +57,7 @@ public class InventoryServiceTest {
         items = Arrays.asList(csvFile.split("\n"));
         assertFalse(response.hasErrors());
         assertEquals(items.get(0),"ID,Medication,Current Quantity,Initial Quantity,Time Added,Created By");
-        assertEquals(items.get(1),"0,amin ,0,0,hii,amin hm");
+        assertEquals(items.get(1),"0,abc,100,100,,");
         assertTrue(mockMedicationRepository.retrieveMedicationInventoriesByTripIdWasCalled);
         assertTrue(mockItemModelMapper.createMedicationItemWasCalled);
 
@@ -69,7 +69,7 @@ public class InventoryServiceTest {
             File f = new File("my_file.csv");
             FileWriter fr = new FileWriter(f);
             BufferedWriter br  = new BufferedWriter(fr);
-            br.write("Medication,Quantity\naminhm,200");
+            br.write("Medication,Quantity\namiiiin,200");
             br.close();
             File f1 = new File("my_file.csv");
 
@@ -82,8 +82,8 @@ public class InventoryServiceTest {
             assertTrue(mockDataModelMapper.createMedicationInventoriesWasCalled);
             assertTrue(mockMedicationRepository.saveMedicationInventoryWasCalled);
             assertFalse(response.hasErrors());
-            assertEquals(response.getResponseObject().get(1).getName(),"aminhm");
-            assertEquals(response.getResponseObject().get(1).getQuantityCurrent(),Integer.valueOf("200"));
+            assertEquals(response.getResponseObject().get(0).getName(),"amiiiin");
+            assertEquals(response.getResponseObject().get(0).getQuantityCurrent(),Integer.valueOf("200"));
 
         } catch (IOException e) {
         }

@@ -52,7 +52,9 @@ public class MockMedicationRepository implements IMedicationRepository {
     @Override
     public IMedicationInventory retrieveMedicationInventoryByMedicationIdAndTripId(int medicationId, int tripId) {
         retrieveMedicationInventoryByMedicationIdAndTripIdWasCalled = true;
-        return mockMedicationInventory;
+        if (medicationId==mockMedicationInventory.getId())
+            return mockMedicationInventory;
+        return null;
     }
 
     @Override
@@ -94,7 +96,11 @@ public class MockMedicationRepository implements IMedicationRepository {
     public IMedication createNewMedication(String medicationName) {
         createNewMedByNameWasCalled=true;
 
-        return mockMedication;
+        IMedication medication = new Medication();
+
+        medication.setName(medicationName);
+
+        return medication;
     }
 
     @Override

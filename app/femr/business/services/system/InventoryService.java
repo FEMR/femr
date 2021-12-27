@@ -388,7 +388,7 @@ public class InventoryService implements IInventoryService {
         List<InventoryExportItem> newMedicationInventory = new ArrayList<>();
         List<InventoryExportItem> newMedicationInventoryHelper;
         newMedicationInventoryHelper = new ArrayList<InventoryExportItem>();
-        InventoryExportItem finalMed = null;
+
 
         List<? extends IMedicationInventory> existentMedicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
         try {
@@ -429,7 +429,7 @@ public class InventoryService implements IInventoryService {
 
 
 
-
+                InventoryExportItem finalMed = null;
 
 
                 if (medExists == true) {
@@ -490,11 +490,9 @@ public class InventoryService implements IInventoryService {
 
                         String name;
                         name = currentUser.getLastName() + ", " + currentUser.getFirstName();
-                        finalMed.setCreatedBy(name);
-                        finalMed.setMedicationId(newMed.getMedicationId());
-                        finalMed.setName(newMed.getName());
-                        finalMed.setQuantityCurrent(newMed.getQuantityCurrent());
-                        finalMed.setQuantityInitial(newMed.getQuantityInitial());
+                        InventoryExportItem finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
+                                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), null,
+                                DateTime.now().toString(), name));
                         newMedicationInventoryHelper.add(finalMed);
 
                     }

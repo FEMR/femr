@@ -47,7 +47,7 @@ public class MockBurnRateRepository implements IBurnRateRepository {
         IBurnRate burnRate = new BurnRate();
         burnRate.setRate(22.2f);
         burnRate.setCalculatedTime(DateTime.now());
-        burnRate.setMedId(1);
+        burnRate.setMedId(12222);
         burnRate.setTripId(tripId);
         List<IBurnRate> burnRates  = new ArrayList<>();
         burnRates.add(burnRate);

@@ -21,17 +21,27 @@ package mock.femr.data;
 import com.google.inject.Inject;
 import femr.data.IDataModelMapper;
 import femr.data.models.core.*;
+import mock.femr.data.models.MockMedication;
+import mock.femr.data.models.MockMedicationInventory;
+import mock.femr.data.models.MockMissionTrip;
 import mock.femr.data.models.MockPatient;
 import org.joda.time.DateTime;
+
 import java.util.Date;
 import java.util.List;
 
 public class MockDataModelMapper implements IDataModelMapper{
 
+    public boolean createMedicationInventoriesWasCalled = false;
 
+    public IMedicationInventory mockMedicationInventory;
+
+    public IMedication medication;
 
     @Inject
     public MockDataModelMapper() {
+        this.mockMedicationInventory = new MockMedicationInventory();
+        this.medication = new MockMedication();
 
     }
 
@@ -68,7 +78,15 @@ public class MockDataModelMapper implements IDataModelMapper{
 
     @Override
     public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
-        return null;
+        createMedicationInventoriesWasCalled = true;
+        IMissionTrip missionTrip = new MockMissionTrip();
+        mockMedicationInventory.setQuantityInitial(quantityTotal);
+        mockMedicationInventory.setTimeAdded(DateTime.now());
+        mockMedicationInventory.setQuantityCurrent(quantityCurrent);
+        mockMedicationInventory.setCreatedBy(null);
+        mockMedicationInventory.setMedication(medication);
+        mockMedicationInventory.setMissionTrip(missionTrip);
+        return mockMedicationInventory;
     }
 
     @Override

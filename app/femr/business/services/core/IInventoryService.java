@@ -20,13 +20,13 @@ package femr.business.services.core;
 
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.InventoryExportItem;
 import femr.common.models.MedicationItem;
 import femr.common.models.ShoppingListExportItem;
 import femr.data.models.core.IBurnRate;
 import org.joda.time.DateTime;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Inventory service is responsible for maintaining and tracking the medication inventory for a team.
@@ -152,7 +152,7 @@ public interface IInventoryService {
      * @return a string containing the new updated inventory list for the trip
      */
 
-    ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser);
+    ServiceResponse<List<InventoryExportItem>> importCSV(int tripId, Object file, CurrentUser currentUser);
 
     IBurnRate callPredictor(int medId,int tripId);
 

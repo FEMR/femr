@@ -11,6 +11,7 @@ import java.util.List;
 public class MockItemModelMapper implements IItemModelMapper{
 
     public boolean createPatientItemWasCalled = false;
+    public boolean createMedicationItemWasCalled = false;
     public boolean createPrescriptionItemWasCalled = false;
 
     @Override
@@ -25,8 +26,17 @@ public class MockItemModelMapper implements IItemModelMapper{
 
     @Override
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
+        createMedicationItemWasCalled=true;
         MedicationItem medicationItem = new MedicationItem();
         medicationItem.setId(medication.getId());
+        medicationItem.setFullName(medication.getName());
+        medicationItem.setCreatedBy(createdBy);
+        medicationItem.setForm(null);
+        medicationItem.setName(medication.getName());
+        medicationItem.setQuantityCurrent(quantityCurrent);
+        medicationItem.setQuantityTotal(quantityTotal);
+        medicationItem.setTimeAdded(timeAdded);
+        medicationItem.setIsDeleted(isDeleted);
         return medicationItem;
     }
 

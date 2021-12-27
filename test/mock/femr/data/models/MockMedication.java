@@ -9,8 +9,8 @@ import java.util.List;
 
 public class MockMedication implements IMedication {
 
-    private int id = -1;
-    private String name = "Tylenol";
+    private int id = 12222;
+    private String name = "aminhm";
     private Boolean isDeleted = false;
 
     @Override

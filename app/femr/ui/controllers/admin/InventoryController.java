@@ -23,6 +23,7 @@ import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.InventoryExportItem;
 import femr.common.models.MedicationItem;
 import femr.common.models.MissionTripItem;
 import femr.data.models.mysql.Roles;
@@ -405,7 +406,7 @@ public class InventoryController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile(),currentUser);
+        ServiceResponse<List<InventoryExportItem>> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile(),currentUser);
 
         if (formData != null && !importServiceResponse.hasErrors())
             return redirect("/admin/inventory/"+tripId);

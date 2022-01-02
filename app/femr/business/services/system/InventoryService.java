@@ -516,32 +516,32 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public IBurnRate callPredictor(int medId,int tripId) {
+    public IBurnRate updateBurnRate(int medId,int tripId) {
+        //configs
+        Long timeSlot = 3600000L*24; // time slot is set to a day
+        int weightOfPast =1;          // weight of past burn rate (0-10)
+
+        //get last calculated burn rate for this medicine and if not calculated before create a zero burn rate with calculated time = now
         BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId,tripId);
         if (burnRate == null)
             burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(),tripId);
-
-        // Check Time slot passed
+        // Check if at least a Time slot is passed
         DateTime currentTime = DateTime.now();
-        Long timeSlot = 7200000L;
         Long diffTime = currentTime.getMillis() - burnRate.getCalculatedTime().getMillis();
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
-
-        // if we are in new time slot
         if (countTS >= 1L) {
-
-            // create new burn rate
-                DateTime startDT = burnRate.getCalculatedTime();
-                DateTime endDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), timeSlot));
-
-                List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
-                        medId, startDT, endDT);
-
-                int quantity = 0;
-                for (IPatientPrescription pp : listPP) quantity += pp.getAmount();
-                if (quantity!=0)
-                burnRate.setRate( (4*burnRate.getRate())/10 + (6*quantity)/10 );
-            // updating burnrate
+            // get all prescriptions which prescribed from the last time that burn rate is calculated until the end of that time slot
+            DateTime startDT = burnRate.getCalculatedTime();
+            DateTime endDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), timeSlot));
+            List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
+                    medId, startDT, endDT);
+            // sum quantity in all prescriptions in this time slot
+            int quantity = 0;
+            for (IPatientPrescription pp : listPP) quantity += pp.getAmount();
+            // consider the time slot only if the quantity not be zero
+            if (quantity!=0)
+                burnRate.setRate( (weightOfPast*burnRate.getRate())/10 + ((10-weightOfPast)*quantity)/10 ); //apply the formula
+            // update burn rate and set the last calculated time to the end of that time slot
             DateTime firstOfCurrentDt=new DateTime(Long.sum(startDT.getMillis(),countTS*timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
@@ -554,8 +554,6 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
 
         List<ShoppingListExportItem> shoppingListExportItems = createShoppingList(tripId, desiredWeeksOnHand);
-
-
 
         // Convert export shopping list to json
         Gson gson = new Gson();

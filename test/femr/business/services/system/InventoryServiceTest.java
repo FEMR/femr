@@ -92,7 +92,7 @@ public class InventoryServiceTest {
 
     @Test
     public void testShoppingListAlgo() {
-        IBurnRate burnRate = inventoryService.callPredictor(1,1);
+        IBurnRate burnRate = inventoryService.updateBurnRate(1,1);
         assertTrue(mockBurnRateRepository.retrieveBurnRateByMedIdAndTripIdWasCalled);
         assertEquals(Float.valueOf(burnRate.getRate()),Float.valueOf(22.2f));
 

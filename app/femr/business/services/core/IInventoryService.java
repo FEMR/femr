@@ -151,10 +151,15 @@ public interface IInventoryService {
      * @param file user csv file
      * @return a string containing the new updated inventory list for the trip
      */
-
     ServiceResponse<List<InventoryExportItem>> importCSV(int tripId, Object file, CurrentUser currentUser);
-
-    IBurnRate callPredictor(int medId,int tripId);
+    /**
+     * updates the burn rate for the medicine given and stores that in database and also returns that
+     *
+     * @param tripId id of the trip
+     * @param medId id of the medicine which want to update burn rate for
+     * @return a new burn rate for the medicine
+     */
+    IBurnRate updateBurnRate(int medId,int tripId);
 
     /**
      * Returns a list containing shopping list items for the provided trip and desired weeks on hand

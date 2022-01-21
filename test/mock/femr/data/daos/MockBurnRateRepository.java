@@ -14,11 +14,21 @@ public class MockBurnRateRepository implements IBurnRateRepository {
 
     public boolean retrieveAllBurnRatesByTripIdWasCalled = false;
 
+    public IBurnRate mockBurnRate;
+
+    public MockBurnRateRepository(){
+        this.mockBurnRate = new BurnRate();
+    }
+
 
     @Override
     public IBurnRate createBurnRate(int medID, float burnRate, DateTime calculatedDateTime, int tripId) {
-
-        return null;
+        IBurnRate burnRate1 = new BurnRate();
+        burnRate1.setCalculatedTime(calculatedDateTime);
+        burnRate1.setMedId(medID);
+        burnRate1.setRate(burnRate);
+        burnRate1.setTripId(tripId);
+        return burnRate1;
     }
 
     @Override
@@ -57,11 +67,6 @@ public class MockBurnRateRepository implements IBurnRateRepository {
     @Override
     public IBurnRate retrieveBurnRateByMedIdAndTripId(int medid, int tripId) {
         retrieveBurnRateByMedIdAndTripIdWasCalled = true;
-        IBurnRate burnRate = new BurnRate();
-        burnRate.setRate(22.2f);
-        burnRate.setCalculatedTime(DateTime.now());
-        burnRate.setMedId(medid);
-        burnRate.setTripId(tripId);
-        return burnRate;
+        return mockBurnRate;
     }
 }

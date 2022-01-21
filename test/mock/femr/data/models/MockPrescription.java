@@ -9,6 +9,7 @@ import java.util.List;
 public class MockPrescription implements IPatientPrescription {
 
     private Integer amount = -1;
+    private DateTime dateTaken;
     private IUser mockPhysician = null;
     private IMedication mockMedication = null;
     private IPatientEncounter mockPatientEncounter = null;
@@ -66,12 +67,12 @@ public class MockPrescription implements IPatientPrescription {
 
     @Override
     public DateTime getDateTaken() {
-        return null;
+        return dateTaken;
     }
 
     @Override
     public void setDateTaken(DateTime dateTaken) {
-
+        this.dateTaken = dateTaken;
     }
 
     @Override

@@ -12,6 +12,7 @@ import mock.femr.data.daos.MockBurnRateRepository;
 import mock.femr.data.daos.MockMedicationRepository;
 import mock.femr.data.daos.MockPrescriptionRepository;
 import mock.femr.data.daos.MockUserRepository;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,9 +93,18 @@ public class InventoryServiceTest {
 
     @Test
     public void testShoppingListAlgo() {
-        IBurnRate burnRate = inventoryService.callPredictor(1,1);
+        mockBurnRateRepository.mockBurnRate.setCalculatedTime(DateTime.now().minusDays(1));
+        mockBurnRateRepository.mockBurnRate.setRate(20.4f);
+        mockBurnRateRepository.mockBurnRate.setMedId(12222);
+        mockBurnRateRepository.mockBurnRate.setTripId(1);
+        for (int i=0 ; i < 3; i++) {
+            IBurnRate burnRate = inventoryService.callPredictor(12222, 1);
+            burnRate.setCalculatedTime(burnRate.getCalculatedTime().minusDays(2+i));
+            mockBurnRateRepository.mockBurnRate = burnRate;
+        }
+        assertTrue(mockPrescriptionRepository.retrieveAllPrescriptionsByMedicationId);
         assertTrue(mockBurnRateRepository.retrieveBurnRateByMedIdAndTripIdWasCalled);
-        assertEquals(Float.valueOf(burnRate.getRate()),Float.valueOf(22.2f));
+        assertEquals(Float.valueOf(mockBurnRateRepository.mockBurnRate.getRate()),Float.valueOf(35.2716f));
 
     }
 

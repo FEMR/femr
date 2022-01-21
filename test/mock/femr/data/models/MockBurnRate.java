@@ -8,6 +8,8 @@ public class MockBurnRate implements IBurnRate {
     private int id = 12222;
     private Float rate = 22.3f;
     private Boolean isDeleted = false;
+    private DateTime calculatedTime = DateTime.now();
+    private int tripId = 1;
 
     @Override
     public int getId() {
@@ -28,31 +30,31 @@ public class MockBurnRate implements IBurnRate {
 
     @Override
     public int getMedId() {
-        return 0;
+        return id;
     }
 
     @Override
     public void setMedId(int id) {
-
+        this.id=id;
     }
 
     @Override
     public DateTime getCalculatedTime() {
-        return null;
+        return calculatedTime;
     }
 
     @Override
     public void setCalculatedTime(DateTime time) {
-
+        this.calculatedTime = time;
     }
 
     @Override
     public int getTripId() {
-        return 0;
+        return tripId;
     }
 
     @Override
     public void setTripId(int id) {
-
+        this.tripId=id;
     }
 }

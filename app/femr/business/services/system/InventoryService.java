@@ -540,7 +540,7 @@ public class InventoryService implements IInventoryService {
                 int quantity = 0;
                 for (IPatientPrescription pp : listPP) quantity += pp.getAmount();
                 if (quantity!=0)
-                burnRate.setRate( (4*burnRate.getRate())/10 + (6*quantity)/10 );
+                burnRate.setRate( (9*burnRate.getRate())/10 + (quantity)/10 );
             // updating burnrate
             DateTime firstOfCurrentDt=new DateTime(Long.sum(startDT.getMillis(),countTS*timeSlot));
             burnRate.setCalculatedTime(firstOfCurrentDt);

@@ -292,7 +292,6 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -510,23 +509,21 @@ public class InventoryService implements IInventoryService {
             response.addError("", ex.getMessage());
 
         }
-
         return response;
-
     }
 
     @Override
     public IBurnRate updateBurnRate(int medId,int tripId) {
         //configs
         Long timeSlot = 3600000L*24; // time slot is set to a day
-        int weightOfPast =1;          // weight of past burn rate (0-10)
-
+        int weightOfPast =9;          // weight of past burn rate (0-10)
         //get last calculated burn rate for this medicine and if not calculated before create a zero burn rate with calculated time = now
         BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId,tripId);
-        if (burnRate == null)
-            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(),tripId);
         // Check if at least a Time slot is passed
         DateTime currentTime = DateTime.now();
+        if (burnRate == null)
+            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, currentTime,tripId);
+
         Long diffTime = currentTime.getMillis() - burnRate.getCalculatedTime().getMillis();
         Long countTS = diffTime / timeSlot; // Count of Time slots passed
         if (countTS >= 1L) {
@@ -546,7 +543,6 @@ public class InventoryService implements IInventoryService {
             burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
         }
-
         return burnRate;
     }
 

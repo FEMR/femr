@@ -1,31 +1,23 @@
 package femr.common.models;
 
-import java.util.*;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Arrays;
+import java.util.List;
 
 //One ShoppingListExportItem per line in the shopping list CSV export
 public class ShoppingListExportItem {
 
-    @SerializedName("ID")               private Integer medicationId;
     @SerializedName("Medication")       private String name;
     @SerializedName("Quantity")         private Integer quantity;
 
     static public List<String> getFieldOrder() {
-        return Arrays.asList("ID", "Medication", "Quantity");
+        return Arrays.asList("Medication", "Quantity");
     }
 
     public ShoppingListExportItem(MedicationItem med, int q) {
-        medicationId = med.getId();
         name = med.getFullName();
         quantity = q;
-    }
-
-    public Integer getMedicationId() {
-        return medicationId;
-    }
-
-    public void setMedicationId(Integer medicationId) {
-        this.medicationId = medicationId;
     }
 
     public String getName() {

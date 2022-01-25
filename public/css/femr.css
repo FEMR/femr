@@ -847,3 +847,7 @@ input[style] {
     flex: 2;
     margin-right: 0;
 }
+
+.weeksOnHandInput {
+    width: 3.5em;
+}

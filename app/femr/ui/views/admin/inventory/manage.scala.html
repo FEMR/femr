@@ -60,8 +60,8 @@
                 } else {
                     @helper.form(action = InventoryController.exportShoppingListGet(currentUser.getTripId())) {
                     <span>
-                        <input type="number" class="pull-right" id="weeksOnHandInventory" name="weeksOnHand" value="1" min="0" max="100" step="1">
                         <label style="margin-left: 40px;">Desired Weeks:</label>
+                        <input type="number" class="pull-right weeksOnHandInput" id="weeksOnHandInventory" name="weeksOnHand" value="1" min="0" max="100" step="1">
                         <button class="btn fExportShoppingListButton fExportShoppingListOtherButton pull-right" style="margin-bottom: 20px;" type="submit">Export Shopping List</button>
                         }
                 }

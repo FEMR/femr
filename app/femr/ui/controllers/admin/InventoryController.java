@@ -381,7 +381,7 @@ public class InventoryController extends Controller {
 
       ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
 
-      SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+      SimpleDateFormat format = new SimpleDateFormat("yyMMdd-HHmmss");
       String timestamp = format.format(new Date());
       String csvFileName = "inventory-"+timestamp+".csv";
       response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
@@ -428,7 +428,7 @@ public class InventoryController extends Controller {
 
         if (!exportServiceResponse.hasErrors()) {
 
-            SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+            SimpleDateFormat format = new SimpleDateFormat("yyMMdd-HHmmss");
             String timestamp = format.format(new Date());
             String csvFileName = "shopping-list-" + timestamp + ".csv";
             response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);

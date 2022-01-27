@@ -7,7 +7,6 @@ import femr.common.dtos.CurrentUser;
 import femr.ui.models.trauma.IndexSheetView;
 import femr.ui.models.triage.IndexViewModelGet;
 import femr.ui.views.html.trauma.index; // this is what was needed to render the new page
-//import femr.ui.views.html.home.index;
 import femr.ui.views.html.sessions.create;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -33,8 +32,4 @@ public class TraumaController extends Controller {
 
         return ok(create.render(null, 0, assetsFinder));
     }
-
-
-
-
 }

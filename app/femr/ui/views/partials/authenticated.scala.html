@@ -1,3 +1,4 @@
+@import femr.ui.controllers.TraumaController
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
@@ -11,6 +12,7 @@
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
+@import femr.ui.controllers.routes.TraumaController
 <div class="navigationLogo">
     <a href="@HomeController.index()">
         <img src="@assets.path("img/logo_color_wordless_sm.png")" />
@@ -26,12 +28,11 @@
         </div>
 </div>
 
-
-
-<div class="navigationItemsWrap">
+<div class="navigationItemsWrap">s
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
             <li><a href="@TriageController.indexGet()">Triage</a></li>
+            <li><a href="@TraumaController.index()">Trauma</a></li>
             <li><a href="@MedicalController.indexGet()">Medical</a></li>
             <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }

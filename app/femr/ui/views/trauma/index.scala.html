@@ -1,19 +1,55 @@
+@import femr.ui.views.html.partials.triage.inputText
+@import femr.ui.views.html.partials.triage.inputAge
+@import femr.ui.views.html.partials.triage.inputDate
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
 
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 
+}
 
-
-@main("Trauma", currentUser, search = search("trauma"), assets = assets) {
+@main("Trauma", currentUser, styles = additionalStyles, search = search("trauma"), assets = assets) {
+    <div><h2>Patient ID # </h2></div>
     <div id="triageContentWrap">
-        <div id="GeneralInfo">
+        <div id="GeneralInfo" class="sectionBackground backgroundForWrap">
+            <div id="leftGeneralInfo" >
+                <h4>Patient Age</h4><br>
+                <input type="checkbox" id="1" name="1" value="Age1">
+                <label for="1"> 0-1</label>
+                <input  type="checkbox" id="2" name="2" value="Age2">
+                <label for="2"> 2-12</label>
+                <input  type="checkbox" id="3" name="3" value="Age3">
+                <label for="3"> 13-17</label>
+                <input  type="checkbox" id="4" name="4" value="Age4">
+                <label for="4"> 18-64</label>
+                <input  type="checkbox" id="5" name="5" value="Age5">
+                <label for="1"> 64+</label><br><br>
 
+
+                <input type="date" id="start"  placeholder="mm/dd/yyyy"><br> <br>
+
+                <div id="ageInfoWrap">
+                    <input type="year" min="1900" placeholder="Year">
+                    <input type="month" placeholder="Month">
+                </div><br>
+
+                <h4>Biological Sex</h4><br>
+                <input type="checkbox" id="male" name="male" value="Male">
+                <label for="male"> Male</label>
+                <input type="checkbox" id="female" name="female" value="Female">
+                <label for="female"> Female</label>
+                <input type="checkbox" id="other" name="other" value="Other">
+                <label for="other"> Other</label>
+
+
+            </div>
         </div>
 
-        <div id="Problem">
-
+        <div id="Problem" class="sectionBackground backgroundForWrap">
+                <h2>Test.....................</h2>
         </div>
     </div>
 

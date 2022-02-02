@@ -1,4 +1,58 @@
 #leftGeneralInfo{
+    margin: 20px;
+}
 
-margin: 20px;
+#generalInfo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+#vitalsWrap {
+    float: left;
+    display: inline;
+}
+
+#leftVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#rightVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#dropdownTopHalf {
+    margin: 10px 20px;
+    display: flex;
+    flex-basis: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+#dropdownBottomHalf {
+    margin: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+#photoInput {
+    min-width: 225px;
+}
+
+.btn-default {
+    min-width: 175px;
+    text-align: left;
+    float-wrap: none;
+}
+.fButton {
+    float: right;
+}
+
+table, th, td {
+    border: 1px solid black;
 }

@@ -9,7 +9,6 @@
 @import femr.ui.views.html.partials.search
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
-
 }
 
 @main("Trauma", currentUser, styles = additionalStyles, search = search("trauma"), assets = assets) {
@@ -18,7 +17,7 @@
         <div id="generalInfo" class="sectionBackground backgroundForWrap">
             <div id="leftGeneralInfo" >
                 @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
-                @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+                @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 <h4>Patient Age</h4><br>
                 <input type="checkbox" id="1" name="1" value="Age1">
                 <label for="1"> 0-1</label>
@@ -49,39 +48,7 @@
             </div>
 
             <div id="midGeneralInfo">
-                <div id="History">
-                    <div class="vitalsWrap">
-                        <label>History of:
-                        </label>
-                    </div>
-                    <div id="leftVitalsWrap">
-                        <label class="btn btn-default"> Diabetes
-                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default"> Tobacco Use Disorder
-                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">Substance/Alcohol Abuse
-                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
-                        </label>
-                    </div>
-                    <div id="rightVitalsWrap">
-                        <label class="btn btn-default">High Cholesterol
-                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">Hypertension
-                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
-                        </label>
-
-                    </div>
-                </div>
-            </div>
-
-            <div id="rightGeneralInfo">
-                <h4>Vitals</h4>
+                <label>Vitals</label>
                 <div id="vitalContainer">
                     <div id="leftVitalsWrap">
                         @if(viewModel.getSettings.isMetric) {
@@ -166,6 +133,38 @@
                 </div>
             </div>
 
+            <div id="rightGeneralInfo">
+                <div id="History">
+                    <div class="vitalsWrap">
+                        <label>History of:
+                        </label>
+                    </div>
+                    <div id="leftVitalsWrap">
+                        <label class="btn btn-default"> Diabetes
+                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default"> Tobacco Use Disorder
+                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Substance/Alcohol Abuse
+                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                        </label>
+                    </div>
+                    <div id="rightVitalsWrap">
+                        <label class="btn btn-default">High Cholesterol
+                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Hypertension
+                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+
             <div id="dropDownWrap">
                 <script type="text/javascript">
                         function ShowHideDiv() {
@@ -185,11 +184,10 @@
                             <div id="dropdownLeft">
                                 <div id="GeneralNameAddress">
                                     <div id="leftVitalsWrap">
-
+                                        @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                                         @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                                     </div>
                                     <div id="leftVitalsWrap">
-                                        @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                                         <div class="generalInfoInput" id="citySearchContainer">
                                             <label for="city">City</label>
                                             @if(viewModel.getPatient.getCity == null) {

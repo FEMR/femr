@@ -1,12 +1,9 @@
-#leftGeneralInfo, #dropDownWrap {
-    margin: 20px;
-}
-
 #generalInfo {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     column-gap: 10px;
+    padding: 20px;
 }
 
 #vitalsWrap {
@@ -22,15 +19,6 @@
 #rightVitalsWrap {
     width: 50%;
     float: left;
-}
-
-#midGeneralInfo {
-    margin-top: 20px;
-}
-
-
-#leftGeneralInfo {
-    margin: 20px;
 }
 
 #dropdownTopHalf {

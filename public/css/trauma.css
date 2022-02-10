@@ -1,4 +1,4 @@
-#leftGeneralInfo{
+#leftGeneralInfo, #dropDownWrap {
     margin: 20px;
 }
 
@@ -24,8 +24,12 @@
     float: left;
 }
 
+#leftGeneralInfo {
+    margin: 20px;
+}
+
 #dropdownTopHalf {
-    margin: 10px 20px;
+    margin-top: 10px;
     display: flex;
     flex-basis: auto;
     flex-wrap: wrap;
@@ -34,7 +38,6 @@
 }
 
 #dropdownBottomHalf {
-    margin: 10px 20px;
     display: flex;
     flex-direction: column;
     row-gap: 5px;

@@ -17,6 +17,8 @@
     <div id="triageContentWrap">
         <div id="generalInfo" class="sectionBackground backgroundForWrap">
             <div id="leftGeneralInfo" >
+                @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
+                @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <h4>Patient Age</h4><br>
                 <input type="checkbox" id="1" name="1" value="Age1">
                 <label for="1"> 0-1</label>
@@ -47,6 +49,38 @@
             </div>
 
             <div id="midGeneralInfo">
+                <div id="History">
+                    <div class="vitalsWrap">
+                        <label>History of:
+                        </label>
+                    </div>
+                    <div id="leftVitalsWrap">
+                        <label class="btn btn-default"> Diabetes
+                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default"> Tobacco Use Disorder
+                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Substance/Alcohol Abuse
+                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                        </label>
+                    </div>
+                    <div id="rightVitalsWrap">
+                        <label class="btn btn-default">High Cholesterol
+                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Hypertension
+                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="rightGeneralInfo">
                 <h4>Vitals</h4>
                 <div id="vitalContainer">
                     <div id="leftVitalsWrap">
@@ -132,22 +166,6 @@
                 </div>
             </div>
 
-            <div id="rightGeneralInfo">
-                <h4>Vitals Chart</h4>
-                <table>
-                    <tr>
-                        <td>Time</td>
-                        <td>MM/DD/YYY</td>
-                        <td>MM/DD/YYY</td>
-                    </tr>
-                    <tr>
-                        <td>Temperature</td>
-                        <td>123</td>
-                        <td>456</td>
-                    </tr>
-                </table>
-            </div>
-
             <div id="dropDownWrap">
                 <script type="text/javascript">
                         function ShowHideDiv() {
@@ -167,8 +185,7 @@
                             <div id="dropdownLeft">
                                 <div id="GeneralNameAddress">
                                     <div id="leftVitalsWrap">
-                                        @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
-                                        @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+
                                         @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                                     </div>
                                     <div id="leftVitalsWrap">
@@ -186,35 +203,19 @@
                             </div>
 
                             <div id="dropdownMid">
-                                <div id="History">
-                                    <div class="vitalsWrap">
-                                        <label>History of:
-                                        </label>
-                                    </div>
-                                    <div id="leftVitalsWrap">
-                                        <label class="btn btn-default"> Diabetes
-                                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
-                                        </label>
-                                        <br>
-                                        <label class="btn btn-default"> Tobacco Use Disorder
-                                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
-                                        </label>
-                                        <br>
-                                        <label class="btn btn-default">Substance/Alcohol Abuse
-                                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
-                                        </label>
-                                    </div>
-                                    <div id="rightVitalsWrap">
-                                        <label class="btn btn-default">High Cholesterol
-                                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
-                                        </label>
-                                        <br>
-                                        <label class="btn btn-default">Hypertension
-                                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
-                                        </label>
-
-                                    </div>
-                                </div>
+                                <h4>Vitals Chart</h4>
+                                <table>
+                                    <tr>
+                                        <td>Time</td>
+                                        <td>MM/DD/YYY</td>
+                                        <td>MM/DD/YYY</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Temperature</td>
+                                        <td>123</td>
+                                        <td>456</td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <div id="dropdownRight">

@@ -24,6 +24,11 @@
     float: left;
 }
 
+#midGeneralInfo {
+    margin-top: 20px;
+}
+
+
 #leftGeneralInfo {
     margin: 20px;
 }

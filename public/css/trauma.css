@@ -6,6 +6,12 @@
     padding: 20px;
 }
 
+#nameWrap {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
 #vitalsWrap {
     float: left;
     display: inline;
@@ -19,6 +25,10 @@
 #rightVitalsWrap {
     width: 50%;
     float: left;
+}
+
+#dropDownWrap {
+    flex-grow: 1;
 }
 
 #dropdownTopHalf {

@@ -7,18 +7,20 @@
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
+@additionalScripts = {
+    <script type="text/javascript" src="@assets.path("js/trauma/trauma.js")"></script>
+}
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 }
 
-@main("Trauma", currentUser, styles = additionalStyles, search = search("trauma"), assets = assets) {
+@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
     <div><h2>Patient ID # </h2></div>
     <div id="triageContentWrap">
         <div id="generalInfo" class="sectionBackground backgroundForWrap">
             <div id="leftGeneralInfo" >
-                @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
-                @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
-                <h4>Patient Age</h4><br>
+
+                <h4>Patient Age</h4>
                 <input type="checkbox" id="1" name="1" value="Age1">
                 <label for="1"> 0-1</label>
                 <input  type="checkbox" id="2" name="2" value="Age2">
@@ -28,23 +30,56 @@
                 <input  type="checkbox" id="4" name="4" value="Age4">
                 <label for="4"> 18-64</label>
                 <input  type="checkbox" id="5" name="5" value="Age5">
-                <label for="1"> 64+</label><br><br>
+                <label for="1"> 64+</label><br>
 
 
-                <input type="date" id="start"  placeholder="mm/dd/yyyy"><br> <br>
+                <input type="date" id="start"  placeholder="mm/dd/yyyy"><br><br>
 
                 <div id="ageInfoWrap">
                     <input type="year" min="1900" placeholder="Year">
                     <input type="month" placeholder="Month">
-                </div><br>
+                </div>
 
-                <h4>Biological Sex</h4><br>
+                <h4>Biological Sex</h4>
                 <input type="checkbox" id="male" name="male" value="Male">
                 <label for="male"> Male</label>
                 <input type="checkbox" id="female" name="female" value="Female">
                 <label for="female"> Female</label>
                 <input type="checkbox" id="other" name="other" value="Other">
                 <label for="other"> Other</label>
+                <div id="nameWrap">
+                    @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
+                    @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
+                </div>
+                <div id="History">
+                    <div class="vitalsWrap">
+                        <label>History of:
+                        </label>
+                    </div>
+                    <div id="leftVitalsWrap">
+                        <label class="btn btn-default"> Diabetes
+                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default"> Tobacco Use Disorder
+                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Substance/Alcohol Abuse
+                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                        </label>
+                    </div>
+                    <div id="rightVitalsWrap">
+                        <label class="btn btn-default">High Cholesterol
+                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default">Hypertension
+                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                        </label>
+
+                    </div>
+                </div>
             </div>
 
             <div id="midGeneralInfo">
@@ -134,46 +169,30 @@
             </div>
 
             <div id="rightGeneralInfo">
-                <div id="History">
-                    <div class="vitalsWrap">
-                        <label>History of:
-                        </label>
-                    </div>
-                    <div id="leftVitalsWrap">
-                        <label class="btn btn-default"> Diabetes
-                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default"> Tobacco Use Disorder
-                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">Substance/Alcohol Abuse
-                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
-                        </label>
-                    </div>
-                    <div id="rightVitalsWrap">
-                        <label class="btn btn-default">High Cholesterol
-                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">Hypertension
-                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
-                        </label>
-
-                    </div>
-                </div>
+                <h4>Vitals Chart</h4>
+                <table>
+                    <tr>
+                        <td>Time</td>
+                        <td>MM/DD/YYY</td>
+                        <td>MM/DD/YYY</td>
+                    </tr>
+                    <tr>
+                        <td>Temperature</td>
+                        <td>123</td>
+                        <td>456</td>
+                    </tr>
+                </table>
             </div>
 
             <div id="dropDownWrap">
-                <script type="text/javascript">
-                        function ShowHideDiv() {
-                            var additionalInfoDropdown = document.getElementById("additionalInfoDropdown");
-                            var additionalInfo = document.getElementById("additionalInfo");
-                            additionalInfo.style.display = additionalInfoDropdown.value == "Y" ? "block" : "none";
-                        }
-                </script>
-                <span>Show additional information?</span>
+@*                <script type="text/javascript">*@
+@*                        function ShowHideDiv() {*@
+@*                            var additionalInfoDropdown = document.getElementById("additionalInfoDropdown");*@
+@*                            var additionalInfo = document.getElementById("additionalInfo");*@
+@*                            additionalInfo.style.display = additionalInfoDropdown.value == "Y" ? "block" : "none";*@
+@*                        }*@
+@*                </script>*@
+                <br><span>Show additional information?</span>
                 <select id = "additionalInfoDropdown" onchange = "ShowHideDiv()">
                     <option value="N">No</option>
                     <option value="Y">Yes</option>
@@ -201,22 +220,6 @@
                             </div>
 
                             <div id="dropdownMid">
-                                <h4>Vitals Chart</h4>
-                                <table>
-                                    <tr>
-                                        <td>Time</td>
-                                        <td>MM/DD/YYY</td>
-                                        <td>MM/DD/YYY</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Temperature</td>
-                                        <td>123</td>
-                                        <td>456</td>
-                                    </tr>
-                                </table>
-                            </div>
-
-                            <div id="dropdownRight">
                                 <div class="photoInput">
                                     <label for="photo">Patient Photo</label>
                                     <div id="photoInputFormDiv">

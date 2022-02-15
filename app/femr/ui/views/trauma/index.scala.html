@@ -15,7 +15,13 @@
 }
 
 @main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
-    <div><h2>Patient ID # </h2></div>
+    <div id="traumaContentWrap"><h2>Patient ID #</h2>
+        <form id="form">
+            <input type="search" id="query" name="q" placeholder="ID, Name, or Phone # ">
+            <button id="button">Search</button>
+        </form>
+
+    </div>
     <div id="triageContentWrap">
         <div id="generalInfo" class="sectionBackground backgroundForWrap">
             <div id="leftGeneralInfo" >

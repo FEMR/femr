@@ -1,0 +1,82 @@
+#generalInfo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 10px;
+    padding: 20px;
+}
+
+#nameWrap {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+#vitalsWrap {
+    float: left;
+    display: inline;
+}
+
+#leftVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#rightVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#dropDownWrap {
+    flex-grow: 1;
+}
+
+#dropdownTopHalf {
+    margin-top: 10px;
+    display: flex;
+    flex-basis: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+#dropdownBottomHalf {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+#photoInput {
+    min-width: 225px;
+}
+
+.btn-default {
+    min-width: 175px;
+    text-align: left;
+    float-wrap: none;
+}
+.fButton {
+    float: right;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+#form{
+    text-align: right;
+}
+
+#button {
+    background-color: #ad0000;
+    border: 1px solid #3f3f3d;
+}
+
+#container {
+    height: 500px;
+    width: 500px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}

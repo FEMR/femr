@@ -204,11 +204,11 @@
     @*                            additionalInfo.style.display = additionalInfoDropdown.value == "Y" ? "block" : "none";*@
     @*                        }*@
     @*                </script>*@
-                    <br><span>Show additional information?</span>
-                    <select id = "additionalInfoDropdown" onchange = "ShowHideDiv()">
-                        <option value="N">No</option>
-                        <option value="Y">Yes</option>
-                    </select>
+
+                    <div id = "additionalInfoCheckboxDiv" onchange = "ShowHideAdditionalDiv()">
+                        <label for="additionalInfoCheckbox">Show additional information?</label>
+                        <input type="checkbox" id="additionalInfoCheckbox">
+                    </div>
                     <div id="additionalInfo" style="display: none">
 
                             <div id="dropdownTopHalf">
@@ -339,11 +339,13 @@
             <div id="bodyChartContentWrap" class="sectionBackground backgroundForWrap">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
                 <div id="drawingKonva">
-                    Tool:
-                    <select id="tool">
-                        <option value="brush">Brush</option>
-                        <option value="eraser">Eraser</option>
-                    </select>
+                    <div id="tool" >
+                        Tool:
+                        <label for="brush">Brush</label>
+                        <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOne(this)" checked>
+                        <label for="eraser">Eraser</label>
+                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOne(this)">
+                    </div>
                     <div id="container"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                 </div>

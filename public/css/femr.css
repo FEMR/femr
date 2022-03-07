@@ -37,11 +37,12 @@
 
 body {
     padding-top: 50px;
-    background-color: #aaa296;
+    background-color: #F3F4F6;
     /* Removed because of the insane amount of time required to load (especially on networks where the connection speed is iffy */
     /*font-family: dejavu;*/
     font-family: sans-serif;
 }
+
 
 hr {
     border-top: 1px solid black;
@@ -208,26 +209,32 @@ a.fRedButton:hover{
     height: 33px;
 }
 
-/* THE fEMR input(text)! */
+/* THE fEMR input(text) fields! */
 .fInput {
     border-radius: 5px;
     display: block;
     height: 33px;
     width: 175px;
-    border: 1px solid #ccc;
+     border: 1px solid #F3F4F6;
     padding: 5px 10px 5px 10px;
-    background-color: white;
+    background-color: #F3F4F6;
     color: #555;
 }
 
 
 .fInput:focus {
+    outline-color: #bb4848;
     box-shadow: 0 0 5px #3f3f3d
 }
 
 /* THE fEMR input(checkbox) */
 .fCheckbox {
     padding: 20px;
+}
+
+
+.fCheckbox:focus {
+    fill: #ad0000;
 }
 
 /* The following sections are used on both Medical and pharmacy */
@@ -336,8 +343,8 @@ float: right;
 /* fEMR's background with border */
 .backgroundForWrap {
     border-radius: 10px;
-    background-color: #e9e6e6;
-    border: 3px solid #3f3f3d;
+    background-color: #FFFFFF;
+    /* border: 3px solid #3f3f3d; */
 }
 
 /*The universal Navigation bar*/

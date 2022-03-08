@@ -372,6 +372,7 @@ public class InventoryController extends Controller {
 
     /**
      * Called when a user wants to export the data to a CSV file.
+     * On Inventory page, clicking on the button 'Export as CSV' calls this method.
      * @param tripId export inventory for trip with this ID - defaults to user's current
      *               trip if they do not select another trip
      * @return inventory CSV file

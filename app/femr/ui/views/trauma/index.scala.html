@@ -33,15 +33,15 @@
                 <div id="leftGeneralInfo" >
 
                     <h4>Patient Age</h4>
-                    <input type="checkbox" id="1" name="1" value="Age1">
+                    <input type="checkbox" class="ageCheckbox" name="1" value="Age1" onclick="onlyOneAge(this)">
                     <label for="1"> 0-1</label>
-                    <input  type="checkbox" id="2" name="2" value="Age2">
+                    <input  type="checkbox" class="ageCheckbox" name="2" value="Age2" onclick="onlyOneAge(this)">
                     <label for="2"> 2-12</label>
-                    <input  type="checkbox" id="3" name="3" value="Age3">
+                    <input  type="checkbox" class="ageCheckbox" name="3" value="Age3" onclick="onlyOneAge(this)">
                     <label for="3"> 13-17</label>
-                    <input  type="checkbox" id="4" name="4" value="Age4">
+                    <input  type="checkbox" class="ageCheckbox" name="4" value="Age4" onclick="onlyOneAge(this)">
                     <label for="4"> 18-64</label>
-                    <input  type="checkbox" id="5" name="5" value="Age5">
+                    <input  type="checkbox" class="ageCheckbox" name="5" value="Age5" onclick="onlyOneAge(this)">
                     <label for="1"> 64+</label><br>
 
 
@@ -53,11 +53,11 @@
                     </div>
 
                     <h4>Biological Sex</h4>
-                    <input type="checkbox" id="male" name="male" value="Male">
+                    <input type="checkbox" id="maleCheckbox" class="genderCheckbox" name="male" value="Male" onclick="onlyOneGender(this); checkPregnancyInput()">
                     <label for="male"> Male</label>
-                    <input type="checkbox" id="female" name="female" value="Female">
+                    <input type="checkbox" id="femaleCheckbox" class="genderCheckbox" name="female" value="Female" onclick="onlyOneGender(this); checkPregnancyInput()">
                     <label for="female"> Female</label>
-                    <input type="checkbox" id="other" name="other" value="Other">
+                    <input type="checkbox" id="otherCheckbox" class="genderCheckbox" name="other" value="Other" onclick="onlyOneGender(this); checkPregnancyInput()">
                     <label for="other"> Other</label>
                     <div id="nameWrap">
                         @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
@@ -128,11 +128,7 @@
                             </div>
                             <div class="vitalWrap">
                                 <label for="weeksPregnant">Weeks Pregnant</label>
-                                @if(viewModel.getPatient.getSex == "Female") {
-                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
-                                } else {
-                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                                }
+                                <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
                             </div>
                             <br/>
                         </div>

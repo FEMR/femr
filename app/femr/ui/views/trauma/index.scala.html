@@ -34,8 +34,8 @@
 
                     <h4>Patient Age</h4>
                     <div id="classificationRadioWrap">
-                    @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
-                        <label><input type="radio" name="ageClassification" value="@key" /><span>@valyew</span></label>
+                    @for((key, value) <- viewModel.getPossibleAgeClassifications) {
+                        <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
                     }
                     </div>
 
@@ -53,12 +53,9 @@
                     <span class="spaceSpan"> </span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                     <span class="spaceSpan"> </span>
-                    <!-- input type="date" id="start"  placeholder="mm/dd/yyyy"><br><br -->
 
                     <div id="ageInfoWrap">
                         @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
-                        <!-- input type="year" min="1900" placeholder="Year">
-                        <input type="month" placeholder="Month" -->
                     </div>
 
                     <h4>Biological Sex</h4>

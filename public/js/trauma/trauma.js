@@ -11,13 +11,6 @@ function onlyOneTool(checkbox) {
     })
 }
 
-function onlyOneAge(checkbox) {
-    let checkboxes = [...document.getElementsByClassName('ageCheckbox')]
-    checkboxes.forEach((item) => {
-        if (item !== checkbox) item.checked = false
-    })
-}
-
 function onlyOneGender(checkbox) {
     let checkboxes = [...document.getElementsByClassName('genderCheckbox')]
     checkboxes.forEach((item) => {

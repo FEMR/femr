@@ -33,23 +33,18 @@
                 <div id="leftGeneralInfo" >
 
                     <h4>Patient Age</h4>
-                    <input type="checkbox" id="1" name="1" value="Age1">
-                    <label for="1"> 0-1</label>
-                    <input  type="checkbox" id="2" name="2" value="Age2">
-                    <label for="2"> 2-12</label>
-                    <input  type="checkbox" id="3" name="3" value="Age3">
-                    <label for="3"> 13-17</label>
-                    <input  type="checkbox" id="4" name="4" value="Age4">
-                    <label for="4"> 18-64</label>
-                    <input  type="checkbox" id="5" name="5" value="Age5">
-                    <label for="1"> 64+</label><br>
+                    <div id="classificationRadioWrap">
+                    @for((key, value) <- viewModel.getPossibleAgeClassifications) {
+                        <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
+                    }
+                    </div>
 
-
-                    <input type="date" id="start"  placeholder="mm/dd/yyyy"><br><br>
+                    <span class="spaceSpan"> </span>
+                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <span class="spaceSpan"> </span>
 
                     <div id="ageInfoWrap">
-                        <input type="year" min="1900" placeholder="Year">
-                        <input type="month" placeholder="Month">
+                        @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     </div>
 
                     <h4>Biological Sex</h4>
@@ -178,6 +173,7 @@
 
                         </div>
                     </div>
+                    <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                 </div>
 
                 <div id="rightGeneralInfo">

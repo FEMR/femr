@@ -49,7 +49,8 @@ stage.on('mousemove touchmove', function (e) {
     lastLine.points(newPoints);
 });
 
-var select = document.getElementById('tool');
-select.addEventListener('change', function () {
-    mode = select.value;
-});
+document.querySelectorAll('input[name=drawCheckbox]').forEach(item => {
+    item.addEventListener('click', event => {
+        if (item.checked === true) mode = item.value
+    })
+})

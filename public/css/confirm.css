@@ -1,0 +1,37 @@
+.confirmContainer{
+
+    background-color: #fff;
+    box-shadow: 1px 2px 8px #333;
+    position: relative;
+
+    /*display: flex;*/
+    padding: 30px;
+    margin-top: 45px;
+
+}
+
+.confirmHeader {
+
+    padding: 1em;
+    text-align: center;
+
+}
+
+.submissionButton{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.button{
+
+    border: 1px solid #3f3f3d;
+    text-align: center;
+    margin: 12px;
+    border-radius: 8px;
+    width: 250px;
+}
+

@@ -11,6 +11,25 @@ function onlyOneTool(checkbox) {
     })
 }
 
+function downloadURI(uri, name) {
+    var link = document.createElement('a');
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
+
+document.getElementById('save').addEventListener(
+    'click',
+    function () {
+        var dataURL = stage.toDataURL();
+        downloadURI(dataURL, 'patient.png');
+    },
+    false
+);
+
 $('#femaleBtn').change(function () {
     $('#weeksPregnant').attr('disabled', false);
 
@@ -24,3 +43,4 @@ $('#maleBtn').change(function () {
     // remove any errors
     $(this).parents(".generalInfoInput").removeClass("has-errors");
 });
+

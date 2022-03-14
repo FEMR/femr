@@ -168,7 +168,7 @@
 
                         </div>
                     </div>
-                    <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                    <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                 </div>
 
                 <div id="rightGeneralInfo">
@@ -335,7 +335,10 @@
                         <label for="brush">Brush</label>
                         <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" checked>
                         <label for="eraser">Eraser</label>
-                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)">
+
+                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOne(this)">
+                        <button id="save">Save Image</button>
+
                     </div>
                     <div id="container"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>

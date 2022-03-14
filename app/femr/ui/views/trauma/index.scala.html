@@ -1,7 +1,9 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet, assets: AssetsFinder)
+
 @import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
+@import femr.ui.views.html.partials.trauma.inputGender
 @import femr.ui.controllers.HistoryController
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
 @import femr.ui.controllers.routes.HistoryController
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
@@ -41,7 +43,6 @@
                         <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
                     }
                     </div>
-
                     <span class="orSpan" style="padding-left: 15px">OR</span>
                     @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                     <span class="orSpan" style="padding-left: 15px">OR</span>
@@ -49,13 +50,7 @@
                         @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     </div>
 
-                    <h4>Biological Sex</h4>
-                    <input type="checkbox" id="male" name="male" value="Male">
-                    <label for="male"> Male</label>
-                    <input type="checkbox" id="female" name="female" value="Female">
-                    <label for="female"> Female</label>
-                    <input type="checkbox" id="other" name="other" value="Other">
-                    <label for="other"> Other</label>
+                    @inputGender(viewModel)
                     <div id="nameWrap">
                         @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -123,14 +118,13 @@
                                 <label for="respirations">Respirations</label>
                                 <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
                             </div>
-                            <div class="vitalWrap">
+                            <div class="vitalWrap" >
                                 <label for="weeksPregnant">Weeks Pregnant</label>
                                 @if(viewModel.getPatient.getSex == "Female") {
                                     <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
                                 } else {
                                     <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                                }
-                            </div>
+                                }                            </div>
                             <br/>
                         </div>
                         <div id="rightVitalsWrap">
@@ -175,7 +169,7 @@
 
                         </div>
                     </div>
-                    <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                    <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                 </div>
 
                 <div id="rightGeneralInfo">
@@ -346,9 +340,12 @@
                     <div id="tool" >
                         Tool:
                         <label for="brush">Brush</label>
-                        <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOne(this)" checked>
+                        <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" checked>
                         <label for="eraser">Eraser</label>
-                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOne(this)">
+
+                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)">
+                        <button id="save">Save Image</button>
+
                     </div>
                     <div id="container"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>

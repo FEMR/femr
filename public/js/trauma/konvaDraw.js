@@ -1,5 +1,5 @@
-var width = window.innerWidth;
-var height = window.innerHeight - 25;
+var width = 500;
+var height = 500;
 
 // first we need Konva core things: stage and layer
 var stage = new Konva.Stage({
@@ -7,6 +7,44 @@ var stage = new Konva.Stage({
     width: width,
     height: height,
 });
+
+// Background Image
+var backgroundLayer = new Konva.Layer();
+stage.add(backgroundLayer);
+
+var maleImg = '/assets/img/male_bodychart.png';
+var femaleImg = '/assets/img/female_bodychart.png';
+var pregnantImg = '/assets/img/female_pregnant_bodychart.png';
+
+function changeBackground(selection){
+    let final = maleImg
+    if (selection === "femaleBtn") {
+        final = femaleImg
+    } else if (selection === "weeksPregnant") {
+        final = pregnantImg
+    } else
+        final =  maleImg
+    imageObj.src = final
+}
+
+var imageObj = new Image();
+imageObj.onload = function () {
+    var background = new Konva.Image({
+        strokeEnabled: false,
+        x: 0,
+        y: 0,
+        image: imageObj,
+        width: 500,
+        height: 500,
+    });
+
+    // add the shape to the layer
+    backgroundLayer.add(background);
+    backgroundLayer.draw();
+};
+changeBackground()
+
+// Drawing functionality
 
 var layer = new Konva.Layer();
 stage.add(layer);

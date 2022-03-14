@@ -1,0 +1,38 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.common.models.CityItem
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.views.html.partials.triage._
+@import femr.ui.controllers.routes.SearchController
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/trauma/trauma.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/confirm.css")">
+    }
+
+@main("Confirm", currentUser,styles = additionalStyles, scripts = additionalScripts, search = search("confirm"), assets = assets) {
+
+    <body>
+
+            <div class="confirmContainer">
+
+            <div class="confirmHeader">
+                <div class="test"><h2>Patient ID #</h2>
+                <h3>Patient added to system successfully</h3>
+                </div>
+            </div>
+                    <div class="submissionButton">
+                        <button class="button ">View Patient Details</button>
+                        <button class="button" onclick="location.href='trauma'" >New Trauma Patient</button>
+                    </div>
+
+            </div>
+
+    </body>
+
+}

@@ -11,15 +11,16 @@ function onlyOneTool(checkbox) {
     })
 }
 
-function onlyOneGender(checkbox) {
-    let checkboxes = [...document.getElementsByClassName('genderCheckbox')]
-    checkboxes.forEach((item) => {
-        if (item !== checkbox) item.checked = false
-    })
-}
+$('#femaleBtn').change(function () {
+    $('#weeksPregnant').attr('disabled', false);
 
-function checkPregnancyInput() {
-    let femaleCheckbox = document.getElementById("femaleCheckbox");
-    let weeksPregnant = document.getElementById("weeksPregnant");
-    femaleCheckbox.checked === true ? (weeksPregnant.disabled = false) : (weeksPregnant.disabled = true);
-}
+    // remove any errors
+    $(this).parents(".generalInfoInput").removeClass("has-errors");
+});
+$('#maleBtn').change(function () {
+    $('#weeksPregnant').val('');
+    $('#weeksPregnant').attr('disabled', true);
+
+    // remove any errors
+    $(this).parents(".generalInfoInput").removeClass("has-errors");
+});

@@ -1,8 +1,11 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
+
 @import femr.ui.views.html.partials.triage.inputText
 @import femr.ui.views.html.partials.triage.inputAge
 @import femr.ui.views.html.partials.triage.inputDate
+@import femr.ui.views.html.partials.trauma.inputGender
+
 @import femr.ui.controllers.HistoryController
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
 @import femr.ui.controllers.routes.HistoryController
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
@@ -46,13 +49,7 @@
                         @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     </div>
 
-                    <h4>Biological Sex</h4>
-                    <input type="checkbox" id="maleCheckbox" class="genderCheckbox" name="male" value="Male" onclick="onlyOneGender(this); checkPregnancyInput()">
-                    <label for="male"> Male</label>
-                    <input type="checkbox" id="femaleCheckbox" class="genderCheckbox" name="female" value="Female" onclick="onlyOneGender(this); checkPregnancyInput()">
-                    <label for="female"> Female</label>
-                    <input type="checkbox" id="otherCheckbox" class="genderCheckbox" name="other" value="Other" onclick="onlyOneGender(this); checkPregnancyInput()">
-                    <label for="other"> Other</label>
+                    @inputGender(viewModel)
                     <div id="nameWrap">
                         @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -122,8 +119,11 @@
                             </div>
                             <div class="vitalWrap">
                                 <label for="weeksPregnant">Weeks Pregnant</label>
-                                <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                            </div>
+                                @if(viewModel.getPatient.getSex == "Female") {
+                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
+                                } else {
+                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                                }                            </div>
                             <br/>
                         </div>
                         <div id="rightVitalsWrap">

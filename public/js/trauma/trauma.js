@@ -32,15 +32,20 @@ document.getElementById('save').addEventListener(
 
 $('#femaleBtn').change(function () {
     $('#weeksPregnant').attr('disabled', false);
-
+    changeBackground("femaleBtn");
     // remove any errors
     $(this).parents(".generalInfoInput").removeClass("has-errors");
 });
 $('#maleBtn').change(function () {
     $('#weeksPregnant').val('');
     $('#weeksPregnant').attr('disabled', true);
-
+    changeBackground("maleBtn");
     // remove any errors
     $(this).parents(".generalInfoInput").removeClass("has-errors");
 });
-
+$('#weeksPregnant').change(function () {
+    if (document.querySelector("#weeksPregnant").value > 0)
+        changeBackground("weeksPregnant");
+    else
+        changeBackground("femaleBtn");
+});

@@ -3,7 +3,7 @@
     @inputBlock = {
         <div class="generalInfoInput">
             <label>Gender</label>
-            <div class="btn-group" id="genderBtns" data-toggle="buttons"">
+            <div class="btn-group" id="genderBtns" data-toggle="buttons">
                 @inputButton("Male", "sex", "maleBtn",
                     if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true,
                     if(viewModel != null) viewModel.getPatient.getSex == "Male" else false,

@@ -46,6 +46,18 @@
     row-gap: 5px;
 }
 
+#bodyChartContent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 10px;
+    padding: 20px;
+}
+
+.scrollableContainer {
+
+}
+
 #photoInput {
     min-width: 225px;
 }
@@ -80,3 +92,14 @@ table, th, td {
     overflow: hidden;
     background-color: #f0f0f0;
 }
+
+.doubleVital {
+    overflow: hidden;
+}
+
+.doubleVital input {
+    margin-bottom: 1px;
+}
+
+
+

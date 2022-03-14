@@ -1,6 +1,5 @@
-@import femr.ui.views.html.partials.triage.inputText
+@import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
-@import femr.ui.views.html.partials.triage.inputDate
 @import femr.ui.controllers.HistoryController
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
 @import femr.ui.controllers.routes.HistoryController
@@ -15,11 +14,14 @@
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 }
 
-@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
+    <!-- TODO: "triage" should not be used in main call, figure out why this adds search bar but "trauma" doesn't -->
+@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
     <head>
         @*        Need to import konva inside the head*@
         <script type="text/javascript" src="@assets.path("js/libraries/konva.min.js")"></script>
     </head>
+
+
     <body>
         <div id="traumaContentWrap"><h2>Patient ID #</h2>
             <form id="form">
@@ -27,9 +29,10 @@
                 <button id="button">Search</button>
             </form>
 
+
         </div>
         <div id="triageContentWrap">
-            <div id="generalInfo" class="sectionBackground backgroundForWrap">
+            <div id="generalInfo" class="backgroundForWrap">
                 <div id="leftGeneralInfo" >
 
                     <h4>Patient Age</h4>
@@ -39,12 +42,11 @@
                     }
                     </div>
 
-                    <span class="spaceSpan"> </span>
-                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                    <span class="spaceSpan"> </span>
-
+                    <span class="orSpan" style="padding-left: 15px">OR</span>
+                    @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <span class="orSpan" style="padding-left: 15px">OR</span>
                     <div id="ageInfoWrap">
-                        @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
+                        @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     </div>
 
                     <h4>Biological Sex</h4>
@@ -59,7 +61,7 @@
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                     </div>
                     <div id="History">
-                        <div class="vitalsWrap">
+                        <div class="vitalsWrap"> <!-- TODO: rename this property if it's used here -->
                             <label>History of:
                             </label>
                         </div>
@@ -90,8 +92,8 @@
                 </div>
 
                 <div id="midGeneralInfo">
-                    <label>Vitals</label>
-                    <div id="vitalContainer">
+                    <h4>Vitals</h4>
+                    <div id="nameWrap">
                         <div id="leftVitalsWrap">
                             @if(viewModel.getSettings.isMetric) {
                                 <input type="hidden" id="vitalsUnits" value="metric" />
@@ -316,9 +318,6 @@
                 </div>
             </div>
 
-
-
-
     @*        <div id="SubmitButton">*@
     @*            <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton">*@
     @*                Submit Patient</button>*@
@@ -328,12 +327,21 @@
     @*            }*@
     @*        </div>*@
 
-
-
-
-
-            <div id="bodyChartContentWrap" class="sectionBackground backgroundForWrap">
+            <div id="bodyChartContent" class="backgroundForWrap">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
+                <div id="problemList">
+                    <div class="scrollableContainer">
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                        <div class="card shadow-1"></div>
+                    </div>
+                </div>
+
                 <div id="drawingKonva">
                     <div id="tool" >
                         Tool:
@@ -345,6 +353,7 @@
                     <div id="container"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                 </div>
+
             </div>
 
         </div>

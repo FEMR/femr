@@ -1,8 +1,9 @@
 @(name: String, forInput: String, value: Date, max: Date=new Date())
     @inputBlock = {
         <div class="generalInfoInput">
-            <label for="@forInput">@name</label>
-
+            @if("" != name) {
+                <label for="@forInput">@name</label>
+            }
             @if(value == null) {
                 <input type="date" class="fInput" id="@forInput" name="@forInput" placeholder="yyyy-mm-dd" @if(max != null){ max="@max.format("yyyy-MM-dd")" }>
             } else {

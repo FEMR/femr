@@ -6,7 +6,7 @@ import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.ui.models.trauma.*;
+import femr.ui.models.triage.IndexViewModelGet;
 import femr.ui.views.html.trauma.index;
 import play.mvc.*;
 

@@ -4,7 +4,7 @@ function ShowHideAdditionalDiv() {
     additionalInfo.style.display = additionalInfoCheckbox.checked === true ? "block" : "none";
 }
 
-function onlyOne(checkbox) {
+function onlyOneTool(checkbox) {
     let checkboxes = document.getElementsByName('drawCheckbox')
     checkboxes.forEach((item) => {
         if (item !== checkbox) item.checked = false
@@ -29,3 +29,18 @@ document.getElementById('save').addEventListener(
     },
     false
 );
+
+$('#femaleBtn').change(function () {
+    $('#weeksPregnant').attr('disabled', false);
+
+    // remove any errors
+    $(this).parents(".generalInfoInput").removeClass("has-errors");
+});
+$('#maleBtn').change(function () {
+    $('#weeksPregnant').val('');
+    $('#weeksPregnant').attr('disabled', true);
+
+    // remove any errors
+    $(this).parents(".generalInfoInput").removeClass("has-errors");
+});
+

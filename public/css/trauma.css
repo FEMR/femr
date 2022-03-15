@@ -29,6 +29,7 @@
 
 #dropDownWrap {
     flex-grow: 1;
+    margin-top: 25px;
 }
 
 #dropdownTopHalf {
@@ -52,6 +53,7 @@
     justify-content: flex-start;
     column-gap: 10px;
     padding: 20px;
+    margin-top: 20px;
 }
 
 .scrollableContainer {
@@ -83,9 +85,6 @@
     text-align: left;
     float-wrap: none;
 }
-.fButton {
-    float: right;
-}
 
 table, th, td {
     border: 1px solid black;
@@ -115,4 +114,13 @@ table, th, td {
 
 .doubleVital input {
     margin-bottom: 1px;
+}
+
+#nameOrIdSearchForm {
+    display: inline;
+}
+
+#searchContainer {
+    position: absolute;
+    right: 12%;
 }

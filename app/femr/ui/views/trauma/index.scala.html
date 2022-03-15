@@ -1,10 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet, assets: AssetsFinder)
 
-@import femr.ui.views.html.partials.triage.inputText
+@import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
-@import femr.ui.views.html.partials.triage.inputDate
 @import femr.ui.views.html.partials.trauma.inputGender
-
 @import femr.ui.controllers.HistoryController
 @import femr.ui.controllers.routes.HistoryController
 @import femr.common.models.CityItem
@@ -23,16 +21,14 @@
         @*        Need to import konva inside the head*@
         <script type="text/javascript" src="@assets.path("js/libraries/konva.min.js")"></script>
     </head>
+
+
     <body>
         <div id="traumaContentWrap"><h2>Patient ID #</h2>
-            <form id="form">
-                <input type="search" id="query" name="q" placeholder="ID, Name, or Phone # ">
-                <button id="button">Search</button>
-            </form>
 
         </div>
         <div id="triageContentWrap">
-            <div id="generalInfo" class="sectionBackground backgroundForWrap">
+            <div id="generalInfo" class="backgroundForWrap">
                 <div id="leftGeneralInfo" >
 
                     <h4>Patient Age</h4>
@@ -41,12 +37,11 @@
                         <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
                     }
                     </div>
-                    <span class="spaceSpan"> </span>
-                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                    <span class="spaceSpan"> </span>
-
+                    <span class="orSpan" style="padding-left: 15px">OR</span>
+                    @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <span class="orSpan" style="padding-left: 15px">OR</span>
                     <div id="ageInfoWrap">
-                        @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
+                        @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     </div>
 
                     @inputGender(viewModel)
@@ -55,7 +50,7 @@
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                     </div>
                     <div id="History">
-                        <div class="vitalsWrap">
+                        <div class="vitalsWrap"> <!-- TODO: rename this property if it's used here -->
                             <label>History of:
                             </label>
                         </div>
@@ -86,8 +81,8 @@
                 </div>
 
                 <div id="midGeneralInfo">
-                    <label>Vitals</label>
-                    <div id="vitalContainer">
+                    <h4>Vitals</h4>
+                    <div id="nameWrap">
                         <div id="leftVitalsWrap">
                             @if(viewModel.getSettings.isMetric) {
                                 <input type="hidden" id="vitalsUnits" value="metric" />
@@ -168,7 +163,7 @@
 
                         </div>
                     </div>
-                    <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                 </div>
 
                 <div id="rightGeneralInfo">
@@ -311,9 +306,6 @@
                 </div>
             </div>
 
-
-
-
     @*        <div id="SubmitButton">*@
     @*            <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton">*@
     @*                Submit Patient</button>*@
@@ -323,12 +315,40 @@
     @*            }*@
     @*        </div>*@
 
-
-
-
-
-            <div id="bodyChartContentWrap" class="sectionBackground backgroundForWrap">
+            <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
+                <div id="problemList" class="scrollableContainer">
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 1</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 2</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 3</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 4</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                </div>
+
                 <div id="drawingKonva">
                     <div id="tool" >
                         Tool:
@@ -343,8 +363,12 @@
                     <div id="container"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                 </div>
-            </div>
 
+            </div>
+            <div id="nameWrap">
+                <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton"
+                style="margin: 0 auto; width: 300px">Submit Patient</button>
+            </div>
         </div>
    </body>
 }

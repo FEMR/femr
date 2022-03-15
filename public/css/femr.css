@@ -60,8 +60,10 @@ hr {
     display: flex;
     outline: 0;
     margin-top: 20px;
-    border: 1px solid rgb(198, 0, 0);
-    box-shadow: 0 0 3px rgb(250, 0, 0);
+    border: 0px;
+    fill: #FFFFFF;
+    border: 1px solid rgb(135, 182, 255);
+    box-shadow: 0 0 3px rgb(79, 171, 229);
 }
 
 
@@ -127,6 +129,7 @@ hr {
 .fRedButton{
     /*background-color: rgb(198, 0, 0);*/
     background-color: #ad0000;
+    color: #FFFFFF;
 }
 a.fRedButton{
     color: #000000;
@@ -222,8 +225,10 @@ a.fRedButton:hover{
 
 
 .fInput:focus {
-    outline-color: #bb4848;
-    box-shadow: 0 0 5px #3f3f3d
+    border: 1px solid rgb(135, 182, 255);
+    box-shadow: 0 0 3px rgb(79, 171, 229);
+    outline-color: #4fabe5;
+    /* box-shadow: 0 0 5px #3f3f3d */
 }
 
 /* THE fEMR input(checkbox) */
@@ -819,3 +824,4 @@ input[style] {
     flex: 2;
     margin-right: 0;
 }
+

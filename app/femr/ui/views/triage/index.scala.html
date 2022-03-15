@@ -6,6 +6,7 @@
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.controllers.routes.HistoryController
 @import femr.ui.views.html.partials.triage._
+@import femr.ui.views.html.partials.shared._
 @import femr.ui.controllers.routes.SearchController
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
 
@@ -70,7 +71,7 @@
 
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
 
-                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
+                    @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     <span class="orSpan">OR</span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                     <span class="orSpan">OR</span>

@@ -17,7 +17,7 @@
 }
 
     <!-- TODO: "triage" should not be used in main call, figure out why this adds search bar but "trauma" doesn't -->
-@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
+@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
     <head>
         @*        Need to import konva inside the head*@
         <script type="text/javascript" src="@assets.path("js/libraries/konva.min.js")"></script>
@@ -323,17 +323,36 @@
 
             <div id="bodyChartContent" class="backgroundForWrap">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
-                <div id="problemList">
-                    <div class="scrollableContainer">
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                        <div class="card shadow-1"></div>
-                    </div>
+                <div id="problemList" class="scrollableContainer">
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 1</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 2</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 3</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
+                    <a class="card">
+                        <div class="container">
+                            <h4><b>Problem Title 4</b></h4>
+                            <p>Implement problem card here</p>
+                        </div>
+                    </a>
+
                 </div>
 
                 <div id="drawingKonva">

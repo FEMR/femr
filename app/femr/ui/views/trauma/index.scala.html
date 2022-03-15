@@ -169,7 +169,7 @@
 
                         </div>
                     </div>
-                    <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                 </div>
 
                 <div id="rightGeneralInfo">
@@ -321,7 +321,7 @@
     @*            }*@
     @*        </div>*@
 
-            <div id="bodyChartContent" class="backgroundForWrap">
+            <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
                 <div id="problemList" class="scrollableContainer">
 
@@ -371,7 +371,10 @@
                 </div>
 
             </div>
-
+            <div id="nameWrap">
+                <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton"
+                style="margin: 0 auto; width: 300px">Submit Patient</button>
+            </div>
         </div>
    </body>
 }

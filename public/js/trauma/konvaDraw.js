@@ -1,5 +1,5 @@
 var width = 500;
-var height = 500;
+var height = 460;
 
 // first we need Konva core things: stage and layer
 var stage = new Konva.Stage({
@@ -18,12 +18,12 @@ var pregnantImg = '/assets/img/female_pregnant_bodychart.png';
 
 function changeBackground(selection){
     let final = maleImg
-    if (selection === "femaleBtn") {
-        final = femaleImg
+    if (selection === "maleBtn") {
+        final = maleImg
     } else if (selection === "weeksPregnant") {
         final = pregnantImg
     } else
-        final =  maleImg
+        final =  femaleImg
     imageObj.src = final
 }
 
@@ -35,7 +35,7 @@ imageObj.onload = function () {
         y: 0,
         image: imageObj,
         width: 500,
-        height: 500,
+        height: 460,
     });
 
     // add the shape to the layer

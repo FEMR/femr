@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 }
 
-    <!-- TODO: "triage" should not be used in main call, figure out why this adds search bar but "trauma" doesn't -->
 @main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
     <head>
         @*        Need to import konva inside the head*@
@@ -26,11 +25,6 @@
 
     <body>
         <div id="traumaContentWrap"><h2>Patient ID #</h2>
-            <form id="form">
-                <input type="search" id="query" name="q" placeholder="ID, Name, or Phone # ">
-                <button id="button">Search</button>
-            </form>
-
 
         </div>
         <div id="triageContentWrap">

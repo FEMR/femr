@@ -24,7 +24,13 @@
             }
         }
         case "pharmacy" => {
-            @helper.form(action = SearchController.handleSearch("pharmacy")) {
+            @helper.form(action = SearchController.handleSearch("trauma")) {
+                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+            }
+        }
+        case "trauma" => {
+            @helper.form(action = SearchController.handleSearch("trauma")) {
                 <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
                 <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
             }

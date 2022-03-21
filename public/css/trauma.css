@@ -116,6 +116,7 @@ table, th, td {
     margin-bottom: 1px;
 }
 
+
 #nameOrIdSearchForm {
     display: inline;
 }
@@ -124,3 +125,40 @@ table, th, td {
     position: absolute;
     right: 12%;
 }
+
+
+
+
+
+
+/* Additional genInfo expansion CSS */
+
+.expandableInfoContainer{
+    width : 100%;
+    margin : 5px auto;
+}
+
+.slide {
+    clear:both;
+    width:inherit;
+    height:0px;
+    overflow: auto;
+    text-align: left;
+    transition: height .4s ease;
+
+}
+
+.slide li {padding : 10px;}
+
+.expandable:hover {
+    cursor:pointer;
+    background: #F3F4F6;
+    border-radius: 5px
+}
+
+#additionalInfo {
+    position: absolute;
+    opacity: 0;
+    height: 0px;}
+
+#additionalInfo:checked + .slide {height: 500px;}

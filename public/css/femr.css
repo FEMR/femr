@@ -202,6 +202,18 @@ a.fRedButton:hover{
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
+    border: 1px solid #F3F4F6;
+    background-color: #F3F4F6;
+}
+
+.fTextArea:focus {
+    width: 100%;
+    height: 85px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border: 1px solid rgb(135, 182, 255);
+    box-shadow: 0 0 3px rgb(79, 171, 229);
 }
 
 /* THE fEMR select!*/
@@ -223,19 +235,16 @@ a.fRedButton:hover{
     color: #555;
 }
 
-
 .fInput:focus {
     border: 1px solid rgb(135, 182, 255);
     box-shadow: 0 0 3px rgb(79, 171, 229);
     outline-color: #4fabe5;
-    /* box-shadow: 0 0 5px #3f3f3d */
 }
 
 /* THE fEMR input(checkbox) */
 .fCheckbox {
     padding: 20px;
 }
-
 
 .fCheckbox:focus {
     fill: #ad0000;
@@ -244,7 +253,6 @@ a.fRedButton:hover{
 /* The following sections are used on both Medical and pharmacy */
 #patientOverviewWrap {
     overflow: hidden;
-
     min-height: 125px;
 }
 
@@ -259,12 +267,10 @@ a.fRedButton:hover{
     #patientOverviewWrap img{
         margin: 0 0 14px 14px;
     }
-
 }
 
 #patientOverviewWrap h3 {
     text-align: center;
-
 }
 
 #patientOverViewInfoPhoto {

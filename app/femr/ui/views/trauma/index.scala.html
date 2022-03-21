@@ -183,24 +183,16 @@
                 </div>
 
                 <div id="dropDownWrap">
-    @*                <script type="text/javascript">*@
-    @*                        function ShowHideDiv() {*@
-    @*                            var additionalInfoDropdown = document.getElementById("additionalInfoDropdown");*@
-    @*                            var additionalInfo = document.getElementById("additionalInfo");*@
-    @*                            additionalInfo.style.display = additionalInfoDropdown.value == "Y" ? "block" : "none";*@
-    @*                        }*@
-    @*                </script>*@
+                    <div class="expandableInfoContainer" onchange="ToggleAdditionalInfo()">
 
-                    <div id = "additionalInfoCheckboxDiv" onchange = "ShowHideAdditionalDiv()">
-                        <label for="additionalInfoCheckbox">Show additional information?</label>
-                        <input type="checkbox" id="additionalInfoCheckbox">
-                    </div>
-                    <div id="additionalInfo" style="display: none">
-
+                        <label for="additionalInfo" id="addInfoLabel" class="expandable">
+                            <span>▶ Expand Additional Info </span></label>
+                        <input type="checkbox" id="additionalInfo">
+                        <div class="slide">
                             <div id="dropdownTopHalf">
                                 <div id="dropdownLeft">
                                     <div id="GeneralNameAddress">
-                                        <div id="leftVitalsWrap">
+                                        <div id="nameWrap" >
                                             @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                                             @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                                         </div>
@@ -249,7 +241,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div id="dropdownBottomHalf">
                                 <div id="chiefComplaintWrap">
                                     <div id="chiefComplaintTitle">
@@ -302,7 +293,9 @@
                                     }
                                 </div>
                             </div>
-                    </div>
+                        </div>
+
+                    </div >
                 </div>
             </div>
 

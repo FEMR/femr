@@ -3,6 +3,17 @@
 /*src: url("../fonts/DejaVuSansCondensed.ttf");*/
 /*}*/
 
+/* Colors */
+
+:root {
+    --femr-color: #ad0000;
+    --femr-hover-color: red;
+    --input-focus-color: #5bd5dc;
+    --background-color: #F3F4F6;
+}
+
+
+
 /* Feedback */
 
     /* Leave Feedback Link */
@@ -14,7 +25,7 @@
     div.leaveFeedback a {
         color: #333;
         text-decoration: underline;
-        color: #ad0000;
+        color: var(--femr-color);
     }
 
     div.leaveFeedback a:hover { }
@@ -27,7 +38,7 @@
         border: 4px solid darkgreen;
         border-radius: 4px;
         text-align: center;
-        color: #fff;
+        color: white;
         margin: 0 auto;
         margin-bottom: 48px;
         display: none;
@@ -37,7 +48,7 @@
 
 body {
     padding-top: 50px;
-    background-color: #F3F4F6;
+    background-color: var(--background-color);
     /* Removed because of the insane amount of time required to load (especially on networks where the connection speed is iffy */
     /*font-family: dejavu;*/
     font-family: sans-serif;
@@ -62,8 +73,8 @@ hr {
     margin-top: 20px;
     border: 0px;
     fill: #FFFFFF;
-    border: 1px solid rgb(135, 182, 255);
-    box-shadow: 0 0 3px rgb(79, 171, 229);
+    border: 1px solid #5bd5dc;
+    box-shadow: 0 0 3px var(--input-focus-color);
 }
 
 
@@ -128,14 +139,14 @@ hr {
 }
 .fRedButton{
     /*background-color: rgb(198, 0, 0);*/
-    background-color: #ad0000;
-    color: #FFFFFF;
+    background-color: var(--femr-color);
+    color: white;
 }
 a.fRedButton{
     color: #000000;
 }
 .fRedButton:hover{
-    background-color: rgb(250, 0, 0);
+    background-color: var(--femr-hover-color);
 }
 a.fRedButton:hover{
     text-decoration: none;
@@ -178,7 +189,7 @@ a.fRedButton:hover{
 /*this isn't even a button*/
 .fButtonSearch{
     width: 100%;
-    background: #fff;
+    background: white;
     margin-bottom: 4%;
     border: 1px solid #ccc;
     padding: 2%;
@@ -202,8 +213,8 @@ a.fRedButton:hover{
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    border: 1px solid #F3F4F6;
-    background-color: #F3F4F6;
+    border: 1px solid var(--background-color);
+    background-color: var(--background-color);
 }
 
 .fTextArea:focus {
@@ -213,7 +224,7 @@ a.fRedButton:hover{
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border: 1px solid rgb(135, 182, 255);
-    box-shadow: 0 0 3px rgb(79, 171, 229);
+    box-shadow: 0 0 3px var(--input-focus-color);
 }
 
 /* THE fEMR select!*/
@@ -229,26 +240,20 @@ a.fRedButton:hover{
     display: block;
     height: 33px;
     width: 175px;
-    border: 1px solid #F3F4F6;
+    border: 1px solid var(--background-color);
     padding: 5px 10px 5px 10px;
-    background-color: #F3F4F6;
+    background-color: var(--background-color);
     color: #555;
 }
 
 .fInput:focus {
     border: 1px solid rgb(135, 182, 255);
-    box-shadow: 0 0 3px rgb(79, 171, 229);
-    outline-color: #4fabe5;
+    box-shadow: 0 0 3px var(--input-focus-color);
+    outline-color: var(--input-focus-color);
 }
 
-/* THE fEMR input(checkbox) */
-.fCheckbox {
-    padding: 20px;
-}
 
-.fCheckbox:focus {
-    fill: #ad0000;
-}
+
 
 /* The following sections are used on both Medical and pharmacy */
 #patientOverviewWrap {
@@ -497,7 +502,7 @@ float: right;
 }
 
 .navigationItems a:hover {
-    color: rgb(198, 0, 0);
+    color: var(--femr-hover-color);
 }
 
 .navigationItems li {
@@ -539,7 +544,7 @@ float: right;
 }
 
 .glyphicon-log-out {
-    color: rgb(198, 0, 0);
+    color: var(--femr-color);
 }
 
 .smallNavigationItemsWrap {

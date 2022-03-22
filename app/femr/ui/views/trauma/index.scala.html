@@ -50,32 +50,36 @@
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                     </div>
                     <div id="History">
-                        <div class="vitalsWrap"> <!-- TODO: rename this property if it's used here -->
+                        <div class="vitalsWrap" style="margin: 10px">
                             <label>History of:
                             </label>
                         </div>
-                        <div id="leftVitalsWrap">
-                            <label class="btn btn-default"> Diabetes
-                                <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        <div id="leftVitalsWrap" style="width: 57%"> <!-- TODO: convert to for loop like age class. elements -->
+                            <label type="fCheckbox" >
+                                <input type="checkbox" step="any" class="filled" id="diabetic" name="diabetic" value="1">
+                                Diabetes
                             </label>
                             <br>
-                            <label class="btn btn-default"> Tobacco Use Disorder
-                                <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="alcohol" name="alcohol" value="1">
+                                Substance/Alcohol Abuse
                             </label>
                             <br>
-                            <label class="btn btn-default">Substance/Alcohol Abuse
-                                <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="smoker" name="smoker" value="1">
+                                Tobacco Use Disorder
                             </label>
                         </div>
-                        <div id="rightVitalsWrap">
-                            <label class="btn btn-default">High Cholesterol
-                                <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        <div id="rightVitalsWrap" style="width: 43%">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="cholesterol" name="cholesterol" value="1">
+                                High Cholesterol
                             </label>
                             <br>
-                            <label class="btn btn-default">Hypertension
-                                <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="hypertension" name="hypertension" value="1">
+                                Hypertension
                             </label>
-
                         </div>
                     </div>
                 </div>
@@ -345,11 +349,12 @@
                 <div id="drawingKonva">
                     <div id="tool" >
                         Tool:
-                        <label for="brush">Brush</label>
-                        <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" checked>
-                        <label for="eraser">Eraser</label>
-
-                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)">
+                        <label for="brush" >Brush
+                            <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
+                        </label>
+                        <label for="eraser">Eraser
+                            <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
+                        </label>
                         <button id="save">Save Image</button>
 
                     </div>

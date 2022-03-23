@@ -34,7 +34,7 @@
                     <h4>Patient Age</h4>
                     <div id="classificationRadioWrap">
                     @for((key, value) <- viewModel.getPossibleAgeClassifications) {
-                        <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
+                        <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
                     }
                     </div>
                     <span class="orSpan" style="padding-left: 15px">OR</span>
@@ -299,6 +299,7 @@
                             </div>
                         </div>
 
+
                     </div >
                 </div>
             </div>
@@ -349,11 +350,13 @@
                 <div id="drawingKonva">
                     <div id="tool" >
                         Tool:
-                        <label for="brush" >Brush
-                            <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
+                        <label for="brush" >
+                            <input type="radio" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
+                            Brush
                         </label>
-                        <label for="eraser">Eraser
-                            <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
+                        <label for="eraser">
+                            <input type="radio" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
+                            Eraser
                         </label>
                         <button id="save">Save Image</button>
 

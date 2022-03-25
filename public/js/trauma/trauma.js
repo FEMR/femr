@@ -1,6 +1,6 @@
 function ToggleAdditionalInfo() {
-    let additionalInfoLabel = document.getElementById("addInfoLabel");
-    additionalInfoLabel.innerText = additionalInfo.checked === true ? "▼ Collapse Additional Info" : "▶ Expand Additional Info";
+    let additionalInfoTrigger = document.getElementById("addInfoTrigger");
+    additionalInfoTrigger.innerText = additionalInfo.checked === true ? "▲ Less Information" : "▼ More Information";
 }
 
 function onlyOneTool(checkbox) {

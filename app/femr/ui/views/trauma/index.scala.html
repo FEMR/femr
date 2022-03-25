@@ -3,9 +3,6 @@
 @import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
 @import femr.ui.views.html.partials.trauma.inputGender
-@import femr.ui.controllers.HistoryController
-@import femr.ui.controllers.routes.HistoryController
-@import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @additionalScripts = {
@@ -188,9 +185,6 @@
 
                 <div id="dropDownWrap">
                     <div class="expandableInfoContainer" onchange="ToggleAdditionalInfo()">
-
-                        <label for="additionalInfo" id="addInfoLabel" class="expandable">
-                            <span>▶ Expand Additional Info </span></label>
                         <input type="checkbox" id="additionalInfo">
                         <div class="slide">
                             <div id="dropdownTopHalf">
@@ -298,12 +292,13 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div >
                 </div>
             </div>
-
+            <div >
+                <label  for="additionalInfo" id="addInfoTrigger" class="expandableTrigger">
+                    <span>▼ More Information</span></label>
+            </div>
     @*        <div id="SubmitButton">*@
     @*            <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton">*@
     @*                Submit Patient</button>*@
@@ -312,39 +307,43 @@
     @*                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>*@
     @*            }*@
     @*        </div>*@
-
             <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
-                <div id="problemList" class="scrollableContainer">
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 1</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                <div id="problemListWrap" style="width: 100%">
+                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
+                        ADD PROBLEM </button>
+                    <div id="problemList" class="scrollableContainer">
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 2</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 1</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 3</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 2</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 4</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 3</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 4</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
+
+                    </div>
                 </div>
 
                 <div id="drawingKonva">
@@ -362,7 +361,7 @@
 
                     </div>
                     <div id="container"></div>
-                        <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
+                    <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                 </div>
 
             </div>

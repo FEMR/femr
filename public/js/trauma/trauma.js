@@ -1,7 +1,6 @@
-function ShowHideAdditionalDiv() {
-    let additionalInfoCheckbox = document.getElementById("additionalInfoCheckbox");
-    let additionalInfo = document.getElementById("additionalInfo");
-    additionalInfo.style.display = additionalInfoCheckbox.checked === true ? "block" : "none";
+function ToggleAdditionalInfo() {
+    let additionalInfoTrigger = document.getElementById("addInfoTrigger");
+    additionalInfoTrigger.innerText = additionalInfo.checked === true ? "▲ Less Information" : "▼ More Information";
 }
 
 function onlyOneTool(checkbox) {

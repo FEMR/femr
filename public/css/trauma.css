@@ -57,9 +57,9 @@
 }
 
 .scrollableContainer {
-    background-color: #F3F4F6;
+    background-color: var(--background-color);
     box-sizing: content-box;
-    width: 100%;
+    width: inherit;
     height: 35vw;
     overflow: scroll;
 }
@@ -116,6 +116,7 @@ table, th, td {
     margin-bottom: 1px;
 }
 
+
 #nameOrIdSearchForm {
     display: inline;
 }
@@ -123,4 +124,138 @@ table, th, td {
 #searchContainer {
     position: absolute;
     right: 12%;
+}
+
+
+
+
+
+
+/* Additional genInfo expansion CSS */
+.expandableInfoContainer{
+    width : 100%;
+    margin-top: -30px;
+}
+.slide {
+    clear:both;
+    width:inherit;
+    height:0;
+    overflow: auto;
+    text-align: left;
+    transition: height .4s ease;
+}
+.slide li {padding : 10px;}
+
+.expandableTrigger {
+    cursor:pointer;
+    height: 30px;
+    width: 170px;
+    margin-left: 15px;
+    padding: 5px 0 0 15px;
+    background: #d9dade;
+    border-radius: 0 0 15px 15px;
+    color: #6D6D6D;
+    font-weight: normal;
+}
+
+.expandableTrigger:hover {
+    background: var(--input-focus-color);
+    color: white;
+}
+#additionalInfo {
+    position: absolute;
+    opacity: 0;
+    height: 0;}
+
+#additionalInfo:checked + .slide {height: 500px;}
+
+
+/* THE fEMR input-checkbox (should be moved to femr.css after approval) */
+label[type="fCheckbox"]{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-weight: normal;
+    height: 0;
+    margin: 5px;
+}
+input[type="checkbox"] {
+    position: relative !important;
+    appearance: none;
+    margin: 5px;
+}
+input[type="checkbox"]:focus {
+    outline: none;
+}
+
+input[type="checkbox"]::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background-color: var(--background-color);
+}
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 9.6px;
+    height: 16px;
+    animation: toggleOnCheckbox 0.2s ease forwards;
+}
+input[type="checkbox"].filled:checked::before {
+    background-color: var(--input-focus-color);
+}
+input[type="checkbox"].filled:checked::after {
+    box-shadow: 4px 4px 0 0 white;
+}
+@keyframes toggleOnCheckbox {
+    0% { opacity: 0; transform: translate(-50%, -85%) scale(0) rotate(45deg); }
+    70% { opacity: 1; transform: translate(-50%, -85%) scale(0.9) rotate(45deg); }
+    100% { transform: translate(-50%, -85%) scale(0.8) rotate(45deg); }
+}
+
+
+/* THE fEMR input-radio list (should be moved to femr.css after approval) */
+input[type="radio"] {
+    position: relative !important;
+    transform: translate3D(0px, 4.5px, 0px);
+    margin: -4.5px 3px 0 0;
+    appearance: none;
+}
+input[type="radio"]:focus {
+    outline: none;
+}
+input[type="radio"]::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--background-color);
+    background-color: var(--background-color);
+    border-radius: 100vh;
+}
+input[type="radio"]:checked::before {
+    border-color: var(--input-focus-color);
+}
+input[type="radio"]::after {
+    content: '';
+    position: absolute;
+    background-color: var(--input-focus-color);
+    width: 16px;
+    height: 16px;
+    border-radius: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+}
+input[type="radio"]:checked::after {
+    animation: toggleOnRadio 0.2s ease forwards;
+}
+@keyframes toggleOnRadio {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    70% { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+    100% { transform: translate(-50%, -50%) scale(0.8); }
 }

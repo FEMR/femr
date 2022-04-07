@@ -3,9 +3,6 @@
 @import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
 @import femr.ui.views.html.partials.trauma.inputGender
-@import femr.ui.controllers.HistoryController
-@import femr.ui.controllers.routes.HistoryController
-@import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @additionalScripts = {
@@ -34,7 +31,7 @@
                     <h4>Patient Age</h4>
                     <div id="classificationRadioWrap">
                     @for((key, value) <- viewModel.getPossibleAgeClassifications) {
-                        <label><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
+                        <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
                     }
                     </div>
                     <span class="orSpan" style="padding-left: 15px">OR</span>
@@ -50,32 +47,36 @@
                         @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                     </div>
                     <div id="History">
-                        <div class="vitalsWrap"> <!-- TODO: rename this property if it's used here -->
+                        <div class="vitalsWrap" style="margin: 10px">
                             <label>History of:
                             </label>
                         </div>
-                        <div id="leftVitalsWrap">
-                            <label class="btn btn-default"> Diabetes
-                                <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        <div id="leftVitalsWrap" style="width: 57%"> <!-- TODO: convert to for loop like age class. elements -->
+                            <label type="fCheckbox" >
+                                <input type="checkbox" step="any" class="filled" id="diabetic" name="diabetic" value="1">
+                                Diabetes
                             </label>
                             <br>
-                            <label class="btn btn-default"> Tobacco Use Disorder
-                                <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="alcohol" name="alcohol" value="1">
+                                Substance/Alcohol Abuse
                             </label>
                             <br>
-                            <label class="btn btn-default">Substance/Alcohol Abuse
-                                <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="smoker" name="smoker" value="1">
+                                Tobacco Use Disorder
                             </label>
                         </div>
-                        <div id="rightVitalsWrap">
-                            <label class="btn btn-default">High Cholesterol
-                                <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        <div id="rightVitalsWrap" style="width: 43%">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="cholesterol" name="cholesterol" value="1">
+                                High Cholesterol
                             </label>
                             <br>
-                            <label class="btn btn-default">Hypertension
-                                <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                            <label type="fCheckbox">
+                                <input type="checkbox" step="any" class="filled" id="hypertension" name="hypertension" value="1">
+                                Hypertension
                             </label>
-
                         </div>
                     </div>
                 </div>
@@ -183,24 +184,13 @@
                 </div>
 
                 <div id="dropDownWrap">
-    @*                <script type="text/javascript">*@
-    @*                        function ShowHideDiv() {*@
-    @*                            var additionalInfoDropdown = document.getElementById("additionalInfoDropdown");*@
-    @*                            var additionalInfo = document.getElementById("additionalInfo");*@
-    @*                            additionalInfo.style.display = additionalInfoDropdown.value == "Y" ? "block" : "none";*@
-    @*                        }*@
-    @*                </script>*@
-
-                    <div id = "additionalInfoCheckboxDiv" onchange = "ShowHideAdditionalDiv()">
-                        <label for="additionalInfoCheckbox">Show additional information?</label>
-                        <input type="checkbox" id="additionalInfoCheckbox">
-                    </div>
-                    <div id="additionalInfo" style="display: none">
-
+                    <div class="expandableInfoContainer" onchange="ToggleAdditionalInfo()">
+                        <input type="checkbox" id="additionalInfo">
+                        <div class="slide">
                             <div id="dropdownTopHalf">
                                 <div id="dropdownLeft">
                                     <div id="GeneralNameAddress">
-                                        <div id="leftVitalsWrap">
+                                        <div id="nameWrap" >
                                             @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                                             @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                                         </div>
@@ -249,7 +239,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div id="dropdownBottomHalf">
                                 <div id="chiefComplaintWrap">
                                     <div id="chiefComplaintTitle">
@@ -302,10 +291,14 @@
                                     }
                                 </div>
                             </div>
-                    </div>
+                        </div>
+                    </div >
                 </div>
             </div>
-
+            <div >
+                <label  for="additionalInfo" id="addInfoTrigger" class="expandableTrigger">
+                    <span>▼ More Information</span></label>
+            </div>
     @*        <div id="SubmitButton">*@
     @*            <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton">*@
     @*                Submit Patient</button>*@
@@ -314,54 +307,61 @@
     @*                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>*@
     @*            }*@
     @*        </div>*@
-
             <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
     @*            <img src="@assets.path("img/female_bodychart.png")" />*@
-                <div id="problemList" class="scrollableContainer">
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 1</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                <div id="problemListWrap" style="width: 100%">
+                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
+                        ADD PROBLEM </button>
+                    <div id="problemList" class="scrollableContainer">
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 2</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 1</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 3</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 2</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
-                    <a class="card">
-                        <div class="container">
-                            <h4><b>Problem Title 4</b></h4>
-                            <p>Implement problem card here</p>
-                        </div>
-                    </a>
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 3</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
 
+                        <a class="card">
+                            <div class="container">
+                                <h4><b>Problem Title 4</b></h4>
+                                <p>Implement problem card here</p>
+                            </div>
+                        </a>
+
+                    </div>
                 </div>
 
                 <div id="drawingKonva">
                     <div id="tool" >
                         Tool:
-                        <label for="brush">Brush</label>
-                        <input type="checkbox" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" checked>
-                        <label for="eraser">Eraser</label>
-
-                        <input type="checkbox" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)">
+                        <label for="brush" >
+                            <input type="radio" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
+                            Brush
+                        </label>
+                        <label for="eraser">
+                            <input type="radio" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
+                            Eraser
+                        </label>
                         <button id="save">Save Image</button>
 
                     </div>
                     <div id="container"></div>
-                        <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
+                    <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                 </div>
 
             </div>

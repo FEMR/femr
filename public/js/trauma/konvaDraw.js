@@ -57,7 +57,7 @@ stage.on('mousedown touchstart', function (e) {
     isPaint = true;
     var pos = stage.getPointerPosition();
     lastLine = new Konva.Line({
-        stroke: '#df4b26',
+        stroke: document.getElementById("brushColor").value,
         strokeWidth: 5,
         globalCompositeOperation:
             mode === 'brush' ? 'source-over' : 'destination-out',

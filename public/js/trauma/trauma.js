@@ -23,8 +23,16 @@ function downloadURI(uri, name) {
 document.getElementById('save').addEventListener(
     'click',
     function () {
-        var dataURL = stage.toDataURL();
+        var dataURL = layer.toDataURL();
         downloadURI(dataURL, 'patient.png');
+    },
+    false
+);
+
+document.getElementById('eraseAll').addEventListener(
+    'click',
+    function () {
+        layer.destroyChildren();
     },
     false
 );

@@ -357,8 +357,12 @@
                             <input type="radio" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
                             Eraser
                         </label>
+                        <button id="eraseAll">Erase All</button>
                         <button id="save">Save Image</button>
-
+                        <div>
+                            Brush Color:
+                            <input type="color" id="brushColor" name="brushColor" value="#df4b26">
+                        </div>
                     </div>
                     <div id="container"></div>
                     <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>

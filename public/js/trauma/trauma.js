@@ -29,6 +29,14 @@ document.getElementById('save').addEventListener(
     false
 );
 
+document.getElementById('eraseAll').addEventListener(
+    'click',
+    function () {
+        layer.destroyChildren();
+    },
+    false
+);
+
 $('#femaleBtn').change(function () {
     $('#weeksPregnant').attr('disabled', false);
     changeBackground("femaleBtn");

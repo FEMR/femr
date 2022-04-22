@@ -34,6 +34,9 @@ public class TraumaController extends Controller {
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        if (currentUser == null) {
+            return ok(create.render(null, 0, assetsFinder));
+        }
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();

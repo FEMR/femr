@@ -1,0 +1,28 @@
+@(title: String, step1: String, step2: String, rank: Number)
+
+
+@inputBlock = {
+    <div class="problemCard" >
+        <div class="sideBySideFlex">
+            <b class="problemNumber" >@rank</b>
+            <h4 style="flex: 1"><b>@title</b></h4>
+            <b class="problemCardButton" >Edit</b>
+            <b class="problemCardButton" >Del</b>
+        </div>
+        <div>
+            <p style="margin-top: 5px;color: #A8AAB9" >Plan</p>
+                <!-- TODO: should # of steps be adjustable? -->
+            <label type="fCheckbox" style="height: 20px">
+                <input type="checkbox" step="any" class="filled" >
+                @step1
+            </label>
+            <label type="fCheckbox" style="height: 20px">
+                <input type="checkbox" step="any" class="filled" >
+                @step2
+            </label>
+        </div>
+
+
+    </div>
+    }
+@inputBlock

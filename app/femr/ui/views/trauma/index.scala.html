@@ -3,12 +3,15 @@
 @import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
 @import femr.ui.views.html.partials.trauma.inputGender
+@import femr.ui.views.html.partials.trauma.problemCard
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
+
 @additionalScripts = {
     <script type="text/javascript" src="@assets.path("js/trauma/trauma.js")"></script>
     <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
 }
+
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 }
@@ -24,7 +27,8 @@
         <div id="traumaContentWrap"><h2>Patient ID #</h2>
 
         </div>
-        <div id="triageContentWrap">
+
+        <div id="traumaContentWrap">
             <div id="generalInfo" class="backgroundForWrap">
                 <div id="leftGeneralInfo" >
 
@@ -315,33 +319,16 @@
                         ADD PROBLEM </button>
                     <div id="problemList" class="scrollableContainer">
 
-                        <a class="card">
-                            <div class="container">
-                                <h4><b>Problem Title 1</b></h4>
-                                <p>Implement problem card here</p>
-                            </div>
-                        </a>
+                        <!-- TODO: determine character count limits -->
+                        @problemCard("Hardcoded example title 1", "HC problem 1", "HC example 2", 1)
 
-                        <a class="card">
-                            <div class="container">
-                                <h4><b>Problem Title 2</b></h4>
-                                <p>Implement problem card here</p>
-                            </div>
-                        </a>
+                        @problemCard("Hardcoded example title 2", "HC adjustment step", "HC another step", 2)
 
-                        <a class="card">
-                            <div class="container">
-                                <h4><b>Problem Title 3</b></h4>
-                                <p>Implement problem card here</p>
-                            </div>
-                        </a>
+                        @problemCard("Hardcoded example title 3", "HC test 1", "HC content", 3)
 
-                        <a class="card">
-                            <div class="container">
-                                <h4><b>Problem Title 4</b></h4>
-                                <p>Implement problem card here</p>
-                            </div>
-                        </a>
+                        @problemCard("Hardcoded example title 4", "HC testing", "HC again but this time a longer string", 4)
+
+
 
                     </div>
                 </div>

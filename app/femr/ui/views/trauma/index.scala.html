@@ -1,5 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet, assets: AssetsFinder)
+@import femr.ui.controllers.HistoryController
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.trauma.IndexViewModelGet, assets: AssetsFinder)
 
+@import femr.ui.controllers.routes.TraumaController
+@import femr.ui.controllers.routes.HistoryController
 @import femr.ui.views.html.partials.shared._
 @import femr.ui.views.html.partials.triage.inputAge
 @import femr.ui.views.html.partials.trauma.inputGender
@@ -22,9 +25,12 @@
 
     <body>
         <div id="traumaContentWrap"><h2>Patient ID #</h2>
+            @helper.form(action = TraumaController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal trauma-form", 'enctype -> "multipart/form-data") {
 
         </div>
-        <div id="triageContentWrap">
+
+            <div id="triageContentWrap">
+
             <div id="generalInfo" class="backgroundForWrap">
                 <div id="leftGeneralInfo" >
 
@@ -369,10 +375,17 @@
                 </div>
 
             </div>
-            <div id="nameWrap">
-                <button onclick="location.href='confirmation'" type="submit" class="idSearch fButton fRedButton fLandingSearchButton"
-                style="margin: 0 auto; width: 300px">Submit Patient</button>
-            </div>
+                <div class="submitResetWrap">
+                    <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                        Submit Patient</button>
+                    <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+
+
+                    @if(viewModel.getPatient.getId != 0) {
+                        <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
+                    }
+
+                </div>
         </div>
    </body>
-}
+}}

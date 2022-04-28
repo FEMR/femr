@@ -110,6 +110,9 @@ POST        /feedback                                           @femr.ui.control
 
 #Trauma Sheet
 GET         /trauma                                             @femr.ui.controllers.TraumaController.index()
+POST        /trauma                                            @femr.ui.controllers.TraumaController.indexPost(id: Integer)
+GET         /trauma/:id                                        @femr.ui.controllers.TraumaController.indexPopulatedGet(id: Integer)
+
 
 #Trauma patient confirmation
 GET         /confirmation                                       @femr.ui.controllers.ConfirmController.index()

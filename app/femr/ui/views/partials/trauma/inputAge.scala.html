@@ -1,5 +1,6 @@
 @(label: String, field1: String, forInput1: String, field2: String, forInput2: String, value: femr.common.models.PatientItem)
-    @inputBlock = {
+
+@inputBlock = {
         <div class="generalInfoInput">
             <label for="@label">Years</label>
             @if(value.getAge == null) {

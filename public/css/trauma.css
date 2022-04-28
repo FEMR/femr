@@ -56,25 +56,60 @@
     margin-top: 20px;
 }
 
+
+/* Problem card CSS */
+
 .scrollableContainer {
     background-color: var(--background-color);
     box-sizing: content-box;
     width: inherit;
-    height: 35vw;
+    height: 500px;
     overflow: scroll;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 3px solid var(--background-color);
 }
 
-.card {
-    height: 10em;
-    position: inherit;
-    box-sizing: content-box;
-    width: 90%;
-    padding: 5px;
+.sideBySideFlex{
     display: flex;
-    align-items: center;
-    margin: 4%;
-    background-color: white;
 }
+
+.problemCard {
+    margin-bottom: 7px;
+    position: inherit;
+    padding: 10px;
+    background-color: white;
+    border-radius: 0.5em;
+    color: #494949;
+    flex-direction: column;
+}
+
+.problemNumber {
+    background: var(--interactive-color);
+    border-radius: 10em;
+    width: 30px;
+    height: 30px;
+    align-content: center;
+    vertical-align: center;
+    text-align: center;
+    margin-right: 5px;
+    font-size: 20px;
+
+}
+
+.problemCardButton {
+    background: var(--interactive-color);
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    align-content: center;
+    margin-left: 10px;
+}
+
+
+
+
+
 
 #photoInput {
     min-width: 225px;
@@ -125,8 +160,6 @@ table, th, td {
     position: absolute;
     right: 12%;
 }
-
-
 
 
 
@@ -194,7 +227,7 @@ input[type="checkbox"]::before {
     width: 20px;
     height: 20px;
     border-radius: 4px;
-    background-color: var(--background-color);
+    background-color: var(--interactive-color);
 }
 input[type="checkbox"]:checked::after {
     content: '';
@@ -233,8 +266,8 @@ input[type="radio"]::before {
     display: block;
     width: 20px;
     height: 20px;
-    border: 2px solid var(--background-color);
-    background-color: var(--background-color);
+    border: 2px solid var(--interactive-color);
+    background-color: var(--interactive-color);
     border-radius: 100vh;
 }
 input[type="radio"]:checked::before {

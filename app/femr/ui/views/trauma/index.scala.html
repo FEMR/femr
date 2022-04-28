@@ -27,351 +27,338 @@
 
 
     <body>
-        <div id="traumaContentWrap"><h2>Patient ID #</h2>
-            @helper.form(action = TraumaController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal trauma-form", 'enctype -> "multipart/form-data") {
+        @helper.form(action = TraumaController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal trauma-form", 'enctype -> "multipart/form-data") {
+            <div id="traumaContentWrap">
+                <h2>Patient ID #</h2>
+                <div id="generalInfo" class="backgroundForWrap">
+                    <div id="leftGeneralInfo" >
 
-        </div>
-
-        <div id="traumaContentWrap">
-            <div id="generalInfo" class="backgroundForWrap">
-                <div id="leftGeneralInfo" >
-
-                    <h4>Patient Age</h4>
-                    <div id="classificationRadioWrap">
-                    @for((key, value) <- viewModel.getPossibleAgeClassifications) {
-                        <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
-                    }
-                    </div>
-                    <span class="orSpan" style="padding-left: 15px">OR</span>
-                    @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                    <span class="orSpan" style="padding-left: 15px">OR</span>
-                    <div id="ageInfoWrap">
-                        @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
-                    </div>
-
-                    @inputGender(viewModel)
-                    <div id="nameWrap">
-                        @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
-                        @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
-                    </div>
-                    <div id="History">
-                        <div class="vitalsWrap" style="margin: 10px">
-                            <label>History of:
-                            </label>
+                        <h4>Patient Age</h4>
+                        <div id="classificationRadioWrap">
+                        @for((key, value) <- viewModel.getPossibleAgeClassifications) {
+                            <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
+                        }
                         </div>
-                        <div id="leftVitalsWrap" style="width: 57%"> <!-- TODO: convert to for loop like age class. elements -->
-                            <label type="fCheckbox" >
-                                <input type="checkbox" step="any" class="filled" id="diabetic" name="diabetic" value="1">
-                                Diabetes
-                            </label>
-                            <br>
-                            <label type="fCheckbox">
-                                <input type="checkbox" step="any" class="filled" id="alcohol" name="alcohol" value="1">
-                                Substance/Alcohol Abuse
-                            </label>
-                            <br>
-                            <label type="fCheckbox">
-                                <input type="checkbox" step="any" class="filled" id="smoker" name="smoker" value="1">
-                                Tobacco Use Disorder
-                            </label>
+                        <span class="orSpan" style="padding-left: 15px">OR</span>
+                        @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                        <span class="orSpan" style="padding-left: 15px">OR</span>
+                        <div id="ageInfoWrap">
+                            @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                         </div>
-                        <div id="rightVitalsWrap" style="width: 43%">
-                            <label type="fCheckbox">
-                                <input type="checkbox" step="any" class="filled" id="cholesterol" name="cholesterol" value="1">
-                                High Cholesterol
-                            </label>
-                            <br>
-                            <label type="fCheckbox">
-                                <input type="checkbox" step="any" class="filled" id="hypertension" name="hypertension" value="1">
-                                Hypertension
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-                <div id="midGeneralInfo">
-                    <h4>Vitals</h4>
-                    <div id="nameWrap">
-                        <div id="leftVitalsWrap">
-                            @if(viewModel.getSettings.isMetric) {
-                                <input type="hidden" id="vitalsUnits" value="metric" />
-                            } else {
-                                <input type="hidden" id="vitalUnits" value="imp" />
-                            }
-                            <div class="vitalWrap">
-                                <label for="temperature">Temperature</label>
-                                @if(viewModel.getSettings.isMetric) {
-                                    <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;C"/>
-                                } else {
-                                    <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
-                                }
+                        @inputGender(viewModel)
+                        <div id="nameWrap">
+                            @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
+                            @inputText("Last Name", "lastName", false, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
+                        </div>
+                        <div id="History">
+                            <div class="vitalsWrap" style="margin: 10px">
+                                <label>History of:
+                                </label>
                             </div>
-                            <div class="vitalWrap">
-                                <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
-                                <div class="doubleVital">
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                            <div id="leftVitalsWrap" style="width: 57%"> <!-- TODO: convert to for loop like age class. elements -->
+                                <label type="fCheckbox" >
+                                    <input type="checkbox" step="any" class="filled" id="diabetic" name="diabetic" value="1">
+                                    Diabetes
+                                </label>
+                                <br>
+                                <label type="fCheckbox">
+                                    <input type="checkbox" step="any" class="filled" id="alcohol" name="alcohol" value="1">
+                                    Substance/Alcohol Abuse
+                                </label>
+                                <br>
+                                <label type="fCheckbox">
+                                    <input type="checkbox" step="any" class="filled" id="smoker" name="smoker" value="1">
+                                    Tobacco Use Disorder
+                                </label>
+                            </div>
+                            <div id="rightVitalsWrap" style="width: 43%">
+                                <label type="fCheckbox">
+                                    <input type="checkbox" step="any" class="filled" id="cholesterol" name="cholesterol" value="1">
+                                    High Cholesterol
+                                </label>
+                                <br>
+                                <label type="fCheckbox">
+                                    <input type="checkbox" step="any" class="filled" id="hypertension" name="hypertension" value="1">
+                                    Hypertension
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="midGeneralInfo">
+                        <h4>Vitals</h4>
+                        <div id="nameWrap">
+                            <div id="leftVitalsWrap">
+                                @if(viewModel.getSettings.isMetric) {
+                                    <input type="hidden" id="vitalsUnits" value="metric" />
+                                } else {
+                                    <input type="hidden" id="vitalUnits" value="imp" />
+                                }
+                                <div class="vitalWrap">
+                                    <label for="temperature">Temperature</label>
+                                    @if(viewModel.getSettings.isMetric) {
+                                        <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;C"/>
+                                    } else {
+                                        <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
+                                    }
                                 </div>
-                            </div>
-                            <div class="vitalWrap">
-                                <label for="heartRate">Heart Rate</label>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(1).getName" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
-                            </div>
-                            <div class="vitalWrap">
-                                <label for="respirations">Respirations</label>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
-                            </div>
-                            <div class="vitalWrap" >
-                                <label for="weeksPregnant">Weeks Pregnant</label>
-                                @if(viewModel.getPatient.getSex == "Female") {
-                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
-                                } else {
-                                    <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                                }                            </div>
-                            <br/>
-                        </div>
-                        <div id="rightVitalsWrap">
-                            @if(viewModel.getSettings.isMetric) {
-                                <input type="hidden" id="vitalsUnits" value="metric" />
-                            } else {
-                                <input type="hidden" id="vitalUnits" value="imp" />
-                            }
-                            <div class="vitalWrap">
-                                <label for="oxygen">Oxygen Saturation</label>
-                                <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
-                            </div>
-                            <div class="vitalWrap">
-                                <label for="heightFeet">Height</label>
-                                <div class="doubleVital">
-                                @if(viewModel.getSettings.isMetric) {
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
-                                } else {
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
-                                }
-                                </div>
-                            </div>
-                            <div class="vitalWrap">
-                                <label for="weight">Weight</label>
-                                @if(viewModel.getSettings.isMetric) {
-                                    <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
-                                } else {
-                                    <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
-                                }
-                            </div>
-                            <div class="vitalWrap">
-                                <label >BMI</label>
-                                <input type="text" id="bmi" class="fInput" disabled="true"/>
-                            </div>
-                            <div class="vitalWrap">
-                                <label>Glucose</label>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
-                            </div>
-                            <br/>
-
-                        </div>
-                    </div>
-                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
-                </div>
-
-                <div id="rightGeneralInfo">
-                    <h4>Vitals Chart</h4>
-                    <table>
-                        <tr>
-                            <td>Time</td>
-                            <td>MM/DD/YYY</td>
-                            <td>MM/DD/YYY</td>
-                        </tr>
-                        <tr>
-                            <td>Temperature</td>
-                            <td>123</td>
-                            <td>456</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div id="dropDownWrap">
-                    <div class="expandableInfoContainer" onchange="ToggleAdditionalInfo()">
-                        <input type="checkbox" id="additionalInfo">
-                        <div class="slide">
-                            <div id="dropdownTopHalf">
-                                <div id="dropdownLeft">
-                                    <div id="GeneralNameAddress">
-                                        <div id="nameWrap" >
-                                            @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
-                                            @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
-                                        </div>
-                                        <div id="leftVitalsWrap">
-                                            <div class="generalInfoInput" id="citySearchContainer">
-                                                <label for="city">City</label>
-                                                @if(viewModel.getPatient.getCity == null) {
-                                                    <input type = "text" class="citySearch fInput" name="city" id="city" placeholder="City">
-                                                } else {
-                                                    <input type = "text" class = "citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
-                                                    }
-                                            </div>
-                                        </div>
+                                <div class="vitalWrap">
+                                    <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
+                                    <div class="doubleVital">
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
                                     </div>
                                 </div>
+                                <div class="vitalWrap">
+                                    <label for="heartRate">Heart Rate</label>
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(1).getName" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
+                                </div>
+                                <div class="vitalWrap">
+                                    <label for="respirations">Respirations</label>
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
+                                </div>
+                                <div class="vitalWrap" >
+                                    <label for="weeksPregnant">Weeks Pregnant</label>
+                                    @if(viewModel.getPatient.getSex == "Female") {
+                                        <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
+                                    } else {
+                                        <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                                    }                            </div>
+                                <br/>
+                            </div>
+                            <div id="rightVitalsWrap">
+                                @if(viewModel.getSettings.isMetric) {
+                                    <input type="hidden" id="vitalsUnits" value="metric" />
+                                } else {
+                                    <input type="hidden" id="vitalUnits" value="imp" />
+                                }
+                                <div class="vitalWrap">
+                                    <label for="oxygen">Oxygen Saturation</label>
+                                    <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
+                                </div>
+                                <div class="vitalWrap">
+                                    <label for="heightFeet">Height</label>
+                                    <div class="doubleVital">
+                                    @if(viewModel.getSettings.isMetric) {
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    } else {
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
+                                        <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    }
+                                    </div>
+                                </div>
+                                <div class="vitalWrap">
+                                    <label for="weight">Weight</label>
+                                    @if(viewModel.getSettings.isMetric) {
+                                        <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
+                                    } else {
+                                        <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
+                                    }
+                                </div>
+                                <div class="vitalWrap">
+                                    <label >BMI</label>
+                                    <input type="text" id="bmi" class="fInput" disabled="true"/>
+                                </div>
+                                <div class="vitalWrap">
+                                    <label>Glucose</label>
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
+                                </div>
+                                <br/>
 
-                                <div id="dropdownMid">
-                                    <div class="photoInput">
-                                        <label for="photo">Patient Photo</label>
-                                        <div id="photoInputFormDiv">
-                                            <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
-                                            <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>
-                                        </div>
-                                        <div id="patientPhotoDiv" hidden="true">
-                                            <div class="btn-group" >
-                                                <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPatient.getPathToPhoto" />
-                                                <div class="btn-toolbar" role="buttons">
-                                                    <div class="btn-group" id="zoomControls">
-                                                        <button type="button" id="btnZoomIn" class="btn btn-default btn-lg">
-                                                            <span class="glyphicon glyphicon-zoom-in"></span>
-                                                        </button>
-                                                        <button type="button" id="btnZoomOut" class="btn btn-default btn-lg">
-                                                            <span class="glyphicon glyphicon-zoom-out"></span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="btn-group">
-                                                        <button id="btnDeletePhoto" type="button" class="btn btn-danger btn-lg pull-right">
-                                                            <span class="glyphicon glyphicon-trash"></span>
-                                                        </button>
-                                                    </div>
+                            </div>
+                        </div>
+                        <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                    </div>
+
+                    <div id="rightGeneralInfo">
+                        <h4>Vitals Chart</h4>
+                        <table>
+                            <tr>
+                                <td>Time</td>
+                                <td>MM/DD/YYY</td>
+                                <td>MM/DD/YYY</td>
+                            </tr>
+                            <tr>
+                                <td>Temperature</td>
+                                <td>123</td>
+                                <td>456</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="dropDownWrap">
+                        <div class="expandableInfoContainer" onchange="ToggleAdditionalInfo()">
+                            <input type="checkbox" id="additionalInfo">
+                            <div class="slide">
+                                <div id="dropdownTopHalf">
+                                    <div id="dropdownLeft">
+                                        <div id="GeneralNameAddress">
+                                            <div id="nameWrap" >
+                                                @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+                                                @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
+                                            </div>
+                                            <div id="leftVitalsWrap">
+                                                <div class="generalInfoInput" id="citySearchContainer">
+                                                    <label for="city">City</label>
+                                                    @if(viewModel.getPatient.getCity == null) {
+                                                        <input type = "text" class="citySearch fInput" name="city" id="city" placeholder="City">
+                                                    } else {
+                                                        <input type = "text" class = "citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
+                                                        }
                                                 </div>
-                                                <canvas id="patientPhotoCanvas" class="hidden"></canvas>
                                             </div>
                                         </div>
-                                        <input class="hidden" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
+                                    </div>
+
+                                    <div id="dropdownMid">
+                                        <div class="photoInput">
+                                            <label for="photo">Patient Photo</label>
+                                            <div id="photoInputFormDiv">
+                                                <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+                                                <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>
+                                            </div>
+                                            <div id="patientPhotoDiv" hidden="true">
+                                                <div class="btn-group" >
+                                                    <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPatient.getPathToPhoto" />
+                                                    <div class="btn-toolbar" role="buttons">
+                                                        <div class="btn-group" id="zoomControls">
+                                                            <button type="button" id="btnZoomIn" class="btn btn-default btn-lg">
+                                                                <span class="glyphicon glyphicon-zoom-in"></span>
+                                                            </button>
+                                                            <button type="button" id="btnZoomOut" class="btn btn-default btn-lg">
+                                                                <span class="glyphicon glyphicon-zoom-out"></span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <button id="btnDeletePhoto" type="button" class="btn btn-danger btn-lg pull-right">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <canvas id="patientPhotoCanvas" class="hidden"></canvas>
+                                                </div>
+                                            </div>
+                                            <input class="hidden" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="dropdownBottomHalf">
+                                    <div id="chiefComplaintWrap">
+                                        <div id="chiefComplaintTitle">
+                                            <label for="chiefComplaint">
+                                                @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                                    <span id="addChiefComplaint">+</span>
+                                                }
+                                                Chief Complaint
+                                            </label>
+                                        </div>
+                                        <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
+                                        @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                            <ol id="chiefComplaintList">
+                                                @*Javascript targets this to show user the current chief complaints they are working with*@
+                                            </ol>
+                                        }
+                                    </div>
+
+                                    <div id="medicalSurgeryHistory">
+                                        <div id="medicalSurgeryHistoryTitle">
+                                            <label for="dispo">
+                                                @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                                    <span id="addChiefComplaint">+</span>
+                                                }
+                                                Medical / Surgical History
+                                            </label>
+                                        </div>
+                                        <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
+                                        @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                            <ol id="chiefComplaintList">
+                                                @*Javascript targets this to show user the current chief complaints they are working with*@
+                                            </ol>
+                                        }
+                                    </div>
+
+                                    <div id="Dispo">
+                                        <div id="dispoTitle">
+                                            <label for="Dispo">
+                                                @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                                    <span id="addChiefComplaint">+</span>
+                                                }
+                                                Dispo
+                                            </label>
+                                        </div>
+                                        <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
+                                        @if(viewModel.getSettings.isMultipleChiefComplaint) {
+                                            <ol id="chiefComplaintList">
+                                                @*Javascript targets this to show user the current chief complaints they are working with*@
+                                            </ol>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                            <div id="dropdownBottomHalf">
-                                <div id="chiefComplaintWrap">
-                                    <div id="chiefComplaintTitle">
-                                        <label for="chiefComplaint">
-                                            @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                                <span id="addChiefComplaint">+</span>
-                                            }
-                                            Chief Complaint
-                                        </label>
-                                    </div>
-                                    <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
-                                    @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                        <ol id="chiefComplaintList">
-                                            @*Javascript targets this to show user the current chief complaints they are working with*@
-                                        </ol>
-                                    }
-                                </div>
+                        </div >
+                    </div>
+                </div>
+                <div>
+                    <label  for="additionalInfo" id="addInfoTrigger" class="expandableTrigger">
+                        <span>▼ More Information</span></label>
+                </div>
 
-                                <div id="medicalSurgeryHistory">
-                                    <div id="medicalSurgeryHistoryTitle">
-                                        <label for="dispo">
-                                            @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                                <span id="addChiefComplaint">+</span>
-                                            }
-                                            Medical / Surgical History
-                                        </label>
-                                    </div>
-                                    <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
-                                    @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                        <ol id="chiefComplaintList">
-                                            @*Javascript targets this to show user the current chief complaints they are working with*@
-                                        </ol>
-                                    }
-                                </div>
+                <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
+                    <div id="problemListWrap" style="width: 100%">
+                        <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
+                            ADD PROBLEM </button>
+                        <div id="problemList" class="scrollableContainer">
 
-                                <div id="Dispo">
-                                    <div id="dispoTitle">
-                                        <label for="Dispo">
-                                            @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                                <span id="addChiefComplaint">+</span>
-                                            }
-                                            Dispo
-                                        </label>
-                                    </div>
-                                    <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
-                                    @if(viewModel.getSettings.isMultipleChiefComplaint) {
-                                        <ol id="chiefComplaintList">
-                                            @*Javascript targets this to show user the current chief complaints they are working with*@
-                                        </ol>
-                                    }
-                                </div>
+                            <!-- TODO: determine character count limits -->
+                            @problemCard("Hardcoded example title 1", "HC problem 1", "HC example 2", 1)
+                            @problemCard("Hardcoded example title 2", "HC adjustment step", "HC another step", 2)
+                            @problemCard("Hardcoded example title 3", "HC test 1", "HC content", 3)
+                            @problemCard("Hardcoded example title 4", "HC testing", "HC again but this time a longer string", 4)
+                        </div>
+                    </div>
+
+                    <div id="drawingKonva">
+                        <div id="tool" >
+                            Tool:
+                            <label for="brush" >
+                                <input type="radio" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
+                                Brush
+                            </label>
+                            <label for="eraser">
+                                <input type="radio" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
+                                Eraser
+                            </label>
+                            <button type="button" id="eraseAll" class="fButton">Erase All</button>
+                            <button type="button" id="save" class="fButton">Save Image</button>
+
+                            <div>
+                                Brush Color:
+                                    <input type="color" id="brushColor" name="brushColor" value="#FCEE6E" list="presetColors">
+                                    <datalist id="presetColors">
+                                        <option>#df4b26</option>/>
+                                        <option>#008000</option>
+                                        <option>#FCEE6E</option>
+                                        <option>#000000</option>
+                                    </datalist>
                             </div>
                         </div>
-                    </div >
-                </div>
-            </div>
-            <div >
-                <label  for="additionalInfo" id="addInfoTrigger" class="expandableTrigger">
-                    <span>▼ More Information</span></label>
-            </div>
-    @*        <div id="SubmitButton">*@
-    @*            <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton">*@
-    @*                Submit Patient</button>*@
-    @*            <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>*@
-    @*            @if(viewModel.getPatient.getId != 0) {*@
-    @*                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>*@
-    @*            }*@
-    @*        </div>*@
-            <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
-    @*            <img src="@assets.path("img/female_bodychart.png")" />*@
-
-                <div id="problemListWrap" style="width: 100%">
-                    <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
-                        ADD PROBLEM </button>
-                    <div id="problemList" class="scrollableContainer">
-
-                        <!-- TODO: determine character count limits -->
-                        @problemCard("Hardcoded example title 1", "HC problem 1", "HC example 2", 1)
-
-                        @problemCard("Hardcoded example title 2", "HC adjustment step", "HC another step", 2)
-
-                        @problemCard("Hardcoded example title 3", "HC test 1", "HC content", 3)
-
-                        @problemCard("Hardcoded example title 4", "HC testing", "HC again but this time a longer string", 4)
-
-
-
+                        <div id="diagramContainer"></div>
+                        <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
                     </div>
                 </div>
 
-                <div id="drawingKonva">
-                    <div id="tool" >
-                        Tool:
-                        <label for="brush" >
-                            <input type="radio" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
-                            Brush
-                        </label>
-                        <label for="eraser">
-                            <input type="radio" id="drawCheckbox" value="eraser" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled">
-                            Eraser
-                        </label>
-                        <button id="eraseAll">Erase All</button>
-                        <button id="save">Save Image</button>
-                        <div>
-                            Brush Color:
-                            <input type="color" id="brushColor" name="brushColor" value="#df4b26">
-                        </div>
-                    </div>
-                    <div id="diagramContainer"></div>
-                    <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
-                </div>
-
-
-            </div>
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>
                     <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
 
-
                     @if(viewModel.getPatient.getId != 0) {
                         <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
                     }
-
                 </div>
-        </div>
+            </div>
+
    </body>
 }}

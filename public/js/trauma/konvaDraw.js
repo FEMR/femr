@@ -1,11 +1,11 @@
-var width = 500;
-var height = 460;
+var canvasWidth = 620;
+var canvasHeight = 500;
 
 // first we need Konva core things: stage and layer
 var stage = new Konva.Stage({
-    container: 'container',
-    width: width,
-    height: height,
+    container: 'diagramContainer',
+    width: canvasWidth,
+    height: canvasHeight,
 });
 
 // Background Image
@@ -27,15 +27,17 @@ function changeBackground(selection){
     imageObj.src = final
 }
 
+let imgW = 500;
+let imgH = 457;
 var imageObj = new Image();
 imageObj.onload = function () {
     var background = new Konva.Image({
         strokeEnabled: false,
-        x: 0,
+        x: ( stage.getWidth()-((canvasHeight * imgW)/imgH) ) / 2,
         y: 0,
         image: imageObj,
-        width: 500,
-        height: 460,
+        height: canvasHeight,
+        width: (canvasHeight * imgW)/imgH, //numbers here are .img dimensions, to constrain ratio
     });
 
     // add the shape to the layer

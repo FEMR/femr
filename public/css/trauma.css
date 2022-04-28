@@ -134,13 +134,11 @@ table, th, td {
     border: 1px solid #3f3f3d;
 }
 
-#container {
-    height: 500px;
-    width: 500px;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #f0f0f0;
+/* Referenced by konvaDraw.js */
+#diagramContainer {
+    border: 6px solid #FCEE6E;
+    background-color: white;
+    border-radius: 10px;
 }
 
 .doubleVital {

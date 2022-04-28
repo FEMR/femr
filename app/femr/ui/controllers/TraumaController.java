@@ -10,6 +10,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.ui.models.trauma.IndexViewModelGet;
 import femr.ui.models.trauma.IndexViewModelPost;
+import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.trauma.index;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
@@ -52,36 +53,39 @@ public class TraumaController extends Controller {
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        //retrieve all the vitals in the database so we can dynamically name
-        //the vitals in the view
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
-        if (vitalServiceResponse.hasErrors()) {
-            throw new RuntimeException();
+        if (currentUser != null) {
+            //retrieve all the vitals in the database so we can dynamically name
+            //the vitals in the view
+            ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
+            if (vitalServiceResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            //initialize an empty patient
+            PatientItem patientItem = new PatientItem();
+
+            //get settings
+            ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
+            if (settingItemServiceResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            //get age classifications
+            ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+            if (patientAgeClassificationsResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            IndexViewModelGet viewModelGet = new IndexViewModelGet();
+            viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+            viewModelGet.setPatient(patientItem);
+            viewModelGet.setSearchError(false);
+            viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
+            viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+
+            return ok(index.render(currentUser, viewModelGet, assetsFinder));
         }
-
-        //initialize an empty patient
-        PatientItem patientItem = new PatientItem();
-
-        //get settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
-        if (settingItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-
-        //get age classifications
-        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
-        if (patientAgeClassificationsResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
-        viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
-        viewModelGet.setPatient(patientItem);
-        viewModelGet.setSearchError(false);
-        viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
-        viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
-
-        return ok(index.render(currentUser, viewModelGet, assetsFinder));
+        return ok(create.render(null, 0, assetsFinder));
     }
 
     public Result indexPost(int id) {

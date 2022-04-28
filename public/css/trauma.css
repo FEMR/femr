@@ -159,8 +159,10 @@ table, th, td {
     right: 12%;
 }
 
-
-
+.submitResetWrap {
+    position: center;
+    margin-bottom: 75px;
+}
 
 /* Additional genInfo expansion CSS */
 .expandableInfoContainer{

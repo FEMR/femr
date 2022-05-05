@@ -37,6 +37,18 @@ document.getElementById('eraseAll').addEventListener(
     false
 );
 
+document.getElementById('undoButton').addEventListener(
+    'click',
+    function () {
+        let children = layer.getChildren()
+        if (children.length !== 0) {
+            let removingLine = children.slice(-1)[0]
+            removingLine.remove()
+        }
+    },
+    false
+);
+
 $('#femaleBtn').change(function () {
     $('#weeksPregnant').attr('disabled', false);
     changeBackground("femaleBtn");

@@ -321,7 +321,6 @@
 
                     <div id="drawingKonva">
                         <div id="tool" >
-                            Tool:
                             <label for="brush" >
                                 <input type="radio" id="drawCheckbox" value="brush" name="drawCheckbox" onclick="onlyOneTool(this)" class="filled" checked>
                                 Brush
@@ -334,15 +333,16 @@
                             <button type="button" id="eraseAll" class="fButton">Erase All</button>
                             <button type="button" id="save" class="fButton">Save Image</button>
 
-                            <div>
-                                Brush Color:
-                                    <input type="color" id="brushColor" name="brushColor" value="#FCEE6E" list="presetColors">
+                            <div id="severityColor">
+                                Trauma Severity:
+                                    <input type="color" id="borderColor" name="borderColor" value="#FCEE6E" list="presetColors">
                                     <datalist id="presetColors">
                                         <option>#df4b26</option>/>
                                         <option>#008000</option>
                                         <option>#FCEE6E</option>
                                         <option>#000000</option>
                                     </datalist>
+
                             </div>
                         </div>
                         <div id="diagramContainer"></div>

@@ -29,6 +29,10 @@ document.getElementById('save').addEventListener(
     false
 );
 
+$('#borderColor').change(function () {
+    $("#diagramContainer").css("border-color", document.getElementById("borderColor").value);
+});
+
 document.getElementById('eraseAll').addEventListener(
     'click',
     function () {

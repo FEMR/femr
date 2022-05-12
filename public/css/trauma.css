@@ -106,11 +106,6 @@
     margin-left: 10px;
 }
 
-
-
-
-
-
 #photoInput {
     min-width: 225px;
 }
@@ -136,7 +131,7 @@ table, th, td {
 
 /* Referenced by konvaDraw.js */
 #diagramContainer {
-    border: 6px solid #FCEE6E;
+    border: 6px solid transparent;
     background-color: white;
     border-radius: 10px;
 }
@@ -291,4 +286,24 @@ input[type="radio"]:checked::after {
     0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
     70% { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
     100% { transform: translate(-50%, -50%) scale(0.8); }
+}
+
+
+/*  Severity buttons  */
+.sevBtn {
+    padding: 12px 22px;
+    margin: 0 2px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    vertical-align: middle;
+}
+
+.active, .sevBtn:hover {
+    border: dodgerblue solid 2px;
+}
+
+#severityColor {
+    margin: 4px 0;
 }

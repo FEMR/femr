@@ -29,9 +29,7 @@ document.getElementById('save').addEventListener(
     false
 );
 
-$('#borderColor').change(function () {
-    $("#diagramContainer").css("border-color", document.getElementById("borderColor").value);
-});
+
 
 document.getElementById('eraseAll').addEventListener(
     'click',
@@ -71,4 +69,31 @@ $('#weeksPregnant').change(function () {
         changeBackground("weeksPregnant");
     else
         changeBackground("femaleBtn");
+});
+
+
+let btns = document.getElementsByClassName("sevBtn");
+for (let i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function() {
+        let current = document.getElementsByClassName("sevBtn active");
+        if (current.length < 1) {
+            this.className += " active";
+        } else if (current.length === 1 && this.value === current[0].value) {
+                current[0].className = current[0].className.replace(" active", "");
+        }
+        else {
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        }
+    });
+}
+
+$('#severityColor').click(function () {
+    let buttonColor = document.getElementsByClassName("sevBtn active");
+    if ( buttonColor.length === 0) {
+        buttonColor = "transparent";
+    } else {
+        buttonColor = buttonColor[0].value
+    }
+    $("#diagramContainer").css("border-color", buttonColor);
 });

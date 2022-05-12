@@ -335,15 +335,12 @@
 
                             <div id="severityColor">
                                 Trauma Severity:
-                                    <input type="color" id="borderColor" name="borderColor" value="#FCEE6E" list="presetColors">
-                                    <datalist id="presetColors">
-                                        <option>#df4b26</option>/>
-                                        <option>#008000</option>
-                                        <option>#FCEE6E</option>
-                                        <option>#000000</option>
-                                    </datalist>
-
+                                <button type="button" class="sevBtn" style="background: #008000" value="#008000"></button>
+                                <button type="button" class="sevBtn" style="background: #FCEE6E" value="#FCEE6E"></button>
+                                <button type="button" class="sevBtn" style="background: #df4b26" value="#df4b26"></button>
+                                <button type="button" class="sevBtn" style="background: #000000" value="#000000"></button>
                             </div>
+
                         </div>
                         <div id="diagramContainer"></div>
                         <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>

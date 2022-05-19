@@ -53,6 +53,10 @@ public class IndexViewModelGet {
         return vitalNames;
     }
 
+    public List<VitalItem> getVitalNamesForTable() {
+        return vitalNames.subList(0, 11);
+    }
+
     public void setVitalNames(List<VitalItem> vitalNames) {
         this.vitalNames = vitalNames;
     }

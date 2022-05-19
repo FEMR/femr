@@ -50,7 +50,7 @@ public class TraumaController extends Controller {
         this.photoService = photoService;
     }
 
-    public Result index() {
+    public Result indexGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         if (currentUser != null) {

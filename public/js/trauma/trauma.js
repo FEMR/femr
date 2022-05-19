@@ -3,6 +3,62 @@ function ToggleAdditionalInfo() {
     additionalInfoTrigger.innerText = additionalInfo.checked === true ? "▲ Less Information" : "▼ More Information";
 }
 
+document.getElementById('logVitals').addEventListener(
+    'click',
+    function () {
+        let setCount = parseInt(sessionStorage.getItem("setCount"));
+        if(!isNaN(setCount)){
+            setCount +=1;
+        } else {
+            setCount = 0;
+        }
+        sessionStorage.setItem("setCount", setCount);
+
+        let vitals = []
+        let vitalNames = ['respiratoryRate', 'heartRate', 'temperature', 'oxygenSaturation', 'heightFeet',
+            'heightInches', 'weight', 'bloodPressureSystolic', 'bloodPressureDiastolic', 'glucose', 'weeksPregnant']
+        vitals.push(setCount);
+        vitalNames.forEach(vitalName =>{
+            vitals.push(document.getElementById(vitalName).value);
+            document.getElementById(vitalName).value = '';
+        })
+        /* vitals.push(document.getElementById(  bmi is calculated but idk how  ).value); */
+
+        let identifier = "localVitalSet" + setCount.toString();
+        sessionStorage.setItem( identifier, JSON.stringify(vitals));
+
+        vitals = JSON.parse(sessionStorage.getItem(identifier));
+        appendVitalsToTable(vitals, "vitalsTableBody");
+
+
+    },
+    false
+);
+
+
+
+function appendVitalsToTable(items, tableRef) {
+    let tbl = document.getElementById(tableRef), // table reference
+        i;
+
+    // open loop for each row and append cell
+    for (i = 0; i < tbl.rows.length; i++) {
+        let item = (items[i+1] === "") ? "--" : items[i+1];
+        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), item, 'col');
+    }
+}
+
+// create DIV element and append to the table cell
+function createCell(cell, text, style) {
+    let div = document.createElement('div'), // create DIV element
+        txt = document.createTextNode(text); // create text node
+    div.appendChild(txt);                    // append text node to the DIV
+    div.setAttribute('class', style);        // set DIV class attribute
+    div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
+    cell.appendChild(div);                   // append DIV to the table cell
+}
+
+
 function onlyOneTool(checkbox) {
     let checkboxes = document.getElementsByName('drawCheckbox')
     checkboxes.forEach((item) => {

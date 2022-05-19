@@ -32,7 +32,7 @@
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
             <li><a href="@TriageController.indexGet()">Triage</a></li>
-            <li><a href="@TraumaController.index()">Trauma</a></li>
+            <li><a href="@TraumaController.indexGet()">Trauma</a></li>
             <li><a href="@MedicalController.indexGet()">Medical</a></li>
             <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }

@@ -138,7 +138,7 @@
                                     <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
                                 </div>
                                 <div class="vitalWrap">
-                                    <label for="heightFeet">Height</label>
+                                    <label for="height">Height</label>
                                     <div class="doubleVital">
                                     @if(viewModel.getSettings.isMetric) {
                                         <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
@@ -169,23 +169,31 @@
 
                             </div>
                         </div>
-                        <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
+                        <button  type="submit" id="logVitals" class="idSearch fButton fRedButton fLandingSearchButton">LOG VITALS</button>
                     </div>
 
                     <div id="rightGeneralInfo">
+
                         <h4>Vitals Chart</h4>
-                        <table>
+
+                        <table id="vitalsTable" >
                             <tr>
-                                <td>Time</td>
-                                <td>MM/DD/YYY</td>
-                                <td>MM/DD/YYY</td>
+                                <th>Vitals</th>
                             </tr>
-                            <tr>
-                                <td>Temperature</td>
-                                <td>123</td>
-                                <td>456</td>
-                            </tr>
+                            <tbody id="vitalsTableBody"></tbody>
                         </table>
+                        <script>
+                                vitalNames = ["Respirations", "Heart Rate", "Temp", "Oxygen", "Height --", "--",
+                                        "Weight", "Systolic", "Diastolic", "Glucose", "Pregnant"];
+
+                                const table = document.getElementById("vitalsTableBody");
+                                vitalNames.forEach( vital => {
+                                    let row = table.insertRow();
+                                    let date = row.insertCell(0);
+                                    date.innerHTML = vital;
+                                });
+
+                        </script>
                     </div>
 
                     <div id="dropDownWrap">

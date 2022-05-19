@@ -12,6 +12,8 @@
     column-gap: 10px;
 }
 
+
+
 #vitalsWrap {
     float: left;
     display: inline;
@@ -116,10 +118,6 @@
     float-wrap: none;
 }
 
-table, th, td {
-    border: 1px solid black;
-}
-
 #form{
     text-align: right;
 }
@@ -158,6 +156,29 @@ table, th, td {
     position: center;
     margin-bottom: 75px;
 }
+
+
+
+
+
+/* Vitals Table CSS */
+
+vitalsTable {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: gray;
+}
+vitalsTable vCol {
+    display: table-cell;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+vitalsTable vCol vCell {
+    display: block;
+    vertical-align: inherit;
+}
+
 
 /* Additional genInfo expansion CSS */
 .expandableInfoContainer{
@@ -288,6 +309,31 @@ input[type="radio"]:checked::after {
     100% { transform: translate(-50%, -50%) scale(0.8); }
 }
 
+/* Vitals Table CSS */
+#vitalTable{
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#vitalTable td, #vitalTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#vitalTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#vitalTable tr:hover {background-color: #ddd;}
+
+#vitalTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+}
+
+
 
 /*  Severity buttons  */
 .sevBtn {
@@ -307,3 +353,38 @@ input[type="radio"]:checked::after {
 #severityColor {
     margin: 4px 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+#vitalsTable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#vitalsTable td, #vitalsTable th {
+    border: 1px solid #ddd;
+    padding: 2px;
+}
+
+#vitalsTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#vitalsTable tr:hover {background-color: #ddd;}
+
+#vitalsTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: var(--interactive-color);
+    color: #55555b;
+}
+
+

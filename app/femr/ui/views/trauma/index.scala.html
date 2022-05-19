@@ -33,7 +33,7 @@
                 <div id="generalInfo" class="backgroundForWrap">
                     <div id="leftGeneralInfo" >
 
-                        <h4>Patient Age</h4>
+                        <h4>Patient Age <span class="red bold">*</span></h4>
                         <div id="classificationRadioWrap">
                         @for((key, value) <- viewModel.getPossibleAgeClassifications) {
                             <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>

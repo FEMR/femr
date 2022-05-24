@@ -13,8 +13,7 @@ public class IndexViewModelPost {
     private Date age;
     private String ageClassification;
     private String sex;
-    public Boolean deletePhoto; //flag to determine if user would like to delete image file
-    //begin vitals
+    private String patientPhotoCropped;
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
@@ -32,18 +31,14 @@ public class IndexViewModelPost {
     private Integer smoker;
     private Integer diabetic;
     private Integer alcohol;
+    private String isDiabetesScreenPerformed;
+
+    public Boolean deletePhoto; //flag to determine if user would like to delete image file
 
     private Integer cholesterol;
     private Integer hypertension;
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
-
-    //indicates if the "yes" button was clicked for the diabetes screening prompt
-    private String isDiabetesScreenPerformed;
-
-
-    private String patientPhotoCropped;
-
     public String getPatientPhotoCropped() {
         return patientPhotoCropped;
     }
@@ -53,9 +48,6 @@ public class IndexViewModelPost {
     }
 
 
-    public Boolean getDeletePhoto() {
-        return deletePhoto;
-    }
 
     //begin general info
     public String getFirstName() {
@@ -176,6 +168,28 @@ public class IndexViewModelPost {
         return chiefComplaint;
     }
 
+    public Boolean getDeletePhoto() {
+        return deletePhoto;
+    }
+
+    public Integer getSmoker() {return smoker;}
+    public void setSmoker(Integer smoker){this.smoker = smoker;}
+    public Integer getDiabetes() {return diabetic;}
+    public void setDiabetic(Integer diabetes){this.diabetic = diabetes;}
+
+    public Integer getAlcohol() {return alcohol;}
+    public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
+
+    public Integer getCholesterol() {return cholesterol;}
+    public void setCholesterol(Integer cholesterol){this.cholesterol = cholesterol;}
+
+    public Integer getHypertension() {return hypertension;}
+    public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
+
+    public String getIsDiabetesScreenPerformed() {
+        return isDiabetesScreenPerformed;
+    }
+
     public void setChiefComplaint(String chiefComplaint) {
         this.chiefComplaint = chiefComplaint;
     }
@@ -228,28 +242,9 @@ public class IndexViewModelPost {
         this.ageClassification = ageClassification;
     }
 
-    public String getIsDiabetesScreenPerformed() {
-        return isDiabetesScreenPerformed;
-    }
-
-    public Integer getSmoker() {return smoker;}
-    public void setSmoker(Integer smoker){this.smoker = smoker;}
-
-    public Integer getDiabetes() {return diabetic;}
-    public void setDiabetic(Integer diabetes){this.diabetic = diabetes;}
-
-    public Integer getAlcohol() {return alcohol;}
-    public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
-
-    public Integer getCholesterol() {return cholesterol;}
-    public void setCholesterol(Integer cholesterol){this.cholesterol = cholesterol;}
-
-    public Integer getHypertension() {return hypertension;}
-    public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
     }
-
 
 }

@@ -40,7 +40,7 @@
                         }
                         </div>
                         <span class="orSpan" style="padding-left: 15px">OR</span>
-                        @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                        @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                         <span class="orSpan" style="padding-left: 15px">OR</span>
                         <div id="ageInfoWrap">
                             @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)

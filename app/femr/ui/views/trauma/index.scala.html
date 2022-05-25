@@ -13,6 +13,8 @@
 @additionalScripts = {
     <script type="text/javascript" src="@assets.path("js/trauma/trauma.js")"></script>
     <script type="text/javascript" src="@assets.path("js/trauma/konvaDraw.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/trauma/traumaClientValidation.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/trauma/traumaValidation.js")"></script>
 }
 
 @additionalStyles = {
@@ -32,20 +34,21 @@
                 <h2>Patient ID #</h2>
                 <div id="generalInfo" class="backgroundForWrap">
                     <div id="leftGeneralInfo" >
-
-                        <h4>Patient Age <span class="red bold">*</span></h4>
-                        <div id="classificationRadioWrap">
-                        @for((key, value) <- viewModel.getPossibleAgeClassifications) {
-                            <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
-                        }
-                        </div>
-                        <span class="orSpan" style="padding-left: 15px">OR</span>
-                        @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                        <span class="orSpan" style="padding-left: 15px">OR</span>
-                        <div id="ageInfoWrap">
+                        <div id="ageClassificationWrap">
+                            <h4>Patient Age <span class="red bold">*</span></h4>
+                            <label id="conflictingAgeMessage" class="error-message" style="display: none; color: red">Birth Date and Age group are conflicting</label>
+                            <div class="generalInfoInput">
+                                <div id="classificationRadioWrap">
+                                @for((key, value) <- viewModel.getPossibleAgeClassifications) {
+                                    <label style="margin-right: 4.5%; font-weight: normal;"><input type="radio" name="ageClassification" value="@key" /><span>@value</span></label>
+                                }
+                                </div>
+                            </div>
+                            <span class="orSpan" style="padding-left: 15px">OR</span>
+                            @inputDate("", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                            <span class="orSpan" style="padding-left: 15px">OR</span>
                             @inputAge("", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                         </div>
-
                         @inputGender(viewModel)
                         <div id="nameWrap">
                             @inputText("First Name", "firstName", false, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")

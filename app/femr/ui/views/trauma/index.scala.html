@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="@assets.path("css/trauma.css")">
 }
 
-@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("trauma"), assets = assets) {
+@main("Trauma", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
     <head>
         @*        Need to import konva inside the head*@
         <script type="text/javascript" src="@assets.path("js/libraries/konva.min.js")"></script>
@@ -31,7 +31,7 @@
     <body>
         @helper.form(action = TraumaController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal trauma-form", 'enctype -> "multipart/form-data") {
             <div id="traumaContentWrap">
-                <h2>Patient ID #</h2>
+
                 <div id="generalInfo" class="backgroundForWrap">
                     <div id="leftGeneralInfo" >
                         <div id="ageClassificationWrap">

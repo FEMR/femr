@@ -3,36 +3,6 @@ var triageFieldValidator = {
     validatePatientInformation: function () {
         var patientInformation = triageFields.patientInformation;//located in triage.js
 
-        //validate First Name
-        if (!$.trim(patientInformation.firstName.val())) {
-            patientInformation.firstName.attr("placeholder", "Required Input");
-            $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
-            triageFieldValidator.isValid = false;
-        }
-        else{
-            $(patientInformation.firstName).parent(".generalInfoInput").removeClass("has-errors");
-        }
-
-        //validate Last Name
-        if (!$.trim(patientInformation.lastName.val())) {
-            patientInformation.lastName.attr("placeholder", "Required Input");
-            $(patientInformation.lastName).parent(".generalInfoInput").addClass("has-errors");
-            triageFieldValidator.isValid = false;
-        }
-        else{
-            $(patientInformation.lastName).parent(".generalInfoInput").removeClass("has-errors");
-        }
-
-        //validate City
-        if (!$.trim(patientInformation.city.val())) {
-            patientInformation.city.attr("placeholder", "Required Input");
-            $(patientInformation.city).parents(".generalInfoInput").addClass("has-errors");
-            triageFieldValidator.isValid = false;
-        }
-        else{
-            $(patientInformation.city).parents(".generalInfoInput").removeClass("has-errors");
-        }
-
         //Validate Age
         if ( (patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
             (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))

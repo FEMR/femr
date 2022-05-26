@@ -119,10 +119,10 @@ document.getElementById('addProblem').addEventListener(
                                 "                <h4 id=\"probTitle\" style = \"flex-grow: 1; margin-top: .17em\">\n" +
                                 "                    <b>titleNOVIS</b>\n" +
                                 "                </h4>\n" +
-                                "                <button type=\"submit\" class=\"idSearch problemCardButton\" id=\"pCardEdit\" onclick=\"editProblem(" + idx + ")\">\n" +
+                                "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardEdit\" onclick=\"editProblem(" + idx + ")\">\n" +
                                 "                    <img src=\"/assets/img/edit.png\" style=\"width:20px; height:20px;\">\n" +
                                 "                </button>\n" +
-                                "                <button type=\"submit\" class=\"idSearch problemCardButton\" id=\"pCardDelete\" onclick=\"deleteProblem(" + idx + ")\">\n" +
+                                "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardDelete\" onclick=\"deleteProblem(" + idx + ")\">\n" +
                                 "                    <img src=\"/assets/img/delete.png\" style=\"width:20px; height:20px;\">\n" +
                                 "                </button>\n" +
                                 "            </div>\n" +
@@ -143,10 +143,10 @@ document.getElementById('addProblem').addEventListener(
                                 "            <div class=\"sideBySideFlex\">\n" +
                                 "                <b class=\"problemNumber\" >" + idx + "</b>\n" +
                                 "                <input type=\"text\" class=\"age-input fInput\" id=\"probTitleInput\" style = \"flex-grow: 1;\" placeholder=\"Problem Title\">\n" +
-                                "                <button type=\"submit\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"confirmProblem(" + idx + ")\">\n" +
+                                "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"confirmProblem(" + idx + ")\">\n" +
                                 "                    <img src=\"/assets/img/confirm.png\" style=\"width:20px; height:20px;\">\n" +
                                 "                </button>\n" +
-                                "                <button type=\"submit\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"addTarget(" + idx + ")\">\n" +
+                                "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"addTarget(" + idx + ")\">\n" +
                                 "                    <img src=\"/assets/img/target.png\" style=\"width:20px; height:20px;\">\n" +
                                 "                </button>\n" +
                                 "            </div>\n" +

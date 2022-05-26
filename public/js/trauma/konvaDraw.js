@@ -27,10 +27,11 @@ function changeBackground(selection){
     imageObj.src = final
 }
 
-let imgW = 500;
-let imgH = 457;
+
 var imageObj = new Image();
 imageObj.onload = function () {
+    let imgW = 500;
+    let imgH = 457;
     var background = new Konva.Image({
         strokeEnabled: false,
         x: ( stage.getWidth()-((canvasHeight * imgW)/imgH) ) / 2,

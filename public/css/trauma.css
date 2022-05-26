@@ -4,6 +4,7 @@
     justify-content: flex-start;
     column-gap: 10px;
     padding: 20px;
+    margin-top: 30px;
 }
 
 #nameWrap {
@@ -347,22 +348,12 @@ input[type="radio"]:checked::after {
 }
 
 .active, .sevBtn:hover {
-    border: dodgerblue solid 2px;
+    box-shadow:0px 0px 0px 2px dodgerblue inset;
 }
 
 #severityColor {
     margin: 4px 0;
 }
-
-
-
-
-
-
-
-
-
-
 
 #vitalsTable {
     font-family: Arial, Helvetica, sans-serif;
@@ -387,4 +378,22 @@ input[type="radio"]:checked::after {
     color: #55555b;
 }
 
+.vitalWrap.has-errors{
+    width: 175px;
+}
 
+.trauma-form .has-errors label{
+    color: red;
+}
+label.range-message{
+    width: 175px;
+}
+.trauma-form .has-errors label.range-message{
+    font-size: 0.85em;
+
+}
+
+.trauma-form .has-errors input,
+.trauma-form .has-errors select{
+    border-color: red;
+}

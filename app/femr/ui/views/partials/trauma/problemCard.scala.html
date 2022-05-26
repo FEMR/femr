@@ -2,26 +2,52 @@
 
 
 @inputBlock = {
-    <div class="problemCard" >
-        <div class="sideBySideFlex">
-            <b class="problemNumber" >@rank</b>
-            <h4 style="flex: 1"><b>@title</b></h4>
-            <b class="problemCardButton" >Edit</b>
-            <b class="problemCardButton" >Del</b>
-        </div>
-        <div>
-            <p style="margin-top: 5px;color: #A8AAB9" >Plan</p>
-                <!-- TODO: should # of steps be adjustable? -->
-            <label type="fCheckbox" style="height: 20px">
-                <input type="checkbox" step="any" class="filled" >
-                @step1
-            </label>
-            <label type="fCheckbox" style="height: 20px">
-                <input type="checkbox" step="any" class="filled" >
-                @step2
-            </label>
+
+    <div class="problemCard" id="problemCard" >
+
+        <div id="pCardSaved">
+            <div class="sideBySideFlex">
+                <b class="problemNumber" >@rank</b>
+                <h4 id="probTitle" style = "flex-grow: 1; margin-top: .17em">
+                    <b>@title</b>
+                </h4>
+                <button type="submit" class="idSearch problemCardButton" id="pCardEdit" onclick="editProblem(@rank-1)">
+                    <img src="/assets/img/edit.png" style="width:20px; height:20px;">
+                </button>
+                <button type="submit" class="idSearch problemCardButton" id="pCardDelete" onclick="deleteProblem(@rank-1)">
+                    <img src="/assets/img/delete.png" style="width:20px; height:20px;">
+                </button>
+            </div>
+            <div>
+                <p style="margin-top: 5px;color: #A8AAB9" >Plan</p>
+                    <label type="fCheckbox"  style="height: 20px">
+                    <input type="checkbox" step="any" class="filled" >
+                        <p id="pBoxStep1" class="pStepLabel"> @step1</p>
+                </label>
+                    <label type="fCheckbox" id="pCheckbox2" style="height: 20px">
+                    <input type="checkbox" step="any" class="filled" >
+                        <p id="pBoxStep2" class="pStepLabel"> @step2</p>
+                </label>
+            </div>
         </div>
 
+        <div id="pCardEditMode">
+            <div class="sideBySideFlex">
+                <b class="problemNumber" >@rank</b>
+                <input type="text" class="age-input fInput" id="probTitleInput" style = "flex-grow: 1;" placeholder="Problem Title">
+                <button type="submit" class="idSearch problemCardButton" id="pCardConfirm" onclick="confirmProblem(@rank-1)">
+                    <img src="/assets/img/confirm.png" style="width:20px; height:20px;">
+                </button>
+                <button type="submit" class="idSearch problemCardButton" id="pCardConfirm" onclick="addTarget(@rank-1)">
+                    <img src="/assets/img/target.png" style="width:20px; height:20px;">
+                </button>
+            </div>
+            <div>
+                <p style="margin-top: 5px;color: #A8AAB9" >Plan</p>
+                <input type="text" class="fInput" id="pStep1" placeholder="Step 1">
+                <input type="text"  class="fInput" id="pStep2" placeholder="Step 2" style="margin-top: 5px">
+            </div>
+        </div>
 
     </div>
     }

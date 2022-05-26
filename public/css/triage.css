@@ -139,7 +139,9 @@
 
 .triage-form {
     position: relative;
-    overflow: hidden;
+    display: block;
+    overflow: auto;
+    background-color: white;
 }
 
 .triage-form .error-message{

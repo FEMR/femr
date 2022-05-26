@@ -179,6 +179,7 @@
                         <table id="vitalsTable" >
                             <tr>
                                 <th>Vitals</th>
+
                             </tr>
                             <tbody id="vitalsTableBody"></tbody>
                         </table>
@@ -315,15 +316,13 @@
 
                 <div id="bodyChartContent" class="backgroundForWrap" style="margin-bottom: 15px">
                     <div id="problemListWrap" style="width: 100%">
-                        <button  type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
+                        <button  id="addProblem" type="submit" class="idSearch fButton fRedButton fLandingSearchButton" style="margin-bottom: 25px">
                             ADD PROBLEM </button>
-                        <div id="problemList" class="scrollableContainer">
 
-                            <!-- TODO: determine character count limits -->
-                            @problemCard("Hardcoded example title 1", "HC problem 1", "HC example 2", 1)
-                            @problemCard("Hardcoded example title 2", "HC adjustment step", "HC another step", 2)
-                            @problemCard("Hardcoded example title 3", "HC test 1", "HC content", 3)
-                            @problemCard("Hardcoded example title 4", "HC testing", "HC again but this time a longer string", 4)
+                        <div id="problemList" class="scrollableContainer">
+                            @problemCard("this is bad", "HC problem 1", "HC example 2", 1)
+                            @problemCard("Hardcoded example title 8", "HC problem 1", "HC example 2", 2)
+
                         </div>
                     </div>
 

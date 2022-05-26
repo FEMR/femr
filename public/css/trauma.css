@@ -74,8 +74,6 @@
 
 
 
-
-
 .problemCard {
     margin-bottom: 7px;
     padding: 10px;
@@ -102,7 +100,6 @@
     text-align: center;
     margin-right: 5px;
     font-size: 20px;
-
 }
 
 .problemCardButton {
@@ -116,21 +113,17 @@
 }
 
 #pCardEditMode{
-    visibility: visible;
+    visibility: hidden;
     margin-top: -8.75em;
 }
 
 #pCardSaved{
-    visibility: hidden;
-
+    visibility: visible;
 }
 
 .pStepLabel{
     margin-top: .8em;
 }
-
-
-
 
 #photoInput {
     min-width: 225px;

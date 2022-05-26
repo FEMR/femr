@@ -60,9 +60,10 @@ stage.on('mousedown touchstart', function (e) {
     var pos = stage.getPointerPosition();
     lastLine = new Konva.Line({
         stroke: "rgb(26,52,167)",
-        strokeWidth: 5,
         globalCompositeOperation:
             mode === 'brush' ? 'source-over' : 'destination-out',
+        // if brush, stroke is 5px, if eraser brush is 20px
+        strokeWidth: mode === 'brush' ? 5 : 20,
         // round cap for smoother lines
         lineCap: 'round',
         // add point twice, so we have some drawings even on a simple click

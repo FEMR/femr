@@ -75,6 +75,8 @@ document.getElementById('addProblem').addEventListener(
         newCard.querySelector("#pCardEditMode").style.visibility = "visible"
         document.getElementById('problemList').append(newCard);
 
+        editTagDeactivate();
+
 
     },
     false
@@ -88,7 +90,7 @@ function getProblemList(){
     } else {
         for(let i=0; i<probCount; i++){
             let card = JSON.parse(sessionStorage.getItem("pCard"+i));
-            pList.push({title: card[0], step1: card[1], step2: card[2]});
+            pList.push({title: card[0], step1: card[1], step2: card[2], painPoint: card[3]});
         }
     }
     return pList;
@@ -111,8 +113,9 @@ function confirmProblem(rank){
     let title = validatePInput(card.querySelector("#probTitleInput").value);
     let s1 = card.querySelector("#pStep1").value;
     let s2 = card.querySelector("#pStep2").value;
+    let painPoint = {x: 102, y: 458};
 
-    sessionStorage.setItem("pCard" + rank, JSON.stringify([title, s1, s2]));
+    sessionStorage.setItem("pCard" + rank, JSON.stringify([title, s1, s2, painPoint]));
     let newProbCount = getValidSessionID("probCount");
     if (rank >= newProbCount){
         newProbCount++;
@@ -159,7 +162,7 @@ function deleteProblem(rank){
 }
 
 function addTarget(rank){
-
+    editTagActivate();
 }
 
 

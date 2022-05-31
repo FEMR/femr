@@ -47,8 +47,8 @@ Email: kevin.zurek@teamfemr.org
 ## Running the application using Docker 
 1. Make sure you have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 2. Clone the [FEMR/femr](https://github.com/FEMR/femr) repo: `git clone https://github.com/FEMR/femr.git`
-3. Checkout the [tremr-branch](https://github.com/FEMR/femr/tree/tremr-branch) branch: `git checkout tremr-branch`.
-4. Cd into the femr directory: `cd femr`    
+3. Cd into the femr directory: `cd femr`
+4. Checkout the [tremr-branch](https://github.com/FEMR/femr/tree/tremr-branch) branch: `git checkout tremr-branch`.
 5. Then run `docker-compose up`. (This will also take a while ~10-20 mins depending on your machine).
 6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/    
 

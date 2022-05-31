@@ -51,8 +51,9 @@ Email: kevin.zurek@teamfemr.org
 4. Checkout the [tremr-branch](https://github.com/FEMR/femr/tree/tremr-branch) branch: `git checkout tremr-branch`.
 5. Then run `docker-compose up`. (This will also take a while ~10-20 mins depending on your machine).
 6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/    
-
-# Setting up the project with IntelliJ on macOS
+7. The default login is username: "admin", password: "admin".
+    
+# Running the project with IntelliJ on macOS
 
 ### Step 1: Download and Install the following Software and Dependencies 
 - [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)

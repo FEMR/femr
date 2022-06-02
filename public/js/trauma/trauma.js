@@ -75,8 +75,6 @@ document.getElementById('addProblem').addEventListener(
         newCard.querySelector("#pCardEditMode").style.visibility = "visible"
         document.getElementById('problemList').append(newCard);
 
-        editTagDeactivate();
-
 
     },
     false
@@ -104,7 +102,7 @@ function reloadList(){
         pList.append(newProblemCard(cardInfo, idx));
     })
 }
-window.onload = function onLoad(){ reloadList() };
+window.onload = function onLoad(){ reloadList(); reloadLines() };
 
 
 function confirmProblem(rank){
@@ -113,7 +111,13 @@ function confirmProblem(rank){
     let title = validatePInput(card.querySelector("#probTitleInput").value);
     let s1 = card.querySelector("#pStep1").value;
     let s2 = card.querySelector("#pStep2").value;
-    let painPoint = {x: 102, y: 458};
+    let painPoint = {x: -1, y: -1};
+    try {
+        painPoint = JSON.parse(sessionStorage.getItem("tempPoint"));
+        sessionStorage.removeItem("tempPoint");
+    } catch {}
+
+    editTagDeactivate();
 
     sessionStorage.setItem("pCard" + rank, JSON.stringify([title, s1, s2, painPoint]));
     let newProbCount = getValidSessionID("probCount");
@@ -122,7 +126,6 @@ function confirmProblem(rank){
     }
     sessionStorage.setItem("probCount", newProbCount);
     reloadList();
-
 
     card.querySelector("#pCardEditMode").style.visibility = "hidden";
     card.querySelector("#pCardSaved").style.visibility = "visible";
@@ -142,8 +145,6 @@ function editProblem(rank){
     card.querySelector("#pCardSaved").style.visibility = "hidden";
 }
 
-
-
 function deleteProblem(rank){
     let cards = document.getElementsByClassName("problemCard");
     cards[rank].parentNode.removeChild(cards[rank]);
@@ -151,18 +152,17 @@ function deleteProblem(rank){
     for(let i=rank; i<(getValidSessionID("probCount")-1); i++){
         sessionStorage.setItem("pCard" + i, sessionStorage.getItem("pCard" + (i+1)));
     }
+
     sessionStorage.setItem("probCount", getValidSessionID("probCount") - 1);
-    // let cardDataList = JSON.parse(sessionStorage.getItem("cardDataList"));
-    // cardDataList.splice(rank,1);
-    // sessionStorage.setItem("cardDataList", JSON.stringify(cardDataList));
-
-
-
+    sessionStorage.removeItem("pCard" + getValidSessionID("probCount"));
     reloadList();
+    reloadLines();
 }
 
 function addTarget(rank){
+    sessionStorage.setItem("openCard", rank);
     editTagActivate();
+
 }
 
 

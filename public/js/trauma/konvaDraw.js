@@ -50,6 +50,10 @@ changeBackground()
 
 var layer = new Konva.Layer();
 stage.add(layer);
+let labels = new Konva.Layer();
+stage.add(labels);
+
+
 
 var isPaint = false;
 var mode = 'brush';
@@ -65,14 +69,23 @@ function editTagDeactivate(){
 }
 
 stage.on('mousedown touchstart', function (e) {
+    let pos = stage.getPointerPosition();
     if(tagEditModeActive){
-        addTagLineAtPosition()
+        let openCard = sessionStorage.getItem("openCard");
+        let card = JSON.parse(sessionStorage.getItem("pCard" + openCard));
+        if(card !== null) {
+            card[3] = {x: pos.x, y: pos.y};
+            sessionStorage.setItem("pCard" + openCard, JSON.stringify(card))
+        } else {
+            sessionStorage.setItem("tempPoint", JSON.stringify({x: pos.x, y: pos.y}));
+        }
+
+        reloadLines();
     } else {
         isPaint = true;
-        var pos = stage.getPointerPosition();
         lastLine = new Konva.Line({
             stroke: "rgb(26,52,167)",
-            strokeWidth: 5,
+            strokeWidth: 2,
             globalCompositeOperation:
                 mode === 'brush' ? 'source-over' : 'destination-out',
             // round cap for smoother lines
@@ -111,16 +124,49 @@ document.querySelectorAll('input[name=drawCheckbox]').forEach(item => {
     })
 })
 
-function addTagLineAtPosition(){
+function reloadLines(){
+    labels.destroy();
+    labels = new Konva.Layer();
+    let probCount = sessionStorage.getItem("probCount");
+    for(let i=0; i<probCount; i++){
+        let card = JSON.parse(sessionStorage.getItem("pCard" + i));
+        let point = {x: -1, y: -1};
+        try {
+            card[3].x;
+            point = card[3];
+        } catch {}
+        if(point.x >0 && point.y >0) {
+            addTagLine(labels, i, point)
+        }
+    }
+    let temp = JSON.parse(sessionStorage.getItem("tempPoint"));
+    if (temp != null){
+        addTagLine(labels, probCount, temp);
+
+    }
+    stage.add(labels);
+
+}
+
+function addTagLine(tagLayer, rank, point){
     let lineShape = tagLocationSet();
-    let pos = stage.getPointerPosition();
+    let pos = point;//stage.getPointerPosition();
     const closestPt = closestPoint(lineShape.points(), {x: pos.x, y: pos.y});
 
-    layer.add(new Konva.Line({
+    tagLayer.add(new Konva.Line({
         stroke: '#000000',
         strokeWidth: 1.5,
         points: [pos.x, pos.y, closestPt.x, closestPt.y],
     }) );
+
+    tagLayer.add(new Konva.Text({
+        x: closestPt.x + (closestPt.x-pos.x)/4 - 3,
+        y: closestPt.y + (closestPt.y-pos.y)/4 - 6,
+        text: rank,
+        fontSize: 14,
+        fontFamily: 'Arial',
+        fill: 'black',
+    }));
 }
 
 function closestPoint(pathNode, point) {
@@ -133,7 +179,6 @@ function closestPoint(pathNode, point) {
         let c = Math.sqrt( a*a + b*b );
 
         if (c < shortestDist){
-            sessionStorage.setItem("closest", JSON.stringify(c))
             best.x = pathNode[i];
             best.y = pathNode[i+1];
             shortestDist = c;

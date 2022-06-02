@@ -27,10 +27,11 @@ function changeBackground(selection){
     imageObj.src = final
 }
 
-let imgW = 500;
-let imgH = 457;
+
 var imageObj = new Image();
 imageObj.onload = function () {
+    let imgW = 500;
+    let imgH = 457;
     var background = new Konva.Image({
         strokeEnabled: false,
         x: ( stage.getWidth()-((canvasHeight * imgW)/imgH) ) / 2,
@@ -85,9 +86,9 @@ stage.on('mousedown touchstart', function (e) {
         isPaint = true;
         lastLine = new Konva.Line({
             stroke: "rgb(26,52,167)",
-            strokeWidth: 2,
             globalCompositeOperation:
                 mode === 'brush' ? 'source-over' : 'destination-out',
+            strokeWidth: mode === 'brush' ? 5 : 20,
             // round cap for smoother lines
             lineCap: 'round',
             // add point twice, so we have some drawings even on a simple click

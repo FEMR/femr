@@ -6,7 +6,8 @@ var vitalClientValidator = function (vitalElements) {
     $("#vitalContainer .vitalWrap").removeClass("has-errors");
     $("#vitalContainer label.range-message").remove();
 
-
+    $("#midGeneralInfo .vitalWrap").removeClass("has-errors");
+    $("#midGeneralInfo label.range-message").remove();
 
     //Respirations
     if (vitalIsInvalid("respiratoryRate", vitalElements.respiratoryRate.val(), isMetric)) {

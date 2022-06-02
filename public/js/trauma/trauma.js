@@ -323,3 +323,23 @@ $('#severityColor').click(function () {
     }
     $("#diagramContainer").css("border-color", buttonColor);
 });
+
+function generateDummyTraumaData() {
+    let firstName = document.getElementById("firstName")
+    let lastName = document.getElementById("lastName")
+    let city = document.getElementById("city")
+
+    if ( firstName.value === "") {
+        if (document.getElementById('maleBtn').checked) {
+            firstName.value = "John";
+        } else if (document.getElementById('femaleBtn').checked) {
+            firstName.value = "Jane";
+        }
+    }
+    if ( lastName.value === "") {
+        lastName.value = "Doe";
+    }
+    if ( city.value === "") {
+        city.value = "Not given";
+    }
+}

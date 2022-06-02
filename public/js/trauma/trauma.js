@@ -6,6 +6,16 @@ function ToggleAdditionalInfo() {
 document.getElementById('logVitals').addEventListener(
     'click',
     function () {
+        // Validating vitals
+        if (!vitalClientValidator(triageFields.patientVitals)){
+            return false;
+        }
+        // Validating if all vitals are empty
+        // if empty then don't add to session storage and table
+        if (checkIfAllVitalsEmpty()){
+            return false;
+        }
+
         let setCount = parseInt(sessionStorage.getItem("setCount"));
         if(!isNaN(setCount)){
             setCount +=1;

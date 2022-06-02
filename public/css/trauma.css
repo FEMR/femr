@@ -50,9 +50,11 @@
     row-gap: 5px;
 }
 
+
 #bodyChartContent {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    flex-direction: row;
     justify-content: flex-start;
     column-gap: 10px;
     padding: 20px;

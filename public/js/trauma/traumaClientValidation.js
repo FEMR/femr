@@ -100,3 +100,17 @@ function validate() {
     triageFieldValidator.validatePatientInformation();
     return triageFieldValidator.isValid;
 }
+
+function checkIfAllVitalsEmpty() {
+    let isEmpty = false;
+    let vitalFields = Object.entries(triageFields.patientVitals)
+    // removing vitalUnits since it's not used here
+    vitalFields.splice(-1);
+    for (let vitalSelector of vitalFields) {
+        if (vitalSelector[1].val() === '') {
+            isEmpty = true
+        } else
+            return false;
+    }
+    return isEmpty;
+}

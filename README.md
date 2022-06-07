@@ -21,7 +21,19 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
 ### CI
-This repo uses Github Actions workflows for continuous integration, which can be found under the Actions tab in Github (https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch.
+This repo uses Github Actions workflows for continuous integration, which can be found under the [Actions tab in Github](https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch.
+
+### Trauma sheet documents - trEMR
+1. [Gitbook](https://tremr.gitbook.io/traumasheet/)
+2. Github
+    - Base branch: https://github.com/FEMR/femr/tree/super-femr 
+    - Head branch: https://github.com/FEMR/femr/tree/tremr-branch 
+    - All changes: https://github.com/FEMR/femr/compare/super-femr...tremr-branch
+3. [JIRA board](https://platinum.cscaws.com:8443/secure/RapidBoard.jspa?rapidView=71)
+4. [TechSpec](https://docs.google.com/document/d/1CxRzsFvZh9HaNdwOUmlgFdGUMB8iG-_ta7Zdapyo9SE/edit?usp=sharing)
+5. Figma
+    - Lofi: https://www.figma.com/file/taNQA4IrPIrQ0UAe23Tp8c/tremr-lofi
+    - Hifi: https://www.figma.com/file/RTisd16FqwUGFf69ZwHimI/tremr-hifi
 
 ### Setting up weekly backup reminder
 

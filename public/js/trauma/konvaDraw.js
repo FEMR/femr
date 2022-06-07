@@ -78,7 +78,7 @@ stage.on('mousedown touchstart', function (e) {
             card[3] = {x: pos.x, y: pos.y};
             sessionStorage.setItem("pCard" + openCard, JSON.stringify(card))
         } else {
-            sessionStorage.setItem("tempPoint", JSON.stringify({x: pos.x, y: pos.y}));
+            sessionStorage.setItem("tempPoint", JSON.stringify( {x: pos.x, y: pos.y}));
         }
 
         reloadLines();
@@ -88,7 +88,7 @@ stage.on('mousedown touchstart', function (e) {
             stroke: "rgb(26,52,167)",
             globalCompositeOperation:
                 mode === 'brush' ? 'source-over' : 'destination-out',
-            strokeWidth: mode === 'brush' ? 5 : 20,
+            strokeWidth: mode === 'brush' ? 2 : 20,
             // round cap for smoother lines
             lineCap: 'round',
             // add point twice, so we have some drawings even on a simple click
@@ -125,6 +125,9 @@ document.querySelectorAll('input[name=drawCheckbox]').forEach(item => {
     })
 })
 
+
+
+
 function reloadLines(){
     labels.destroy();
     labels = new Konva.Layer();
@@ -133,8 +136,7 @@ function reloadLines(){
         let card = JSON.parse(sessionStorage.getItem("pCard" + i));
         let point = {x: -1, y: -1};
         try {
-            card[3].x;
-            point = card[3];
+            point = {x: card[3].x, y: card[3].y};
         } catch {}
         if(point.x >0 && point.y >0) {
             addTagLine(labels, i, point)
@@ -143,7 +145,6 @@ function reloadLines(){
     let temp = JSON.parse(sessionStorage.getItem("tempPoint"));
     if (temp != null){
         addTagLine(labels, probCount, temp);
-
     }
     stage.add(labels);
 
@@ -191,8 +192,7 @@ function closestPoint(pathNode, point) {
 function tagLocationSet(){
     return new Konva.Line({
         stroke: '#000000',
-        strokeWidth: 1.5,
-        // add point twice, so we have some drawings even on a simple click
+        strokeWidth: 0,
         points: [ 102, 458, 102, 456, 101, 454, 101, 451, 99, 449, 99, 446, 98, 445, 98, 443, 97, 442, 96, 440, 96,
             438, 95, 436, 94, 434, 94, 432, 93, 431, 93, 430, 93, 429, 92, 428, 92, 427, 92, 425, 92, 423, 91, 421, 91,
             418, 91, 415, 91, 412, 91, 409, 91, 407, 91, 404, 91, 402, 90, 399, 90, 397, 89, 394, 89, 391, 89, 389, 88,

@@ -123,15 +123,19 @@ function confirmProblem(rank){
     let s1 = card.querySelector("#pStep1").value;
     let s2 = card.querySelector("#pStep2").value;
     let painPoint = {x: -1, y: -1};
-    try {
-        painPoint = JSON.parse(sessionStorage.getItem("tempPoint"));
-        sessionStorage.removeItem("tempPoint");
-    } catch {}
+    let newProbCount = getValidSessionID("probCount");
+    let cardData = JSON.parse(sessionStorage.getItem("pCard"+rank));
+    if(cardData != null){
+        painPoint = cardData[3];
+    } else {
+        try {
+            painPoint = JSON.parse(sessionStorage.getItem("tempPoint"));
+            sessionStorage.removeItem("tempPoint");
+        } catch {}
+    }
 
     editTagDeactivate();
-
     sessionStorage.setItem("pCard" + rank, JSON.stringify([title, s1, s2, painPoint]));
-    let newProbCount = getValidSessionID("probCount");
     if (rank >= newProbCount){
         newProbCount++;
     }

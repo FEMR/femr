@@ -68,6 +68,7 @@
     background-color: var(--background-color);
     box-sizing: content-box;
     width: inherit;
+    min-width: 400px;
     height: 500px;
     overflow: scroll;
     padding: 20px;

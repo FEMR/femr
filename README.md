@@ -29,11 +29,9 @@ This repo uses Github Actions workflows for continuous integration, which can be
     - Base branch: https://github.com/FEMR/femr/tree/super-femr 
     - Head branch: https://github.com/FEMR/femr/tree/tremr-branch 
     - All changes: https://github.com/FEMR/femr/compare/super-femr...tremr-branch
-3. [JIRA board](https://platinum.cscaws.com:8443/secure/RapidBoard.jspa?rapidView=71)
-4. [TechSpec](https://docs.google.com/document/d/1CxRzsFvZh9HaNdwOUmlgFdGUMB8iG-_ta7Zdapyo9SE/edit?usp=sharing)
-5. Figma
-    - Lofi: https://www.figma.com/file/taNQA4IrPIrQ0UAe23Tp8c/tremr-lofi
-    - Hifi: https://www.figma.com/file/RTisd16FqwUGFf69ZwHimI/tremr-hifi
+3. [TechSpec](https://docs.google.com/document/d/1CxRzsFvZh9HaNdwOUmlgFdGUMB8iG-_ta7Zdapyo9SE/edit?usp=sharing)
+4. Figma: [Lofi](https://www.figma.com/file/taNQA4IrPIrQ0UAe23Tp8c/tremr-lofi), [Hifi](https://www.figma.com/file/RTisd16FqwUGFf69ZwHimI/tremr-hifi)
+5. [JIRA board backlog](https://platinum.cscaws.com:8443/secure/RapidBoard.jspa?rapidView=71)
 
 ### Setting up weekly backup reminder
 

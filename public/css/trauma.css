@@ -68,6 +68,7 @@
     background-color: var(--background-color);
     box-sizing: content-box;
     width: inherit;
+    min-width: 400px;
     height: 500px;
     overflow: scroll;
     padding: 20px;
@@ -75,18 +76,22 @@
     border: 3px solid var(--background-color);
 }
 
-.sideBySideFlex{
-    display: flex;
-}
+
 
 .problemCard {
     margin-bottom: 7px;
-    position: inherit;
     padding: 10px;
+    width: inherit;
     background-color: white;
     border-radius: 0.5em;
     color: #494949;
-    flex-direction: column;
+}
+
+.sideBySideFlex{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    margin-bottom: 10px;
 }
 
 .problemNumber {
@@ -99,16 +104,29 @@
     text-align: center;
     margin-right: 5px;
     font-size: 20px;
-
 }
 
 .problemCardButton {
     background: var(--interactive-color);
     border-radius: 4px;
+    border: none;
     width: 30px;
     height: 30px;
-    align-content: center;
+    justify-content: center;
     margin-left: 10px;
+}
+
+#pCardEditMode{
+    visibility: hidden;
+    margin-top: -8.75em;
+}
+
+#pCardSaved{
+    visibility: visible;
+}
+
+.pStepLabel{
+    margin-top: .8em;
 }
 
 #photoInput {
@@ -161,26 +179,6 @@
 }
 
 
-
-
-
-/* Vitals Table CSS */
-
-vitalsTable {
-    display: table;
-    border-collapse: separate;
-    border-spacing: 2px;
-    border-color: gray;
-}
-vitalsTable vCol {
-    display: table-cell;
-    vertical-align: inherit;
-    border-color: inherit;
-}
-vitalsTable vCol vCell {
-    display: block;
-    vertical-align: inherit;
-}
 
 
 /* Additional genInfo expansion CSS */

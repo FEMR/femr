@@ -3,6 +3,14 @@ function ToggleAdditionalInfo() {
     additionalInfoTrigger.innerText = additionalInfo.checked === true ? "▲ Less Information" : "▼ More Information";
 }
 
+function getValidSessionID(key){
+    let keyID = parseInt(sessionStorage.getItem(key));
+    if(isNaN(keyID)){
+        keyID = 0;
+    }
+    return keyID;
+}
+
 document.getElementById('logVitals').addEventListener(
     'click',
     function () {
@@ -15,13 +23,10 @@ document.getElementById('logVitals').addEventListener(
         if (checkIfAllVitalsEmpty()){
             return false;
         }
+      
+        let setCount = getValidSessionID("setCount")
+        setCount++;
 
-        let setCount = parseInt(sessionStorage.getItem("setCount"));
-        if(!isNaN(setCount)){
-            setCount +=1;
-        } else {
-            setCount = 0;
-        }
         sessionStorage.setItem("setCount", setCount);
 
         let vitals = []
@@ -45,8 +50,6 @@ document.getElementById('logVitals').addEventListener(
     false
 );
 
-
-
 function appendVitalsToTable(items, tableRef) {
     let tbl = document.getElementById(tableRef), // table reference
         i;
@@ -57,7 +60,6 @@ function appendVitalsToTable(items, tableRef) {
         createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), item, 'col');
     }
 }
-
 // create DIV element and append to the table cell
 function createCell(cell, text, style) {
     let div = document.createElement('div'), // create DIV element
@@ -67,6 +69,179 @@ function createCell(cell, text, style) {
     div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
     cell.appendChild(div);                   // append DIV to the table cell
 }
+
+/* PROBLEM CARD CODE   ( ͡╥ ͜ʖ ͡╥)   */
+
+
+document.getElementById('addProblem').addEventListener(
+    'click',
+    function () {
+        // let button = document.getElementById("addProblem");
+        // button.innerText = "TestWoah";
+
+        reloadList();
+        let cardDataList = getProblemList();
+        let newCard = newProblemCard({}, cardDataList.length);
+        newCard.querySelector("#pCardSaved").style.visibility = "hidden"
+        newCard.querySelector("#pCardEditMode").style.visibility = "visible"
+        document.getElementById('problemList').append(newCard);
+
+
+    },
+    false
+);
+
+function getProblemList(){
+    let probCount = getValidSessionID("probCount");
+    let pList = [];
+    if (probCount === 0){
+        return pList;
+    } else {
+        for(let i=0; i<probCount; i++){
+            let card = JSON.parse(sessionStorage.getItem("pCard"+i));
+            pList.push({title: card[0], step1: card[1], step2: card[2], painPoint: card[3]});
+        }
+    }
+    return pList;
+}
+
+function reloadList(){
+    let pList = document.getElementById('problemList');
+    pList.innerHTML = "";
+
+    getProblemList().forEach((cardInfo, idx) => {
+        pList.append(newProblemCard(cardInfo, idx));
+    })
+}
+window.onload = function onLoad(){ reloadList(); reloadLines() };
+
+
+function confirmProblem(rank){
+    let card = document.getElementsByClassName("problemCard")[rank];
+
+    let title = validatePInput(card.querySelector("#probTitleInput").value);
+    let s1 = card.querySelector("#pStep1").value;
+    let s2 = card.querySelector("#pStep2").value;
+    let painPoint = {x: -1, y: -1};
+    let newProbCount = getValidSessionID("probCount");
+    let cardData = JSON.parse(sessionStorage.getItem("pCard"+rank));
+    if(cardData != null){
+        painPoint = cardData[3];
+    } else {
+        try {
+            painPoint = JSON.parse(sessionStorage.getItem("tempPoint"));
+            sessionStorage.removeItem("tempPoint");
+        } catch {}
+    }
+
+    editTagDeactivate();
+    sessionStorage.setItem("pCard" + rank, JSON.stringify([title, s1, s2, painPoint]));
+    if (rank >= newProbCount){
+        newProbCount++;
+    }
+    sessionStorage.setItem("probCount", newProbCount);
+    reloadList();
+
+    card.querySelector("#pCardEditMode").style.visibility = "hidden";
+    card.querySelector("#pCardSaved").style.visibility = "visible";
+}
+
+function validatePInput(input){
+    if (input === ""){
+        return "ADD VALIDAtION";
+    }
+    return  input ;
+}
+
+function editProblem(rank){
+    let card = document.getElementsByClassName("problemCard")[rank];
+
+    card.querySelector("#pCardEditMode").style.visibility = "visible";
+    card.querySelector("#pCardSaved").style.visibility = "hidden";
+}
+
+function deleteProblem(rank){
+    let cards = document.getElementsByClassName("problemCard");
+    cards[rank].parentNode.removeChild(cards[rank]);
+
+    for(let i=rank; i<(getValidSessionID("probCount")-1); i++){
+        sessionStorage.setItem("pCard" + i, sessionStorage.getItem("pCard" + (i+1)));
+    }
+
+    sessionStorage.setItem("probCount", getValidSessionID("probCount") - 1);
+    sessionStorage.removeItem("pCard" + getValidSessionID("probCount"));
+    reloadList();
+    reloadLines();
+}
+
+function addTarget(rank){
+    sessionStorage.setItem("openCard", rank);
+    editTagActivate();
+
+}
+
+
+function newProblemCard(cardInfo, idx){
+    let newCard = document.createElement("div");
+    newCard.setAttribute("id", "problemCard");
+    newCard.setAttribute("class", "problemCard");
+
+    newCard.innerHTML =  "        <div id=\"pCardSaved\">\n" +
+            "            <div class=\"sideBySideFlex\">\n" +
+            "                <b class=\"problemNumber\" >" + idx + "</b>\n" +
+            "                <h4 id=\"probTitle\" style = \"flex-grow: 1; margin-top: .17em\">\n" +
+            "                    <b>"+ cardInfo.title +"</b>\n" +
+            "                </h4>\n" +
+            "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardEdit\" onclick=\"editProblem(" + idx + ")\">\n" +
+            "                    <img src=\"/assets/img/edit.png\" style=\"width:20px; height:20px;\">\n" +
+            "                </button>\n" +
+            "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardDelete\" onclick=\"deleteProblem(" + idx + ")\">\n" +
+            "                    <img src=\"/assets/img/delete.png\" style=\"width:20px; height:20px;\">\n" +
+            "                </button>\n" +
+            "            </div>\n" +
+            "            <div>\n" +
+            "                <p style=\"margin-top: 5px;color: #A8AAB9\" >Plan</p>\n" +
+            "                    <label type=\"fCheckbox\"  style=\"height: 20px\">\n" +
+            "                    <input type=\"checkbox\" step=\"any\" class=\"filled\" >\n" +
+            "                        <p id=\"pBoxStep1\" class=\"pStepLabel\">"+ cardInfo.step1 +"</p>\n" +
+            "                </label>\n" +
+            "                    <label type=\"fCheckbox\" id=\"pCheckbox2\" style=\"height: 20px\">\n" +
+            "                    <input type=\"checkbox\" step=\"any\" class=\"filled\" >\n" +
+            "                        <p id=\"pBoxStep2\" class=\"pStepLabel\">"+ cardInfo.step2 +"</p>\n" +
+            "                </label>\n" +
+            "            </div>\n" +
+            "        </div>\n" +
+            "\n" +
+            "        <div id=\"pCardEditMode\">\n" +
+            "            <div class=\"sideBySideFlex\">\n" +
+            "                <b class=\"problemNumber\" >" + idx + "</b>\n" +
+            "                <input type=\"text\" class=\"age-input fInput\" id=\"probTitleInput\" style = \"flex-grow: 1;\" placeholder=\"Problem Title\">\n" +
+            "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"confirmProblem(" + idx + ")\">\n" +
+            "                    <img src=\"/assets/img/confirm.png\" style=\"width:20px; height:20px;\">\n" +
+            "                </button>\n" +
+            "                <button type=\"button\" class=\"idSearch problemCardButton\" id=\"pCardConfirm\" onclick=\"addTarget(" + idx + ")\">\n" +
+            "                    <img src=\"/assets/img/target.png\" style=\"width:20px; height:20px;\">\n" +
+            "                </button>\n" +
+            "            </div>\n" +
+            "            <div>\n" +
+            "                <p style=\"margin-top: 5px;color: #A8AAB9\" >Plan</p>\n" +
+            "                <input type=\"text\" class=\"fInput\" id=\"pStep1\" placeholder=\"Step 1\">\n" +
+            "                <input type=\"text\"  class=\"fInput\" id=\"pStep2\" placeholder=\"Step 2\" style=\"margin-top: 5px\">\n" +
+            "            </div>\n" +
+            "        </div>\n"
+    if(JSON.stringify(cardInfo) !== '{}') {
+        newCard.querySelector("#probTitleInput").value = cardInfo.title;
+        newCard.querySelector("#pStep1").value = cardInfo.step1;
+        newCard.querySelector("#pStep2").value = cardInfo.step2;
+    }
+    return newCard;
+}
+
+
+/* end pcard code */
+
+
+
 
 
 function onlyOneTool(checkbox) {

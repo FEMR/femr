@@ -271,6 +271,26 @@ a.fRedButton:hover{
     padding: 4px;
 }
 
+#complaintWrap {
+    overflow: hidden;
+    min-height: 125px;
+}
+
+#complaintWrap h3 {
+    text-align: center;
+}
+
+#complaintInfo {
+    text-align: center;
+}
+
+#complaintWrap span {
+    padding: 4px;
+}
+
+#translateBtnBox {
+    text-align: right;
+}
 
 .red {
     color: red;

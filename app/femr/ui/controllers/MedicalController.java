@@ -135,6 +135,9 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+        List<String> test = new ArrayList<String>();
+        test.add(translate(patientEncounter.getChiefComplaints().get(0)));
+        patientEncounter.setChiefComplaints(test);
         viewModelGet.setPatientEncounterItem(patientEncounter);
 
         //verify encounter is still open
@@ -245,6 +248,16 @@ public class MedicalController extends Controller {
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
+    }
+
+    private String translate(String text) {
+        ArrayList<String> data = new ArrayList<>();
+        try {
+            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data.get(0);
     }
 
     /**

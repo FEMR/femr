@@ -43,4 +43,26 @@ public class BackEndControllerHelper  {
 
     return speedInfo;
   }
+
+  public static ArrayList<String> executePythonScriptReturns(String absPath, String arg) {
+    ArrayList<String> output = new ArrayList<>();
+    try {
+      ProcessBuilder pb = new ProcessBuilder("python", absPath, arg);
+      Process p = pb.start();
+      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+      String line = "";
+      while ((line = bfr.readLine()) != null) {
+        System.out.println("Python Output: " + line);
+        output.add(line);
+      }
+    } catch (NullPointerException e) {
+      System.out.println("The python script does not exist or could not be opened.");
+    } catch (IOException e) {
+      System.out.println("An I/O error has occurred.");
+    } catch (IndexOutOfBoundsException e) {
+      System.out.println("The command list is empty");
+    }
+    return output;
+  }
 }

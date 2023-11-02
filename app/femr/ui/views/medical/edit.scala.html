@@ -9,6 +9,7 @@
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.partials.medical.tabs._
 @import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.partials.complaint
 @import femr.ui.views.html.medical.listVitals
 
     @additionalStyles = {
@@ -34,7 +35,7 @@
 
         @*Careful with the pagename passed into patientOverview() - it impacts what is displayed*@
         @patientOverview(viewModel.getPatientItem, viewModel.getPatientEncounterItem, viewModel.getSettings, "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId)
-
+        @complaint(viewModel.getPatientEncounterItem)
 
         <div id="mainWrap" class="backgroundForWrap">
             <div id="vitalsWrap">

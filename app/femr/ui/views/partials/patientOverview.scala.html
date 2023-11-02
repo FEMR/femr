@@ -36,14 +36,6 @@
 
     <label>Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
 
-    @* Chief Complaint*@
-    @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
-        <label>Complaint: </label> <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) {
-            @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
-        }</span>
-    } else {
-        <label>Complaint: </label> <span>N/A</span>
-    }
 </div>
 </div>
 </div>

@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class BackEndControllerHelper  {
@@ -49,12 +50,20 @@ public class BackEndControllerHelper  {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath, arg);
       Process p = pb.start();
-      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(),  "UTF-8"));
 
       String line = "";
       while ((line = bfr.readLine()) != null) {
-        System.out.println("Python Output: " + line);
-        output.add(line);
+        line = line.replace("[","");
+        line = line.replace("]","");
+        String[] str_lst = line.split(", ");
+        byte[] byte_lst = new byte[str_lst.length];
+        for (int i = 0; i < str_lst.length; i++) {
+          byte_lst[i] = (byte) Integer.parseInt(str_lst[i]);
+        }
+        String str = new String(byte_lst);
+        System.out.println("Python Output: " + str);
+        output.add(str);
       }
     } catch (NullPointerException e) {
       System.out.println("The python script does not exist or could not be opened.");

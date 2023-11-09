@@ -79,7 +79,7 @@ POST        /triage/:id                                        @femr.ui.controll
 POST        /medical/updateVitals/:id                          @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /medical/newVitals                                 @femr.ui.controllers.MedicalController.newVitalsGet()
 GET         /medical/listVitals/:id                            @femr.ui.controllers.MedicalController.listVitalsGet(id: Integer)
-GET         /medical/edit/:id                                  @femr.ui.controllers.MedicalController.editGet(id: Integer)
+GET         /medical/edit/:id/:translateOption                 @femr.ui.controllers.MedicalController.editGet(id: Integer, translateOption: Boolean)
 POST        /medical/edit/:id                                  @femr.ui.controllers.MedicalController.editPost(id: Integer)
 GET         /medical                                           @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                                           @femr.ui.controllers.MedicalController.indexPost()

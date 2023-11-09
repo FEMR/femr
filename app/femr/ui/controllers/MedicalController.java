@@ -45,6 +45,8 @@ public class MedicalController extends Controller {
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
 
+    public boolean translationOption = false;
+
     @Inject
     public MedicalController(AssetsFinder assetsFinder,
                              FormFactory formFactory,
@@ -118,10 +120,10 @@ public class MedicalController extends Controller {
             return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
 
-        return redirect(routes.MedicalController.editGet(patientId));
+        return redirect(routes.MedicalController.editGet(patientId, true));
     }
 
-    public Result editGet(int patientId) {
+    public Result editGet(int patientId, boolean translateOption) {
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
@@ -135,9 +137,13 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
-        List<String> test = new ArrayList<String>();
-        test.add(translate(patientEncounter.getChiefComplaints().get(0)));
-        patientEncounter.setChiefComplaints(test);
+
+        if (translateOption) {
+            List<String> test = new ArrayList<String>();
+            test.add(translate(patientEncounter.getChiefComplaints().get(0)));
+            patientEncounter.setChiefComplaints(test);
+        }
+
         viewModelGet.setPatientEncounterItem(patientEncounter);
 
         //verify encounter is still open

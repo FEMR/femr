@@ -1,16 +1,19 @@
 @(patientEncounter: femr.common.models.PatientEncounterItem)
 
+@import femr.ui.controllers.routes.MedicalController
+
 <div id="complaintWrap" class="backgroundForWrap">
-    <div id="translateBox">
-        <p1>Show Original</p1>
-        <label class="translatorSwitch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
+
+    <div class="fInlineButton">
+        @helper.form(action = MedicalController.editGet(patientEncounter.getId, true)) {
+            <button>↻</button>
+        }
+        @helper.form(action = MedicalController.editGet(patientEncounter.getId, false)) {
+            <button>Show Original</button>
+        }
     </div>
 
     <h3>Complaint</h3>
-
     <div id= "complaintInfo">
         @* Chief Complaint*@
         @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
@@ -18,7 +21,8 @@
                 @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
             }</span>
         } else {
-            <label>Complaint: </label> <span>N/A</span>
+            <label>Complaint: </label>
+            <span>N/A</span>
         }
         <h3> </h3>
     </div>

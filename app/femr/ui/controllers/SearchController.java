@@ -3,7 +3,6 @@ package femr.ui.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import controllers.AssetsFinder;
 import femr.business.services.core.IInventoryService;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
@@ -64,7 +63,7 @@ public class SearchController extends Controller {
         if (patientItems.size() == 1) {
             PatientItem patientItem = patientItems.get(0);
             if (StringUtils.equals(page, "medical")) {
-                return redirect(routes.MedicalController.editGet(patientItem.getId()));
+                return redirect(routes.MedicalController.editGet(patientItem.getId(),true));
             } else if (StringUtils.equals(page, "pharmacy")) {
                 return redirect(routes.PharmaciesController.editGet(patientItem.getId()));
             } else if (StringUtils.equals(page, "triage")) {

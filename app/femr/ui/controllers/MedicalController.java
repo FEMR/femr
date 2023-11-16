@@ -45,7 +45,6 @@ public class MedicalController extends Controller {
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
 
-    public boolean translationOption = false;
 
     @Inject
     public MedicalController(AssetsFinder assetsFinder,

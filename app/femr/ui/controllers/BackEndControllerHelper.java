@@ -53,18 +53,19 @@ public class BackEndControllerHelper  {
       BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(),  "UTF-8"));
 
       String line = "";
-      while ((line = bfr.readLine()) != null) {
-        line = line.replace("[","");
-        line = line.replace("]","");
-        String[] str_lst = line.split(", ");
-        byte[] byte_lst = new byte[str_lst.length];
-        for (int i = 0; i < str_lst.length; i++) {
-          byte_lst[i] = (byte) Integer.parseInt(str_lst[i]);
-        }
-        String str = new String(byte_lst);
-        System.out.println("Python Output: " + str);
-        output.add(str);
+      line = bfr.readLine();
+      p.destroy();
+      line = line.replace("[","");
+      line = line.replace("]","");
+      String[] str_lst = line.split(", ");
+      byte[] byte_lst = new byte[str_lst.length];
+      for (int i = 0; i < str_lst.length; i++) {
+        byte_lst[i] = (byte) Integer.parseInt(str_lst[i]);
       }
+      String str = new String(byte_lst);
+      System.out.println("Python Output: " + str);
+      output.add(str);
+
     } catch (NullPointerException e) {
       System.out.println("The python script does not exist or could not be opened.");
     } catch (IOException e) {

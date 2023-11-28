@@ -139,6 +139,7 @@ public class MedicalController extends Controller {
 
         if (translateOption) {
             List<String> test = new ArrayList<String>();
+            test.add(patientEncounter.getChiefComplaints().get(0));
             test.add(translate(patientEncounter.getChiefComplaints().get(0)));
             patientEncounter.setChiefComplaints(test);
         }

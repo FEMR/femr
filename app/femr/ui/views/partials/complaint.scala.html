@@ -3,23 +3,27 @@
 @import femr.ui.controllers.routes.MedicalController
 
 <div id="complaintWrap" class="backgroundForWrap">
-
-    <div class="fInlineButton">
-        @helper.form(action = MedicalController.editGet(patientEncounter.getId, true)) {
-            <button>↻</button>
-        }
-        @helper.form(action = MedicalController.editGet(patientEncounter.getId, false)) {
-            <button>Show Original</button>
-        }
-    </div>
-
     <h3>Complaint</h3>
     <div id= "complaintInfo">
         @* Chief Complaint*@
         @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
-            <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) {
+            <span>@for(x <- 2 to patientEncounter.getChiefComplaints.size) {
                 @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
             }</span>
+        } else {
+            <label>Complaint: </label>
+            <span>N/A</span>
+        }
+        <h3> </h3>
+    </div>
+</div>
+
+<div id="complaintWrapOriginal" class="backgroundForWrap">
+    <h3>Original Complaint</h3>
+    <div id= "complaintInfo">
+        @* Chief Complaint*@
+        @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
+            <span>@patientEncounter.getChiefComplaints.get(0)</span>
         } else {
             <label>Complaint: </label>
             <span>N/A</span>

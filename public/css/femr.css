@@ -290,11 +290,26 @@ a.fRedButton:hover{
 }
 
 #complaintWrap {
+    margin-top: 15px;
     overflow: hidden;
-    min-height: 125px;
+    min-height: 180px;
+    width: 60%;
+    float: left;
+}
+
+#complaintWrapOriginal {
+    margin-top: 15px;
+    overflow: hidden;
+    min-height: 180px;
+    width: 39%;
+    margin-left: 61%;
 }
 
 #complaintWrap h3 {
+    text-align: center;
+}
+
+#complaintWrapOriginal h3 {
     text-align: center;
 }
 

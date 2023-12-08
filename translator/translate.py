@@ -17,7 +17,7 @@ def main():
         argostranslate.package.install_from_path(package_to_install.download())
 
     translatedText = argostranslate.translate.translate(sys.argv[1], from_code, to_code)
-    print(list(translatedText.encode('utf-8')))
+    print(translatedText)
 
 if __name__ == "__main__":
    main()

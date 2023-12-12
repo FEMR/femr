@@ -81,11 +81,11 @@ GET         /medical/newVitals                                 @femr.ui.controll
 GET         /medical/listVitals/:id                            @femr.ui.controllers.MedicalController.listVitalsGet(id: Integer)
 GET         /medical/edit/:id                                  @femr.ui.controllers.MedicalController.editGet(id: Integer)
 POST        /medical/edit/:id                                  @femr.ui.controllers.MedicalController.editPost(id: Integer)
-GET         /medical/translate/:id                             @femr.ui.controllers.MedicalController.translateGet(id: Integer)
 GET         /medical                                           @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                                           @femr.ui.controllers.MedicalController.indexPost()
 GET         /medical/prescriptionRow/:index                    @femr.ui.controllers.MedicalController.prescriptionRowGet( index: Integer )
 POST        /medical/deleteProblem/:patientId/:problem         @femr.ui.controllers.MedicalController.deleteExistingProblem(patientId: Integer, problem: String)
+GET         /translate                                         @femr.ui.controllers.MedicalController.translateGet()
 #Research
 GET         /research                                          @femr.ui.controllers.ResearchController.indexGet()
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()

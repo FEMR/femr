@@ -311,13 +311,17 @@ var recentVitals ={
 
 $(document).ready(function () {
 
+    var textToTranslate = $("#complaintInfo span").text()
+
     $.ajax({
         type: 'get',
-        url: '/medical/translate/' + $('#patientId').val(),
+        url: '/translate',
+        data: {text: textToTranslate},
         success: function(translation){
             $('#complaintInfo').text(translation);
         },
         failure: function(result){
+            console.error('Failed to fetch translation');
         }
     });
 

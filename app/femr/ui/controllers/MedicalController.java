@@ -21,6 +21,7 @@ import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.data.FormFactory;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -118,12 +119,10 @@ public class MedicalController extends Controller {
         } catch (NullPointerException e) {
             return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
-        System.out.println("HERE1");
         return redirect(routes.MedicalController.editGet(patientId));
     }
 
     public Result editGet(int patientId) {
-        System.out.println("HERE2");
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
@@ -249,21 +248,9 @@ public class MedicalController extends Controller {
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
     }
 
-    public Result translateGet(int patientId) {
-        System.out.println("HERE3");
-        //Get Patient Encounter
-        PatientEncounterItem patientEncounter;
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
-        if (patientEncounterItemServiceResponse.hasErrors()) {
-
-            throw new RuntimeException();
-        }
-
-        patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
-
-        System.out.println("HERE4");
-
-        return ok(translate(patientEncounter.getChiefComplaints().get(0)));
+    public Result translateGet() {
+        String text = request().getQueryString("text");
+        return ok(Json.toJson(translate(text)));
     }
 
     private String translate(String text) {
@@ -436,8 +423,6 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
-
-
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

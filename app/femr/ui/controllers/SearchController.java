@@ -63,7 +63,7 @@ public class SearchController extends Controller {
         if (patientItems.size() == 1) {
             PatientItem patientItem = patientItems.get(0);
             if (StringUtils.equals(page, "medical")) {
-                return redirect(routes.MedicalController.editGet(patientItem.getId(),true));
+                return redirect(routes.MedicalController.editGet(patientItem.getId()));
             } else if (StringUtils.equals(page, "pharmacy")) {
                 return redirect(routes.PharmaciesController.editGet(patientItem.getId()));
             } else if (StringUtils.equals(page, "triage")) {

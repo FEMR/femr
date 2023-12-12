@@ -35,7 +35,7 @@
 
         @*Careful with the pagename passed into patientOverview() - it impacts what is displayed*@
         @patientOverview(viewModel.getPatientItem, viewModel.getPatientEncounterItem, viewModel.getSettings, "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId)
-        @complaint(viewModel.getPatientEncounterItem)
+        @complaint(viewModel.getPatientEncounterItem, assets)
 
         <div id="mainWrap" class="backgroundForWrap">
             <div id="vitalsWrap">

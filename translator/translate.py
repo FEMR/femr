@@ -3,8 +3,8 @@ import argostranslate.package
 import argostranslate.translate
 
 def main():
-    from_code = "en"
-    to_code = "es"
+    from_code = sys.argv[2]
+    to_code = sys.argv[3]
 
     if (len(argostranslate.package.get_installed_packages()) == 0):
         argostranslate.package.update_package_index()

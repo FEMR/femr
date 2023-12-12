@@ -1,4 +1,4 @@
-@(patientEncounter: femr.common.models.PatientEncounterItem)
+@(patientEncounter: femr.common.models.PatientEncounterItem, assets: AssetsFinder)
 
 @import femr.ui.controllers.routes.MedicalController
 
@@ -6,15 +6,7 @@
     <h3>Complaint</h3>
     <div id= "complaintInfo">
         @* Chief Complaint*@
-        @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
-            <span>@for(x <- 2 to patientEncounter.getChiefComplaints.size) {
-                @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
-            }</span>
-        } else {
-            <label>Complaint: </label>
-            <span>N/A</span>
-        }
-        <h3> </h3>
+        <img class="loading" src="@assets.path("img/graph-loader.gif")" alt="loading&hellip;" />
     </div>
 </div>
 

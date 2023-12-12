@@ -46,10 +46,10 @@ public class BackEndControllerHelper  {
     return speedInfo;
   }
 
-  public static ArrayList<String> executePythonScriptReturns(String absPath, String arg) {
+  public static ArrayList<String> executePythonScriptReturns(String absPath, String arg, String from_code, String to_code) {
     ArrayList<String> output = new ArrayList<>();
     try {
-      ProcessBuilder pb = new ProcessBuilder("python", absPath, arg);
+      ProcessBuilder pb = new ProcessBuilder("python", absPath, arg, from_code, to_code);
       Process p = pb.start();
       BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(),  "UTF-8"));
 

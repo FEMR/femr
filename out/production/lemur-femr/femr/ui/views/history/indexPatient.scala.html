@@ -81,7 +81,7 @@
                     </span>
                 }
 
-                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId, true).url}" class="btn btn-default pull-right">View in Medical</a>
+                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Medical</a>
                 <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Pharmacy</a>
                 <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">See This Patient In Triage</a>
 

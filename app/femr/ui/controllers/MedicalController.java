@@ -118,12 +118,12 @@ public class MedicalController extends Controller {
         } catch (NullPointerException e) {
             return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
-
-        return redirect(routes.MedicalController.editGet(patientId, true));
+        System.out.println("HERE1");
+        return redirect(routes.MedicalController.editGet(patientId));
     }
 
-    public Result editGet(int patientId, boolean translateOption) {
-
+    public Result editGet(int patientId) {
+        System.out.println("HERE2");
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
@@ -136,13 +136,6 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
-
-        if (translateOption) {
-            List<String> test = new ArrayList<String>();
-            test.add(patientEncounter.getChiefComplaints().get(0));
-            test.add(translate(patientEncounter.getChiefComplaints().get(0)));
-            patientEncounter.setChiefComplaints(test);
-        }
 
         viewModelGet.setPatientEncounterItem(patientEncounter);
 
@@ -256,10 +249,27 @@ public class MedicalController extends Controller {
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
     }
 
+    public Result translateGet(int patientId) {
+        System.out.println("HERE3");
+        //Get Patient Encounter
+        PatientEncounterItem patientEncounter;
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (patientEncounterItemServiceResponse.hasErrors()) {
+
+            throw new RuntimeException();
+        }
+
+        patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
+        System.out.println("HERE4");
+
+        return ok(translate(patientEncounter.getChiefComplaints().get(0)));
+    }
+
     private String translate(String text) {
         ArrayList<String> data = new ArrayList<>();
         try {
-            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text);
+            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text, "es", "en");
         } catch (Exception e) {
             e.printStackTrace();
         }

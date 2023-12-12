@@ -311,6 +311,16 @@ var recentVitals ={
 
 $(document).ready(function () {
 
+    $.ajax({
+        type: 'get',
+        url: '/medical/translate/' + $('#patientId').val(),
+        success: function(translation){
+            $('#complaintInfo').text(translation);
+        },
+        failure: function(result){
+        }
+    });
+
     //set a global variable to track browser compatibility with image previews
     window.isFileReader = typeof FileReader !== 'undefined';
 

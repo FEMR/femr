@@ -18,7 +18,7 @@ tEMR is working on a dynamic translation service for physicians and healthcare c
 3. [Team FEMR](https://teamfemr.org)
 
 ### tEMR Community
-2. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
+1. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
 
 ### Dependencies
 

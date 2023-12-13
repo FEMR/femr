@@ -8,10 +8,17 @@
 
 fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.
 
+### tEMR Dynamic Translation
+
+tEMR is working on a dynamic translation service for physicians and healthcare coders who may write and read in different languages but must be on the same page. Our dynamic translation involves neural networks like Argos (OpenNMT) working in the background in python.
+
 ### Community
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
 3. [Team FEMR](https://teamfemr.org)
+
+### tEMR Community
+2. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
 
 ### Dependencies
 

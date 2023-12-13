@@ -132,6 +132,7 @@ csv.path="./Upload/CSV"
 ```
 
 5. Go to `Run` -> `Edit Configurations` -> click on the `+` sign -> `Play 2 App`.
+   - If `Play 2 App` doesn't appear, try restarting the IDE.
 
 <details> <summary> screenshot </summary>
 

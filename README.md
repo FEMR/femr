@@ -24,6 +24,9 @@ tEMR is working on a dynamic translation service for physicians and healthcare c
 
 * [Play Framework](http://www.playframework.com/)
 
+### Technical Specification
+For further specification of tEMR contributions, please see the tEMRTechSpec.pdf file.
+
 ### Contributing
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 

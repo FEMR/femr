@@ -72,8 +72,9 @@ Email: kevin.zurek@teamfemr.org
 - `git checkout super-femr`
 
 ### Step 3: Setting up the DB 
-1. Open the MySQL Workbench.
-2. Select the db icon to create a new schema and call it `femr_db`.
+1. Make sure your MySQL server is running on your machine.
+2. Open the MySQL Workbench.
+3. Select the db icon to create a new schema and call it `femr_db`.
 
 <details> <summary> screenshot </summary>
 
@@ -81,7 +82,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-3. Under the Administration tab, select `User and Priviliges`. Then `Add account` and add `Login name` and `Password` of your preference. Save the login and password because you will need it in the later steps. 
+4. Under the Administration tab, select `User and Priviliges`. Then `Add account` and add `Login name` and `Password` of your preference. Save the login and password because you will need it in the later steps. 
      - For this example, the username is `testing` and password is `password`.
 
 <details> <summary> screenshot </summary>
@@ -90,7 +91,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-4. Then go to the `Schema Privileges` tab, select `Add Entry...` for the user you created in the previous step, and select the `femr_db` schema.
+5. Then go to the `Schema Privileges` tab, select `Add Entry...` for the user you created in the previous step, and select the `femr_db` schema.
 
 <details> <summary> screenshot </summary>
 
@@ -100,7 +101,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-5. Give all of the rights, except the `GRANT OPTION`. 
+6. Give all of the rights, except the `GRANT OPTION`. 
 
 <details> <summary> screenshot </summary>
 

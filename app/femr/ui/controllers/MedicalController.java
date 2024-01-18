@@ -256,7 +256,7 @@ public class MedicalController extends Controller {
     private String translate(String text) {
         ArrayList<String> data = new ArrayList<>();
         try {
-            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text, "es", "en");
+            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text, "en", "es");
         } catch (Exception e) {
             e.printStackTrace();
         }

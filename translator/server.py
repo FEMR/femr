@@ -6,6 +6,19 @@ import json
 import argostranslate.package
 import argostranslate.translate
 import sys
+from transformers import MarianMTModel, MarianTokenizer
+from typing import Sequence
+
+class MarianModel:
+    def __init__(self, source_lang: str, dest_lang: str) -> None:
+        self.model_name = f'Helsinki-NLP/opus-mt-{source_lang}-{dest_lang}'
+        self.model = MarianMTModel.from_pretrained(self.model_name)
+        self.tokenizer = MarianTokenizer.from_pretrained(self.model_name)
+
+    def translate(self, texts: Sequence[str]) -> Sequence[str]:
+        tokens = self.tokenizer(list(texts), return_tensors="pt", padding=True)
+        translate_tokens = self.model.generate(**tokens)
+        return [self.tokenizer.decode(t, skip_special_tokens=True) for t in translate_tokens]
 
 class WebRequestHandler(BaseHTTPRequestHandler):
     @cached_property
@@ -21,8 +34,14 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         text = self.query_data['text']
         from_code = self.query_data['from']
         to_code = self.query_data['to']
-        #language hard coded right now, need to pass language codes in request
-        return argostranslate.translate.translate(text, from_code, to_code)
+
+        #ARGOS
+        #return argostranslate.translate.translate(text, from_code, to_code)
+
+        #Marian
+        marian = self.MarianModel(from_code, to_code)
+        translatedText = marian.translate([text])
+        return translatedText[0]
 
     def do_GET(self):
         self.send_response(200)

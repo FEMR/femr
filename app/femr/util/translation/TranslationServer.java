@@ -31,7 +31,8 @@ public class TranslationServer {
         if(!appRunning()){
             String absPath = "translator/server.py";
             try {
-                ProcessBuilder pb = new ProcessBuilder("py", absPath);
+
+                ProcessBuilder pb = new ProcessBuilder("python", absPath);
                 File log = new File("translator/log");
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);

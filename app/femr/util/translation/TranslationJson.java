@@ -1,4 +1,4 @@
-package femr.util;
+package femr.util.translation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

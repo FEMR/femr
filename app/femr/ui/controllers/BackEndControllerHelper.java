@@ -1,15 +1,12 @@
 package femr.ui.controllers;
 
 import femr.util.translation.TranslationServer;
-import femr.util.TranslationJson;
-import scala.xml.Null;
+import femr.util.translation.TranslationJson;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -77,10 +74,6 @@ public class BackEndControllerHelper  {
         //parse translation from JSON
         ObjectMapper mapper = new ObjectMapper();
         TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
-//        String[] data = inputLine.split(":");
-//        translatedText = data[1].substring(2, data[1].length() - 2);
-
-
         output = api.translatedText;
       }
       con.disconnect();

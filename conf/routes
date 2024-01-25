@@ -112,3 +112,7 @@ GET         /assets/*file                                       controllers.Asse
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()
 POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()
+
+#Trauma Sheet
+GET         /trauma                                             @femr.ui.controllers.TraumaController.index()
+

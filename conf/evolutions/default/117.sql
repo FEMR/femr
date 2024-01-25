@@ -1,6 +1,6 @@
 # --- !Ups
 
-CREATE TABLE language_codes (
+CREATE TABLE `language_codes` (
     code VARCHAR(5) NOT NULL,
     language_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (code)
@@ -8,4 +8,4 @@ CREATE TABLE language_codes (
 
 # --- !Downs
 
-DROP TABLE IF EXISTS language_codes;
+DROP TABLE IF EXISTS `language_codes`;

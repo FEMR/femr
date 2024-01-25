@@ -16,19 +16,28 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.core;
+package femr.data.models.mysql;
 
-public interface IConceptDiagnosis {
+import femr.data.models.core.IMeasurementCategory;
 
-    int getId();
+import javax.persistence.*;
 
-    void setId(int id);
+@Entity
+@Table(name = "concept_diagnoses")
+public class MeasurementCategory implements IMeasurementCategory {
 
-    String getName();
+    @Id
+    @Column(name = "category", unique = true, nullable = false, length=16)
+    private String category;
 
-    void setName(String name);
 
-    String getLanguageCode();
+    @Override
+    public String getCategory() {
+        return this.category;
+    }
 
-    void setLanguageCode(String languageCode);
+    @Override
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

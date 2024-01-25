@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 
 import femr.util.translation.TranslationServer;
+import femr.util.TranslationJson;
 import scala.xml.Null;
 
 import java.io.*;
@@ -9,6 +10,10 @@ import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 public class BackEndControllerHelper  {
 
@@ -49,8 +54,8 @@ public class BackEndControllerHelper  {
     return speedInfo;
   }
 
-  public static ArrayList<String> executePythonScriptReturns(String absPath, String arg, String from, String to) {
-    ArrayList<String> output = new ArrayList<>();
+  public static String translate(String arg, String from, String to) {
+    String output = "";
     try {
       
       //Build GET request argument, replacing spaces and newlines
@@ -70,9 +75,13 @@ public class BackEndControllerHelper  {
         in.close();
 
         //parse translation from JSON
-        String[] data = inputLine.split(":");
-        translatedText = data[1].substring(2, data[1].length() - 2);
-        output.add(translatedText);
+        ObjectMapper mapper = new ObjectMapper();
+        TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
+//        String[] data = inputLine.split(":");
+//        translatedText = data[1].substring(2, data[1].length() - 2);
+
+
+        output = api.translatedText;
       }
       con.disconnect();
 
@@ -84,7 +93,7 @@ public class BackEndControllerHelper  {
       TranslationServer.start();
       //busy wait for server to start
       while(!TranslationServer.appRunning());
-      return executePythonScriptReturns(absPath, arg, from, to);
+      return translate(arg, from, to);
 
     } catch (IndexOutOfBoundsException e) {
       System.out.println("The command list is empty");

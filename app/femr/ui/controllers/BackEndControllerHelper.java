@@ -57,8 +57,8 @@ public class BackEndControllerHelper  {
       arg = arg.replaceAll(" ", "+").replaceAll("\n", "+");
       String translatedText = "";
 
-      //Make get request
-      URL url = new URL("http://localhost:8000/?text=" + arg);
+      //Make GET request
+      URL url = new URL("http://localhost:8000/?text=" + arg + "&from=" + from + "&to=" + to);
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod("GET");
 
@@ -82,12 +82,9 @@ public class BackEndControllerHelper  {
       System.out.println("An I/O error has occurred. (Translation server could be down)");
 
       TranslationServer.start();
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
-        return executePythonScriptReturns(absPath, arg, from, to);
+      //busy wait for server to start
+      while(!TranslationServer.appRunning());
+      return executePythonScriptReturns(absPath, arg, from, to);
 
     } catch (IndexOutOfBoundsException e) {
       System.out.println("The command list is empty");

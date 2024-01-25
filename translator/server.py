@@ -19,10 +19,10 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     @cached_property
     def translate_data(self):
         text = self.query_data['text']
-        if(text == "temporaryexitcode"):
-            sys.exit()
+        from_code = self.query_data['from']
+        to_code = self.query_data['to']
         #language hard coded right now, need to pass language codes in request
-        return argostranslate.translate.translate(text, "en", "es")
+        return argostranslate.translate.translate(text, from_code, to_code)
 
     def do_GET(self):
         self.send_response(200)
@@ -44,4 +44,3 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     server = HTTPServer(("127.0.0.1", 8000), WebRequestHandler)
     server.serve_forever()
-    print("Test")

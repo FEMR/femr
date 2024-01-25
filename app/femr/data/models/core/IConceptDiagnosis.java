@@ -28,4 +28,8 @@ public interface IConceptDiagnosis {
     String getName();
 
     void setName(String name);
+
+    String getLanguageCode();
+
+    void setLanguageCode(String languageCode);
 }

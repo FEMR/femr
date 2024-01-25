@@ -40,4 +40,7 @@ public interface IPatientAgeClassification {
     int getSortOrder();
 
     void setSortOrder(int sortOrder);
+
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
 }

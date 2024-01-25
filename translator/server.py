@@ -37,11 +37,10 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
         #ARGOS
         #return argostranslate.translate.translate(text, from_code, to_code)
-
-        #Marian
-        marian = self.MarianModel(from_code, to_code)
-        translatedText = marian.translate([text])
-        return translatedText[0]
+        
+        #MARIAN
+        marian = MarianModel(from_code, to_code)
+        return marian.translate([text])[0]
 
     def do_GET(self):
         self.send_response(200)

@@ -253,6 +253,7 @@ public class MedicalController extends Controller {
         return ok(Json.toJson(translate(text)));
     }
 
+//    Calls Python Script to translate
     private String translate(String text) {
         String data = "";
         try {

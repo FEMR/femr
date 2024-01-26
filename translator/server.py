@@ -9,6 +9,9 @@ import sys
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 
+PORT = 8000
+TIMEOUT = 60
+
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
         self.model_name = f'Helsinki-NLP/opus-mt-{source_lang}-{dest_lang}'
@@ -34,13 +37,12 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         text = self.query_data['text']
         from_code = self.query_data['from']
         to_code = self.query_data['to']
-
         #ARGOS
-        #return argostranslate.translate.translate(text, from_code, to_code)
+        return argostranslate.translate.translate(text, from_code, to_code)
         
         #MARIAN
-        marian = MarianModel(from_code, to_code)
-        return marian.translate([text])[0]
+        #marian = MarianModel(from_code, to_code)
+        #return marian.translate([text])[0]
 
     def do_GET(self):
         self.send_response(200)
@@ -48,8 +50,6 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(self.get_response().encode("utf-8"))
 
-    def do_POST(self):
-        self.do_GET()
 
     def get_response(self):
         return json.dumps(
@@ -60,5 +60,12 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         )
 
 if __name__ == "__main__":
-    server = HTTPServer(("127.0.0.1", 8000), WebRequestHandler)
-    server.serve_forever()
+    try:
+        server = HTTPServer(("127.0.0.1", PORT), WebRequestHandler)
+        server.timeout = TIMEOUT
+        server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())
+        print("Serving at port", PORT)
+        while(True): server.handle_request()
+    except TimeoutError:
+        print("Translation server timed out")
+        sys.exit()

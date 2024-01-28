@@ -7,4 +7,4 @@ CREATE  TABLE `measurement_categories`
 
 # --- !Downs
 
-DROP TABLE IF EXISTS measurement_categories;
+DROP TABLE IF EXISTS `measurement_categories`;

@@ -21,9 +21,8 @@ package femr.data.models.mysql;
 import femr.data.models.core.IMeasurementCategory;
 
 import javax.persistence.*;
-
 @Entity
-@Table(name = "concept_diagnoses")
+@Table(name = "measurement_categories")
 public class MeasurementCategory implements IMeasurementCategory {
 
     @Id

@@ -31,46 +31,57 @@ import javax.persistence.Table;
 public class PageElementTranslation implements IPageElementTranslation {
 
     @Id
+    @Column(name = "translation_id", unique = true, nullable = false)
+    private int translation_id;
+
+    @Id
+    @Column(name = "element_id", unique = true, nullable = false)
+    private int element_id;
+
     @Column(name = "language_code", unique = true, nullable = false, length=5)
     private String language_code;
 
+    @Column(name = "translation", unique = true, nullable = false, length=100)
+    private String translation;
+
     @Override
     public int getTranslationId() {
-        return 0;
+        return translation_id;
     }
 
     @Override
-    public void setTranslationId(int TranslationId) {
-
+    public void setTranslationId(int translationId) {
+        this.translation_id = translationId;
     }
 
     @Override
     public int getElementId() {
-        return 0;
+        return element_id;
     }
 
     @Override
-    public void setElementId(int ElementId) {
-
+    public void setElementId(int elementId) {
+        this.element_id = elementId;
     }
 
     @Override
     public String getLanguageCode() {
-        return null;
+        return language_code;
     }
 
     @Override
-    public void setLanguageCode(String LanguageCode) {
-
+    public void setLanguageCode(String languageCode) {
+        this.language_code = languageCode;
     }
 
     @Override
     public String getTranslation() {
-        return null;
+        return translation;
     }
 
     @Override
-    public void setTranslation(String Translation) {
-
+    public void setTranslation(String translation) {
+        this.translation = translation;
     }
 }
+

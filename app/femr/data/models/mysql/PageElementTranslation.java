@@ -34,14 +34,13 @@ public class PageElementTranslation implements IPageElementTranslation {
     @Column(name = "translation_id", unique = true, nullable = false)
     private int translation_id;
 
-    @Id
     @Column(name = "element_id", unique = true, nullable = false)
     private int element_id;
 
     @Column(name = "language_code", unique = true, nullable = false, length=5)
     private String language_code;
 
-    @Column(name = "translation", unique = true, nullable = false, length=100)
+    @Column(name = "translation")
     private String translation;
 
     @Override

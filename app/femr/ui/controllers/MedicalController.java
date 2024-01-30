@@ -245,7 +245,7 @@ public class MedicalController extends Controller {
         //Alaa Serhan
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
 
-        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
+        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, patientEncounter, assetsFinder));
     }
 
     public Result translateGet() {

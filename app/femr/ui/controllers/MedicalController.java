@@ -253,14 +253,15 @@ public class MedicalController extends Controller {
         return ok(Json.toJson(translate(text)));
     }
 
+//    Calls Python Script to translate
     private String translate(String text) {
-        ArrayList<String> data = new ArrayList<>();
+        String data = "";
         try {
-            data = BackEndControllerHelper.executePythonScriptReturns("translator/translate.py", text, "es", "en");
+            data = BackEndControllerHelper.translate(text, "en", "es");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return data.get(0);
+        return data;
     }
 
     /**

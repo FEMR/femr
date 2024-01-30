@@ -1,4 +1,4 @@
-# FEMR - Fast Electronic Medical Records
+# tEMR - Dynamic Translation for FEMR
 
 ![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiMVBXNWNSMnZsYkgxb05IYS9rclF4eE9QcVdZT1JBNWI1V3RucFd1cXd4ZVEzTzZ5ZWREaEJJRXRDbExyY243eG05VVV4cWVkQXlMelN1bnkxY2dHUUlZPSIsIml2UGFyYW1ldGVyU3BlYyI6IjlCTnI2U0hvU00yNjROQnQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
@@ -18,11 +18,14 @@ tEMR is working on a dynamic translation service for physicians and healthcare c
 3. [Team FEMR](https://teamfemr.org)
 
 ### tEMR Community
-2. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
+1. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
 
 ### Dependencies
 
 * [Play Framework](http://www.playframework.com/)
+
+### Technical Specification
+For further specification of tEMR contributions, please see the tEMRTechSpec.pdf file.
 
 ### Contributing
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
@@ -72,8 +75,9 @@ Email: kevin.zurek@teamfemr.org
 - `git checkout super-femr`
 
 ### Step 3: Setting up the DB 
-1. Open the MySQL Workbench.
-2. Select the db icon to create a new schema and call it `femr_db`.
+1. Make sure your MySQL server is running on your machine.
+2. Open the MySQL Workbench.
+3. Select the db icon to create a new schema and call it `femr_db`.
 
 <details> <summary> screenshot </summary>
 
@@ -81,7 +85,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-3. Under the Administration tab, select `User and Priviliges`. Then `Add account` and add `Login name` and `Password` of your preference. Save the login and password because you will need it in the later steps. 
+4. Under the Administration tab, select `User and Priviliges`. Then `Add account` and add `Login name` and `Password` of your preference. Save the login and password because you will need it in the later steps. 
      - For this example, the username is `testing` and password is `password`.
 
 <details> <summary> screenshot </summary>
@@ -90,7 +94,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-4. Then go to the `Schema Privileges` tab, select `Add Entry...` for the user you created in the previous step, and select the `femr_db` schema.
+5. Then go to the `Schema Privileges` tab, select `Add Entry...` for the user you created in the previous step, and select the `femr_db` schema.
 
 <details> <summary> screenshot </summary>
 
@@ -100,7 +104,7 @@ Email: kevin.zurek@teamfemr.org
 
 </details>
 
-5. Give all of the rights, except the `GRANT OPTION`. 
+6. Give all of the rights, except the `GRANT OPTION`. 
 
 <details> <summary> screenshot </summary>
 
@@ -128,6 +132,7 @@ csv.path="./Upload/CSV"
 ```
 
 5. Go to `Run` -> `Edit Configurations` -> click on the `+` sign -> `Play 2 App`.
+   - If `Play 2 App` doesn't appear, try restarting the IDE.
 
 <details> <summary> screenshot </summary>
 

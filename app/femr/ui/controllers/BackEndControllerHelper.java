@@ -1,11 +1,16 @@
 package femr.ui.controllers;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import femr.util.translation.TranslationServer;
+import femr.util.translation.TranslationJson;
+
+import java.io.*;
 import java.util.ArrayList;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 public class BackEndControllerHelper  {
 
@@ -27,7 +32,7 @@ public class BackEndControllerHelper  {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath);
       Process p = pb.start();
-      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
 
       String line = "";
       while ((line = bfr.readLine()) != null) {
@@ -46,22 +51,43 @@ public class BackEndControllerHelper  {
     return speedInfo;
   }
 
-  public static ArrayList<String> executePythonScriptReturns(String absPath, String arg, String from_code, String to_code) {
-    ArrayList<String> output = new ArrayList<>();
+  public static String translate(String arg, String from, String to) {
+    String output = "";
     try {
-      ProcessBuilder pb = new ProcessBuilder("python", absPath, arg, from_code, to_code);
-      Process p = pb.start();
-      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(),  "UTF-8"));
+      
+      //Build GET request argument, replacing spaces and newlines
+      arg = arg.replaceAll(" ", "+").replaceAll("\n", "+");
+      String translatedText = "";
 
-      String line = "";
-      line = bfr.readLine();
-      output.add(line);
+      //Make GET request
+      URL url = new URL("http://localhost:8000/?text=" + arg + "&from=" + from + "&to=" + to);
+      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("GET");
 
-      p.destroy();
+      int status = con.getResponseCode();
+      if(status == 200){
+        //read response data
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine = in.readLine();
+        in.close();
+
+        //parse translation from JSON
+        ObjectMapper mapper = new ObjectMapper();
+        TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
+        output = api.translatedText;
+      }
+      con.disconnect();
+
     } catch (NullPointerException e) {
       System.out.println("The python script does not exist or could not be opened.");
     } catch (IOException e) {
-      System.out.println("An I/O error has occurred.");
+      System.out.println("An I/O error has occurred. (Translation server could be down)");
+
+      TranslationServer.start();
+      //busy wait for server to start
+      while(!TranslationServer.appRunning());
+      return translate(arg, from, to);
+
     } catch (IndexOutOfBoundsException e) {
       System.out.println("The command list is empty");
     }

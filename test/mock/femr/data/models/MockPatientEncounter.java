@@ -177,4 +177,14 @@ public class MockPatientEncounter implements IPatientEncounter {
 
 
     }
+
+    @Override
+    public String getLanguageCode() {
+        return null;
+    }
+
+    @Override
+    public void setLanguageCode(String languageCode) {
+
+    }
 }

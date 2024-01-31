@@ -124,4 +124,14 @@ public class MockPrescription implements IPatientPrescription {
     public void setDateDispensed(DateTime dateDispensed) {
 
     }
+
+    @Override
+    public String getLanguageCode() {
+        return null;
+    }
+
+    @Override
+    public void setLanguageCode(String languageCode) {
+
+    }
 }

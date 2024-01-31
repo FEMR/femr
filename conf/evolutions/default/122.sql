@@ -1,9 +1,8 @@
 # --- !Ups
 
 CREATE TABLE `page_elements` (
-     `element_id` INT NOT NULL AUTO_INCREMENT,
+     `element_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
      `description` TEXT NOT NULL,
-     PRIMARY KEY (`element_id`),
      UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC)
 );
 

@@ -7,6 +7,7 @@ CREATE TABLE `measurement_units` (
     FOREIGN KEY (`category`) REFERENCES `measurement_categories`(`category`)
 );
 
+
 # --- !Downs
 
 DROP TABLE IF EXISTS `measurement_units`;

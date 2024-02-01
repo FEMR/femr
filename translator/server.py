@@ -37,12 +37,27 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         text = self.query_data['text']
         from_code = self.query_data['from']
         to_code = self.query_data['to']
+
         #ARGOS
-        return argostranslate.translate.translate(text, from_code, to_code)
-        
+        # return argostranslate.translate.translate(text, from_code, to_code)
+
         #MARIAN
-        #marian = MarianModel(from_code, to_code)
-        #return marian.translate([text])[0]
+        # marian = MarianModel(from_code, to_code)
+        # return marian.translate([text])[0]
+
+        #BOTH
+        try:
+            translatedText = argostranslate.translate.translate(text, from_code, to_code)
+            return translatedText
+        except AttributeError:
+            print("LANGUAGE NOT FOUND, Trying MARIAN")
+            try:
+                marian = MarianModel(from_code, to_code)
+                translatedText = marian.translate([text])
+                return translatedText[0]
+            except OSError:
+                print("ALL TRANSLATIONS FAILED")
+                return "Translation Not Available"
 
     def do_GET(self):
         self.send_response(200)

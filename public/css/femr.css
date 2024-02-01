@@ -385,6 +385,7 @@ float: right;
     z-index: 1030;
     right: 0;
     left: 0;
+    width: 100%; /* without this navbar extends past slightly */
     position: fixed;
     min-height: 60px;
     background: black;

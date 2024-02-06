@@ -9,7 +9,7 @@ import sys
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 
-PORT = 8000
+PORT = 1
 TIMEOUT = 60
 
 class MarianModel:

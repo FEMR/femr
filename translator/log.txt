@@ -1,0 +1,6 @@
+127.0.0.1 - - [01/Feb/2024 10:20:02] "GET /?text=Covid+antigen+=+negative&from=en&to=es HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2024 10:20:25] "GET /?text=Covid+Voluntario+=+Negative+No+symptoms&from=en&to=es HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2024 10:20:56] "GET /?text=Covid+test+=+Negative.+NO+SYMPTOMS&from=en&to=es HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2024 10:21:20] "GET /?text=nan&from=en&to=es HTTP/1.1" 200 -
+Serving at port 8000
+Translation server timed out

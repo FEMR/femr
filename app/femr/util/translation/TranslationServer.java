@@ -31,9 +31,8 @@ public class TranslationServer {
         if(!appRunning()){
             String absPath = "translator/server.py";
             try {
-
                 ProcessBuilder pb = new ProcessBuilder("python", absPath);
-                File log = new File("translator/log");
+                File log = new File("translator/log.txt");
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();
@@ -44,8 +43,7 @@ public class TranslationServer {
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("The command list is empty");
             }
-        } else{
-            System.out.println("Translation server already running");
         }
+        System.out.println("Translation server running");
     }
 }

@@ -9,8 +9,16 @@ import sys
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 
-PORT = 1
+PORT = 8000
 TIMEOUT = 60
+
+#Install all packages
+def install_packages():
+    if(len(argostranslate.package.get_installed_packages()) == 0):
+        package_dir = "C:/Users/micha/Projects/Capstone/femr/translator/all-argos-translate-models-2020-12-20"
+        for filename in os.listdir(package_dir):
+            file = os.path.join(package_dir, filename)
+            argostranslate.package.install_from_path(file)
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
@@ -76,6 +84,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     try:
+        install_packages()
         server = HTTPServer(("127.0.0.1", PORT), WebRequestHandler)
         server.timeout = TIMEOUT
         server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())

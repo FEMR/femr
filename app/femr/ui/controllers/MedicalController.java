@@ -260,9 +260,9 @@ public class MedicalController extends Controller {
 
         // retrieve current patient encounter encounter
         StubPatientEncounterItem patientEncounterItem = new StubPatientEncounterItem();
+
         // stub function to retrieve patient encounter's language
         String fromLanguage = patientEncounterItem.stubGetPatientEncounterLanguage();
-        System.out.println(fromLanguage + " " + toLanguage);
         return ok(Json.toJson(translate(text, fromLanguage, toLanguage)));
     }
 

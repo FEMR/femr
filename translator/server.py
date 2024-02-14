@@ -1,8 +1,9 @@
+import os
+import sys
 import json
 import argostranslate.package
 import argostranslate.translate
-import sys
-import os
+
 from functools import cached_property
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qsl, urlparse
@@ -19,14 +20,14 @@ PATH = os.getcwd()
 #Install all packages
 def install_packages():
     if(len(argostranslate.package.get_installed_packages()) == 0):
-        package_dir = f"{PATH}/all-argos-translate-models-2020-12-20"
+        package_dir = f"{PATH}/translator/all-argos-translate-models-2020-12-20"
         for filename in os.listdir(package_dir):
             file = os.path.join(package_dir, filename)
             argostranslate.package.install_from_path(file)
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
-        path = f"{PATH}/marian_models/opus-mt-{source_lang}-{dest_lang}"
+        path = f"{PATH}/translator/marian_models/opus-mt-{source_lang}-{dest_lang}"
         self.model = MarianMTModel.from_pretrained(path, local_files_only = True)
         self.tokenizer = MarianTokenizer.from_pretrained(path, local_files_only = True)
 
@@ -46,36 +47,25 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     @cached_property
     def translate_data(self):
-        print(os.getcwd())
         text = self.query_data['text']
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        #ARGOS
-        # return argostranslate.translate.translate(text, from_code, to_code)
-
-        #MARIAN
-        # marian = MarianModel(from_code, to_code)
-        # return marian.translate([text])[0]
-
-        #BOTH
-        argos_language_path = Path(f"{PATH}/all-argos-translate-models-2020-12-20/{from_code}_{to_code}.argosmodel")
+        argos_language_path = Path(f"{PATH}/translator/all-argos-translate-models-2020-12-20/{from_code}_{to_code}.argosmodel")
         if argos_language_path.exists():
-            print("ARGOS")
+            # print("ARGOS")
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
             return translatedText
         else:
-            marian_language_path = Path(f"{PATH}/marian_models/opus-mt-{from_code}-{to_code}")
+            marian_language_path = Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}")
             if marian_language_path.exists():
-                print("MARIAN")
+                # print("MARIAN")
                 marian = MarianModel(from_code, to_code)
                 translatedText = marian.translate([text])
                 return translatedText[0]
             else:
                 return "Translation Unavailable"
-        #     except Exception:
-        #         print("ALL TRANSLATIONS FAILED")
-        #
+
 
     def do_GET(self):
         self.send_response(200)

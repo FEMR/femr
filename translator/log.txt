@@ -1,10 +1,7 @@
-127.0.0.1 - - [13/Feb/2024 09:25:58] "GET /?text=I+have+a+broken+leg&from=en&to=ti HTTP/1.1" 200 -
-/Users/noahtobinsky/anaconda3/lib/python3.11/site-packages/transformers/generation/utils.py:1273: UserWarning: Neither `max_length` nor `max_new_tokens` has been set, `max_length` will default to 512 (`generation_config.max_length`). Controlling `max_length` via the config is deprecated and `max_length` will be removed from the config in v5 of Transformers -- we recommend using `max_new_tokens` to control the maximum length of the generation.
-  warnings.warn(
+127.0.0.1 - - [13/Feb/2024 19:10:03] "GET /?text=I+have+a+broken+leg&from=en&to=es HTTP/1.1" 200 -
 Serving at port 8000
-MARIAN
 Traceback (most recent call last):
-  File "/Users/noahtobinsky/Desktop/CSC_Courses/CSC_402/fEMR/translator/server.py", line 98, in <module>
+  File "/Users/noahtobinsky/Desktop/CSC_Courses/CSC_402/fEMR/translator/server.py", line 92, in <module>
     while(True): server.handle_request()
                  ^^^^^^^^^^^^^^^^^^^^^^^
   File "/Users/noahtobinsky/anaconda3/lib/python3.11/socketserver.py", line 295, in handle_request

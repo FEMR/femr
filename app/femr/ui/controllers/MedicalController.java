@@ -250,14 +250,28 @@ public class MedicalController extends Controller {
 
     public Result translateGet() {
         String text = request().getQueryString("text");
-        return ok(Json.toJson(translate(text)));
+        //Harrison Shu
+        // NOTE: A stub function added in app/femr/common/dtos/CurrentUser.java and
+        // a stub object added in app/femr/common/models/StubPatientEncounterItem.java
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+
+        // stub function to retrieve current user's language
+        String toLanguage = currentUserSession.stubGetLanguage();
+
+        // retrieve current patient encounter encounter
+        StubPatientEncounterItem patientEncounterItem = new StubPatientEncounterItem();
+        // stub function to retrieve patient encounter's language
+        String fromLanguage = patientEncounterItem.stubGetPatientEncounterLanguage();
+        System.out.println(fromLanguage + " " + toLanguage);
+        return ok(Json.toJson(translate(text, fromLanguage, toLanguage)));
     }
 
 //    Calls Python Script to translate
-    private String translate(String text) {
+    private String translate(String text, String fromLanguage, String toLanguage) {
+
         String data = "";
         try {
-            data = BackEndControllerHelper.translate(text, "en", "es");
+            data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
         } catch (Exception e) {
             e.printStackTrace();
         }

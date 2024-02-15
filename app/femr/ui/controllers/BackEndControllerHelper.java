@@ -53,6 +53,8 @@ public class BackEndControllerHelper  {
 
   public static String translate(String arg, String from, String to) {
     String output = "";
+    System.out.println(arg);
+    System.out.println(arg.length());
     try {
       
       //Build GET request argument, replacing spaces and newlines

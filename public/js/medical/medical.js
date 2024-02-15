@@ -313,10 +313,33 @@ $(document).ready(function () {
 
     var textToTranslate = $("#complaintInfo span").text()
 
+    var jsonObj = [{'Id':'complaint','name':'#complaintInfo span','text':''},
+        {'Id':'onset',      'name':'#onsetTab input','text':''},
+        {'Id':'quality',    'name':'#qualityTab input','text':''},
+        {'Id':'radiation',  'name':'#radiationTab input','text':''},
+        {'Id':'provokes',   'name':'#provokesTab input','text':''},
+        {'Id':'palliates',  'name':'#palliatesTab input','text':''},
+        {'Id':'time',       'name':'#timeTab input','text':''},
+        {'Id':'narrative',  'name':'#narrativeTab textarea','text':''},
+        {'Id':'physical',   'name':'#physicalTab input','text':''},
+        {'Id':'assessment', 'name':'#assessmentTab input','text':''},
+        {'Id':'procedure',  'name':'#procedureTab input','text':''},
+        {'Id':'pharmacy',   'name':'#pharmacyTab input','text':''},
+        {'Id':'medical',    'name':'#medicalTab input','text':''},
+        {'Id':'social',     'name':'#socialTab input','text':''},
+        {'Id':'current',    'name':'#currentTab input','text':''},
+        {'Id':'family',     'name':'#familyTab input','text':''}]
+
+    jsonObj[0].text = $(jsonObj[0].name).text();
+
+    for (let i = 1; i < jsonObj.length; i++) {
+        jsonObj[i].text = $(jsonObj[i].name).text();
+    }
+
     $.ajax({
         type: 'get',
         url: '/translate',
-        data: {text: textToTranslate},
+        data: {text: jsonObj[10].text},
         success: function(translation){
             $('#complaintInfo').text(translation);
         },

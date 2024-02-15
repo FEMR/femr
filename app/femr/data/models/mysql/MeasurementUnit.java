@@ -16,27 +16,28 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql.concepts;
+package femr.data.models.mysql;
 
-import femr.data.models.core.IConceptDiagnosis;
+import femr.data.models.core.IMeasurementUnit;
 
 import javax.persistence.*;
-
 @Entity
-@Table(name = "concept_diagnoses")
-public class ConceptDiagnosis implements IConceptDiagnosis {
+@Table(name = "measurement_units")
+public class MeasurementUnit implements IMeasurementUnit {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
+    @Column(name = "unit", unique = true, nullable = false, length=16)
+    private String unit;
+    @Column(name = "category", unique = true, nullable = false, length=16)
+    private String category;
+
+
 
     @Override
     public int getId() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -44,23 +45,23 @@ public class ConceptDiagnosis implements IConceptDiagnosis {
         this.id = id;
     }
 
-    @Override
-    public String getName() {
-        return name;
+  @Override
+    public String getUnit() {
+        return this.unit;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+  @Override
+    public String getCategory() {
+        return this.category;
     }
 
     @Override
-    public String getLanguageCode() {
-        return this.languageCode;
-    }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

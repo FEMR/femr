@@ -40,4 +40,6 @@ public interface IMissionTeam {
     List<MissionTrip> getMissionTrips();
 
     void setMissionTrips(List<MissionTrip> missionTrips);
+    void setLanguageCode(String languageCode);
+    String getLanguageCode();
 }

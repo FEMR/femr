@@ -11,19 +11,12 @@ from http.server import HTTPServer
 from pathlib import Path
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
+from libargos import install_packages
 
 
 PORT = 8000
 TIMEOUT = 60
 PATH = os.getcwd()
-
-#Install all packages
-def install_packages():
-    if(len(argostranslate.package.get_installed_packages()) == 0):
-        package_dir = f"{PATH}/translator/all-argos-translate-models-2020-12-20"
-        for filename in os.listdir(package_dir):
-            file = os.path.join(package_dir, filename)
-            argostranslate.package.install_from_path(file)
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:

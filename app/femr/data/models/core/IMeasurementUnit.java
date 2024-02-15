@@ -18,17 +18,18 @@
 */
 package femr.data.models.core;
 
-public interface IConceptDiagnosis {
+public interface IMeasurementUnit {
 
     int getId();
 
     void setId(int id);
 
-    String getName();
+    String getUnit();
 
-    void setName(String name);
+    void setUnit(String unit);
 
-    String getLanguageCode();
+    String getCategory();
 
-    void setLanguageCode(String languageCode);
+    void setCategory(String category);
+  
 }

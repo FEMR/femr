@@ -72,6 +72,9 @@ public class PatientEncounter implements IPatientEncounter {
     @Column(name = "reason_deleted", nullable = true)
     private String reasonEncounterDeleted;
 
+    @Column(name="language_code", nullable=true, length=5)
+    private String languageCode;
+
     @Override
     public int getId() {
         return id;
@@ -233,4 +236,11 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setReasonDeleted(String reason) { this.reasonEncounterDeleted = reason; }
 
+    @Override
+    public String getLanguageCode() { return this.languageCode; }
+
+    @Override
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 }

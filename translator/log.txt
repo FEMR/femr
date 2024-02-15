@@ -1,32 +1,6 @@
-<<<<<<< HEAD
-Serving at port 8000
-Translation server timed out
-" 200 -
-127.0.0.1 - - [06/Feb/2024 10:13:47] "GET /?text=&from=es&to=en HTTP/1.1" 200 -
-----------------------------------------
-Exception occurred during processing of request from ('127.0.0.1', 53233)
 Traceback (most recent call last):
-  File "C:\Python310\lib\socketserver.py", line 316, in _handle_request_noblock
-    self.process_request(request, client_address)
-  File "C:\Python310\lib\socketserver.py", line 347, in process_request
-    self.finish_request(request, client_address)
-  File "C:\Python310\lib\socketserver.py", line 360, in finish_request
-    self.RequestHandlerClass(request, client_address, self)
-  File "C:\Python310\lib\socketserver.py", line 747, in __init__
-    self.handle()
-  File "C:\Python310\lib\http\server.py", line 425, in handle
-    self.handle_one_request()
-  File "C:\Python310\lib\http\server.py", line 413, in handle_one_request
-    method()
-  File "C:\Users\seanp\Code\csc402\femr\translator\server.py", line 74, in do_GET
-    self.wfile.write(self.get_response().encode("utf-8"))
-  File "C:\Users\seanp\Code\csc402\femr\translator\server.py", line 80, in get_response
-    "translate_data" : self.translate_data if self.query_data else "",
-  File "C:\Python310\lib\functools.py", line 981, in __get__
-    val = self.func(instance)
-  File "C:\Users\seanp\Code\csc402\femr\translator\server.py", line 45, in translate_data
-    text = self.query_data['text']
-KeyError: 'text'
-----------------------------------------
-Serving at port 8000
-Translation server timed out
+  File "C:\Users\seanp\Code\csc402\femr\translator\server.py", line 89, in <module>
+    install_packages()
+  File "C:\Users\seanp\Code\csc402\femr\translator\libargos.py", line 34, in install_packages
+    for filename in os.listdir(ARGOS_PACKAGES_DIR):
+FileNotFoundError: [WinError 3] The system cannot find the path specified: 'C:\\Users\\seanp\\Code\\csc402\\femr\\translator\\argos_models'

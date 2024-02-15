@@ -18,17 +18,27 @@
 */
 package femr.data.models.core;
 
-public interface IConceptDiagnosis {
+/**
+ * ConceptMedicationUnit represents the unit of
+ * measurement for a medication. e.g. g/mg/mL. This
+ * is a concept.
+ */
+public interface IPageElementTranslation {
+    int getTranslationId();
 
-    int getId();
+    void setTranslationId(int TranslationId);
 
-    void setId(int id);
+    int getElementId();
 
-    String getName();
-
-    void setName(String name);
+    void setElementId(int ElementId);
 
     String getLanguageCode();
 
-    void setLanguageCode(String languageCode);
+    void setLanguageCode(String LanguageCode);
+    String getTranslation();
+
+    void setTranslation(String Translation);
+
+
+
 }

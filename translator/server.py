@@ -13,8 +13,7 @@ from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 from libargos import install_packages
 
-
-PORT = 8000
+PORTS = [8000, 5000]
 TIMEOUT = 60
 PATH = os.getcwd()
 
@@ -44,7 +43,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        argos_language_path = Path(f"{PATH}/translator/all-argos-translate-models-2020-12-20/{from_code}_{to_code}.argosmodel")
+        argos_language_path = Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel")
         if argos_language_path.exists():
             # print("ARGOS")
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
@@ -75,14 +74,21 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             ensure_ascii=False
         )
 
-if __name__ == "__main__":
+def start_server(port):
     try:
-        install_packages()
-        server = HTTPServer(("127.0.0.1", PORT), WebRequestHandler)
+        server = HTTPServer(("127.0.0.1", port), WebRequestHandler)
         server.timeout = TIMEOUT
         server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())
-        print("Serving at port", PORT)
+        print("Serving at port", port)
         while(True): server.handle_request()
     except TimeoutError:
         print("Translation server timed out")
         sys.exit()
+
+if __name__ == "__main__":
+    install_packages()
+    for port in PORTS:
+        try:
+            start_server(port)
+        except PermissionError:
+            print(f"Port {port} unavailable")

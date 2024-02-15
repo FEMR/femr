@@ -1,6 +1,13 @@
-127.0.0.1 - - [01/Feb/2024 10:20:02] "GET /?text=Covid+antigen+=+negative&from=en&to=es HTTP/1.1" 200 -
-127.0.0.1 - - [01/Feb/2024 10:20:25] "GET /?text=Covid+Voluntario+=+Negative+No+symptoms&from=en&to=es HTTP/1.1" 200 -
-127.0.0.1 - - [01/Feb/2024 10:20:56] "GET /?text=Covid+test+=+Negative.+NO+SYMPTOMS&from=en&to=es HTTP/1.1" 200 -
-127.0.0.1 - - [01/Feb/2024 10:21:20] "GET /?text=nan&from=en&to=es HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2024 19:10:03] "GET /?text=I+have+a+broken+leg&from=en&to=es HTTP/1.1" 200 -
 Serving at port 8000
-Translation server timed out
+Traceback (most recent call last):
+  File "/Users/noahtobinsky/Desktop/CSC_Courses/CSC_402/fEMR/translator/server.py", line 92, in <module>
+    while(True): server.handle_request()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/noahtobinsky/anaconda3/lib/python3.11/socketserver.py", line 295, in handle_request
+    ready = selector.select(timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/noahtobinsky/anaconda3/lib/python3.11/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

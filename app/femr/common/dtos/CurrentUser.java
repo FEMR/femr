@@ -73,4 +73,6 @@ public class CurrentUser {
     public long getTimeout2() {
         return SessionTimeOut;
     }
+
+    public String stubGetLanguage() { return "es";}
 }

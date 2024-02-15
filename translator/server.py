@@ -1,30 +1,35 @@
+import os
+import sys
+import json
+import argostranslate.package
+import argostranslate.translate
+
 from functools import cached_property
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qsl, urlparse
 from http.server import HTTPServer
-import json
-import argostranslate.package
-import argostranslate.translate
-import sys
+from pathlib import Path
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 
+
 PORT = 8000
 TIMEOUT = 60
+PATH = os.getcwd()
 
 #Install all packages
 def install_packages():
     if(len(argostranslate.package.get_installed_packages()) == 0):
-        package_dir = "C:/Users/micha/Projects/Capstone/femr/translator/all-argos-translate-models-2020-12-20"
+        package_dir = f"{PATH}/translator/all-argos-translate-models-2020-12-20"
         for filename in os.listdir(package_dir):
             file = os.path.join(package_dir, filename)
             argostranslate.package.install_from_path(file)
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
-        self.model_name = f'Helsinki-NLP/opus-mt-{source_lang}-{dest_lang}'
-        self.model = MarianMTModel.from_pretrained(self.model_name)
-        self.tokenizer = MarianTokenizer.from_pretrained(self.model_name)
+        path = f"{PATH}/translator/marian_models/opus-mt-{source_lang}-{dest_lang}"
+        self.model = MarianMTModel.from_pretrained(path, local_files_only = True)
+        self.tokenizer = MarianTokenizer.from_pretrained(path, local_files_only = True)
 
     def translate(self, texts: Sequence[str]) -> Sequence[str]:
         tokens = self.tokenizer(list(texts), return_tensors="pt", padding=True)
@@ -46,26 +51,21 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        #ARGOS
-        # return argostranslate.translate.translate(text, from_code, to_code)
-
-        #MARIAN
-        # marian = MarianModel(from_code, to_code)
-        # return marian.translate([text])[0]
-
-        #BOTH
-        try:
+        argos_language_path = Path(f"{PATH}/translator/all-argos-translate-models-2020-12-20/{from_code}_{to_code}.argosmodel")
+        if argos_language_path.exists():
+            # print("ARGOS")
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
             return translatedText
-        except AttributeError:
-            print("LANGUAGE NOT FOUND, Trying MARIAN")
-            try:
+        else:
+            marian_language_path = Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}")
+            if marian_language_path.exists():
+                # print("MARIAN")
                 marian = MarianModel(from_code, to_code)
                 translatedText = marian.translate([text])
                 return translatedText[0]
-            except OSError:
-                print("ALL TRANSLATIONS FAILED")
-                return "Translation Not Available"
+            else:
+                return "Translation Unavailable"
+
 
     def do_GET(self):
         self.send_response(200)

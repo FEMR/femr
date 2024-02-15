@@ -71,3 +71,8 @@ util/PhotoMigration.class
 
 #development database
 docker-compose.yml
+
+#Translation Models and Log
+translator/log.txt
+translator/argos_models
+translator/__pycache__

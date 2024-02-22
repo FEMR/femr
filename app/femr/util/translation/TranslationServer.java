@@ -32,7 +32,7 @@ public class TranslationServer {
             String absPath = "translator/server.py";
             try {
                 ProcessBuilder pb = new ProcessBuilder("python", absPath);
-                File log = new File("translator/log.txt");
+                File log = new File("translator/server.log");
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();

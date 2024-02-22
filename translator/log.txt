@@ -1,6 +1,2 @@
-Traceback (most recent call last):
-  File "C:\Users\seanp\Code\csc402\femr\translator\server.py", line 89, in <module>
-    install_packages()
-  File "C:\Users\seanp\Code\csc402\femr\translator\libargos.py", line 34, in install_packages
-    for filename in os.listdir(ARGOS_PACKAGES_DIR):
-FileNotFoundError: [WinError 3] The system cannot find the path specified: 'C:\\Users\\seanp\\Code\\csc402\\femr\\translator\\argos_models'
+127.0.0.1 - - [22/Feb/2024 12:13:20] "GET /?text=She+has+a+sore+throat.+$+immediate+$+high+$+good+$+other+ailments+$+sore+throat+$+morning+$+once+upon+a+time+$+Looks+good+but+is+sick+with+some+sort+of+disease+$+Not+looking+so+good+anymore+$+Ultrasound+$+Take+meds+three+times+a+week+$+no+medical+history+$+has+lots+of+friends+$+no+current+medications+$+large+family&from=en&to=es HTTP/1.1" 200 -
+127.0.0.1 - - [22/Feb/2024 12:13:32] "GET /?text=She+has+a+sore+throat.+$+immediate+$+high+$+good+$+other+ailments+$+sore+throat+$+morning+$+once+upon+a+time+$+Looks+good+but+is+sick+with+some+sort+of+disease+$+Not+looking+so+good+anymore+$+Ultrasound+$+Take+meds+three+times+a+week+$+no+medical+history+$+has+lots+of+friends+$+no+current+medications+$+large+family&from=en&to=es HTTP/1.1" 200 -

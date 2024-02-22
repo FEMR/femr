@@ -53,10 +53,7 @@ public class BackEndControllerHelper  {
 
   public static String translate(String arg, String from, String to) {
     String output = "";
-    System.out.println(arg);
-    System.out.println(arg.length());
     try {
-      
       //Build GET request argument, replacing spaces and newlines
       arg = arg.replaceAll(" ", "+").replaceAll("\n", "+");
       String translatedText = "";
@@ -81,7 +78,7 @@ public class BackEndControllerHelper  {
       con.disconnect();
 
     } catch (NullPointerException e) {
-      System.out.println("The python script does not exist or could not be opened.");
+      System.out.println("The python script does not exist, or failed to translate.");
     } catch (IOException e) {
       System.out.println("An I/O error has occurred. (Translation server could be down)");
 

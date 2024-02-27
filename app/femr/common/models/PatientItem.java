@@ -54,8 +54,6 @@ public class PatientItem {
     private Integer cholesterol;
     private Integer hypertension;
 
-    private String languageCode;
-
     public PatientItem(){
         //default empty values
         this.Id = 0;
@@ -251,13 +249,5 @@ public class PatientItem {
 
     public Integer getHypertension() {return hypertension;}
     public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
-
-    public String getLanguage() {
-        return languageCode;
-    }
-
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
-    }
 
 }

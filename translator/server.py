@@ -3,7 +3,6 @@ import sys
 import json
 import argostranslate.package
 import argostranslate.translate
-
 from functools import cached_property
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qsl, urlparse

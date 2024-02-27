@@ -330,6 +330,7 @@ $(document).ready(function () {
         {'id':'#familyTab','text':''}]
 
     var textToTranslate =  $(jsonObj[0].id + " span").text();
+    var patientId = document.getElementById('patientId').value;
 
     for (let i = 1; i < jsonObj.length; i++) {
         textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();  // TEMPORARY $ DELIM SOLUTION
@@ -338,7 +339,7 @@ $(document).ready(function () {
     $.ajax({
         type: 'get',
         url: '/translate',
-        data: {text : textToTranslate},
+        data: {text : textToTranslate, patientId: patientId},
         success: function(translation){
             var textTranslated = translation;
             var listTranslated = textTranslated.split("$"); // TEMPORARY $ DELIM SOLUTION

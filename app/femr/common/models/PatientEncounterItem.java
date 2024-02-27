@@ -46,6 +46,8 @@ public class PatientEncounterItem {
     private String pharmacistFullName; //Andrew Display Username instead of Email Address Fix
     private Boolean screenedForDiabetes;
 
+    private String languageCode;
+
     //amount of time it took the patient to complete the encounter
     private String turnAroundTime;
 
@@ -181,5 +183,13 @@ public class PatientEncounterItem {
 
     public void setTurnAroundTime(String turnAroundTime) {
         this.turnAroundTime = turnAroundTime;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

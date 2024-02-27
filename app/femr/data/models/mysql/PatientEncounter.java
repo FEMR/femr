@@ -243,4 +243,5 @@ public class PatientEncounter implements IPatientEncounter {
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
     }
+
 }

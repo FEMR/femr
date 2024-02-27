@@ -31,26 +31,29 @@
 <div class="navigationItemsWrap">
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
-            <li><a href="@TriageController.indexGet()">Triage</a></li>
-            <li><a href="@MedicalController.indexGet()">Medical</a></li>
-            <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
+            <li><a id="langCode_triage" href="@TriageController.indexGet()">Triage</a></li>
+            <li><a id="langCode_medical" href="@MedicalController.indexGet()">Medical</a></li>
+            <li><a id="langCode_pharmacy" href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
-            <li><a href="@ResearchController.indexGet()">Research</a></li>
+            <li><a id="langCode_research" href="@ResearchController.indexGet()">Research</a></li>
         }
         @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
-            <li><a href="@ManagerController.indexGet()">Manager</a></li>
+            <li><a id="langCode_manager" href="@ManagerController.indexGet()">Manager</a></li>
         }
         @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
-            <li><a href="@AdminController.index()">Admin</a></li>
+            <li><a id="langCode_admin" href="@AdminController.index()">Admin</a></li>
         }
         @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
-            <li><a href="@SuperuserController.indexGet()">SuperUser</a></li>
+            <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">SuperUser</a></li>
         }
-        <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span>Reference</span></a></li>
+        <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span id="langCode_reference">Reference</span></a></li>
     </ul>
     <p class="userStatus">
-
+        <select id="languageSelect" style="margin-right: 10px">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+        </select>
 
         @currentUser.getFirstName @currentUser.getLastName 
         <a href="@SessionsController.delete()">

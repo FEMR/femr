@@ -1,0 +1,38 @@
+{
+  "en": {
+    "home_index_h2_Welcome": "Welcome to fEMR 2.4.1-beta,",
+    "home_index_div_Your": "Your feedback has been received.",
+    "home_index_p_Please": "Please select a tab at the top to get started!",
+    "home_index_p_Or": "or",
+    "home_index_p_Search": "Search Below:",
+    "home_index_div_ID": "ID, Name, or Phone #",
+    "langCode_triage": "Triage",
+    "langCode_medical": "Medical",
+    "langCode_pharmacy": "Pharmacy",
+    "langCode_research": "Research",
+    "langCode_manager": "Manager",
+    "langCode_admin": "Admin",
+    "langCode_superUser": "SuperUser",
+    "langCode_reference": "Reference",
+    "langCode_feedbackBtn": "Leave Feedback",
+    "langCode_googleChrome": "Designed for use in Google Chrome"
+  },
+  "es": {
+    "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
+    "home_index_div_Your": "Su retroalimentación ha sido recibida.",
+    "home_index_p_Please": "¡Seleccione una pestaña arriba para comenzar!",
+    "home_index_p_Or": "o",
+    "home_index_p_Search": "Buscar abajo:",
+    "home_index_div_ID": "ID, Nombre o Número de Teléfono",
+    "langCode_triage": "Triaje",
+    "langCode_medical": "Médico",
+    "langCode_pharmacy": "Farmacia",
+    "langCode_research": "Investigación",
+    "langCode_manager": "Gerente",
+    "langCode_admin": "Administración",
+    "langCode_superUser": "Superusuario",
+    "langCode_reference": "Referencia",
+    "langCode_feedbackBtn": "Dejar Comentarios",
+    "langCode_googleChrome": "Diseñado para usar en Google Chrome"
+  }
+}

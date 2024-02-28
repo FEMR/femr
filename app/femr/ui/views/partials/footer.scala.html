@@ -1,3 +1,28 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage();
+                    });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage() {
+                const language = "@currentUser.getLanguageCode";
+                updateTextContent("langCode_feedbackBtn", languageData[language].langCode_feedbackBtn);
+                updateTextContent("langCode_googleChrome", languageData[language].langCode_googleChrome);
+            }
+        });
+</script>
 <footer>
     <hr />
     <div class="row">
@@ -14,3 +39,26 @@
         </div>
     </div>
 </footer>
+@*<script>*@
+@*        document.addEventListener('DOMContentLoaded', function(event) {*@
+@*            let languageData;*@
+@*            function translateTextNodes(node) {*@
+@*                const targetLang = "es";*@
+@*                if (node.nodeType === Node.TEXT_NODE) {*@
+@*                    const trimmedText = node.nodeValue.trim();*@
+@*                    if (trimmedText !== '' && languageData[targetLang][trimmedText]) {*@
+@*                        node.nodeValue = languageData[targetLang][trimmedText];*@
+@*                    }*@
+@*                } else {*@
+@*                    node.childNodes.forEach(child => translateTextNodes(child, targetLang));*@
+@*                }*@
+@*            }*@
+
+@*            fetch('@routes.Assets.versioned("json/languages.json")')*@
+@*                    .then(response => response.json())*@
+@*                    .then(data => {*@
+@*                        languageData = data;*@
+@*                        translateTextNodes(document.body);*@
+@*                    });*@
+@*        });*@
+@*</script>*@

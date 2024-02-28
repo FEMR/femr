@@ -15,49 +15,41 @@
 
         </script>
         <script>
-                let languageData;
-                fetch('@routes.Assets.versioned("json/languages.json")')
-                        .then(response => response.json())
-                        .then(data => {
-                            languageData = data;
-                            updateLanguage('en');
-                        });
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    let languageData;
+                    fetch('@routes.Assets.versioned("json/languages.json")')
+                            .then(response => response.json())
+                            .then(data => {
+                                languageData = data;
+                                updateLanguage();
+                            });
 
-                document.getElementById('languageSelect').addEventListener('change', function() {
-                    updateLanguage(this.value);
+                    // document.getElementById('languageSelect').addEventListener('change', function() {
+                    //     updateLanguage(this.value);
+                    // });
+
+                    function updateTextContent(elementId, value) {
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = value;
+                        }
+                    }
+
+                    function updateLanguage() {
+                        const language = "@currentUser.getLanguageCode";
+                        const currentUser = " @currentUser.getFirstName()";
+                        updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currentUser);
+                        updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
+                        updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
+                        updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);
+                        updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
+                        const patientSearch = document.getElementById("patientSearch");
+                        if (patientSearch) {
+                            patientSearch.placeholder = languageData[language].home_index_div_ID;
+                        }
+                    }
                 });
-
-                function updateTextContent(elementId, value) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        element.textContent = value;
-                    }
-                }
-
-                function updateLanguage(language) {
-                    const currentUser = " @currentUser.getFirstName()";
-                    updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currentUser);
-                    updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
-                    updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
-                    updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);
-                    updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
-                    const patientSearch = document.getElementById("patientSearch");
-                    if (patientSearch) {
-                        patientSearch.placeholder = languageData[language].home_index_div_ID;
-                    }
-                    updateTextContent("langCode_triage", languageData[language].langCode_triage);
-                    updateTextContent("langCode_medical", languageData[language].langCode_medical);
-                    updateTextContent("langCode_pharmacy", languageData[language].langCode_pharmacy);
-                    updateTextContent("langCode_research", languageData[language].langCode_research);
-                    updateTextContent("langCode_manager", languageData[language].langCode_manager);
-                    updateTextContent("langCode_admin", languageData[language].langCode_admin);
-                    updateTextContent("langCode_superUser", languageData[language].langCode_superUser);
-                    updateTextContent("langCode_reference", languageData[language].langCode_reference);
-                    updateTextContent("langCode_feedbackBtn", languageData[language].langCode_feedbackBtn);
-                    updateTextContent("langCode_googleChrome", languageData[language].langCode_googleChrome);
-                }
         </script>
-
     }
 
 

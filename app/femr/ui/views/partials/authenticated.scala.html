@@ -11,6 +11,38 @@
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
+
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage();
+                    });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage() {
+                const language = "@currentUser.getLanguageCode";
+                updateTextContent("langCode_triage", languageData[language].langCode_triage);
+                updateTextContent("langCode_medical", languageData[language].langCode_medical);
+                updateTextContent("langCode_pharmacy", languageData[language].langCode_pharmacy);
+                updateTextContent("langCode_research", languageData[language].langCode_research);
+                updateTextContent("langCode_manager", languageData[language].langCode_manager);
+                updateTextContent("langCode_admin", languageData[language].langCode_admin);
+                updateTextContent("langCode_superUser", languageData[language].langCode_superUser);
+                updateTextContent("langCode_reference", languageData[language].langCode_reference);
+            }
+        });
+</script>
+
 <div class="navigationLogo">
     <a href="@HomeController.index()">
         <img src="@assets.path("img/logo_color_wordless_sm.png")" />

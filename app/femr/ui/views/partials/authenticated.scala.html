@@ -11,6 +11,38 @@
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
+
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage();
+                    });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage() {
+                const language = "@currentUser.getLanguageCode";
+                updateTextContent("langCode_triage", languageData[language].langCode_triage);
+                updateTextContent("langCode_medical", languageData[language].langCode_medical);
+                updateTextContent("langCode_pharmacy", languageData[language].langCode_pharmacy);
+                updateTextContent("langCode_research", languageData[language].langCode_research);
+                updateTextContent("langCode_manager", languageData[language].langCode_manager);
+                updateTextContent("langCode_admin", languageData[language].langCode_admin);
+                updateTextContent("langCode_superUser", languageData[language].langCode_superUser);
+                updateTextContent("langCode_reference", languageData[language].langCode_reference);
+            }
+        });
+</script>
+
 <div class="navigationLogo">
     <a href="@HomeController.index()">
         <img src="@assets.path("img/logo_color_wordless_sm.png")" />
@@ -19,11 +51,11 @@
 
 
 <div class="smallNavigationItemsWrap">
-        <div class="hamburger">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+    <div class="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </div>
 
 
@@ -31,28 +63,31 @@
 <div class="navigationItemsWrap">
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
-            <li><a href="@TriageController.indexGet()">Triage</a></li>
-            <li><a href="@MedicalController.indexGet()">Medical</a></li>
-            <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
+            <li><a id="langCode_triage" href="@TriageController.indexGet()">Triage</a></li>
+            <li><a id="langCode_medical" href="@MedicalController.indexGet()">Medical</a></li>
+            <li><a id="langCode_pharmacy" href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
-            <li><a href="@ResearchController.indexGet()">Research</a></li>
+            <li><a id="langCode_research" href="@ResearchController.indexGet()">Research</a></li>
         }
         @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
-            <li><a href="@ManagerController.indexGet()">Manager</a></li>
+            <li><a id="langCode_manager" href="@ManagerController.indexGet()">Manager</a></li>
         }
         @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
-            <li><a href="@AdminController.index()">Admin</a></li>
+            <li><a id="langCode_admin" href="@AdminController.index()">Admin</a></li>
         }
         @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
-            <li><a href="@SuperuserController.indexGet()">SuperUser</a></li>
+            <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">SuperUser</a></li>
         }
-        <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span>Reference</span></a></li>
+        <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span id="langCode_reference">Reference</span></a></li>
     </ul>
     <p class="userStatus">
+        <select id="languageSelect" style="margin-right: 10px">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+        </select>
 
-
-        @currentUser.getFirstName @currentUser.getLastName 
+        @currentUser.getFirstName @currentUser.getLastName
         <a href="@SessionsController.delete()">
             <span class="glyphicon glyphicon-log-out"></span>
         </a>

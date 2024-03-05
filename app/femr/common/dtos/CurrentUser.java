@@ -32,6 +32,8 @@ public class CurrentUser {
     private Integer tripId;
     long SessionTimeOut;
 
+    private String languageCode = "ka";
+
     public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId, long time) {
         this.id = id;
         this.firstName = firstName;
@@ -73,4 +75,6 @@ public class CurrentUser {
     public long getTimeout2() {
         return SessionTimeOut;
     }
+
+    public String getLanguageCode() { return languageCode; }
 }

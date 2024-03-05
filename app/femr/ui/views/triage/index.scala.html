@@ -22,6 +22,51 @@
     <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            updateLanguage();
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateInputField(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    const labelElement = document.querySelector(`label[for='${identifier}']`);
+                    if (inputElement && labelElement) {
+                        labelElement.textContent = value;
+                        inputElement.placeholder = value;
+                    }
+
+                }
+
+                function updateLanguage() {
+                    const language = "@currentUser.getLanguageCode";
+                    updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
+                    updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
+                    updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
+                    updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
+                    updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
+                    const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
+                    if (patientDemographics) {
+                        patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
+                    }
+                    updateInputField("triage_index_firstName", languageData[language].triage_index_firstName);
+                    updateInputField("triage_index_lastName", languageData[language].triage_index_lastName);
+                    updateInputField("triage_index_phoneNumber", languageData[language].triage_index_phoneNumber);
+                    updateInputField("triage_index_address", languageData[language].triage_index_address);
+                }
+            });
+    </script>
 }
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/triage.css")">
@@ -33,27 +78,27 @@
 
     <div id="triageContentWrap">
         @if(viewModel.isSearchError) {
-            <p>That patient could not be found.</p>
+            <p id="triage_index_p_That">That patient could not be found.</p>
         }
         @if(viewModel.isLinkToMedical()){
-            <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank">Go To Medical</a></p>
+            <p class="newEncounterWrap" id="triage_index_p_Patient"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank" id="triage_index_a_Go">Go To Medical</a></p>
         }
-        <h2 class="text-center">Check In - Triage</h2>
+        <h2 class="text-center" id="triage_index_h2_Check">Check In - Triage</h2>
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                    <h2>General Info
-                        <b title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
-                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
-                        </b>
-                    </h2>
-                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
+                <h2 id="triage_index_h2_General">General Info
+                    <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                        <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                    </b>
+                </h2>
+                @inputText("First Name", "triage_index_firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
-                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
+                @inputText("Last Name", "triage_index_lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 <br>
-                @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
+                @inputText("Phone Number", "triage_index_phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                 <br>
-                @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+                @inputText("Address", "triage_index_address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <br>
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>
@@ -130,7 +175,7 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                            <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
                             as well as in vitalClientValidation.js for validating height inputs -->
                         @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
@@ -276,7 +321,7 @@
                         </label>
                     </div>
 
-@*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
+                    @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 
                     <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
                     @if(viewModel.getSettings.isMultipleChiefComplaint) {
@@ -288,18 +333,18 @@
                 </div>
 
 
-@*                <div class="submitResetWrap hidden">*@
-@*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-@*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-@*                        No</button>*@
-@*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-@*                        Yes</button>*@
-@*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-@*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-@*                             prompted will it receive a true/false value -->*@
-@*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-@*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-@*                </div>*@
+                @*                <div class="submitResetWrap hidden">*@
+                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
+                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
+                @*                        No</button>*@
+                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
+                @*                        Yes</button>*@
+                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
+                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
+                @*                             prompted will it receive a true/false value -->*@
+                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
+                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
+                @*                </div>*@
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>

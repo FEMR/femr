@@ -87,11 +87,11 @@
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                    <h2 id="triage_index_h2_General">General Info
-                        <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
-                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
-                        </b>
-                    </h2>
+                <h2 id="triage_index_h2_General">General Info
+                    <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                        <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                    </b>
+                </h2>
                 @inputText("First Name", "triage_index_firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
                 @inputText("Last Name", "triage_index_lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -175,7 +175,7 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                            <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
                             as well as in vitalClientValidation.js for validating height inputs -->
                         @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
@@ -321,7 +321,7 @@
                         </label>
                     </div>
 
-@*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
+                    @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 
                     <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
                     @if(viewModel.getSettings.isMultipleChiefComplaint) {
@@ -333,18 +333,18 @@
                 </div>
 
 
-@*                <div class="submitResetWrap hidden">*@
-@*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-@*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-@*                        No</button>*@
-@*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-@*                        Yes</button>*@
-@*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-@*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-@*                             prompted will it receive a true/false value -->*@
-@*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-@*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-@*                </div>*@
+                @*                <div class="submitResetWrap hidden">*@
+                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
+                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
+                @*                        No</button>*@
+                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
+                @*                        Yes</button>*@
+                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
+                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
+                @*                             prompted will it receive a true/false value -->*@
+                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
+                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
+                @*                </div>*@
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>

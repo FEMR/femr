@@ -42,7 +42,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        print(from_code, to_code)
+
         argos_language_path = Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel")
         if argos_language_path.exists():
             # print("ARGOS")

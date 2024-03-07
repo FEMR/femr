@@ -251,18 +251,19 @@ public class MedicalController extends Controller {
     public Result translateGet() {
         String text = request().getQueryString("text");
         //Harrison Shu
-        // NOTE: A stub function added in app/femr/common/dtos/CurrentUser.java and
-        // a stub object added in app/femr/common/models/StubPatientEncounterItem.java
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-
-        // stub function to retrieve current user's language
-        String toLanguage = currentUserSession.stubGetLanguage();
+        String toLanguage = currentUserSession.getLanguageCode();
 
         // retrieve current patient encounter encounter
-        StubPatientEncounterItem patientEncounterItem = new StubPatientEncounterItem();
+        int patientId = Integer.parseInt(request().getQueryString("patientId"));
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
 
-        // stub function to retrieve patient encounter's language
-        String fromLanguage = patientEncounterItem.stubGetPatientEncounterLanguage();
+        if (currentEncounterByPatientId.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
+        String fromLanguage = patientEncounter.getLanguageCode();
+
         return ok(Json.toJson(translate(text, fromLanguage, toLanguage)));
     }
 

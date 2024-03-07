@@ -311,37 +311,50 @@ var recentVitals ={
 
 $(document).ready(function () {
 
-    var textToTranslate = $("#complaintInfo span").text()
+    var jsonObj = [
+        {'id':'#complaintInfo','text':''},
+        {'id':'#onsetTab','text':''},
+        {'id':'#radiationTab','text':''},
+        {'id':'#qualityTab','text':''},
+        {'id':'#provokesTab','text':''},
+        {'id':'#palliatesTab','text':''},
+        {'id':'#timeTab','text':''},
+        {'id':'#narrativeTab','text':''},
+        {'id':'#physicalTab','text':''},
+        {'id':'#assessmentTab','text':''},
+        {'id':'#procedureTab','text':''},
+        {'id':'#pharmacyTab','text':''},
+        {'id':'#medicalTab','text':''},
+        {'id':'#socialTab','text':''},
+        {'id':'#currentTab','text':''},
+        {'id':'#familyTab','text':''}]
 
-    var jsonObj = [{'Id':'complaint','name':'#complaintInfo span','text':''},
-        {'Id':'onset',      'name':'#onsetTab input','text':''},
-        {'Id':'quality',    'name':'#qualityTab input','text':''},
-        {'Id':'radiation',  'name':'#radiationTab input','text':''},
-        {'Id':'provokes',   'name':'#provokesTab input','text':''},
-        {'Id':'palliates',  'name':'#palliatesTab input','text':''},
-        {'Id':'time',       'name':'#timeTab input','text':''},
-        {'Id':'narrative',  'name':'#narrativeTab textarea','text':''},
-        {'Id':'physical',   'name':'#physicalTab input','text':''},
-        {'Id':'assessment', 'name':'#assessmentTab input','text':''},
-        {'Id':'procedure',  'name':'#procedureTab input','text':''},
-        {'Id':'pharmacy',   'name':'#pharmacyTab input','text':''},
-        {'Id':'medical',    'name':'#medicalTab input','text':''},
-        {'Id':'social',     'name':'#socialTab input','text':''},
-        {'Id':'current',    'name':'#currentTab input','text':''},
-        {'Id':'family',     'name':'#familyTab input','text':''}]
-
-    jsonObj[0].text = $(jsonObj[0].name).text();
+    var textToTranslate =  $(jsonObj[0].id + " span").text();
+    var patientId = document.getElementById('patientId').value;
 
     for (let i = 1; i < jsonObj.length; i++) {
-        jsonObj[i].text = $(jsonObj[i].name).text();
+        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();  // TEMPORARY $ DELIM SOLUTION
     }
 
     $.ajax({
         type: 'get',
         url: '/translate',
-        data: {text: jsonObj[10].text},
+        data: {text : textToTranslate, patientId: patientId},
         success: function(translation){
-            $('#complaintInfo').text(translation);
+            var textTranslated = translation;
+            var listTranslated = textTranslated.split("$"); // TEMPORARY $ DELIM SOLUTION
+
+            for (let i = 0; i < jsonObj.length; i++) {
+                var textOut = listTranslated[i];
+
+                // console.log(jsonObj[i].id + " + " + textOut);
+
+                if (jsonObj[i].id === "#complaintInfo"){
+                    $(jsonObj[i].id).text(textOut);
+                } else {
+                    $(jsonObj[i].id).val(textOut);
+                }
+            }
         },
         failure: function(result){
             console.error('Failed to fetch translation');

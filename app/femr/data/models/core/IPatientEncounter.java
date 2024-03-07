@@ -90,4 +90,5 @@ public interface IPatientEncounter {
 
     String getLanguageCode();
     void setLanguageCode(String languageCode);
+
 }

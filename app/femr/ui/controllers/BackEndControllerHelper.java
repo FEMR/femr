@@ -9,7 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class BackEndControllerHelper  {
@@ -53,13 +54,18 @@ public class BackEndControllerHelper  {
 
   public static String translate(String arg, String from, String to) {
     String output = "";
+    System.out.println(arg);
+//    JSONArray j = new JSONArray(arg);
+//    String s = j.getString("onsetTab");
+//    System.out.println(j);
     try {
       //Build GET request argument, replacing spaces and newlines
       arg = arg.replaceAll(" ", "+").replaceAll("\n", "+");
       String translatedText = "";
+      System.out.println(arg);
 
       //Make GET request
-      URL url = new URL("http://localhost:8000/?text=" + arg + "&from=" + from + "&to=" + to);
+      URL url = new URL("http://localhost:5000/?text=" + arg + "&from=" + from + "&to=" + to);
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod("GET");
 
@@ -70,10 +76,13 @@ public class BackEndControllerHelper  {
         String inputLine = in.readLine();
         in.close();
 
+        System.out.println(arg);
+
         //parse translation from JSON
         ObjectMapper mapper = new ObjectMapper();
         TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
         output = api.translatedText;
+        System.out.println(output);
       }
       con.disconnect();
 

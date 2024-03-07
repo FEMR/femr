@@ -42,7 +42,20 @@
                 <h4>Complaint</h4>
                 <div id = "toggle">
 @*                    <img class="loading" src="@assets.path("img/graph-loader.gif")" alt="loading&hellip;" />*@
-                    <button id ="button" class="fButton fOtherButton">Show Original</button>
+                    @* @helper.form(action = MedicalController.editGet(patientEncounter.getId) { *@
+                        <button id ="button" onclick="return change(this)" class="fButton fOtherButton">Show Original</button>
+
+                        <script type="text/javascript">
+                                function change( el )
+                                {
+                                    if ( el.innerHTML === "Show Original" )
+                                        el.innerHTML = "↻";
+                                    else
+                                        el.innerHTML = "Show Original";
+                                }
+                        </script>
+                    @* } *@
+
                 </div>
             </div>
             <div id = "complaintInfo">

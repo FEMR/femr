@@ -16,6 +16,7 @@ val appDependencies = Seq(
   evolutions,
   jodaForms,
   guice,
+  "org.json" % "json" % "20240303",
   "mysql" % "mysql-connector-java" % "5.1.49",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.apache.commons" % "commons-collections4" % "4.0",

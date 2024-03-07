@@ -56,7 +56,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                 translatedText = marian.translate([text])
                 return translatedText[0]
             else:
-                return "Translation Unavailable"
+                return from_code + to_code + "Translation Unavailable"
 
 
     def do_GET(self):
@@ -88,7 +88,8 @@ def start_server(port):
 if __name__ == "__main__":
     install_packages()
     for port in PORTS:
+        print(port)
         try:
             start_server(port)
-        except PermissionError:
+        except OSError:
             print(f"Port {port} unavailable")

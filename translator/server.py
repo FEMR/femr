@@ -42,21 +42,23 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        print(from_code, to_code)
-        argos_language_path = Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel")
-        if argos_language_path.exists():
-            # print("ARGOS")
+        # Use Argos if Language Package Exists
+        if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
             return translatedText
+        # Use Marian if Language Package Exists in Marian but not Argos
+        elif Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}").exists():
+            marian = MarianModel(from_code, to_code)
+            translatedText = marian.translate([text])
+            return translatedText[0]
+        # Use Argos "English in the Middle" if not in Argos and Marian by Default
+        elif Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
+                Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists():
+            translatedText = argostranslate.translate.translate(text, from_code, to_code)
+            return translatedText
+        # If a package doesn't exist
         else:
-            marian_language_path = Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}")
-            if marian_language_path.exists():
-                # print("MARIAN")
-                marian = MarianModel(from_code, to_code)
-                translatedText = marian.translate([text])
-                return translatedText[0]
-            else:
-                return "Translation Unavailable"
+            return "Translation Unavailable"
 
 
     def do_GET(self):

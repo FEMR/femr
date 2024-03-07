@@ -175,5 +175,6 @@ public class MockPatientEncounter implements IPatientEncounter {
     @Override
     public void setReasonDeleted(String reason) {
 
+
     }
 }

@@ -52,8 +52,10 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             translatedText = marian.translate([text])
             return translatedText[0]
         # Use Argos "English in the Middle" if not in Argos and Marian by Default
-        elif Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
-                Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists():
+        elif (Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
+                Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists()) or \
+                (Path(f"{PATH}/translator/argos_models/translate-en_{from_code}.argosmodel").exists() and \
+                 Path(f"{PATH}/translator/argos_models/translate-en_{to_code}.argosmodel").exists()):
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
             return translatedText
         # If a package doesn't exist

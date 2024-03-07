@@ -11,10 +11,13 @@ from pathlib import Path
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 from libargos import install_packages
+import socket
 
-PORTS = [8000, 5000]
+PORTS = [8000, 5000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008]
 TIMEOUT = 60
 PATH = os.getcwd()
+
+
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
@@ -74,12 +77,16 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             ensure_ascii=False
         )
 
+def port_open(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) != 0
+
 def start_server(port):
     try:
         server = HTTPServer(("127.0.0.1", port), WebRequestHandler)
         server.timeout = TIMEOUT
         server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())
-        print("Serving at port", port)
+        print(f"Serving at port: {port}", file=sys.stderr)
         while(True): server.handle_request()
     except TimeoutError:
         print("Translation server timed out")
@@ -88,7 +95,5 @@ def start_server(port):
 if __name__ == "__main__":
     install_packages()
     for port in PORTS:
-        try:
+        if(port_open(port)):
             start_server(port)
-        except PermissionError:
-            print(f"Port {port} unavailable")

@@ -4,6 +4,7 @@ import femr.util.translation.TranslationServer;
 import femr.util.translation.TranslationJson;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,41 +55,19 @@ public class BackEndControllerHelper  {
   public static String translate(String arg, String from, String to) {
     String output = "";
     try {
-      //Build GET request argument, replacing spaces and newlines
-      arg = arg.replaceAll(" ", "+").replaceAll("\n", "+");
-      String translatedText = "";
+      output = TranslationServer.makeServerRequest(arg, from, to);
 
-      //Make GET request
-      URL url = new URL("http://localhost:8000/?text=" + arg + "&from=" + from + "&to=" + to);
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("GET");
+      //parse translation from JSON
+      ObjectMapper mapper = new ObjectMapper();
+      TranslationJson api = mapper.readValue(output, TranslationJson.class);
+      output = api.translatedText;
 
-      int status = con.getResponseCode();
-      if(status == 200){
-        //read response data
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine = in.readLine();
-        in.close();
-
-        //parse translation from JSON
-        ObjectMapper mapper = new ObjectMapper();
-        TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
-        output = api.translatedText;
-      }
-      con.disconnect();
-
-    } catch (NullPointerException e) {
-      System.out.println("The python script does not exist, or failed to translate.");
-    } catch (IOException e) {
-      System.out.println("An I/O error has occurred. (Translation server could be down)");
-
-      TranslationServer.start();
-      //busy wait for server to start
-      while(!TranslationServer.appRunning());
-      return translate(arg, from, to);
-
-    } catch (IndexOutOfBoundsException e) {
-      System.out.println("The command list is empty");
+    } catch(MalformedURLException e){
+      System.out.println("Malformed URL Exception");
+      System.out.println(e.getMessage());
+    } catch(IOException e){
+      System.out.println("IOException for parsing JSON");
+      System.out.println(e.getMessage());
     }
     return output;
   }

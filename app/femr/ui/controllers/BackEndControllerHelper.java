@@ -4,6 +4,7 @@ import femr.util.translation.TranslationServer;
 import femr.util.translation.TranslationJson;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -78,11 +79,19 @@ public class BackEndControllerHelper  {
 
         System.out.println(arg);
 
+        output = TranslationServer.makeServerRequest(arg, from, to);
+
         //parse translation from JSON
         ObjectMapper mapper = new ObjectMapper();
-        TranslationJson api = mapper.readValue(inputLine, TranslationJson.class);
+        TranslationJson api = mapper.readValue(output, TranslationJson.class);
         output = api.translatedText;
-        System.out.println(output);
+
+      } catch(MalformedURLException e){
+        System.out.println("Malformed URL Exception");
+        System.out.println(e.getMessage());
+      } catch(IOException e){
+        System.out.println("IOException for parsing JSON");
+        System.out.println(e.getMessage());
       }
       con.disconnect();
 
@@ -98,6 +107,7 @@ public class BackEndControllerHelper  {
 
     } catch (IndexOutOfBoundsException e) {
       System.out.println("The command list is empty");
+
     }
     return output;
   }

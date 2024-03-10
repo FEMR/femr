@@ -46,6 +46,7 @@ public class MedicalController extends Controller {
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
 
+    private boolean showOg = false;
 
     @Inject
     public MedicalController(AssetsFinder assetsFinder,
@@ -151,6 +152,15 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
+
+        if (showOg) {
+            String toLanguage = currentUserSession.getLanguageCode();
+            String fromLanguage = patientEncounter.getLanguageCode();
+
+            List<String> test = new ArrayList<String>();
+            test.add(translate(patientEncounter.getChiefComplaints().get(0), fromLanguage, toLanguage));
+            patientEncounter.setChiefComplaints(test);
+        }
 
         //get prescriptions
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId(), currentUserSession.getTripId());

@@ -63,15 +63,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             return translatedText
         # If a package doesn't exist
         else:
-
-            marian_language_path = Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}")
-            if marian_language_path.exists():
-                # print("MARIAN")
-                marian = MarianModel(from_code, to_code)
-                translatedText = marian.translate([text])
-                return translatedText[0]
-            else:
-                return from_code + to_code + "Translation Unavailable"
+            return from_code + to_code + "Translation Unavailable"
 
 
 
@@ -108,11 +100,7 @@ def start_server(port):
 if __name__ == "__main__":
     install_packages()
     for port in PORTS:
-
-        print(port)
-        try:
+        if(port_open(port)):
             start_server(port)
-        except OSError:
-            print(f"Port {port} unavailable")
 
 

@@ -60,10 +60,10 @@
                     if (patientDemographics) {
                         patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
                     }
-                    updateInputField("triage_index_firstName", languageData[language].triage_index_firstName);
-                    updateInputField("triage_index_lastName", languageData[language].triage_index_lastName);
-                    updateInputField("triage_index_phoneNumber", languageData[language].triage_index_phoneNumber);
-                    updateInputField("triage_index_address", languageData[language].triage_index_address);
+                    updateInputField("firstName", languageData[language].triage_index_firstName);
+                    updateInputField("lastName", languageData[language].triage_index_lastName);
+                    updateInputField("phoneNumber", languageData[language].triage_index_phoneNumber);
+                    updateInputField("address", languageData[language].triage_index_address);
                 }
             });
     </script>
@@ -92,13 +92,13 @@
                             <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
                         </b>
                     </h2>
-                @inputText("First Name", "triage_index_firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
+                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
-                @inputText("Last Name", "triage_index_lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
+                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 <br>
-                @inputText("Phone Number", "triage_index_phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
+                @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "tel")
                 <br>
-                @inputText("Address", "triage_index_address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+                @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <br>
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>

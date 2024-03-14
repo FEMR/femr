@@ -22,7 +22,7 @@
     <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
-    <script>
+    <script defer>
             document.addEventListener('DOMContentLoaded', function(event) {
                 let languageData;
                 fetch('@routes.Assets.versioned("json/languages.json")')
@@ -56,6 +56,8 @@
                     updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
                     updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
                     updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
+                    updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
+                    updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
                     const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
                     if (patientDemographics) {
                         patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
@@ -348,7 +350,7 @@
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>
-                    <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+                    <button type="button" class="fButton fOtherButton newPatientBtn pull-left" id="triageResetBtn">Reset Fields</button>
 
 
                     @if(viewModel.getPatient.getId != 0) {

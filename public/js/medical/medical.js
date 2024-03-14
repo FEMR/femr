@@ -334,6 +334,10 @@ $(document).ready(function () {
     var patientId = document.getElementById('patientId').value;
 
     for (let i = 1; i < jsonObj.length; i++) {
+        if($(jsonObj[i].id).val().length === 0){
+            textToTranslate = textToTranslate + " $ " + " ";
+        }
+
         textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();  // TEMPORARY $ DELIM SOLUTION
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
@@ -341,14 +345,16 @@ $(document).ready(function () {
     // textToTranslate = textToTranslate + JSON.stringify(jsonObj);
     var jsonText = JSON.stringify(jsonObj);
     console.log(jsonText);
+    console.log(textToTranslate);
 
     $.ajax({
         type: 'get',
         url: '/translate',
-        data: {text : textToTranslate, patientId: patientId},
+        data: {text : jsonText, patientId: patientId},
         success: function(translation){
             var textTranslated = translation;
             var listTranslated = textTranslated.split("$"); // TEMPORARY $ DELIM SOLUTION
+            console.log(listTranslated);
 
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];

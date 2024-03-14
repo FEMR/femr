@@ -260,6 +260,7 @@ public class MedicalController extends Controller {
 
     public Result translateGet() {
         String text = request().getQueryString("text");
+        //System.out.println("translateGet text:" + text);
         //Harrison Shu
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         String toLanguage = currentUserSession.getLanguageCode();
@@ -279,7 +280,7 @@ public class MedicalController extends Controller {
 
 //    Calls Python Script to translate
     private String translate(String text, String fromLanguage, String toLanguage) {
-
+        //System.out.println("translate text:" + text);
         String data = "";
         try {
             data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);

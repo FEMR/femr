@@ -121,6 +121,7 @@ public class UpdatesController extends Controller {
         this.messages = new ArrayList<>();
 
         // TODO just run the script here
+
         // TODO need to check errors
         ServiceResponse<List<? extends IKitStatus>> kitStatusesResponse = updatesService.updateKitStatuses();
 

@@ -7,7 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.net.URLEncoder;
 
 @Singleton
 public class TranslationServer {
@@ -18,20 +20,23 @@ public class TranslationServer {
 
     private static int portNumber = -1;
 
-    //Takes a string, a from code and a to code, and returns the translatedtext
-    public static String makeServerRequest(String text, String from, String to) throws MalformedURLException {
+    //Takes a string, a from code and a to code, and returns the translated text
+    public static String makeServerRequest(String text, String from, String to) throws MalformedURLException, UnsupportedEncodingException {
         if(serverNotRunning()){
             start();
             while(serverNotRunning()); //block
         }
         //Build GET request argument, replacing spaces and newlines
-        text = text.replaceAll(" ", "+").replaceAll("\n", "+");
+        System.out.println(text);
+        //text = text.replaceAll(" ", "+").replaceAll("\n", "+");
+        String encoded = URLEncoder.encode(text, "UTF-8");
+        System.out.println(encoded);
 
         String response = "";
         try {
             //Make GET request
             URL url = new URL("http://localhost:" + portNumber +"/?text=" +
-                    text + "&from=" + from + "&to=" + to);
+                    encoded + "&from=" + from + "&to=" + to);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.connect();

@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 @Singleton
@@ -82,14 +84,12 @@ public class TranslationServer {
             try {
                 Scanner s = new Scanner(log);
                 //Wait for server.log to be written to (port number)
-                Thread.sleep(8000);
+                while(log.length() == 0);
                 portNumber = Integer.parseInt(s.nextLine().split(": ")[1]);
                 s.close();
             } catch (FileNotFoundException e) {
                 System.out.println("A FileNotFound error has occurred.");
                 System.out.println(e.getMessage());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
         System.out.println("Translation server running!");

@@ -70,7 +70,6 @@ public class TranslationServer {
             String absPath = "translator/server.py";
             try {
                 ProcessBuilder pb = new ProcessBuilder("python", absPath);
-
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();
@@ -81,17 +80,16 @@ public class TranslationServer {
             }
 
             try {
-                Scanner s;
+                Scanner s = new Scanner(log);
                 //Wait for server.log to be written to (port number)
-                do {
-                    s = new Scanner(log);
-                } while (!s.hasNext());
-
+                Thread.sleep(8000);
                 portNumber = Integer.parseInt(s.nextLine().split(": ")[1]);
-                System.out.println(portNumber);
+                s.close();
             } catch (FileNotFoundException e) {
                 System.out.println("A FileNotFound error has occurred.");
                 System.out.println(e.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
         System.out.println("Translation server running!");

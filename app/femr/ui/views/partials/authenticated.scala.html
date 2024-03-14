@@ -12,7 +12,7 @@
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
 
-<script>
+<script defer>
         document.addEventListener('DOMContentLoaded', function(event) {
             let languageData;
             fetch('@routes.Assets.versioned("json/languages.json")')

@@ -31,7 +31,4 @@ public class HomeController extends Controller {
         return ok(create.render(null, 0, assetsFinder));
     }
 
-
-
-
 }

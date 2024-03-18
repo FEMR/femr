@@ -11,7 +11,6 @@
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
-
 <script defer>
         document.addEventListener('DOMContentLoaded', function(event) {
             let languageData;
@@ -42,14 +41,11 @@
             }
         });
 </script>
-
 <div class="navigationLogo">
     <a href="@HomeController.index()">
         <img src="@assets.path("img/logo_color_wordless_sm.png")" />
     </a>
 </div>
-
-
 <div class="smallNavigationItemsWrap">
         <div class="hamburger">
             <div></div>
@@ -57,9 +53,6 @@
             <div></div>
         </div>
 </div>
-
-
-
 <div class="navigationItemsWrap">
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {

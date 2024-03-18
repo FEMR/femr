@@ -1,10 +1,9 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+@(currentUser: femr.common.dtos.CurrentUser)(implicit assetsFinder: AssetsFinder)
+@*injecting assets finder into my template*@
 @import femr.ui.views.html.layouts.main
-
     @additionalScripts = {
-        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
-        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
-
+        <script type="text/javascript" src="@assetsFinder.path("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@assetsFinder.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script>
                 if (window.location.search.indexOf('feedback=received') > -1) {
                     $('#feedbackResponse').css({"display":"block"});
@@ -16,24 +15,21 @@
         <script defer>
                 document.addEventListener('DOMContentLoaded', function(event) {
                     let languageData;
-                    fetch('@routes.Assets.versioned("json/languages.json")')
+                    fetch('@assetsFinder.path("json/languages.json")')
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
                                 updateLanguage();
                             });
-
                     // document.getElementById('languageSelect').addEventListener('change', function() {
                     //     updateLanguage(this.value);
                     // });
-
                     function updateTextContent(elementId, value) {
                         const element = document.getElementById(elementId);
                         if (element) {
                             element.textContent = value;
                         }
                     }
-
                     function updateLanguage() {
                         const language = "@currentUser.getLanguageCode";
                         const currentUser = " @currentUser.getFirstName()";
@@ -50,8 +46,6 @@
                 });
         </script>
     }
-
-
   @top = {
     <div class="jumbotron">
       <div class="container">
@@ -68,8 +62,8 @@
       </div>
     </div>
   }
-
-@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
+@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assetsFinder = assetsFinder)
+    {
   @*<ul>
   @for(role <- currentUser.getRoles) {
     <li>@role.getName</li>

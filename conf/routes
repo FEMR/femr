@@ -2,7 +2,7 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-GET         /*path/                                            femr.ui.controllers.ApplicationController.removeTrailingSlash(path: String)
+GET         /*path/                                             femr.ui.controllers.ApplicationController.removeTrailingSlash(path: String)
 GET         /superuser/tabs/:name                              @femr.ui.controllers.superuser.TabController.fieldsGet(name: String)
 POST        /superuser/tabs/:name                              @femr.ui.controllers.superuser.TabController.fieldsPost(name: String)
 GET         /superuser/tabs                                    @femr.ui.controllers.superuser.TabController.manageGet()
@@ -102,8 +102,11 @@ GET         /reference                                         @femr.ui.controll
 GET         /                                                  @femr.ui.controllers.HomeController.index()
 
 # Map static resources without global state
-GET         /assets/*file                                       controllers.Assets.versioned(file)
+GET         /assets/*file                                      controllers.Assets.at(path="/public", file)
+
 
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()
 POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()
+
+

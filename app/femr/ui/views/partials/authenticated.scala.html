@@ -15,7 +15,7 @@
 <script defer>
         document.addEventListener('DOMContentLoaded', function(event) {
             let languageData;
-            fetch('@routes.Assets.versioned("json/languages.json")')
+            fetch('@assets.path("json/languages.json")')
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;

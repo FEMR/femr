@@ -102,7 +102,8 @@ GET         /reference                                         @femr.ui.controll
 GET         /                                                  @femr.ui.controllers.HomeController.index()
 
 # Map static resources without global state
-GET         /assets/*file                                       controllers.Assets.versioned(file)
+GET         /assets/*file                                      controllers.Assets.at(path="/public", file)
+
 
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()

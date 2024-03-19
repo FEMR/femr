@@ -8,15 +8,15 @@ import femr.ui.views.html.home.index;
 import femr.ui.views.html.sessions.create;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.Logger; // Ensure this import is present
 
 public class HomeController extends Controller {
 
     private final AssetsFinder assetsFinder;
-    private ISessionService sessionService;
+    private final ISessionService sessionService; // Changed to 'final' to ensure it's initialized
 
     @Inject
     public HomeController(AssetsFinder assetsFinder, ISessionService sessionService) {
-
         this.assetsFinder = assetsFinder;
         this.sessionService = sessionService;
     }
@@ -24,14 +24,14 @@ public class HomeController extends Controller {
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        // Logging the currentUser object and its language code if not null
+        Logger.debug("CurrentUser: " + (currentUser != null ? currentUser.toString() : "null"));
         if (currentUser != null) {
+            Logger.debug("Language Code: " + currentUser.getLanguageCode());
             return ok(index.render(currentUser, assetsFinder));
+        } else {
+            Logger.debug("CurrentUser is null");
+            return ok(create.render(null, 0, assetsFinder));
         }
-
-        return ok(create.render(null, 0, assetsFinder));
     }
-
-
-
-
 }

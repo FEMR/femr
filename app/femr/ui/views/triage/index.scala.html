@@ -32,6 +32,10 @@
                             updateLanguage();
                         });
 
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+
                 function updateTextContent(elementId, value) {
                     const element = document.getElementById(elementId);
                     if (element) {
@@ -49,8 +53,8 @@
 
                 }
 
-                function updateLanguage() {
-                    const language = "ka";
+                function updateLanguage(languageCode = "en") {
+                    const language = languageCode;
                     updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
                     updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
                     updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);

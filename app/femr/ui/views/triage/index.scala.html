@@ -22,7 +22,7 @@
     <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
-    <script defer>
+    <script>
             document.addEventListener('DOMContentLoaded', function(event) {
                 let languageData;
                 fetch('@routes.Assets.versioned("json/languages.json")')
@@ -50,7 +50,7 @@
                 }
 
                 function updateLanguage() {
-                    const language = "@currentUser.getLanguageCode";
+                    const language = "ka";
                     updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
                     updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
                     updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);

@@ -13,7 +13,7 @@
                     }, 2000);
                 }
         </script>
-        <script defer>
+        <script>
                 document.addEventListener('DOMContentLoaded', function(event) {
                     let languageData;
                     fetch('@routes.Assets.versioned("json/languages.json")')
@@ -35,8 +35,8 @@
                     }
 
                     function updateLanguage() {
-                        const language = "@currentUser.getLanguageCode";
-                        const currentUser = " @currentUser.getFirstName()";
+                        const language = "ka";
+                        const currentUser = "Mayur!";
                         updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currentUser);
                         updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
                         updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);

@@ -22,6 +22,10 @@
                         updateLanguage();
                     });
 
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
                 if (element) {
@@ -29,8 +33,8 @@
                 }
             }
 
-            function updateLanguage() {
-                const language = "ka";
+            function updateLanguage(languageCode = "en") {
+                const language = languageCode;
                 updateTextContent("langCode_triage", languageData[language].langCode_triage);
                 updateTextContent("langCode_medical", languageData[language].langCode_medical);
                 updateTextContent("langCode_pharmacy", languageData[language].langCode_pharmacy);
@@ -85,6 +89,8 @@
         <select id="languageSelect" style="margin-right: 10px">
             <option value="en">English</option>
             <option value="es">Español</option>
+            <option value="ka">Kannada</option>
+            <option value="fr">French</option>
         </select>
 
         @currentUser.getFirstName @currentUser.getLastName 

@@ -23,9 +23,9 @@
                                 updateLanguage();
                             });
 
-                    // document.getElementById('languageSelect').addEventListener('change', function() {
-                    //     updateLanguage(this.value);
-                    // });
+                    document.getElementById('languageSelect').addEventListener('change', function() {
+                        updateLanguage(this.value);
+                    });
 
                     function updateTextContent(elementId, value) {
                         const element = document.getElementById(elementId);
@@ -34,10 +34,9 @@
                         }
                     }
 
-                    function updateLanguage() {
-                        const language = "ka";
-                        const currentUser = "Mayur!";
-                        updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currentUser);
+                    function updateLanguage(languageCode = "en", currUser = " Admin!") {
+                        const language = languageCode;
+                        updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
                         updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
                         updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
                         updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);

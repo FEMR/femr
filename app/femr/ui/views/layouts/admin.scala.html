@@ -20,6 +20,48 @@
         <script type = "text/javascript" src="@assets.path("js/admin/admin.js")"></script>
         <script type = "text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
         @scripts
+
+        <script>
+             document.addEventListener('DOMContentLoaded', function(event) {
+                 let languageData;
+                 fetch('@routes.Assets.versioned("json/languages.json")')
+                         .then(response => response.json())
+                         .then(data => {
+                             languageData = data;
+                             updateLanguage();
+                         });
+
+                 document.getElementById('languageSelect').addEventListener('change', function() {
+                     updateLanguage(this.value);
+                 });
+
+                 function updateTextContent(elementId, value) {
+                     const element = document.getElementById(elementId);
+                     if (element) {
+                         element.textContent = value;
+                     }
+                 }
+
+                 function updateChildTextContent(elementId, value) {
+                     const element = document.getElementById(elementId);
+                     if (element) {
+                         let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                         if (textNode) {
+                             textNode.textContent = value;
+                         }
+                     }
+                 }
+
+                 function updateLanguage(languageCode = "en") {
+                     updateChildTextContent("admin_configure", languageData[languageCode].admin_configure);
+                     updateChildTextContent("admin_inventory", languageData[languageCode].admin_inventory);
+                     updateChildTextContent("admin_trips", languageData[languageCode].admin_trips);
+                     updateChildTextContent("admin_users", languageData[languageCode].admin_users);
+                     updateChildTextContent("admin_updates", languageData[languageCode].admin_updates);
+                     updateTextContent("admin_title", languageData[languageCode].admin_title);
+                 }
+             });
+        </script>
     }
     @adminStyles = {
         <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
@@ -30,25 +72,25 @@
 @main(title, currentUser, adminStyles, adminScripts, assets = assets) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
+            <a id="admin_configure" href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
-            <a href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
+            <a id="admin_inventory" href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory</a>
-            <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-globe"></span>
+            <a id="admin_trips" href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-globe"></span>
                 Trips</a>
             @if(currentUser.getEmail == "superuser"){
                 <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-wrench"></span>
                     Tabs</a>
 
             }
-            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-user"></span>
+            <a id="admin_users" href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-user"></span>
                 Users</a>
-            <a href="@UpdatesController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-refresh"></span>
+            <a id="admin_updates" href="@UpdatesController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-refresh"></span>
                 Updates</a>
         </div>
         <div id="admin-right-panel">
             <div id="title">
-                <h2>@title</h2>
+                <h2 id="admin_title">Admin Panel</h2>
             </div>
             @message
             <div id="adminContent">

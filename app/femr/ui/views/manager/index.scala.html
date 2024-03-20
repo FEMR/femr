@@ -3,17 +3,54 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
 @import femr.ui.controllers.routes.HistoryController
-
 @additionalStyles = {
 
     <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
 }
 
 @main("ManagerTab", currentUser, styles = additionalStyles, assets = assets) {
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            updateLanguage();
+                        });
+
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateChildTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                        if (textNode) {
+                            textNode.textContent = value;
+                        }
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    updateChildTextContent("manager_trip_message", languageData[languageCode].manager_trip_message);
+                    updateTextContent("manager_trip_link", languageData[languageCode].manager_trip_link);
+                    updateTextContent("manager_patients_overview", languageData[languageCode].manager_patients_overview);
+                }
+            });
+    </script>
     <div class="backgroundForWrap">
 
 
-        <h3>Overview of patients checked in today: @viewModelGet.getUserFriendlyDate </h3>
+        <h3 id="manager_patients_overview">Overview of patients checked in today: @viewModelGet.getUserFriendlyDate </h3>
 
         @if(currentUser.getTripId != null) {
             <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
@@ -76,8 +113,8 @@
             </div>
         </div>
         } else {
-            <h4>@currentUser.getFirstName @currentUser.getLastName
-                is not currently assigned to a trip. To manage trips please have an Admin visit the <a href="@TripController.manageGet()">Trip page</a></h4>
+@*          TODO: Add the full name of the user in the future*@
+            <h4 id="manager_trip_message">User is not currently assigned to a trip. To manage trips please have an Admin visit the <a id="manager_trip_link" href="@TripController.manageGet()">Trip page</a></h4>
         }
     </div>
 }

@@ -128,7 +128,17 @@
     "configure_manage_Feature": "Feature",
     "configure_manage_Description": "Description",
     "configure_manage_Toggle": "Toggle",
-    "configure_manage_Save": "Save"
+    "configure_manage_Save": "Save",
+    "admin_welcome": "Welcome, Administrator. Choose an option to get started.",
+    "admin_configure": " Configure",
+    "admin_inventory": " Inventory",
+    "admin_trips": " Trips",
+    "admin_users": " Users",
+    "admin_updates": " Updates",
+    "admin_title": "Admin Panel",
+    "manager_trip_message": "User is not currently assigned to a trip. To manage trips please have an Admin visit the",
+    "manager_trip_link": " Trip Page",
+    "manager_patients_overview": "Overview of patients checked in today: "
   },
   "es": {
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
@@ -259,7 +269,17 @@
     "configure_manage_Feature": "Función",
     "configure_manage_Description": "Descripción",
     "configure_manage_Toggle": "Alternar",
-    "configure_manage_Save": "Guardar"
+    "configure_manage_Save": "Guardar",
+    "admin_welcome": "Bienvenido, Administrador. Elija una opción para comenzar.",
+    "admin_configure": " Configurar",
+    "admin_inventory": " Inventario",
+    "admin_trips": " Viajes",
+    "admin_users": " Usuarios",
+    "admin_updates": " Actualizaciones",
+    "admin_title": "Panel de Administración",
+    "manager_trip_message": "El usuario actualmente no está asignado a un viaje. Para gestionar viajes, por favor pida a un Administrador que visite la",
+    "manager_trip_link": " Página de Viajes",
+    "manager_patients_overview": "Resumen de los pacientes registrados hoy: "
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",
@@ -390,7 +410,17 @@
     "configure_manage_Feature": "Fonctionnalité",
     "configure_manage_Description": "Description",
     "configure_manage_Toggle": "Basculer",
-    "configure_manage_Save": "Enregistrer"
+    "configure_manage_Save": "Enregistrer",
+    "admin_welcome": "Bienvenue, Administrateur. Choisissez une option pour commencer.",
+    "admin_configure": " Configurer",
+    "admin_inventory": " Inventaire",
+    "admin_trips": " Voyages",
+    "admin_users": " Utilisateurs",
+    "admin_updates": " Mises à jour",
+    "admin_title": "Panneau d'administration",
+    "manager_trip_message": "L'utilisateur n'est actuellement pas assigné à un voyage. Pour gérer les voyages, veuillez demander à un Administrateur de visiter la",
+    "manager_trip_link": " Page des Voyages",
+    "manager_patients_overview": "Aperçu des patients enregistrés aujourd'hui : "
   },
   "ka": {
     "home_index_h2_Welcome": "fEMR 2.4.1-beta ಗೆ ಸ್ವಾಗತ,",
@@ -521,6 +551,16 @@
     "configure_manage_Feature": "ವೈಶಿಷ್ಟ್ಯ",
     "configure_manage_Description": "ವಿವರಣೆ",
     "configure_manage_Toggle": "ಟಾಗಲ್",
-    "configure_manage_Save": "ಉಳಿಸಿ"
+    "configure_manage_Save": "ಉಳಿಸಿ",
+    "admin_welcome": "ಸ್ವಾಗತ, ನಿರ್ವಾಹಕರೇ. ಪ್ರಾರಂಭಿಸಲು ಆಯ್ಕೆಯೊಂದನ್ನು ಆರಿಸಿ.",
+    "admin_configure": " ಸಂರಚಿಸು",
+    "admin_inventory": " ಜಾಹೀರಾತು",
+    "admin_trips": " ಪ್ರವಾಸಗಳು",
+    "admin_users": " ಬಳಕೆದಾರರು",
+    "admin_updates": " ನವೀಕರಣಗಳು",
+    "admin_title": "ನಿರ್ವಹಣೆ ಫಲಕ",
+    "manager_trip_message": "ಬಳಕೆದಾರರು ಪ್ರಸ್ತುತ ಯಾವುದೇ ಪ್ರಯಾಣಕ್ಕೆ ನಿಯೋಜಿತರಾಗಿಲ್ಲ. ಪ್ರಯಾಣಗಳನ್ನು ನಿರ್ವಹಿಸಲು ದಯವಿಟ್ಟು ಒಬ್ಬ ನಿರ್ವಾಹಕರನ್ನು ಭೇಟಿಯಾಗಲು ಕೇಳಿ",
+    "manager_trip_link": " ಪ್ರಯಾಣ ಪುಟ",
+    "manager_patients_overview": "ಇಂದು ಪರೀಕ್ಷಿಸಲಾದ ರೋಗಿಗಳ ಅವಲೋಕನ: "
   }
 }

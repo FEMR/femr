@@ -26,11 +26,6 @@
     "triage_index_lastName": "Last Name",
     "triage_index_phoneNumber": "Phone Number",
     "triage_index_address": "Address",
-    "triage_index_city": "City",
-    "triage_index_age": "Age",
-    "triage_index_years": "Years",
-    "triage_index_birth_date": "Birth Date",
-    "triage_index_infant 0-"
     "triage_index_button_reset_fields": "Reset Fields",
     "triage_index_button_submit_patient": "Submit Patient",
     "triage_index_That": "That patient could not be found.",

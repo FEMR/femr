@@ -70,7 +70,28 @@
                     updateInputField("lastName", languageData[language].triage_index_lastName);
                     updateInputField("phoneNumber", languageData[language].triage_index_phoneNumber);
                     updateInputField("address", languageData[language].triage_index_address);
-                    updateInputField("infant", languageData[language].triage_index_infant);
+
+                    updateInputField("city", languageData[language].triage_index_City);
+
+                    // updateTextContent("Age", languageData[language].triage_index_Age);
+
+                    // updateTextContent("triage_index_OR", languageData[language].triage_index_OR); // For elements like Age OR Birth Date
+                    updateTextContent("ageLabel", languageData[language].triage_index_Age);
+
+                    // If there are specific inputs for Age, you might need to update placeholders or values as follows:
+                    updateInputField("ageYears", languageData[language].triage_index_Years);
+                    updateInputField("ageMonths", languageData[language].triage_index_Month);
+
+                    const orTexts = document.querySelectorAll(".orSpan");
+                    orTexts.forEach(orText => {
+                        orText.textContent = languageData[language].triage_index_OR;
+                    });
+
+                    //
+                    // updateInputField("age", languageData[language].triage_index_Age);
+                    // updateInputField("years", languageData[language].triage_index_Years);
+                    // updateInputField("months", languageData[language].triage_index_Month);
+                    // updateInputField("birth date", languageData[language].triage_index_Birth);
                 }
             });
     </script>
@@ -118,7 +139,7 @@
                 <br>
 
                 <div id="ageClassificationWrap">
-                    <label>Age<span class="red bold">*</span></label>
+                    <label id="ageLabel">Age<span class="red bold">*</span></label>
 
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
 

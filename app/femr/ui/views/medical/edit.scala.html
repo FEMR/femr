@@ -19,7 +19,6 @@
         <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
-
         <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/medical/medical.js")"></script>
@@ -43,7 +42,7 @@
                 <div id = "toggle">
 @*                    <img class="loading" src="@assets.path("img/graph-loader.gif")" alt="loading&hellip;" />*@
                     @* @helper.form(action = MedicalController.editGet(patientEncounter.getId) { *@
-                        <button id ="button" onclick="return change(this)" class="fButton fOtherButton">Show Original</button>
+                        <button type="button" id="toggleBtn" onclick="return change(this)" class="fButton fOtherButton">Show Original</button>
 
                         <script type="text/javascript">
                                 function change( el )
@@ -67,6 +66,7 @@
                     <span>N/A</span>
                 }
             </div>
+            <div class="hidden" id="complaintInfoStore"></div>
 
             <div id="vitalsWrap">
                 <!-- Alaa Serhan - Referenced in vitalClientValidation.js for validationg height inputs -->

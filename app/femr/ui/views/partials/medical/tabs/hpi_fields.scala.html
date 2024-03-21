@@ -14,6 +14,7 @@
                     <input name="tabFieldItems[@onset.getIndex].name" type="text" class="hidden" value="onset"/>
                     <input name="tabFieldItems[@onset.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                     <input name="tabFieldItems[@onset.getIndex].value" type="text" class="fInput" value="@onset.getValue" id="onsetTab"/>
+                    <div class="hidden" id="onsetTabStore"></div>
             }
         </div>
 
@@ -23,6 +24,7 @@
                 <input name="tabFieldItems[@radiation.getIndex].name" type="text" class="hidden" value="radiation"/>
                 <input name="tabFieldItems[@radiation.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@radiation.getIndex].value" type="text" class="fInput" value="@radiation.getValue" id="radiationTab"/>
+                <div class="hidden" id="radiationTabStore"></div>
             }
         </div>
 
@@ -35,6 +37,7 @@
                 <input name="tabFieldItems[@quality.getIndex].name" type="text" class="hidden" value="quality"/>
                 <input name="tabFieldItems[@quality.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@quality.getIndex].value" type="text" class="fInput" value="@quality.getValue" id="qualityTab"/>
+                <div class="hidden" id="qualityTabStore"></div>
             }
         </div>
 
@@ -53,6 +56,7 @@
                 <input name="tabFieldItems[@provokes.getIndex].name" type="text" class="hidden" value="provokes"/>
                 <input name="tabFieldItems[@provokes.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@provokes.getIndex].value" type="text" class="fInput" value="@provokes.getValue" id="provokesTab"/>
+                <div class="hidden" id="provokesTabStore"></div>
             }
         </div>
 
@@ -62,6 +66,7 @@
                 <input name="tabFieldItems[@palliates.getIndex].name" type="text" class="hidden" value="palliates"/>
                 <input name="tabFieldItems[@palliates.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@palliates.getIndex].value" type="text" class="fInput" value="@palliates.getValue" id="palliatesTab"/>
+                <div class="hidden" id="palliatesTabStore"></div>
             }
         </div>
 
@@ -71,6 +76,7 @@
                 <input name="tabFieldItems[@timeOfDay.getIndex].name" type="text" class="hidden" value="timeOfDay"/>
                 <input name="tabFieldItems[@timeOfDay.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@timeOfDay.getIndex].value" type="text" class="fInput" value="@timeOfDay.getValue" id="timeTab"/>
+                <div class="hidden" id="timeTabStore"></div>
             }
         </div>
 
@@ -80,6 +86,7 @@
                 <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
                 <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <input name="tabFieldItems[@narrative.getIndex].value" type="text" class="fInput" value="@narrative.getValue" id="narrativeTab"/>
+                <div class="hidden" id="narrativeTabStore"></div>
             }
         </div>
 
@@ -90,6 +97,7 @@
                 <input name="tabFieldItems[@physicalExamination.getIndex].name" type="text" class="hidden" value="physicalExamination"/>
                 <input name="tabFieldItems[@physicalExamination.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
                 <textarea rows="3" name="tabFieldItems[@physicalExamination.getIndex].value" class="form-control input-sm" id="physicalTab">@physicalExamination.getValue</textarea>
+                <div class="hidden" id="physicalTabStore"></div>
             }
         </div>
     </div>
@@ -101,6 +109,7 @@
             <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
             <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
             <textarea name="tabFieldItems[@narrative.getIndex].value" class="fNarrativeTextArea" id="narrativeTab">@narrative.getValue</textarea>
+            <div class="hidden" id="narrativeTabStore"></div>
         }
     </div>
 }

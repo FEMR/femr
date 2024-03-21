@@ -311,6 +311,7 @@ var recentVitals ={
 
 $(document).ready(function () {
 
+    //  html id and text complaint and tabs to be translated
     var jsonObj = [
         {'id':'#complaintInfo','text':''},
         {'id':'#onsetTab','text':''},
@@ -329,35 +330,36 @@ $(document).ready(function () {
         {'id':'#currentTab','text':''},
         {'id':'#familyTab','text':''}]
 
+    // complaint
     var textToTranslate =  $(jsonObj[0].id + " span").text();
+    console.log(textToTranslate);
     jsonObj[0].text = textToTranslate;
     var patientId = document.getElementById('patientId').value;
 
+    // tabs
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();  // TEMPORARY $ DELIM SOLUTION
+        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val(); // DELIM = $
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
-    // textToTranslate = textToTranslate + JSON.stringify(jsonObj);
-    var jsonText = JSON.stringify(jsonObj);
-    console.log(jsonText);
-
+    // get translation
     $.ajax({
         type: 'get',
         url: '/translate',
         data: {text : textToTranslate, patientId: patientId},
         success: function(translation){
-            var textTranslated = translation;
-            var listTranslated = textTranslated.split("$"); // TEMPORARY $ DELIM SOLUTION
+            var listTranslated = translation.split("$");
 
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];
 
-                // console.log(jsonObj[i].id + " + " + textOut);
-
                 if (jsonObj[i].id === "#complaintInfo"){
-                    $(jsonObj[i].id).text(textOut);
+                    var oldText =  $(jsonObj[i].id + " span").text();
+                    $(jsonObj[i].id + "Store").text(oldText)
+                    $(jsonObj[i].id).text(textOut)
                 } else {
+                    var oldText =  $(jsonObj[i].id).val();
+                    $(jsonObj[i].id + "Store").text(oldText)
                     $(jsonObj[i].id).val(textOut);
                 }
             }
@@ -386,7 +388,22 @@ $(document).ready(function () {
         prescriptionFeature.removePrescriptionField();
     });
 
+    // toggle translated text
+    $('#toggleBtn').click(function () {
+        // toggle complaint
+        var oldText =  $(jsonObj[0].id).text();
+        var newText =  $(jsonObj[0].id + "Store").text();
+        $(jsonObj[0].id + "Store").text(oldText);
+        $(jsonObj[0].id).text(newText);
 
+        // toggle tabs
+        for (let i = 1; i < jsonObj.length; i++) {
+            var oldText =  $(jsonObj[i].id).val();
+            var newText =  $(jsonObj[i].id + "Store").text();
+            $(jsonObj[i].id + "Store").text(oldText);
+            $(jsonObj[i].id).val(newText);
+        }
+    });
 
     //hide/unhide problems
     $('#addProblemButton').click(function () {

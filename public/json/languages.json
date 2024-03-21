@@ -177,7 +177,11 @@
     "admin_title": "Admin Panel",
     "manager_trip_message": "User is not currently assigned to a trip. To manage trips please have an Admin visit the",
     "manager_trip_link": " Trip Page",
-    "manager_patients_overview": "Overview of patients checked in today: "
+    "manager_patients_overview": "Overview of patients checked in today: ",
+    "patient_id": "Patient ID",
+    "search_btn": "Search",
+    "title_medical_search": "Medical Search",
+    "title_pharmacy_search": "Pharmacy Search"
   },
   "es": {
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
@@ -357,7 +361,11 @@
     "admin_title": "Panel de Administración",
     "manager_trip_message": "El usuario actualmente no está asignado a un viaje. Para gestionar viajes, por favor pida a un Administrador que visite la",
     "manager_trip_link": " Página de Viajes",
-    "manager_patients_overview": "Resumen de los pacientes registrados hoy: "
+    "manager_patients_overview": "Resumen de los pacientes registrados hoy: ",
+    "patient_id": "ID del paciente",
+    "search_btn": "Buscar",
+    "title_medical_search": "Búsqueda Médica",
+    "title_pharmacy_search": "Búsqueda Farmacia"
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",
@@ -537,7 +545,11 @@
     "admin_title": "Panneau d'administration",
     "manager_trip_message": "L'utilisateur n'est actuellement pas assigné à un voyage. Pour gérer les voyages, veuillez demander à un Administrateur de visiter la",
     "manager_trip_link": " Page des Voyages",
-    "manager_patients_overview": "Aperçu des patients enregistrés aujourd'hui : "
+    "manager_patients_overview": "Aperçu des patients enregistrés aujourd'hui : ",
+    "patient_id": "ID du patient",
+    "search_btn": "Rechercher",
+    "title_medical_search": "Recherche Médicale",
+    "title_pharmacy_search": "Recherche Pharmacie"
   },
   "ka": {
     "home_index_h2_Welcome": "fEMR 2.4.1-beta ಗೆ ಸ್ವಾಗತ,",
@@ -717,6 +729,10 @@
     "admin_title": "ನಿರ್ವಹಣೆ ಫಲಕ",
     "manager_trip_message": "ಬಳಕೆದಾರರು ಪ್ರಸ್ತುತ ಯಾವುದೇ ಪ್ರಯಾಣಕ್ಕೆ ನಿಯೋಜಿತರಾಗಿಲ್ಲ. ಪ್ರಯಾಣಗಳನ್ನು ನಿರ್ವಹಿಸಲು ದಯವಿಟ್ಟು ಒಬ್ಬ ನಿರ್ವಾಹಕರನ್ನು ಭೇಟಿಯಾಗಲು ಕೇಳಿ",
     "manager_trip_link": " ಪ್ರಯಾಣ ಪುಟ",
-    "manager_patients_overview": "ಇಂದು ಪರೀಕ್ಷಿಸಲಾದ ರೋಗಿಗಳ ಅವಲೋಕನ: "
+    "manager_patients_overview": "ಇಂದು ಪರೀಕ್ಷಿಸಲಾದ ರೋಗಿಗಳ ಅವಲೋಕನ: ",
+    "patient_id": "ರೋಗಿಯ ಐಡಿ",
+    "search_btn": "ಹುಡುಕು",
+    "title_medical_search": "ವೈದ್ಯಕೀಯ ಹುಡುಕಾಟ",
+    "title_pharmacy_search": "ಫಾರ್ಮಸಿ ಹುಡುಕಾಟ"
   }
 }

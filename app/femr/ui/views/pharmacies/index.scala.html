@@ -6,6 +6,35 @@
 
 
 @main("Pharmacy", currentUser, assets = assets) {
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(initialLanguage);
+                            document.getElementById('languageSelect').value = initialLanguage;
+                        });
+
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    updateTextContent("search_box_title", languageData[languageCode].title_pharmacy_search);
+                }
+            });
+    </script>
     <div class="container">
     @helper.form(action = PharmaciesController.indexPost()) {
         @searchBox("Pharmacy", patientId, message)

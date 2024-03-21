@@ -20,7 +20,9 @@
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
-                                updateLanguage();
+                                const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                                updateLanguage(initialLanguage);
+                                document.getElementById('languageSelect').value = initialLanguage;
                             });
 
                     document.getElementById('languageSelect').addEventListener('change', function() {
@@ -35,15 +37,15 @@
                     }
 
                     function updateLanguage(languageCode = "en", currUser = " Admin!") {
-                        const language = languageCode;
-                        updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
-                        updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
-                        updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
-                        updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);
-                        updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
+                        localStorage.setItem('languageCode', languageCode);
+                        updateTextContent("home_index_h2_Welcome", languageData[languageCode].home_index_h2_Welcome + currUser);
+                        updateTextContent("home_index_div_Your", languageData[languageCode].home_index_div_Your);
+                        updateTextContent("home_index_p_Please", languageData[languageCode].home_index_p_Please);
+                        updateTextContent("home_index_p_Or", languageData[languageCode].home_index_p_Or);
+                        updateTextContent("home_index_p_Search", languageData[languageCode].home_index_p_Search);
                         const patientSearch = document.getElementById("patientSearch");
                         if (patientSearch) {
-                            patientSearch.placeholder = languageData[language].home_index_div_ID;
+                            patientSearch.placeholder = languageData[languageCode].home_index_div_ID;
                         }
                     }
                 });
@@ -54,6 +56,7 @@
   @top = {
     <div class="jumbotron">
       <div class="container">
+@*          TODO: Incorporate the FirstName*@
         <h2 id="home_index_h2_Welcome">Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
           <div id="home_index_div_Your">Your feedback has been received.</div>
         @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@

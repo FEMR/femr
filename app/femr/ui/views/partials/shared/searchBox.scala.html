@@ -1,7 +1,45 @@
 @(page: java.lang.String, patientId: java.lang.Integer, message: java.lang.String)
 
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(initialLanguage);
+                        document.getElementById('languageSelect').value = initialLanguage;
+                    });
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("search_btn", languageData[languageCode].search_btn);
+                const searchBtnElement = document.getElementsByClassName("idSearch")
+                if (searchBtnElement) {
+                    searchBtnElement[0].textContent = languageData[languageCode].search_btn
+                }
+                const patientIDSearch = document.getElementById("id");
+                if (patientIDSearch) {
+                    patientIDSearch.placeholder = languageData[languageCode].patient_id;
+                }
+            }
+        });
+</script>
+
 <div class="searchWrap">
-    <h2>@page Search</h2>
+    <h2 id="search_box_title">@page Search</h2>
     @if(patientId > 0) {
 
         <label for="id" class="hidden">Patient ID</label>

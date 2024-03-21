@@ -28,7 +28,9 @@
                          .then(response => response.json())
                          .then(data => {
                              languageData = data;
-                             updateLanguage();
+                             const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                             updateLanguage(initialLanguage);
+                             document.getElementById('languageSelect').value = initialLanguage;
                          });
 
                  document.getElementById('languageSelect').addEventListener('change', function() {
@@ -53,6 +55,7 @@
                  }
 
                  function updateLanguage(languageCode = "en") {
+                     localStorage.setItem('languageCode', languageCode);
                      updateChildTextContent("admin_configure", languageData[languageCode].admin_configure);
                      updateChildTextContent("admin_inventory", languageData[languageCode].admin_inventory);
                      updateChildTextContent("admin_trips", languageData[languageCode].admin_trips);

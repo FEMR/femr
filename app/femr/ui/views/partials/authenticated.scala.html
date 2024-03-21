@@ -19,7 +19,9 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        updateLanguage();
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(initialLanguage);
+                        document.getElementById('languageSelect').value = initialLanguage;
                     });
 
             document.getElementById('languageSelect').addEventListener('change', function() {
@@ -34,15 +36,15 @@
             }
 
             function updateLanguage(languageCode = "en") {
-                const language = languageCode;
-                updateTextContent("langCode_triage", languageData[language].langCode_triage);
-                updateTextContent("langCode_medical", languageData[language].langCode_medical);
-                updateTextContent("langCode_pharmacy", languageData[language].langCode_pharmacy);
-                updateTextContent("langCode_research", languageData[language].langCode_research);
-                updateTextContent("langCode_manager", languageData[language].langCode_manager);
-                updateTextContent("langCode_admin", languageData[language].langCode_admin);
-                updateTextContent("langCode_superUser", languageData[language].langCode_superUser);
-                updateTextContent("langCode_reference", languageData[language].langCode_reference);
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("langCode_triage", languageData[languageCode].langCode_triage);
+                updateTextContent("langCode_medical", languageData[languageCode].langCode_medical);
+                updateTextContent("langCode_pharmacy", languageData[languageCode].langCode_pharmacy);
+                updateTextContent("langCode_research", languageData[languageCode].langCode_research);
+                updateTextContent("langCode_manager", languageData[languageCode].langCode_manager);
+                updateTextContent("langCode_admin", languageData[languageCode].langCode_admin);
+                updateTextContent("langCode_superUser", languageData[languageCode].langCode_superUser);
+                updateTextContent("langCode_reference", languageData[languageCode].langCode_reference);
             }
         });
 </script>
@@ -89,8 +91,8 @@
         <select id="languageSelect" style="margin-right: 10px">
             <option value="en">English</option>
             <option value="es">Español</option>
-            <option value="ka">Kannada</option>
-            <option value="fr">French</option>
+            <option value="ka">ಕನ್ನಡ</option>
+            <option value="fr">Français</option>
         </select>
 
         @currentUser.getFirstName @currentUser.getLastName

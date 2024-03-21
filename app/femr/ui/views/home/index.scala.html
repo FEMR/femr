@@ -1,5 +1,5 @@
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
-    @import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.main
 
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
@@ -51,27 +51,27 @@
     }
 
 
-    @top = {
-        <div class="jumbotron">
-            <div class="container">
-                <h2 id="home_index_h2_Welcome">Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
-                <div id="home_index_div_Your">Your feedback has been received.</div>
-                @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
-                <p id="home_index_p_Please">Please select a tab at the top to get started!</p>
+  @top = {
+    <div class="jumbotron">
+      <div class="container">
+        <h2 id="home_index_h2_Welcome">Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
+          <div id="home_index_div_Your">Your feedback has been received.</div>
+        @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
+        <p id="home_index_p_Please">Please select a tab at the top to get started!</p>
 
-                <p id="home_index_p_Or">or</p>
-                <p id="home_index_p_Search">Search Below:</p>
-                <div id="patientSearchContainer">
-                    <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="ID, Name, or Phone #" disabled="disabled"/>
-                </div>
-            </div>
+        <p id="home_index_p_Or">or</p>
+        <p id="home_index_p_Search">Search Below:</p>
+        <div id="patientSearchContainer">
+            <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="ID, Name, or Phone #" disabled="disabled"/>
         </div>
-    }
+      </div>
+    </div>
+  }
 
-    @main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
-        @*<ul>
-        @for(role <- currentUser.getRoles) {
-        <li>@role.getName</li>
-        }
-        </ul> *@
-    }
+@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
+  @*<ul>
+  @for(role <- currentUser.getRoles) {
+    <li>@role.getName</li>
+  }
+  </ul> *@
+}

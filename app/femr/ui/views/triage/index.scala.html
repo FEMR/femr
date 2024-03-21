@@ -30,7 +30,9 @@
                         .then(response => response.json())
                         .then(data => {
                             languageData = data;
-                            updateLanguage();
+                            const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(initialLanguage);
+                            document.getElementById('languageSelect').value = initialLanguage;
                         });
 
                 document.getElementById('languageSelect').addEventListener('change', function() {
@@ -151,17 +153,17 @@
                 }
 
                 function updateLanguage(languageCode = "en") {
-                    const language = languageCode;
-                    updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
-                    updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
-                    updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
-                    updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
-                    updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
-                    updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
-                    updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
+                    localStorage.setItem('languageCode', languageCode);
+                    updateTextContent("triage_index_p_That", languageData[languageCode].triage_index_p_That);
+                    updateTextContent("triage_index_p_Patient", languageData[languageCode].triage_index_p_Patient);
+                    updateTextContent("triage_index_a_Go", languageData[languageCode].triage_index_a_Go);
+                    updateTextContent("triage_index_h2_Check", languageData[languageCode].triage_index_h2_Check);
+                    updateTextContent("triage_index_h2_General", languageData[languageCode].triage_index_h2_General);
+                    updateTextContent("triageSubmitBtn", languageData[languageCode].triage_index_button_submit_patient);
+                    updateTextContent("triageResetBtn", languageData[languageCode].triage_index_button_reset_fields);
                     const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
                     if (patientDemographics) {
-                        patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
+                        patientDemographics.title = languageData[languageCode].triage_index_b_patientDemographics;
                     }
                     updateInputField("firstName", languageData[language].triage_index_firstName);
                     updateInputField("lastName", languageData[language].triage_index_lastName);
@@ -274,6 +276,7 @@
                 <div id="ageClassificationWrap">
                     <label id="ageLabel">Age<span class="red bold">*</span></label>
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
+
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
 
 @*                <div id="ageClassificationWrap">*@
@@ -410,7 +413,6 @@
                             }
 
 
-
                         </div>
 
                             <!--Osman-->
@@ -448,7 +450,6 @@
                             <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
                         </label>
                         <br>
-
 
 
                     </div>

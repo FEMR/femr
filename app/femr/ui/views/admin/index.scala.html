@@ -2,7 +2,36 @@
 
 @import femr.ui.views.html.layouts.admin
 
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(initialLanguage);
+                        document.getElementById('languageSelect').value = initialLanguage;
+                    });
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("admin_welcome", languageData[languageCode].admin_welcome);
+            }
+        });
+</script>
 
 @admin("Admin Panel", currentUser, assets = assets) {
-    <h3>Welcome, Administrator. Choose an option to get started.</h3>
+    <h3 id="admin_welcome">Welcome, Administrator. Choose an option to get started.</h3>
 }

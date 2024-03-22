@@ -30,9 +30,9 @@
                         .then(response => response.json())
                         .then(data => {
                             languageData = data;
-                            const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                            updateLanguage(initialLanguage);
-                            document.getElementById('languageSelect').value = initialLanguage;
+                            const storedLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(storedLanguage);
+                            document.getElementById('languageSelect').value = storedLanguage;
                         });
 
                 document.getElementById('languageSelect').addEventListener('change', function() {
@@ -154,16 +154,17 @@
 
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
-                    updateTextContent("triage_index_p_That", languageData[languageCode].triage_index_p_That);
-                    updateTextContent("triage_index_p_Patient", languageData[languageCode].triage_index_p_Patient);
-                    updateTextContent("triage_index_a_Go", languageData[languageCode].triage_index_a_Go);
-                    updateTextContent("triage_index_h2_Check", languageData[languageCode].triage_index_h2_Check);
-                    updateTextContent("triage_index_h2_General", languageData[languageCode].triage_index_h2_General);
-                    updateTextContent("triageSubmitBtn", languageData[languageCode].triage_index_button_submit_patient);
-                    updateTextContent("triageResetBtn", languageData[languageCode].triage_index_button_reset_fields);
+                    const language = languageCode;
+                    updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
+                    updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
+                    updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
+                    updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
+                    updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
+                    updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
+                    updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
                     const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
                     if (patientDemographics) {
-                        patientDemographics.title = languageData[languageCode].triage_index_b_patientDemographics;
+                        patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
                     }
                     updateInputField("firstName", languageData[language].triage_index_firstName);
                     updateInputField("lastName", languageData[language].triage_index_lastName);
@@ -171,20 +172,7 @@
                     updateInputField("address", languageData[language].triage_index_address);
 
                     updateInputField("city", languageData[language].triage_index_City);
-
-                    // updateTextContent("Age", languageData[language].triage_index_Age);
-
-                    // updateTextContent("triage_index_OR", languageData[language].triage_index_OR); // For elements like Age OR Birth Date
                     updateTextContent("ageLabel", languageData[language].triage_index_Age);
-
-                    // If there are specific inputs for Age, you might need to update placeholders or values as follows:
-                    // updateInputField("yearsInput", languageData[language].triage_index_Years);
-                    // updateInputField("monthsInput", languageData[language].triage_index_Month);
-                    // updateTextContent("yearsLabel", languageData[language].triage_index_Years);
-                    // updateInputField("yearsInput", languageData[language].triage_index_Years);
-                    // updateTextContent("monthsLabel", languageData[language].triage_index_Months);
-                    // updateInputField("monthsInput", languageData[language].triage_index_Months);
-
                     const orTexts = document.querySelectorAll(".orSpan");
                     orTexts.forEach(orText => {
                         orText.textContent = languageData[language].triage_index_OR;
@@ -218,15 +206,6 @@
                     updateTextContent("tobaccoUseDisorderLabel", languageData[language].triage_index_Tobacco);
                     updateTextContent("substanceAlcoholAbuseLabel", languageData[language].triage_index_Substance_Alcohol);
                     updateTextContent("chiefComplaintTitle", languageData[language].triage_index_Chief);
-
-
-
-
-
-
-
-
-
                 }
             });
     </script>
@@ -250,11 +229,11 @@
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                    <h2 id="triage_index_h2_General">General Info
-                        <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
-                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
-                        </b>
-                    </h2>
+                <h2 id="triage_index_h2_General">General Info
+                    <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                        <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                    </b>
+                </h2>
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -276,35 +255,34 @@
                 <div id="ageClassificationWrap">
                     <label id="ageLabel">Age<span class="red bold">*</span></label>
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
-
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
 
-@*                <div id="ageClassificationWrap">*@
-@*                    <label id="ageLabel">Age<span class="red bold">*</span></label>*@
-@*                    <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>*@
-@*                    <div class="generalInfoInput">*@
-@*                        <label id="yearsLabel" for="yearsInput">Years</label>*@
-@*                        <input type="text" class="age-input fInput" id="yearsInput" name="years" placeholder="Years" />*@
-@*                        <label id="monthsLabel" for="monthsInput">Months</label>*@
-@*                        <input type="text" class="age-input fInput" id="monthsInput" name="months" placeholder="Months" />*@
-@*                    </div>*@
-@*                </div>*@
+                    @*                <div id="ageClassificationWrap">*@
+                    @*                    <label id="ageLabel">Age<span class="red bold">*</span></label>*@
+                    @*                    <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>*@
+                    @*                    <div class="generalInfoInput">*@
+                    @*                        <label id="yearsLabel" for="yearsInput">Years</label>*@
+                    @*                        <input type="text" class="age-input fInput" id="yearsInput" name="years" placeholder="Years" />*@
+                    @*                        <label id="monthsLabel" for="monthsInput">Months</label>*@
+                    @*                        <input type="text" class="age-input fInput" id="monthsInput" name="months" placeholder="Months" />*@
+                    @*                    </div>*@
+                    @*                </div>*@
 
 
 
-                <span class="orSpan">OR</span>
+                    <span class="orSpan">OR</span>
                     <div id="birthDateWrapper">
                         <label id="birthDateLabel" for="birthDateInput">Birth Date<span class="red bold">*</span></label>
                         <input type="date" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
                     </div>
                     <span class="orSpan">OR</span>
-@*                    <div class="generalInfoInput">*@
-@*                        <div id="classificationRadioWrap">*@
-@*                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {*@
-@*                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>*@
-@*                        }*@
-@*                        </div>*@
-@*                    </div>*@
+                    @*                    <div class="generalInfoInput">*@
+                    @*                        <div id="classificationRadioWrap">*@
+                    @*                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {*@
+                    @*                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>*@
+                    @*                        }*@
+                    @*                        </div>*@
+                    @*                    </div>*@
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
                         @for((key, value) <- viewModel.getPossibleAgeClassifications) {
@@ -324,10 +302,10 @@
 
 
                     <label id="photoLabel" for="photo">Patient Photo</label>
-@*                    <div id="photoInputFormDiv">*@
-@*                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />*@
-@*                        <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>*@
-@*                    </div>*@
+                    @*                    <div id="photoInputFormDiv">*@
+                    @*                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />*@
+                    @*                        <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>*@
+                    @*                    </div>*@
                     <div id="photoInputFormDiv">
                         <label for="photoInput" id="chooseFileLabel" class="btn">Choose File</label>
                         <input type="file" class="fInput hidden" id="photoInput" name="patientPhoto" />
@@ -370,7 +348,7 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                            <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
                             as well as in vitalClientValidation.js for validating height inputs -->
                         @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
@@ -413,6 +391,7 @@
                             }
 
 
+
                         </div>
 
                             <!--Osman-->
@@ -450,6 +429,7 @@
                             <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
                         </label>
                         <br>
+
 
 
                     </div>
@@ -518,7 +498,7 @@
                         </label>
                     </div>
 
-@*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
+                    @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 
                     <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
                     @if(viewModel.getSettings.isMultipleChiefComplaint) {
@@ -530,18 +510,18 @@
                 </div>
 
 
-@*                <div class="submitResetWrap hidden">*@
-@*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-@*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-@*                        No</button>*@
-@*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-@*                        Yes</button>*@
-@*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-@*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-@*                             prompted will it receive a true/false value -->*@
-@*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-@*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-@*                </div>*@
+                @*                <div class="submitResetWrap hidden">*@
+                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
+                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
+                @*                        No</button>*@
+                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
+                @*                        Yes</button>*@
+                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
+                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
+                @*                             prompted will it receive a true/false value -->*@
+                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
+                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
+                @*                </div>*@
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>

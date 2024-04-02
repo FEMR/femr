@@ -1,6 +1,8 @@
 package femr.data.models.core;
 
-public interface ILanguageCode {
+import femr.data.models.mysql.LanguageCode;
+
+public interface ILanguageCode extends Comparable<ILanguageCode>{
 
     String getCode();
 
@@ -9,4 +11,9 @@ public interface ILanguageCode {
     String getLanguageName();
 
     void setLanguageName(String languageName);
+
+    String getStatus();
+
+    void setStatus(String status);
+
 }

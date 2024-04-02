@@ -1,6 +1,44 @@
+#updates-content{
+    display: flex;
+    justify-content: space-between;
+}
+
 .name{
     width: 200px;
 }
 .isActive{
     text-align: center;
+}
+
+#language-package-updates{
+    height: 35%;
+}
+#package-table-wrapper{
+    height: 50%;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+#languages{
+    height: 40%;
+}
+#language-table-wrapper{
+    overflow-y: auto;
+    height: 100%;
+}
+
+#language-table{
+    width: 70%;
+    height: 100%;
+}
+
+.language-checkbox{
+    cursor: pointer;
+    float: right;
+}
+
+.status-box{
+    height: .8em;
+    width: .8em;
+    border: 1px solid black;
 }

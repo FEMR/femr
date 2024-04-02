@@ -25,9 +25,11 @@ import femr.data.daos.IRepository;
 import femr.data.models.core.IKitStatus;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IDatabaseStatus;
+import femr.data.models.core.ILanguageCode;
 import femr.data.models.mysql.KitStatus;
 import femr.data.models.mysql.NetworkStatus;
 import femr.data.models.mysql.DatabaseStatus;
+import femr.data.models.mysql.LanguageCode;
 import femr.ui.controllers.BackEndControllerHelper;
 
 import java.io.File;
@@ -41,14 +43,17 @@ public class UpdatesService implements IUpdatesService {
     private final IRepository<INetworkStatus> networkStatusRepository;
     private final IRepository<IKitStatus> kitStatusRepository;
     private final IRepository<IDatabaseStatus> databaseStatusRepository;
+    private final IRepository<ILanguageCode> languagesRepository;
 
     @Inject
     public UpdatesService(IRepository<INetworkStatus> networkStatusRepository,
                           IRepository<IKitStatus> kitStatusRepository,
-                          IRepository<IDatabaseStatus> databaseStatusRepository) {
+                          IRepository<IDatabaseStatus> databaseStatusRepository,
+                          IRepository<ILanguageCode> languagesRepository) {
         this.networkStatusRepository = networkStatusRepository;
         this.kitStatusRepository = kitStatusRepository;
         this.databaseStatusRepository = databaseStatusRepository;
+        this.languagesRepository = languagesRepository;
     }
 
     /**
@@ -188,6 +193,18 @@ public class UpdatesService implements IUpdatesService {
         } catch (IOException e) {
             response.addError("Database update", e.toString());
             e.printStackTrace();
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> retrieveLanguages() {
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try{
+            List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
+            response.setResponseObject(languages);
+        } catch (Exception ex){
+            response.addError("", ex.getMessage());
         }
         return response;
     }

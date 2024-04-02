@@ -56,7 +56,7 @@ def update_packages():
 def main():
     download_packages()
     install_packages()
-    update_packages()
+#     update_packages()
 
 
 if __name__ == "__main__":

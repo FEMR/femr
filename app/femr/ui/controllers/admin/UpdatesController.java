@@ -27,6 +27,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.core.IKitStatus;
+import femr.data.models.core.ILanguageCode;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.mysql.Roles;
 import femr.ui.controllers.BackEndControllerHelper;
@@ -41,7 +42,9 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -96,6 +99,14 @@ public class UpdatesController extends Controller {
         }
 
         //TODO setIsUpdateAvailable according to something --- Team Lemur
+
+        ServiceResponse<List<? extends ILanguageCode>> languagesResponse = updatesService.retrieveLanguages();
+        if(languagesResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        for(ILanguageCode lang : languagesResponse.getResponseObject()) {
+            indexViewModel.setLanguages(lang);
+        }
 
         return ok(manage.render(currentUser, indexViewModel, assetsFinder, messages));
     }

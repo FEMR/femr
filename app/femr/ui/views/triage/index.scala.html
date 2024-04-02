@@ -151,6 +151,16 @@
                         }
                     });
                 }
+                function updateAgeInputPlaceholders(languageCode) {
+                    // Update placeholders
+                    const yearsInput = document.getElementById('yearsInput'); // You need to ensure this is the correct ID
+                    const monthsInput = document.getElementById('monthsInput'); // You need to ensure this is the correct ID
+
+                    if (yearsInput && monthsInput && languageData[languageCode]) {
+                        yearsInput.placeholder = languageData[languageCode].triage_index_Years;
+                        monthsInput.placeholder = languageData[languageCode].triage_index_Month;
+                    }
+                }
 
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
@@ -206,6 +216,7 @@
                     updateTextContent("tobaccoUseDisorderLabel", languageData[language].triage_index_Tobacco);
                     updateTextContent("substanceAlcoholAbuseLabel", languageData[language].triage_index_Substance_Alcohol);
                     updateTextContent("chiefComplaintTitle", languageData[language].triage_index_Chief);
+                    updateAgeInputPlaceholders(languageCode);
                 }
             });
     </script>
@@ -251,23 +262,11 @@
                         }
                 </div>
                 <br>
-
                 <div id="ageClassificationWrap">
                     <label id="ageLabel">Age<span class="red bold">*</span></label>
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
-                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
-
-                    @*                <div id="ageClassificationWrap">*@
-                    @*                    <label id="ageLabel">Age<span class="red bold">*</span></label>*@
-                    @*                    <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>*@
-                    @*                    <div class="generalInfoInput">*@
-                    @*                        <label id="yearsLabel" for="yearsInput">Years</label>*@
-                    @*                        <input type="text" class="age-input fInput" id="yearsInput" name="years" placeholder="Years" />*@
-                    @*                        <label id="monthsLabel" for="monthsInput">Months</label>*@
-                    @*                        <input type="text" class="age-input fInput" id="monthsInput" name="months" placeholder="Months" />*@
-                    @*                    </div>*@
-                    @*                </div>*@
-
+                    <input type="text" id="yearsInput" placeholder="Years" />
+                    <input type="text" id="monthsInput" placeholder="Months" />
 
 
                     <span class="orSpan">OR</span>

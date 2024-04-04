@@ -311,6 +311,12 @@ a.fRedButton:hover{
     float: right;
 }
 
+#loading {
+    margin-left: 10px;
+    height: auto;
+    max-width: 18px;
+}
+
 .red {
     color: red;
 }

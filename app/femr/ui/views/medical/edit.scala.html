@@ -40,21 +40,19 @@
             <div id = "header">
                 <h4>Complaint</h4>
                 <div id = "toggle">
-@*                    <img class="loading" src="@assets.path("img/graph-loader.gif")" alt="loading&hellip;" />*@
-                    @* @helper.form(action = MedicalController.editGet(patientEncounter.getId) { *@
-                        <button type="button" id="toggleBtn" onclick="return change(this)" class="fButton fOtherButton">Show Original</button>
-
-                        <script type="text/javascript">
-                                function change( el )
-                                {
-                                    if ( el.innerHTML === "Show Original" )
-                                        el.innerHTML = "↻";
-                                    else
-                                        el.innerHTML = "Show Original";
-                                }
-                        </script>
-                    @* } *@
-
+                    <button type="button" id="toggleBtn" onclick="return change(this)" class="fButton fOtherButton">
+                        Translating
+                        <img src="@assets.path("img/graph-loader.gif")" alt="loading" id="loading"/>
+                    </button>
+                    <script type="text/javascript">
+                        function change(el)
+                        {
+                            if (el.innerHTML === "Show Original")
+                                el.innerHTML = "↻";
+                            else if (el.innerHTML === "↻")
+                                el.innerHTML = "Show Original";
+                        }
+                    </script>
                 </div>
             </div>
             <div id = "complaintInfo">

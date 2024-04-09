@@ -14,6 +14,8 @@ public class MockPrescription implements IPatientPrescription {
     private IPatientEncounter mockPatientEncounter = null;
     private IConceptPrescriptionAdministration mockPrescriptionAdministration = null;
 
+    private String languageCode = "";
+
     @Override
     public int getId() {
         return 1;
@@ -125,8 +127,11 @@ public class MockPrescription implements IPatientPrescription {
 
     }
 
-    public String getLanguageCode() { return null; }
-    public void setLanguageCode(String languageCode){
+    @Override
+    public String getLanguageCode() { return languageCode; }
 
+    @Override
+    public void setLanguageCode(String languageCode){
+        this.languageCode = languageCode;
     }
 }

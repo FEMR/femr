@@ -9,6 +9,8 @@ public class MockPatientEncounter implements IPatientEncounter {
 
     private int id = -1;
 
+    private String languageCode = "";
+
     @Override
     public int getId() {
         return id;
@@ -177,8 +179,11 @@ public class MockPatientEncounter implements IPatientEncounter {
 
     }
 
-    public String getLanguageCode(){ return null; }
-    public void setLanguageCode(String languageCode){
+    @Override
+    public String getLanguageCode(){ return languageCode; }
 
+    @Override
+    public void setLanguageCode(String languageCode){
+        this.languageCode = languageCode;
     }
 }

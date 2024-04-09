@@ -10,6 +10,9 @@ import java.util.List;
 public class MockUser implements IUser {
 
     private int id = -1;
+
+    private String languageCode = "";
+
     @Override
     public int getId() {
         return id;
@@ -153,8 +156,11 @@ public class MockUser implements IUser {
 
     }
 
-    public String getLanguageCode() { return null; }
-    public void setLanguageCode(String languageCode){
+    @Override
+    public String getLanguageCode() { return languageCode; }
 
+    @Override
+    public void setLanguageCode(String languageCode){
+        this.languageCode = languageCode;
     }
 }

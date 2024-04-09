@@ -152,4 +152,9 @@ public class MockUser implements IUser {
     public void setCreatedBy(Integer CreatedBy) {
 
     }
+
+    public String getLanguageCode() { return null; }
+    public void setLanguageCode(String languageCode){
+
+    }
 }

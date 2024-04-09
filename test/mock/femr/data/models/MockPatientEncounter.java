@@ -176,4 +176,9 @@ public class MockPatientEncounter implements IPatientEncounter {
     public void setReasonDeleted(String reason) {
 
     }
+
+    public String getLanguageCode(){ return null; }
+    public void setLanguageCode(String languageCode){
+
+    }
 }

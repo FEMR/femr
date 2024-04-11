@@ -348,6 +348,9 @@ $(document).ready(function () {
         url: '/translate',
         data: {text : textToTranslate, patientId: patientId},
         success: function(translation){
+            $("#loading").remove();
+            $("#toggleBtn").text("Show Original");
+
             var listTranslated = translation.split("$");
             var textTranslated = translation;
 

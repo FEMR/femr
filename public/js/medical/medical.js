@@ -338,7 +338,7 @@ $(document).ready(function () {
 
     // tabs
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val(); // DELIM = $
+        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
@@ -349,6 +349,7 @@ $(document).ready(function () {
         data: {text : textToTranslate, patientId: patientId},
         success: function(translation){
             var listTranslated = translation.split("$");
+            var textTranslated = translation;
 
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];

@@ -305,12 +305,31 @@
                     @*                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />*@
                     @*                        <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>*@
                     @*                    </div>*@
+                    <style>
+                            #chooseFileLabel {
+                                background-color: #ffffff; /* White color */
+                                /* Other styling properties for your button */
+                                padding: 10px 20px;
+                                border: 1px solid #ccc; /* Light gray border for some definition */
+                                border-radius: 5px;
+                                display: inline-block;
+                                cursor: pointer;
+                                /* Add more styling here if needed */
+                            }
+
+                            /* Optional: Style for hover effect */
+                            #chooseFileLabel:hover {
+                                background-color: #f0f0f0; /* Slightly off-white color on hover */
+                            }
+                    </style>
+
                     <div id="photoInputFormDiv">
                         <label for="photoInput" id="chooseFileLabel" class="btn">Choose File</label>
                         <input type="file" class="fInput hidden" id="photoInput" name="patientPhoto" />
                         <span id="fileChosenText">No file chosen</span>
                         <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>
                     </div>
+
 
                     <div id="patientPhotoDiv" hidden="true">
                         <div class="btn-group" >

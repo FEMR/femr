@@ -274,7 +274,14 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
         String fromLanguage = patientEncounter.getLanguageCode();
 
-        return ok(Json.toJson(translate(text, fromLanguage, toLanguage)));
+        // add whether the language is rtl to response
+        List<String> rtlLanguages = Arrays.asList("he", "ar");
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("toLanguageIsRtl", rtlLanguages.contains(toLanguage));
+        responseMap.put("fromLanguageIsRtl", rtlLanguages.contains(fromLanguage));
+        responseMap.put("translation", translate(text, fromLanguage,toLanguage));
+
+        return ok(Json.toJson(responseMap));
     }
 
 //    Calls Python Script to translate

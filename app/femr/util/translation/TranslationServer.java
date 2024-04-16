@@ -52,7 +52,18 @@ public class TranslationServer {
     public static boolean serverNotRunning(){
         //initial value of portNumber
         if(portNumber == -1){
-            return true;
+            File log = new File("translator/server.log");
+            try {
+                Scanner s = new Scanner(log);
+                if(s.hasNext()){
+                    portNumber = Integer.parseInt(s.nextLine().split(": ")[1]);
+                }
+                else{
+                    return true;
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
         try{
             final URL url = new URL("http://localhost:" + portNumber);
@@ -66,9 +77,9 @@ public class TranslationServer {
     }
     public static void start(){
         System.out.println("Starting translation server...");
-        File log = new File("translator/server.log");
 
         if(serverNotRunning()){
+            File log = new File("translator/server.log");
             String absPath = "translator/server.py";
             try {
                 ProcessBuilder pb = new ProcessBuilder("python", absPath);

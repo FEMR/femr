@@ -338,7 +338,7 @@ $(document).ready(function () {
 
     // tabs
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val(); // DELIM = $
+        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
@@ -347,11 +347,13 @@ $(document).ready(function () {
         type: 'get',
         url: '/translate',
         data: {text : textToTranslate, patientId: patientId},
-        success: function(translation){
+        success: function(response){
             $("#loading").remove();
             $("#toggleBtn").text("Show Original");
 
-            var listTranslated = translation.split("$");
+            var listTranslated = response.translation.split("$");
+            var toLanguageIsRtl = response.toLanguageIsRtl;
+            var fromLanguageIsRtl = response.fromLanguageIsRtl;
 
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];
@@ -359,11 +361,23 @@ $(document).ready(function () {
                 if (jsonObj[i].id === "#complaintInfo"){
                     var oldText =  $(jsonObj[i].id + " span").text();
                     $(jsonObj[i].id + "Store").text(oldText)
+                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl); // store whether langauge is rtl
                     $(jsonObj[i].id).text(textOut)
+                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+
                 } else {
                     var oldText =  $(jsonObj[i].id).val();
                     $(jsonObj[i].id + "Store").text(oldText)
+                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl);
                     $(jsonObj[i].id).val(textOut);
+                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+                }
+
+                // make the text right to left if it is a rtl language
+                if ($(jsonObj[i].id).data('isRtl')) {
+                    $(jsonObj[i].id).addClass('rtl');
+                } else {
+                    $(jsonObj[i].id).removeClass('rtl');
                 }
             }
         },
@@ -399,12 +413,36 @@ $(document).ready(function () {
         $(jsonObj[0].id + "Store").text(oldText);
         $(jsonObj[0].id).text(newText);
 
+        // switch and set the rtl values
+        var storeRtl = $(jsonObj[0].id + "Store").data("isRtl");
+        var currentRtl = $(jsonObj[0].id).data("isRtl");
+        $(jsonObj[0].id + "Store").data("isRtl",currentRtl);
+        $(jsonObj[0].id).data("isRtl",storeRtl);
+
+        if($(jsonObj[0].id).data("isRtl")) {
+            $(jsonObj[0].id).addClass('rtl');
+        } else {
+            $(jsonObj[0].id).removeClass('rtl');
+        }
+
         // toggle tabs
         for (let i = 1; i < jsonObj.length; i++) {
             var oldText =  $(jsonObj[i].id).val();
             var newText =  $(jsonObj[i].id + "Store").text();
             $(jsonObj[i].id + "Store").text(oldText);
             $(jsonObj[i].id).val(newText);
+
+            // switch and set the rtl values
+            var storeRtl = $(jsonObj[i].id + "Store").data("isRtl");
+            var currentRtl = $(jsonObj[i].id).data("isRtl");
+            $(jsonObj[i].id + "Store").data("isRtl",currentRtl);
+            $(jsonObj[i].id).data("isRtl",storeRtl);
+
+            if($(jsonObj[i].id).data("isRtl")) {
+                $(jsonObj[i].id).addClass('rtl');
+            } else {
+                $(jsonObj[i].id).removeClass('rtl');
+            }
         }
     });
 

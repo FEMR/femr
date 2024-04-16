@@ -338,7 +338,7 @@ $(document).ready(function () {
 
     // tabs
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();
+        textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val();
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
@@ -351,7 +351,7 @@ $(document).ready(function () {
             $("#loading").remove();
             $("#toggleBtn").text("Show Original");
 
-            var listTranslated = response.translation.split("$");
+            var listTranslated = response.translation.split("@");
             var toLanguageIsRtl = response.toLanguageIsRtl;
             var fromLanguageIsRtl = response.fromLanguageIsRtl;
 

@@ -311,6 +311,7 @@ var recentVitals ={
 
 $(document).ready(function () {
 
+    //  html id and text complaint and tabs to be translated
     var jsonObj = [
         {'id':'#complaintInfo','text':''},
         {'id':'#onsetTab','text':''},
@@ -329,30 +330,54 @@ $(document).ready(function () {
         {'id':'#currentTab','text':''},
         {'id':'#familyTab','text':''}]
 
+    // complaint
     var textToTranslate =  $(jsonObj[0].id + " span").text();
+    console.log(textToTranslate);
+    jsonObj[0].text = textToTranslate;
     var patientId = document.getElementById('patientId').value;
 
+    // tabs
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " $ " + $(jsonObj[i].id).val();  // TEMPORARY $ DELIM SOLUTION
+        textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val();
+        jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
+    // get translation
     $.ajax({
         type: 'get',
         url: '/translate',
         data: {text : textToTranslate, patientId: patientId},
-        success: function(translation){
-            var textTranslated = translation;
-            var listTranslated = textTranslated.split("$"); // TEMPORARY $ DELIM SOLUTION
+        success: function(response){
+            $("#loading").remove();
+            $("#toggleBtn").text("Show Original");
+
+            var listTranslated = response.translation.split("@");
+            var toLanguageIsRtl = response.toLanguageIsRtl;
+            var fromLanguageIsRtl = response.fromLanguageIsRtl;
 
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];
 
-                // console.log(jsonObj[i].id + " + " + textOut);
-
                 if (jsonObj[i].id === "#complaintInfo"){
-                    $(jsonObj[i].id).text(textOut);
+                    var oldText =  $(jsonObj[i].id + " span").text();
+                    $(jsonObj[i].id + "Store").text(oldText)
+                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl); // store whether langauge is rtl
+                    $(jsonObj[i].id).text(textOut)
+                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+
                 } else {
+                    var oldText =  $(jsonObj[i].id).val();
+                    $(jsonObj[i].id + "Store").text(oldText)
+                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl);
                     $(jsonObj[i].id).val(textOut);
+                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+                }
+
+                // make the text right to left if it is a rtl language
+                if ($(jsonObj[i].id).data('isRtl')) {
+                    $(jsonObj[i].id).addClass('rtl');
+                } else {
+                    $(jsonObj[i].id).removeClass('rtl');
                 }
             }
         },
@@ -380,7 +405,46 @@ $(document).ready(function () {
         prescriptionFeature.removePrescriptionField();
     });
 
+    // toggle translated text
+    $('#toggleBtn').click(function () {
+        // toggle complaint
+        var oldText =  $(jsonObj[0].id).text();
+        var newText =  $(jsonObj[0].id + "Store").text();
+        $(jsonObj[0].id + "Store").text(oldText);
+        $(jsonObj[0].id).text(newText);
 
+        // switch and set the rtl values
+        var storeRtl = $(jsonObj[0].id + "Store").data("isRtl");
+        var currentRtl = $(jsonObj[0].id).data("isRtl");
+        $(jsonObj[0].id + "Store").data("isRtl",currentRtl);
+        $(jsonObj[0].id).data("isRtl",storeRtl);
+
+        if($(jsonObj[0].id).data("isRtl")) {
+            $(jsonObj[0].id).addClass('rtl');
+        } else {
+            $(jsonObj[0].id).removeClass('rtl');
+        }
+
+        // toggle tabs
+        for (let i = 1; i < jsonObj.length; i++) {
+            var oldText =  $(jsonObj[i].id).val();
+            var newText =  $(jsonObj[i].id + "Store").text();
+            $(jsonObj[i].id + "Store").text(oldText);
+            $(jsonObj[i].id).val(newText);
+
+            // switch and set the rtl values
+            var storeRtl = $(jsonObj[i].id + "Store").data("isRtl");
+            var currentRtl = $(jsonObj[i].id).data("isRtl");
+            $(jsonObj[i].id + "Store").data("isRtl",currentRtl);
+            $(jsonObj[i].id).data("isRtl",storeRtl);
+
+            if($(jsonObj[i].id).data("isRtl")) {
+                $(jsonObj[i].id).addClass('rtl');
+            } else {
+                $(jsonObj[i].id).removeClass('rtl');
+            }
+        }
+    });
 
     //hide/unhide problems
     $('#addProblemButton').click(function () {

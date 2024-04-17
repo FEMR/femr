@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 @Singleton
@@ -50,7 +52,18 @@ public class TranslationServer {
     public static boolean serverNotRunning(){
         //initial value of portNumber
         if(portNumber == -1){
-            return true;
+            File log = new File("translator/server.log");
+            try {
+                Scanner s = new Scanner(log);
+                if(s.hasNext()){
+                    portNumber = Integer.parseInt(s.nextLine().split(": ")[1]);
+                }
+                else{
+                    return true;
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
         try{
             final URL url = new URL("http://localhost:" + portNumber);
@@ -64,13 +77,12 @@ public class TranslationServer {
     }
     public static void start(){
         System.out.println("Starting translation server...");
-        File log = new File("translator/server.log");
 
         if(serverNotRunning()){
+            File log = new File("translator/server.log");
             String absPath = "translator/server.py";
             try {
                 ProcessBuilder pb = new ProcessBuilder("python", absPath);
-
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();
@@ -81,14 +93,11 @@ public class TranslationServer {
             }
 
             try {
-                Scanner s;
+                Scanner s = new Scanner(log);
                 //Wait for server.log to be written to (port number)
-                do {
-                    s = new Scanner(log);
-                } while (!s.hasNext());
-
+                while(log.length() == 0);
                 portNumber = Integer.parseInt(s.nextLine().split(": ")[1]);
-                System.out.println(portNumber);
+                s.close();
             } catch (FileNotFoundException e) {
                 System.out.println("A FileNotFound error has occurred.");
                 System.out.println(e.getMessage());

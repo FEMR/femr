@@ -12,9 +12,10 @@ from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 from libargos import install_packages
 import socket
+import time
 
 PORTS = [8000, 5000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008]
-TIMEOUT = 60
+TIMEOUT = 300
 PATH = os.getcwd()
 
 
@@ -45,29 +46,31 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        print(from_code, to_code)
-        argos_language_path = Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel")
-        if argos_language_path.exists():
-            # print("ARGOS")
+        # Use Argos if Language Package Exists
+        if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
             translatedText = argostranslate.translate.translate(text, from_code, to_code)
             return translatedText
+        # Use Marian if Language Package Exists in Marian but not Argos
+        elif Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}").exists():
+            marian = MarianModel(from_code, to_code)
+            translatedText = marian.translate([text])
+            return translatedText[0]
+        # Use Argos "English in the Middle" if not in Argos and Marian by Default
+        elif (Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
+                Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists()) or \
+                (Path(f"{PATH}/translator/argos_models/translate-en_{from_code}.argosmodel").exists() and \
+                 Path(f"{PATH}/translator/argos_models/translate-en_{to_code}.argosmodel").exists()):
+            translatedText = argostranslate.translate.translate(text, from_code, to_code)
+            return translatedText
+        # If a package doesn't exist
         else:
-            marian_language_path = Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}")
-            if marian_language_path.exists():
-                # print("MARIAN")
-                marian = MarianModel(from_code, to_code)
-                translatedText = marian.translate([text])
-                return translatedText[0]
-            else:
-                return "Translation Unavailable"
-
+            return from_code + to_code + "Translation Unavailable"
 
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(self.get_response().encode("utf-8"))
-
 
     def get_response(self):
         return json.dumps(
@@ -77,7 +80,9 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             ensure_ascii=False
         )
 
+
 def port_open(port):
+    #connect_ex returns 0 if it connects to a socket meaning port is closed
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) != 0
 
@@ -87,6 +92,7 @@ def start_server(port):
         server.timeout = TIMEOUT
         server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())
         print(f"Serving at port: {port}", file=sys.stderr)
+        print(f"Server started at {time.strftime('%I:%M')} with timeout: {TIMEOUT} seconds", file=sys.stderr)
         while(True): server.handle_request()
     except TimeoutError:
         print("Translation server timed out")
@@ -97,3 +103,5 @@ if __name__ == "__main__":
     for port in PORTS:
         if(port_open(port)):
             start_server(port)
+
+

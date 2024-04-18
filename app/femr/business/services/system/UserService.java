@@ -240,6 +240,7 @@ public class UserService implements IUserService {
                 }
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
+            user.setLanguageCode(userItem.getLanguageCode());
             user.setPasswordCreatedDate(DateTime.now());
             user = userRepository.updateUser(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));

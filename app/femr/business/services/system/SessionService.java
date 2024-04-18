@@ -155,7 +155,7 @@ public class SessionService implements ISessionService {
     private CurrentUser createCurrentUser(IUser user, Integer tripId) {
 
         long timeout = Long.valueOf(configuration.getString("sessionTimeout")) * 1000 * 60;
-        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId, timeout);
+        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId, timeout,  user.getLanguageCode());
     }
 }
 

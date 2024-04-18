@@ -71,4 +71,7 @@ public interface IUpdatesService {
     ServiceResponse<List<? extends IDatabaseStatus>> updateDatabaseStatuses();
 
     ServiceResponse<List<? extends ILanguageCode>> retrieveLanguages();
+    ServiceResponse<List<? extends ILanguageCode>> initializeLanguages();
+
+    ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code);
 }

@@ -124,11 +124,6 @@ public class DatabaseSeeder {
     }
     private void seedLanguages() {
         List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
-//        LanguageCode language;
-//        language = new LanguageCode();
-//        language.setCode("en");
-//        language.setLanguageName("English");
-//        language.setStatus("Fully Supported");
         languagesRepository.createAll(languages);
     }
     private void seedDatabaseStatus() {

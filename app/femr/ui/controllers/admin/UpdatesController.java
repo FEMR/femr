@@ -156,4 +156,21 @@ public class UpdatesController extends Controller {
         return manageGet();
     }
 
+    public Result initializeLanguages(){
+        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.initializeLanguages();
+        if (updateResponse.hasErrors()) {
+            System.out.println("Update Response Error: " + updateResponse.getErrors());
+            throw new RuntimeException();
+        }
+        return manageGet();
+    }
+
+    public Result updateLanguage(String code){
+        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.updateLanguage(code);
+        if (updateResponse.hasErrors()){
+            System.out.println("Update Response Error: " + updateResponse.getErrors());
+            throw new RuntimeException();
+        }
+        return manageGet();
+    }
 }

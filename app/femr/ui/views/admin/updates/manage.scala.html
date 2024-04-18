@@ -65,15 +65,6 @@
             </div>
 
             <div id="middle-div">
-
-                <div id="language-package-updates">
-                    <h2>Scheduled Updates</h2>
-                    <input type="submit" class="fButton" value="Update Now"/>
-                    <div id="package-table-wrapper">
-                        <table style="height: 100%;">
-                        </table>
-                    </div>
-                </div>
                 <div id="languages">
                     <h2>Languages</h2>
                     <div id="language-table-wrapper">
@@ -83,7 +74,7 @@
                                 @if(language.getStatus() == "Fully Supported") {
                                     <td><div class="status-box" style="background-color: green;"></div></td>
                                     <td>@language.getLanguageName()</td>
-                                    <td ><input type="checkbox" class="language-checkbox" disabled checked/></td>
+                                    <td ><input type="checkbox" class="language-checkbox" disabled checked /></td>
                                 } else if(language.getStatus() == "Partially Supported"){
                                     <td><div class="status-box" style="background-color: yellow;"></div></td>
                                     <td>@language.getLanguageName()</td>
@@ -97,10 +88,36 @@
                             }
                         </table>
                     </div>
+                    <div>
+                    @helper.form(action = UpdatesController.initializeLanguages()) {
+                        <td>
+                            <input type="submit" class="fButton" value="Initialize Languages (dev)"/>
+                        </td>
+                    }
+                    </div>
                 </div>
             </div>
 
             <div id="right-div">
+                <div id="language-package-updates">
+                    <h2>Scheduled Languages</h2>
+                    <input type="submit" class="fButton" value="Update Now"/>
+                    <div id="package-table-wrapper">
+                        <table style="height: 100%;">
+                            <button type="button" class="collapsible">French</button>
+                            <div class="content">
+                                <p>Spanish to French</p>
+                                <p>French to Spanish</p>
+                            </div>
+
+                            <button type="button" class="collapsible">German</button>
+                            <div class="content">
+                                <p>German to Spanish</p>
+                                <p>Spanish to German</p>
+                            </div>
+                        </table>
+                    </div>
+                </div>
                 <div id="database-status">
                     <h2>Database Status</h2>
 

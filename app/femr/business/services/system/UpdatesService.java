@@ -32,11 +32,14 @@ import femr.data.models.mysql.DatabaseStatus;
 import femr.data.models.mysql.LanguageCode;
 import femr.ui.controllers.BackEndControllerHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UpdatesService implements IUpdatesService {
 
@@ -205,6 +208,51 @@ public class UpdatesService implements IUpdatesService {
             response.setResponseObject(languages);
         } catch (Exception ex){
             response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+    public ServiceResponse<List<? extends ILanguageCode>> initializeLanguages() {
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try {
+            languagesRepository.delete(languagesRepository.findAll(LanguageCode.class));
+            ProcessBuilder pb = new ProcessBuilder("python", "translator/libargos.py");
+            Process p = pb.start();
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+            String line = "";
+            while ((line = bfr.readLine()) != null) {
+                LanguageCode language = new LanguageCode();
+                language.setCode(line.split(", ")[0]);
+                language.setLanguageName(line.split(", ")[1]);
+                language.setStatus("Partially Supported");
+                if(language.getCode().equals("en") || language.getCode().equals("es")){
+                    language.setStatus("Fully Supported");
+                }
+                languagesRepository.update(language);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
+    }
+
+    public ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code){
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try{
+            List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
+            List<ILanguageCode> supportedLanguages = new ArrayList<>();
+            for (ILanguageCode language : languages){
+                if(language.getStatus().equals("Fully Supported") && !language.getCode().equals("en")){
+                    supportedLanguages.add(language);
+                }
+            }
+            for (ILanguageCode language : supportedLanguages){
+                System.out.println("Download " + code + " -> " + language.getCode());
+                System.out.println("Download " + language.getCode() + " -> " + code);
+            }
+            response.setResponseObject(supportedLanguages);
+        } catch (Exception e){
+            response.addError("", e.getMessage());
         }
         return response;
     }

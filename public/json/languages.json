@@ -192,7 +192,19 @@
     "patient_id": "Patient ID",
     "search_btn": "Search",
     "title_medical_search": "Medical Search",
-    "title_pharmacy_search": "Pharmacy Search"
+    "title_pharmacy_search": "Pharmacy Search",
+    "sessions_create_Failed": "Login attempt failed! Please try again.",
+    "sessions_create_SignIn": "Please sign in",
+    "sessions_create_Email": "Email",
+    "sessions_create_Password": "Password",
+    "sessions_create_Submit": "Submit",
+    "sessions_editPassword_Hello": "Hello",
+    "sessions_editPassword_your": "your password is older than 90 days.",
+    "sessions_editPassword_Choose": "Please choose a new password:",
+    "sessions_editPassword_Enter": "Enter password",
+    "sessions_editPassword_ReEnter": "Re-Enter password",
+    "sessions_editPassword_Submit": "Submit",
+    "superuser_index_Hello": "Hello, Superuser. Choose an option to get started."
   },
   "es": {
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
@@ -386,7 +398,19 @@
     "patient_id": "ID del paciente",
     "search_btn": "Buscar",
     "title_medical_search": "Búsqueda Médica",
-    "title_pharmacy_search": "Búsqueda Farmacia"
+    "title_pharmacy_search": "Búsqueda Farmacia",
+    "sessions_create_Failed": "¡Intento de inicio de sesión fallido! Por favor, inténtelo de nuevo.",
+    "sessions_create_SignIn": "Por favor inicie sesión",
+    "sessions_create_Email": "Correo electrónico",
+    "sessions_create_Password": "Contraseña",
+    "sessions_create_Submit": "Enviar",
+    "sessions_editPassword_Hello": "Hola",
+    "sessions_editPassword_your": "su contraseña tiene más de 90 días de antigüedad.",
+    "sessions_editPassword_Choose": "Por favor, elija una nueva contraseña:",
+    "sessions_editPassword_Enter": "Ingrese la contraseña",
+    "sessions_editPassword_ReEnter": "Vuelva a ingresar la contraseña",
+    "sessions_editPassword_Submit": "Enviar",
+    "superuser_index_Hello": "Hola, Superusuario. Elija una opción para comenzar."
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",
@@ -579,7 +603,19 @@
     "patient_id": "ID du patient",
     "search_btn": "Rechercher",
     "title_medical_search": "Recherche Médicale",
-    "title_pharmacy_search": "Recherche Pharmacie"
+    "title_pharmacy_search": "Recherche Pharmacie",
+    "sessions_create_Failed": "Échec de la tentative de connexion! Veuillez réessayer.",
+    "sessions_create_SignIn": "Veuillez vous connecter",
+    "sessions_create_Email": "E-mail",
+    "sessions_create_Password": "Mot de passe",
+    "sessions_create_Submit": "Soumettre",
+    "sessions_editPassword_Hello": "Bonjour",
+    "sessions_editPassword_your": "votre mot de passe a plus de 90 jours.",
+    "sessions_editPassword_Choose": "Veuillez choisir un nouveau mot de passe :",
+    "sessions_editPassword_Enter": "Entrer le mot de passe",
+    "sessions_editPassword_ReEnter": "Ré-entrer le mot de passe",
+    "sessions_editPassword_Submit": "Soumettre",
+    "superuser_index_Hello": "Bonjour, Superutilisateur. Choisissez une option pour commencer."
   },
   "ka": {
     "home_index_h2_Welcome": "fEMR 2.4.1-beta ಗೆ ಸ್ವಾಗತ,",
@@ -772,6 +808,18 @@
     "patient_id": "ರೋಗಿಯ ಐಡಿ",
     "search_btn": "ಹುಡುಕು",
     "title_medical_search": "ವೈದ್ಯಕೀಯ ಹುಡುಕಾಟ",
-    "title_pharmacy_search": "ಫಾರ್ಮಸಿ ಹುಡುಕಾಟ"
+    "title_pharmacy_search": "ಫಾರ್ಮಸಿ ಹುಡುಕಾಟ",
+    "sessions_create_Failed": "ಲಾಗಿನ್ ಪ್ರಯತ್ನ ವಿಫಲವಾಯಿತು! ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    "sessions_create_SignIn": "ದಯವಿಟ್ಟು ಸೈನ್ ಇನ್ ಮಾಡಿ",
+    "sessions_create_Email": "ಇಮೇಲ್",
+    "sessions_create_Password": "ಪಾಸ್‌ವರ್ಡ್",
+    "sessions_create_Submit": "ಸಲ್ಲಿಸು",
+    "sessions_editPassword_Hello": "ಹಲೋ",
+    "sessions_editPassword_your": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ 90 ದಿನಗಳಿಂದ ಹಳೆಯಾಗಿದೆ.",
+    "sessions_editPassword_Choose": "ದಯವಿಟ್ಟು ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಆಯ್ಕೆಮಾಡಿ:",
+    "sessions_editPassword_Enter": "ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    "sessions_editPassword_ReEnter": "ಪಾಸ್‌ವರ್ಡ್ ಮರುಕಡಿಮೆ ಮಾಡಿ",
+    "sessions_editPassword_Submit": "ಸಲ್ಲಿಸು",
+    "superuser_index_Hello": "ಹಲೋ, ಸೂಪರ್‌ಬಳೆ. ಪ್ರಾರಂಭಿಸಲು ಒಂದು ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
   }
 }

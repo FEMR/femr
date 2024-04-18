@@ -641,6 +641,7 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
         userItem.setCreatedBy(user.getCreatedBy()); //Sam Zanni
         userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
+        userItem.setLanguageCode(user.getLanguageCode());
 
         return userItem;
     }

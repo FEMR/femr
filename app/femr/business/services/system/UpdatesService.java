@@ -224,9 +224,13 @@ public class UpdatesService implements IUpdatesService {
                 LanguageCode language = new LanguageCode();
                 language.setCode(line.split(", ")[0]);
                 language.setLanguageName(line.split(", ")[1]);
-                language.setStatus("Partially Supported");
+                language.setStatus("Not Optimized");
+                language.setUpdateScheduled(false);
+                if(language.getCode().equals("de") || language.getCode().equals("fr")){
+                    language.setUpdateScheduled(true);
+                }
                 if(language.getCode().equals("en") || language.getCode().equals("es")){
-                    language.setStatus("Fully Supported");
+                    language.setStatus("Optimized");
                 }
                 languagesRepository.update(language);
             }

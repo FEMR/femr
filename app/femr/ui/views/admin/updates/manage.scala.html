@@ -71,11 +71,11 @@
                         <table id="language-table">
                             @for(language <- viewModel.getLanguages){
                                 <tr>
-                                @if(language.getStatus() == "Fully Supported") {
+                                @if(language.getStatus() == "Optimized") {
                                     <td><div class="status-box" style="background-color: green;"></div></td>
                                     <td>@language.getLanguageName()</td>
                                     <td ><input type="checkbox" class="language-checkbox" disabled checked /></td>
-                                } else if(language.getStatus() == "Partially Supported"){
+                                } else if(language.getStatus() == "Not Optimized"){
                                     <td><div class="status-box" style="background-color: yellow;"></div></td>
                                     <td>@language.getLanguageName()</td>
                                     <td ><input type="checkbox" class="language-checkbox"/></td>

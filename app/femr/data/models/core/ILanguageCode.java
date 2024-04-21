@@ -1,7 +1,5 @@
 package femr.data.models.core;
 
-import femr.data.models.mysql.LanguageCode;
-
 public interface ILanguageCode extends Comparable<ILanguageCode>{
 
     String getCode();
@@ -15,5 +13,9 @@ public interface ILanguageCode extends Comparable<ILanguageCode>{
     String getStatus();
 
     void setStatus(String status);
+
+    Boolean getUpdateScheduled();
+
+    void setUpdateScheduled(Boolean updateScheduled);
 
 }

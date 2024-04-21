@@ -16,6 +16,9 @@ public class LanguageCode implements ILanguageCode {
     @Column(name = "status", length = 64)
     private String status;
 
+    @Column(name = "updateScheduled", nullable = false)
+    private Boolean updateScheduled;
+
     @Override
     public String getCode() {
         return code;
@@ -42,7 +45,13 @@ public class LanguageCode implements ILanguageCode {
     public void setStatus(String status) { this.status = status;}
 
     @Override
+    public Boolean getUpdateScheduled() {return updateScheduled;}
+
+    @Override
+    public void setUpdateScheduled(Boolean updateScheduled){ this.updateScheduled = updateScheduled; }
+
+    @Override
     public int compareTo(ILanguageCode b) {
-        return this.getStatus().compareTo(b.getStatus());
+        return b.getStatus().compareTo(this.getStatus());
     }
 }

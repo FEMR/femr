@@ -1,0 +1,17 @@
+name: License Check
+
+on:
+  push:
+    branches:
+        - "*"
+
+jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if LICENSE file exists in fEMR
+        run: |
+          it [ ! -f "LICENSE"]; then
+            echo "ERROR: LICENSE file not found!"
+            exit 1
+          fi

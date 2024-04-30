@@ -16,6 +16,7 @@ def download_package(src, dst):
 
 def package_downloaded(src, dst):
     package_name = f"opus-mt-{src}-{dst}"
+    os.makedirs(f"{PATH}/translator/marian_models", exist_ok=True)
     if package_name in os.listdir(f"{PATH}/translator/marian_models"):
         return True
     return False

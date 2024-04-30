@@ -58,3 +58,7 @@ def display_installed_packages():
     for code in list:
         print(f"{code}, {list[code]}")
 
+if __name__ == "__main__":
+    download_packages()
+    display_installed_packages()
+

@@ -34,19 +34,33 @@ function updateSchedule(code){
 
 function downloadPackages(){
     const updates = []
+    const loader = document.getElementById("loading");
     for(const lang in updateScheduled){
         if(updateScheduled[lang]){
             updates.push(lang);
         }
     }
-    updates.forEach((lang) => {
+    if(updates.length > 0){
+        loader.hidden = false;
         $.ajax({
             type: 'get',
             url: '/admin/updates/downloadPackages',
-            data: {code: lang},
+            data: {code: JSON.stringify(updates)},
             failure: function() {console.log("Error Occurred");}
-        }).done(function(){location.reload()});
-    });
+        }).done(function() {
+            console.log("All packages downloaded")
+            loader.hidden = true;
+            location.reload();
+        });
+    }
+}
+
+function initLanguages(){
+    $.ajax({
+        type: 'get',
+        url: '/admin/updates/initLanguages',
+        failure: function() {console.log("Error Occurred");}
+    }).done(function(){location.reload()});
 }
 
 

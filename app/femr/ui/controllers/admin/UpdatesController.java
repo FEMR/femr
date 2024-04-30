@@ -40,6 +40,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -162,12 +163,15 @@ public class UpdatesController extends Controller {
     }
 
     public Result downloadPackages(){
-        String langCode = request().getQueryString("code");
-
-        ServiceResponse<List<? extends ILanguageCode>> downloadPackagesResponse = updatesService.downloadPackages(langCode);
-        if(downloadPackagesResponse.hasErrors()) {
-            throw new RuntimeException();
+        String requestData = request().getQueryString("code").replaceAll("[\\[\\]\"]", "");
+        String[] codes = requestData.split(",");
+        for (String langCode : codes){
+            ServiceResponse<List<? extends ILanguageCode>> downloadPackagesResponse = updatesService.downloadPackages(langCode);
+            if(downloadPackagesResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
         }
+        System.out.println("I am done");
         return manageGet();
     }
 

@@ -258,12 +258,10 @@ public class UpdatesService implements IUpdatesService {
     @Override
     public ServiceResponse<List<? extends ILanguageCode>> downloadPackages(String langCode){
         ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
-
         try {
             List<LanguageCode> optimizedLanguages = getOptimizedLanguages();
-
             for (ILanguageCode optLang : optimizedLanguages) {
-                System.out.println(optLang.getCode() + " " + langCode);
+                System.out.println("Updating " + optLang.getCode() + " and " + langCode);
                 ProcessBuilder pb = new ProcessBuilder("python",
                         "translator/optimizeLanguage.py", langCode, optLang.getCode());
                 Process p = pb.start();
@@ -286,16 +284,13 @@ public class UpdatesService implements IUpdatesService {
             ProcessBuilder pb = new ProcessBuilder("python", "translator/libargos.py");
             Process p = pb.start();
             BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
-            String line = "";
+            String line;
             while ((line = bfr.readLine()) != null) {
                 LanguageCode language = new LanguageCode();
                 language.setCode(line.split(", ")[0]);
                 language.setLanguageName(line.split(", ")[1]);
                 language.setStatus("Not Optimized");
                 language.setUpdateScheduled(false);
-                if(language.getCode().equals("de") || language.getCode().equals("fr")){
-                    language.setUpdateScheduled(true);
-                }
                 if(language.getCode().equals("en") || language.getCode().equals("es")){
                     language.setStatus("Optimized");
                 }

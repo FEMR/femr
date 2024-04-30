@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Check if LICENSE file exists in fEMR
         run: |
-          if [ ! -f "LICENSE" ]; then
+          if [ ! -f "./../../LICENSE" ]; then
             echo "ERROR: LICENSE file not found!"
             exit 1
           fi

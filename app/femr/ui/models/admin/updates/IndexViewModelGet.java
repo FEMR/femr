@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import femr.data.models.core.ILanguageCode;
-import femr.data.models.mysql.LanguageCode;
 
 public class IndexViewModelGet {
 
@@ -33,15 +32,12 @@ public class IndexViewModelGet {
         return this.isUpdateAvailable;
     }
     public ArrayList<ILanguageCode> getLanguages() { Collections.sort(languages); return languages; }
-
     public ArrayList<ILanguageCode> getLanguageUpdates(){
         return languages.stream().filter(ILanguageCode::getUpdateScheduled)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
-
     public ArrayList<ILanguageCode> getOptimizedLanguages(){
-        return languages.stream().filter(language -> language.getStatus().equals("Optimized")
-                        && !language.getCode().equals("en"))
+        return languages.stream().filter(language -> language.getStatus().equals("Optimized"))
                         .collect(Collectors.toCollection(ArrayList::new));
     }
 

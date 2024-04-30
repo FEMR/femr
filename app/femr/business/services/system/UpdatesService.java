@@ -19,6 +19,7 @@
 package femr.business.services.system;
 
 import com.google.inject.Inject;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUpdatesService;
 import femr.common.dtos.ServiceResponse;
 import femr.data.daos.IRepository;
@@ -26,11 +27,9 @@ import femr.data.models.core.IKitStatus;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.core.ILanguageCode;
-import femr.data.models.mysql.KitStatus;
-import femr.data.models.mysql.NetworkStatus;
-import femr.data.models.mysql.DatabaseStatus;
-import femr.data.models.mysql.LanguageCode;
+import femr.data.models.mysql.*;
 import femr.ui.controllers.BackEndControllerHelper;
+import io.ebean.ExpressionList;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,6 +39,7 @@ import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UpdatesService implements IUpdatesService {
 
@@ -212,6 +212,73 @@ public class UpdatesService implements IUpdatesService {
         return response;
     }
 
+    List<LanguageCode> getOptimizedLanguages(){
+        ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                .where()
+                .eq("status", "Optimized");
+        return query.findList();
+    }
+
+    void setLanguageOptimized(String code){
+        ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                .where()
+                .eq("code", code);
+        LanguageCode lang = query.findOne();
+        if(lang != null){
+            lang.setStatus("Optimized");
+            lang.setUpdateScheduled(false);
+            languagesRepository.update(lang);
+        }
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code, boolean updateScheduled){
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+
+        try{
+            ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                    .where()
+                    .eq("code", code);
+            LanguageCode langToUpdate = query.findOne();
+
+            if(langToUpdate != null) {
+                langToUpdate.setUpdateScheduled(updateScheduled);
+                languagesRepository.update(langToUpdate);
+            } else{
+                response.addError("", "Language not found in DB");
+            }
+
+        } catch(Exception ex){
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> downloadPackages(String langCode){
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+
+        try {
+            List<LanguageCode> optimizedLanguages = getOptimizedLanguages();
+
+            for (ILanguageCode optLang : optimizedLanguages) {
+                System.out.println(optLang.getCode() + " " + langCode);
+                ProcessBuilder pb = new ProcessBuilder("python",
+                        "translator/optimizeLanguage.py", langCode, optLang.getCode());
+                Process p = pb.start();
+                BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+                while(!bfr.readLine().contains("Optimized"));
+
+                System.out.println(langCode + " and " + optLang.getCode() + " Optimized");
+            }
+            setLanguageOptimized(langCode);
+        } catch (IOException e) {
+            response.addError("", e.getMessage());
+        }
+        return response;
+    }
+
     public ServiceResponse<List<? extends ILanguageCode>> initializeLanguages() {
         ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
         try {
@@ -239,27 +306,5 @@ public class UpdatesService implements IUpdatesService {
         }
         return response;
     }
-
-    public ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code){
-        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
-        try{
-            List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
-            List<ILanguageCode> supportedLanguages = new ArrayList<>();
-            for (ILanguageCode language : languages){
-                if(language.getStatus().equals("Fully Supported") && !language.getCode().equals("en")){
-                    supportedLanguages.add(language);
-                }
-            }
-            for (ILanguageCode language : supportedLanguages){
-                System.out.println("Download " + code + " -> " + language.getCode());
-                System.out.println("Download " + language.getCode() + " -> " + code);
-            }
-            response.setResponseObject(supportedLanguages);
-        } catch (Exception e){
-            response.addError("", e.getMessage());
-        }
-        return response;
-    }
-
 }
 

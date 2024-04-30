@@ -67,32 +67,24 @@
             <div id="middle-div">
                 <div id="languages">
                     <h2>Languages</h2>
-                    <div id="language-table-wrapper">
-                        <table id="language-table">
+                        <div id="language-table-wrapper">
+                            <table id="language-table">
                             @for(language <- viewModel.getLanguages){
                                 <tr>
-                                @if(language.getStatus == "Optimized") {
-                                    <td><div class="status-box" style="background-color: green;"></div></td>
+                                    <td><div class="status-box" style="background-color:
+                                            @if(language.getStatus == "Optimized" ){green} else{
+                                            @if(language.getStatus == "Not Optimized"){yellow} else{red}};"></div></td>
                                     <td>@language.getLanguageName</td>
-                                    <td ><input type="checkbox" class="language-checkbox" disabled checked /></td>
-                                } else if(language.getStatus == "Not Optimized"){
-                                    <td><div class="status-box" style="background-color: yellow;"></div></td>
-                                    <td>@language.getLanguageName</td>
-                                    <td ><input type="checkbox" class="language-checkbox"/></td>
-                                } else{
-                                    <td><div class="status-box" style="background-color: red;"></div></td>
-                                    <td>@language.getLanguageName</td>
-                                    <td ><input type="checkbox" class="language-checkbox"/></td>
-                                }
+                                    <td><input type="checkbox" class="language-checkbox" name="@language.getCode" onClick="updateSchedule(name)"
+                                        @if(language.getUpdateScheduled){checked} else {
+                                            @if(language.getStatus == "Optimized"){checked disabled}} /></td>
                                 </tr>
                             }
-                        </table>
-                    </div>
+                            </table>
+                        </div>
                     <div>
                     @helper.form(action = UpdatesController.initializeLanguages()) {
-                        <td>
-                            <input type="submit" class="fButton" value="Initialize Languages (dev)"/>
-                        </td>
+                        <input type="submit" class="fButton" value="Initialize Languages (dev)"/>
                     }
                     </div>
                 </div>
@@ -101,7 +93,7 @@
             <div id="right-div">
                 <div id="language-package-updates">
                     <h2>Scheduled Languages</h2>
-                    <input type="submit" class="fButton" value="Update Now"/>
+                    <input type="submit" class="fButton" value="Update Now" onclick="downloadPackages()"/>
                     <div id="package-table-wrapper">
                         <table style="height: 100%;">
                             @for(language <- viewModel.getLanguageUpdates){

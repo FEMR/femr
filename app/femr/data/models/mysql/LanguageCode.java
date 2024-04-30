@@ -52,6 +52,10 @@ public class LanguageCode implements ILanguageCode {
 
     @Override
     public int compareTo(ILanguageCode b) {
-        return b.getStatus().compareTo(this.getStatus());
+        int compare = b.getStatus().compareTo(this.getStatus());
+        if(compare == 0){
+            compare = b.getUpdateScheduled().compareTo(this.getUpdateScheduled());
+        }
+        return compare;
     }
 }

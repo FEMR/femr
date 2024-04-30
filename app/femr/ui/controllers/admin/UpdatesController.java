@@ -20,7 +20,6 @@ package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
-import femr.business.services.core.IInternetStatusService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUpdatesService;
 import femr.common.dtos.CurrentUser;
@@ -30,7 +29,6 @@ import femr.data.models.core.IKitStatus;
 import femr.data.models.core.ILanguageCode;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.mysql.Roles;
-import femr.ui.controllers.BackEndControllerHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.updates.IndexViewModelGet;
@@ -42,9 +40,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -110,8 +106,6 @@ public class UpdatesController extends Controller {
 
         return ok(manage.render(currentUser, indexViewModel, assetsFinder, messages));
     }
-
-    //databasePost
     public Result databasePost() {
         ServiceResponse<List<? extends IDatabaseStatus>> databaseStatusesResponse = updatesService.updateDatabaseStatuses();
         this.messages = new ArrayList<>();
@@ -127,7 +121,6 @@ public class UpdatesController extends Controller {
 
         return manageGet();
     }
-
     public Result kitUpdatePost() {
         this.messages = new ArrayList<>();
 
@@ -156,21 +149,35 @@ public class UpdatesController extends Controller {
         return manageGet();
     }
 
-    public Result initializeLanguages(){
-        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.initializeLanguages();
-        if (updateResponse.hasErrors()) {
-            System.out.println("Update Response Error: " + updateResponse.getErrors());
+    public Result updateLanguage(){
+        String langCode = request().getQueryString("code");
+        boolean updateScheduled = request().getQueryString("update").equals("true");
+
+        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.updateLanguage(langCode,updateScheduled);
+        if(updateResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+
+        return manageGet();
+    }
+
+    public Result downloadPackages(){
+        String langCode = request().getQueryString("code");
+
+        ServiceResponse<List<? extends ILanguageCode>> downloadPackagesResponse = updatesService.downloadPackages(langCode);
+        if(downloadPackagesResponse.hasErrors()) {
             throw new RuntimeException();
         }
         return manageGet();
     }
 
-    public Result updateLanguage(String code){
-        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.updateLanguage(code);
-        if (updateResponse.hasErrors()){
-            System.out.println("Update Response Error: " + updateResponse.getErrors());
+    public Result initializeLanguages(){
+        ServiceResponse<List<? extends ILanguageCode>> initializeLanguagesResponse = updatesService.initializeLanguages();
+        if (initializeLanguagesResponse.hasErrors()) {
             throw new RuntimeException();
         }
         return manageGet();
     }
+
+
 }

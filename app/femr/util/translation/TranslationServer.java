@@ -10,6 +10,8 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class TranslationServer {
@@ -31,9 +33,10 @@ public class TranslationServer {
 
         String response = "";
         try {
+            String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
             //Make GET request
             URL url = new URL("http://localhost:" + portNumber +"/?text=" +
-                    text + "&from=" + from + "&to=" + to);
+                    encodedText + "&from=" + from + "&to=" + to);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.connect();

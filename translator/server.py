@@ -39,27 +39,12 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def query_data(self):
         return dict(parse_qsl(self.url.query))
 
-    def populate_json(self, dict_array, f_code, t_code):
-        dict_array[0]["text"] = "CHANGED"
-#         for field in dict_array:
-#             text = field["text"]
-#             if text:
-#                 field["text"] = self.choose_and_translate(text, f_code, t_code)
-
-        return dict_array[0].get("text")
-
     @cached_property
     def translate_data(self):
         text = self.query_data['text']
-        json_string = text.encode("windows-1252").decode("utf-8")
-        python_list = json.loads(json_string)
-
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        return self.populate_json(python_list, from_code, to_code)
-
-    def choose_and_translate(self, text, from_code, to_code):
         # Use Argos if Language Package Exists
         if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
             translatedText = argostranslate.translate.translate(text, from_code, to_code)

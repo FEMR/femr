@@ -55,10 +55,9 @@ public class BackEndControllerHelper  {
 
   public static String translate(String arg, String from, String to) {
       String output = "";
-      //System.out.println("backendcontrollerhelper: " + arg);
       try {
         output = TranslationServer.makeServerRequest(arg, from, to);
-        System.out.println("request translated: " + output);
+
         //parse translation from JSON
         ObjectMapper mapper = new ObjectMapper();
         TranslationJson api = mapper.readValue(output, TranslationJson.class);

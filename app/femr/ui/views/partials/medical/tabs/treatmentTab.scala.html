@@ -9,7 +9,7 @@
             <input name="tabFieldItems[@assessment.getIndex].name" type="text" class="hidden" value="assessment"/>
             <textarea rows="3" name="tabFieldItems[@assessment.getIndex].value" class="form-control input-sm" id="assessmentTab">@assessment.getValue</textarea>
         }
-    </div>
+        </div>
 
     <div class="form-group">
         <label for="problem">Diagnosis</label>
@@ -41,7 +41,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="form-group">
         <div class="row">
@@ -80,12 +79,6 @@
             <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="procedure_counseling"/>
             <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Suturing, Ultrasound, Splint, etc..." id="procedureTab">@treatment.getValue</textarea>
         }
-
-        <div class="fInlineButton">
-            @* @helper.form(action = MedicalController.editGet(patientEncounter.getId, true)) { *@
-            <button>Translate</button>
-            @*}*@
-        </div>
     </div>
     <div class="form-group">
         <label for="treatment">Pharmacy Note</label>
@@ -93,11 +86,5 @@
             <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="pharmacy_note"/>
             <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Three times/day for two weeks, etc..." id="pharmacyTab">@treatment.getValue</textarea>
         }
-
-        <div class="fInlineButton">
-            @* @helper.form(action = MedicalController.editGet(patientEncounter.getId, true)) { *@
-            <button>Translate</button>
-            @*}*@
-        </div>
     </div>
 </div>

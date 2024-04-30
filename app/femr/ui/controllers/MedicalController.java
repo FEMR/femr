@@ -259,31 +259,11 @@ public class MedicalController extends Controller {
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, patientEncounter, assetsFinder));
     }
     // put translate get method from tEMR team here, was written by Harrison
-//    public Result translateGet() {
-//        String text = request().getQueryString("text");
-//        //Harrison Shu
-//        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-//        String toLanguage = currentUserSession.getLanguageCode();
-//
-//        // retrieve current patient encounter encounter
-//        int patientId = Integer.parseInt(request().getQueryString("patientId"));
-//        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
-//
-//        if (currentEncounterByPatientId.hasErrors()) {
-//            throw new RuntimeException();
-//        }
-//        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
-//        String fromLanguage = patientEncounter.getLanguageCode();
-//
-//        // add whether the language is rtl to response
-//        List<String> rtlLanguages = Arrays.asList("he", "ar");
-//        Map<String, Object> responseMap = new HashMap<>();
-//        responseMap.put("toLanguageIsRtl", rtlLanguages.contains(toLanguage));
-//        responseMap.put("fromLanguageIsRtl", rtlLanguages.contains(fromLanguage));
-//        responseMap.put("translation", translate(text, fromLanguage,toLanguage));
-//
-//        return ok(Json.toJson(responseMap));
-//    }
+    public String translateGet() {
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        String toLanguage = currentUserSession.getLanguageCode();
+        return toLanguage;
+    }
 
     //    Calls Python Script to translate
 //    private String translate(String text, String fromLanguage, String toLanguage) {

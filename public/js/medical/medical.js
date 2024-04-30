@@ -352,7 +352,6 @@ $(document).ready(function () {
             $("#toggleBtn").text("Show Original");
 
             var listTranslated = response.translation.split("@");
-
             var toLanguageIsRtl = response.toLanguageIsRtl;
             var fromLanguageIsRtl = response.fromLanguageIsRtl;
 

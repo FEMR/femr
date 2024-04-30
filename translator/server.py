@@ -42,8 +42,6 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     @cached_property
     def translate_data(self):
-        # Harrison Shu
-        # NOTE: Arabic and Hebrew Text is automatically decoded from the URL paramter
         text = self.query_data['text']
         from_code = self.query_data['from']
         to_code = self.query_data['to']

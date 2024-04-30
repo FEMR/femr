@@ -20,7 +20,6 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
-    // Test for LICENSE detection
     IUserService userService;
     IUserRepository userRepository;
     IPasswordEncryptor passwordEncryptor;

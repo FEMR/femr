@@ -12,6 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: List contents of femr directory
+        run: ls -la femr
+
       - name: Check LICENSE file existence in femr directory
         id: check_license
         uses: andstor/file-existence-action@v3

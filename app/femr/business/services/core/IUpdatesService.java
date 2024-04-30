@@ -20,9 +20,11 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.IKitStatus;
+import femr.data.models.core.ILanguageCode;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IDatabaseStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IUpdatesService {
@@ -68,4 +70,11 @@ public interface IUpdatesService {
      * @return a list of kit database status.
      */
     ServiceResponse<List<? extends IDatabaseStatus>> updateDatabaseStatuses();
+
+    ServiceResponse<List<? extends ILanguageCode>> retrieveLanguages();
+    ServiceResponse<List<? extends ILanguageCode>> initializeLanguages();
+
+    ServiceResponse<List<? extends ILanguageCode>> downloadPackages(String langCode);
+
+    ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code, boolean updateScheduled);
 }

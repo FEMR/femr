@@ -19,36 +19,44 @@
 package femr.business.services.system;
 
 import com.google.inject.Inject;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUpdatesService;
 import femr.common.dtos.ServiceResponse;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IKitStatus;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IDatabaseStatus;
-import femr.data.models.mysql.KitStatus;
-import femr.data.models.mysql.NetworkStatus;
-import femr.data.models.mysql.DatabaseStatus;
+import femr.data.models.core.ILanguageCode;
+import femr.data.models.mysql.*;
 import femr.ui.controllers.BackEndControllerHelper;
+import io.ebean.ExpressionList;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UpdatesService implements IUpdatesService {
 
     private final IRepository<INetworkStatus> networkStatusRepository;
     private final IRepository<IKitStatus> kitStatusRepository;
     private final IRepository<IDatabaseStatus> databaseStatusRepository;
+    private final IRepository<ILanguageCode> languagesRepository;
 
     @Inject
     public UpdatesService(IRepository<INetworkStatus> networkStatusRepository,
                           IRepository<IKitStatus> kitStatusRepository,
-                          IRepository<IDatabaseStatus> databaseStatusRepository) {
+                          IRepository<IDatabaseStatus> databaseStatusRepository,
+                          IRepository<ILanguageCode> languagesRepository) {
         this.networkStatusRepository = networkStatusRepository;
         this.kitStatusRepository = kitStatusRepository;
         this.databaseStatusRepository = databaseStatusRepository;
+        this.languagesRepository = languagesRepository;
     }
 
     /**
@@ -192,5 +200,106 @@ public class UpdatesService implements IUpdatesService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> retrieveLanguages() {
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try{
+            List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
+            response.setResponseObject(languages);
+        } catch (Exception ex){
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+    List<LanguageCode> getOptimizedLanguages(){
+        ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                .where()
+                .eq("status", "Optimized");
+        return query.findList();
+    }
+
+    void setLanguageOptimized(String code){
+        ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                .where()
+                .eq("code", code);
+        LanguageCode lang = query.findOne();
+        if(lang != null){
+            lang.setStatus("Optimized");
+            lang.setUpdateScheduled(false);
+            languagesRepository.update(lang);
+        }
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> updateLanguage(String code, boolean updateScheduled){
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+
+        try{
+            ExpressionList<LanguageCode> query = QueryProvider.getLanguage()
+                    .where()
+                    .eq("code", code);
+            LanguageCode langToUpdate = query.findOne();
+
+            if(langToUpdate != null) {
+                langToUpdate.setUpdateScheduled(updateScheduled);
+                languagesRepository.update(langToUpdate);
+            } else{
+                response.addError("", "Language not found in DB");
+            }
+
+        } catch(Exception ex){
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ILanguageCode>> downloadPackages(String langCode){
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try {
+            List<LanguageCode> optimizedLanguages = getOptimizedLanguages();
+            for (ILanguageCode optLang : optimizedLanguages) {
+                System.out.println("Updating " + optLang.getCode() + " and " + langCode);
+                ProcessBuilder pb = new ProcessBuilder("python",
+                        "translator/optimizeLanguage.py", langCode, optLang.getCode());
+                Process p = pb.start();
+                BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+                while(!bfr.readLine().contains("Optimized"));
+
+                System.out.println(langCode + " and " + optLang.getCode() + " Optimized");
+            }
+            setLanguageOptimized(langCode);
+        } catch (IOException e) {
+            response.addError("", e.getMessage());
+        }
+        return response;
+    }
+
+    public ServiceResponse<List<? extends ILanguageCode>> initializeLanguages() {
+        ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
+        try {
+            languagesRepository.delete(languagesRepository.findAll(LanguageCode.class));
+            ProcessBuilder pb = new ProcessBuilder("python", "translator/libargos.py");
+            Process p = pb.start();
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                LanguageCode language = new LanguageCode();
+                language.setCode(line.split(", ")[0]);
+                language.setLanguageName(line.split(", ")[1]);
+                language.setStatus("Not Optimized");
+                language.setUpdateScheduled(false);
+                if(language.getCode().equals("en") || language.getCode().equals("es")){
+                    language.setStatus("Optimized");
+                }
+                languagesRepository.update(language);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
+    }
 }
 

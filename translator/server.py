@@ -13,7 +13,7 @@ from typing import Sequence
 from libargos import install_packages
 import socket
 
-PORTS = [8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008, 5000]
+PORTS = [8000, 5000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008]
 TIMEOUT = 60
 PATH = os.getcwd()
 
@@ -108,6 +108,8 @@ def start_server(port):
 if __name__ == "__main__":
     install_packages()
     for port in PORTS:
+
+        print(port)
         try:
             start_server(port)
         except OSError:

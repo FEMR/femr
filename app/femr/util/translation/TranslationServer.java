@@ -10,8 +10,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class TranslationServer {
@@ -33,13 +31,9 @@ public class TranslationServer {
 
         String response = "";
         try {
-            // Harrison Shu
-            // Encode the URL String parameter before creating URL to allow arabic and hebrew to be in the URL
-            String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
-
             //Make GET request
             URL url = new URL("http://localhost:" + portNumber +"/?text=" +
-                    encodedText + "&from=" + from + "&to=" + to);
+                    text + "&from=" + from + "&to=" + to);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.connect();
@@ -51,7 +45,6 @@ public class TranslationServer {
 
             con.disconnect();
         } catch(IOException e){
-            System.out.println(e) ;
             return makeServerRequest(text, from, to);
         }
         return response;

@@ -330,15 +330,13 @@ $(document).ready(function () {
         {'id':'#currentTab','text':''},
         {'id':'#familyTab','text':''}]
 
-    // complaint
-    var textToTranslate =  $(jsonObj[0].id + " span").text();
-    console.log(textToTranslate);
-    jsonObj[0].text = textToTranslate;
     var patientId = document.getElementById('patientId').value;
 
-    // tabs
+    // build textToTranslate
+    var textToTranslate = $(jsonObj[0].id + " span").text().replace("@","at");
+    jsonObj[0].text = textToTranslate;
     for (let i = 1; i < jsonObj.length; i++) {
-        textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val();
+        textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val().replace("@","at");
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
 
@@ -348,37 +346,38 @@ $(document).ready(function () {
         url: '/translate',
         data: {text : textToTranslate, patientId: patientId},
         success: function(response){
-            $("#loading").remove();
-            $("#toggleBtn").text("Show Original");
-
             var listTranslated = response.translation.split("@");
-            var toLanguageIsRtl = response.toLanguageIsRtl;
-            var fromLanguageIsRtl = response.fromLanguageIsRtl;
 
+            // backup individual translation for delim errors
+            if (listTranslated.length !== jsonObj.length) {
+                for (let i = 0; i < jsonObj.length; i++) {
+                    $.ajax({
+                        type: 'get',
+                        url: '/translate',
+                        data: {text : jsonObj[i].text, patientId: patientId},
+                        success: function(response){
+                            if (i === jsonObj.length - 1) {
+                                // end buffering on last field
+                                $("#loading").remove();
+                                $("#toggleBtn").text("Show Original");
+                            }
+                            populateField(response.translation, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
+                        },
+                        failure: function(result){
+                            console.error('Failed to fetch backup translation');
+                        }
+                    });
+                }
+            } else {
+                // end buffering if no backup
+                $("#loading").remove();
+                $("#toggleBtn").text("Show Original");
+            }
+
+            // for each field populate them
             for (let i = 0; i < jsonObj.length; i++) {
                 var textOut = listTranslated[i];
-
-                if (jsonObj[i].id === "#complaintInfo"){
-                    var oldText =  $(jsonObj[i].id + " span").text();
-                    $(jsonObj[i].id + "Store").text(oldText)
-                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl); // store whether langauge is rtl
-                    $(jsonObj[i].id).text(textOut)
-                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
-
-                } else {
-                    var oldText =  $(jsonObj[i].id).val();
-                    $(jsonObj[i].id + "Store").text(oldText)
-                    $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl);
-                    $(jsonObj[i].id).val(textOut);
-                    $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
-                }
-
-                // make the text right to left if it is a rtl language
-                if ($(jsonObj[i].id).data('isRtl')) {
-                    $(jsonObj[i].id).addClass('rtl');
-                } else {
-                    $(jsonObj[i].id).removeClass('rtl');
-                }
+                populateField(textOut, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
             }
         },
         failure: function(result){
@@ -538,6 +537,35 @@ $(document).ready(function () {
 
     typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
 });
+
+/**
+ * Populates chief complaint and tab fields with toggle support
+ */
+function populateField(textOut, jsonObj, fromLanguageIsRtl, toLanguageIsRtl, i) {
+    if (jsonObj[i].id === "#complaintInfo"){
+        var oldText =  $(jsonObj[i].id + " span").text();
+        $(jsonObj[i].id + "Store").text(oldText)
+        $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl); // store whether langauge is rtl
+        $(jsonObj[i].id).text(textOut)
+        $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+
+    } else {
+        var oldText =  $(jsonObj[i].id).val();
+        $(jsonObj[i].id + "Store").text(oldText)
+        $(jsonObj[i].id + "Store").data('isRtl', fromLanguageIsRtl);
+        $(jsonObj[i].id).val(textOut);
+        $(jsonObj[i].id).data('isRtl', toLanguageIsRtl);
+    }
+
+    // make the text right to left if it is a rtl language
+    if ($(jsonObj[i].id).data('isRtl')) {
+        $(jsonObj[i].id).addClass('rtl');
+    } else {
+        $(jsonObj[i].id).removeClass('rtl');
+    }
+}
+
+
 
 /**
  * Generic tab showing function. Also takes care of identifying active tab.

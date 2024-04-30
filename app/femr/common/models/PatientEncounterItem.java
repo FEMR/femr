@@ -48,6 +48,7 @@ public class PatientEncounterItem {
 
     //amount of time it took the patient to complete the encounter
     private String turnAroundTime;
+    private String languageCode;
 
     public PatientEncounterItem(){
         this.chiefComplaints = new ArrayList<>();
@@ -181,5 +182,12 @@ public class PatientEncounterItem {
 
     public void setTurnAroundTime(String turnAroundTime) {
         this.turnAroundTime = turnAroundTime;
+    }
+
+
+    public String getLanguageCode() { return this.languageCode; }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

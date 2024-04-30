@@ -1,0 +1,24 @@
+name: Check for LICENSE File in femr Directory
+
+on:
+  push:
+    branches:
+      - temr-dev-noah
+
+jobs:
+  check-license-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check LICENSE file existence in femr directory
+        id: check_license
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "femr/LICENSE"
+          fail: true
+
+      - name: Fail if LICENSE does not exist in femr directory
+        if: steps.check_license.outputs.files_exists == 'false'
+        run: exit 1

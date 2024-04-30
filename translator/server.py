@@ -12,9 +12,10 @@ from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
 from libargos import install_packages
 import socket
+import time
 
 PORTS = [8000, 5000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008]
-TIMEOUT = 200
+TIMEOUT = 3600
 PATH = os.getcwd()
 
 
@@ -65,14 +66,11 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         else:
             return from_code + to_code + "Translation Unavailable"
 
-
-
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(self.get_response().encode("utf-8"))
-
 
     def get_response(self):
         return json.dumps(
@@ -82,7 +80,9 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             ensure_ascii=False
         )
 
+
 def port_open(port):
+    #connect_ex returns 0 if it connects to a socket meaning port is closed
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) != 0
 
@@ -92,6 +92,7 @@ def start_server(port):
         server.timeout = TIMEOUT
         server.handle_timeout = lambda: (_ for _ in ()).throw(TimeoutError())
         print(f"Serving at port: {port}", file=sys.stderr)
+        print(f"Server started at {time.strftime('%I:%M')} with timeout: {TIMEOUT} seconds", file=sys.stderr)
         while(True): server.handle_request()
     except TimeoutError:
         print("Translation server timed out")

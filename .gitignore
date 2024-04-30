@@ -76,4 +76,5 @@ speedtest/__pycache__
 
 #Translation Models and Log
 translator/argos_models
+translator/marian_models
 translator/__pycache__

@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: List contents of femr directory
-        run: ls -la femr
+        run: ls -laR femr
 
       - name: Check if file exists
         run: |

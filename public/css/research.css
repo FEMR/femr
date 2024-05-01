@@ -167,6 +167,23 @@
     font-size: 1.1em;
 }
 
+/* Sean Hershey Language Select */
+.nav-sidebar li.export span.language {
+
+    display: block;
+    width: 100%;
+    color: #ffffff;
+}
+
+.nav-sidebar li.export span.language select{
+
+    display: block;
+    clear: both;
+    margin-left: 1px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 .nav-sidebar li.menu-item .val{
 
     position: absolute;

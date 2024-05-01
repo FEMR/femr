@@ -279,7 +279,13 @@ public class MedicalController extends Controller {
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("toLanguageIsRtl", rtlLanguages.contains(toLanguage));
         responseMap.put("fromLanguageIsRtl", rtlLanguages.contains(fromLanguage));
-        responseMap.put("translation", translate(text, fromLanguage,toLanguage));
+
+        // if same to same (like en to en) don't translate
+        if (Objects.equals(toLanguage, fromLanguage)) {
+            responseMap.put("translation", "SameToSame");
+        } else {
+            responseMap.put("translation", translate(text, fromLanguage,toLanguage));
+        }
 
         return ok(Json.toJson(responseMap));
     }

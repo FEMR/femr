@@ -64,7 +64,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             return translatedText
         # If a package doesn't exist
         else:
-            return from_code + to_code + "Translation Unavailable"
+            return "Translation Unavailable:" + from_code + to_code
 
     def do_GET(self):
         self.send_response(200)

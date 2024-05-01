@@ -15,13 +15,19 @@ jobs:
       - name: List contents of femr directory
         run: ls -la femr
 
-      - name: Check LICENSE file existence in femr directory
-        id: check_license
-        uses: andstor/file-existence-action@v3
-        with:
-          files: "femr/LICENSE"
-          fail: true
-
-      - name: Fail if LICENSE does not exist in femr directory
-        if: steps.check_license.outputs.files_exists == 'false'
-        run: exit 1
+      - name: Check if file exists
+        run: |
+          if [ ! -f "femr/LICENSE" ]; then
+            echo "File does not exist. Exiting with failure."
+            exit 1
+          fi
+#      - name: Check LICENSE file existence in femr directory
+#        id: check_license
+#        uses: andstor/file-existence-action@v3
+#        with:
+#          files: "femr/LICENSE"
+#          fail: true
+#
+#      - name: Fail if LICENSE does not exist in femr directory
+#        if: steps.check_license.outputs.files_exists == 'false'
+#        run: exit 1

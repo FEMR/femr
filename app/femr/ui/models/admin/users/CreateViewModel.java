@@ -42,6 +42,8 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
     private Integer CreatedBy; //Sam Zanni
     private String DateCreated; //Sam Zanni
 
+    private String languageCode;
+
     @Override
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
@@ -175,5 +177,15 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
     public String getDateCreated() { return DateCreated; } //Sam Zanni
 
     public void setDateCreated(String DateCreated) { this.DateCreated = DateCreated; } //Sam Zanni
+
+
+    /* Connor Hickey */
+    public String getLanguageCode() {
+        return this.languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 }
 

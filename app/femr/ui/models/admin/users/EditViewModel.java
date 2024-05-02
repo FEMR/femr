@@ -39,6 +39,7 @@ public class EditViewModel implements Constraints.Validatable<List<ValidationErr
     private String notes;
     private List<String> roles;
     private List<MissionTripItem> missionTripItems;
+    private String languageCode;
 
     @Override
     public List<ValidationError> validate(){
@@ -152,5 +153,13 @@ public class EditViewModel implements Constraints.Validatable<List<ValidationErr
 
     public void setMissionTripItems(List<MissionTripItem> missionTripItems) {
         this.missionTripItems = missionTripItems;
+    }
+
+    public String getLanguageCode() {
+        return this.languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

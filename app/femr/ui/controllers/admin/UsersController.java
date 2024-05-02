@@ -124,6 +124,8 @@ public class UsersController extends Controller {
             CreateViewModel viewModel = form.bindFromRequest().get();
             UserItem user = createUserItem(viewModel);
 
+            user.setLanguageCode("en");
+
             ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword(), currentUser.getId());
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));
@@ -170,6 +172,7 @@ public class UsersController extends Controller {
         editUserViewModel.setPasswordReset(Boolean.toString(userItem.isPasswordReset()));
         editUserViewModel.setRoles(userItem.getRoles());
         editUserViewModel.setNotes(userItem.getNotes());
+        editUserViewModel.setLanguageCode(userItem.getLanguageCode());
         editUserViewModel.setMissionTripItems(missionTripItemServiceResponse.getResponseObject());
 
         Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class);
@@ -215,6 +218,7 @@ public class UsersController extends Controller {
             userItem.setFirstName(viewModel.getFirstName());
             userItem.setLastName(viewModel.getLastName());
             userItem.setNotes(viewModel.getNotes());
+            userItem.setLanguageCode(viewModel.getLanguageCode());
 
             //mark the password reset flag if necessary
             if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPasswordReset()) && viewModel.getPasswordReset().equals("on")){
@@ -274,6 +278,7 @@ public class UsersController extends Controller {
         user.setNotes(viewModel.getNotes());
         user.setRoles(viewModel.getRoles());
         user.setDateCreated(viewModel.getDateCreated());
+        user.setLanguageCode(viewModel.getLanguageCode());
         return user;
     }
 

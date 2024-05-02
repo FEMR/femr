@@ -42,12 +42,7 @@ public class CurrentUser {
         this.roles = roles;
         this.tripId = tripId;
         this.SessionTimeOut = time;
-        if (languageCode == null) {
-            this.languageCode = "ka";
-        } else {
-            this.languageCode = languageCode;
-
-        }
+        this.languageCode = languageCode;
     }
 
     public int getId() {

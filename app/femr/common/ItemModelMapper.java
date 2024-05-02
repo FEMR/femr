@@ -643,6 +643,7 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
         userItem.setLanguageCode(user.getLanguageCode());
 
+        System.out.println(user.getLanguageCode());
         return userItem;
     }
 

@@ -29,7 +29,7 @@ public class TranslationServer {
 
         String response = "";
         try {
-            //Make GET request
+            //Make a GET request
             URL url = new URL("http://localhost:" + portNumber +"/?text=" +
                     text + "&from=" + from + "&to=" + to);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();

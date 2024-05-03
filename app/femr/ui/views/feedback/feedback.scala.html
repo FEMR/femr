@@ -4,28 +4,56 @@
 @import femr.ui.controllers.routes.FeedbackController
 
 
-  @additionalScripts = {}
-  @additionalStyles = {
-      <link rel="stylesheet" href="@assets.path("css/feedback.css")">
-  }
+@additionalScripts = {
+    <script defer>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const storedLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(storedLanguage);
+                            document.getElementById('languageSelect').value = storedLanguage;
+                        });
+
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    const language = languageCode;
+                    updateTextContent("feedback_header", languageData[language].feedback_header);
+                    updateTextContent("feedback_welcome_message", languageData[language].feedback_welcome_message);
+                    updateTextContent("feedback_disclaimer", languageData[language].feedback_disclaimer);
+                    updateTextContent("feedback_submit", languageData[language].feedback_submit);
+                }
+            });
+    </script>
+}
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/feedback.css")">
+}
 
 @main("Feedback", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+    <div class="ifContainer">
+        <h1 id="feedback_header">Give Feedback</h1>
+        <p class="welcomeMessage" id="feedback_welcome_message">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately. The maximum number of characters allowed per feedback submission is 10000.</p>
 
-      <div class="ifContainer">
-
-        <h1>Give Feedback</h1>
-        <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately. The maximum number of characters allowed per feedback submission is 10000.</p>
-
-        <!-- Need form helper here -->
         @helper.form(action = FeedbackController.indexPost()) {
-
             <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10" maxlength="10000" required></textarea>
-
-
-            <button type="submit" class="fButton fSubmitButton" id="feedbackSubmit">Submit</button>
+            <button type="submit" class="fButton fSubmitButton" id="feedback_submit">Submit</button>
         }
 
-          <p id="disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
-      </div>
-
+        <p id="feedback_disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
+    </div>
 }

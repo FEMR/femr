@@ -1,3 +1,4 @@
+@import play.twirl.api.TemplateMagic.defining
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.trips.TripViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.admin
@@ -12,10 +13,60 @@
 @additionalScripts = {
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script defer>
+            document.addEventListener('readystatechange', function(event) {
+                let languageData;
+
+                fetch('@assets.path("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const storedLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(storedLanguage);
+                            document.getElementById('languageSelect').value = storedLanguage;
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode) {
+                    if (languageData && languageData[languageCode]) {
+                        updateTextContent("trips_manage_trips_title", languageData[languageCode].trips_manage_trips_title);
+                        updateTextContent("add_trip_header", languageData[languageCode].add_trip_header);
+                        updateTextContent("trip_team_label", languageData[languageCode].trip_team_label);
+                        updateTextContent("trip_city_label", languageData[languageCode].trip_city_label);
+                        updateTextContent("trip_country_label", languageData[languageCode].trip_country_label);
+                        updateTextContent("start_date_label", languageData[languageCode].start_date_label);
+                        updateTextContent("end_date_label", languageData[languageCode].end_date_label);
+                        updateTextContent("submit_button", languageData[languageCode].submit_button);
+                        updateTextContent("table_header_edit", languageData[languageCode].table_header_edit);
+                        updateTextContent("table_header_team", languageData[languageCode].table_header_team);
+                        updateTextContent("table_header_country", languageData[languageCode].table_header_country);
+                        updateTextContent("table_header_city", languageData[languageCode].table_header_city);
+                        updateTextContent("table_header_start_date", languageData[languageCode].table_header_start_date);
+                        updateTextContent("table_header_end_date", languageData[languageCode].table_header_end_date);
+                    }
+                }
+
+                const dropdown = document.getElementById('languageSelect');
+                if (dropdown) {
+                    dropdown.addEventListener('change', function() {
+                        const selectedLanguage = dropdown.value;
+                        localStorage.setItem('languageCode', selectedLanguage);
+                        updateLanguage(selectedLanguage);
+                    });
+                }
+            });
+    </script>
 }
 
 @admin("Trips - Manage Trips", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
+        <!-- Add a language selection dropdown -->
     @tripsMenu()
 
     @for(messageIndex <- 1 to viewModel.getMessages.size){
@@ -24,9 +75,9 @@
 
     @helper.form(action = TripController.managePost()) {
         <div id="addTripWrap">
-            <h1>Add Trip:</h1>
+            <h1 id="add_trip_header">Add Trip:</h1>
             <div>
-                <label>Trip Team:<span class="red bold">*</span>
+                <label id="trip_team_label">Trip Team:<span class="red bold">*</span>
                     <select class="fSelect" name="newTripTeamName">
                         <option selected value=""></option>
                         @for(teamIndex <- 1 to viewModel.getMissionItems.size) {
@@ -38,7 +89,7 @@
                 </label>
             </div>
             <div>
-                <label>Trip City:<span class="red bold">*</span>
+                <label id="trip_city_label">Trip City:<span class="red bold">*</span>
                     <select class="fSelect" name="newTripCity">
                         <option selected value=""></option>
                         @for(tripIndex <- 1 to viewModel.getAvailableCities.size) {
@@ -50,25 +101,25 @@
                 </label>
             </div>
             <div>
-                <label>Trip Country:
+                <label id="trip_country_label">Trip Country:
                     <input class="fInput" type="text" value="" name="newTripCountry" readonly/>
                 </label>
             </div>
 
             <div>
-                <label>Start Date:<span class="red bold">*</span>
+                <label id="start_date_label">Start Date:<span class="red bold">*</span>
                     <input type="date" name="newTripStartDate"/>
                 </label>
             </div>
             <div>
-                <label>End Date:<span class="red bold">*</span>
+                <label id="end_date_label">End Date:<span class="red bold">*</span>
                     <input type="date" name="newTripEndDate"/>
                 </label>
             </div>
         </div>
 
         <div id="submitWrap">
-            <button type="submit" class="fButton">Submit</button>
+            <button type="submit" class="fButton" id="submit_button">Submit</button>
         </div>
     }
 
@@ -77,12 +128,12 @@
         <table id="tripTable">
             <thead>
                 <tr>
-                    <th>Edit</th>
-                    <th>Team Name</th>
-                    <th>Country</th>
-                    <th>City</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th id="table_header_edit">Edit</th>
+                    <th id="table_header_team">Team Name</th>
+                    <th id="table_header_country">Country</th>
+                    <th id="table_header_city">City</th>
+                    <th id="table_header_start_date">Start Date</th>
+                    <th id="table_header_end_date">End Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,7 +144,7 @@
                             <tr>
                                 <td>
                                     @helper.form(action = TripController.editGet(missionTrip.getId)) {
-                                        <button type="submit" class="btn btn-default editBtn">Edit</button>
+                                        <button type="submit" class="btn btn-default editBtn" id="edit_button">Edit</button>
                                     }
                                 </td>
                                 <td>@missionItem.getTeamName</td>

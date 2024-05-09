@@ -37,6 +37,9 @@ public class ChiefComplaint implements IChiefComplaint {
     @Column(name = "sort_Order")
     private Integer sortOrder;
 
+    @Column(name="language_code", nullable = true, length = 5)
+    private String languageCode;
+
     @Override
     public int getId() {
         return id;
@@ -70,5 +73,15 @@ public class ChiefComplaint implements IChiefComplaint {
     @Override
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public String getLanguageCode() {
+        return this.languageCode;
+    }
+
+    @Override
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

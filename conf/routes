@@ -32,6 +32,9 @@ GET         /admin/updates                                     @femr.ui.controll
 POST        /admin/updates/database                            @femr.ui.controllers.admin.UpdatesController.databasePost()
 POST        /admin/updates/kit                                 @femr.ui.controllers.admin.UpdatesController.kitUpdatePost()
 GET         /admin/updates/internet                            @femr.ui.controllers.admin.UpdatesController.refreshInternetStatus()
+GET         /admin/updates/initLanguages                       @femr.ui.controllers.admin.UpdatesController.initializeLanguages()
+GET         /admin/updates/downloadPackages                    @femr.ui.controllers.admin.UpdatesController.downloadPackages()
+GET         /admin/updates/scheduleUpdate                      @femr.ui.controllers.admin.UpdatesController.updateLanguage()
 GET         /admin/trips                                       @femr.ui.controllers.admin.TripController.manageGet()
 POST        /admin/trips                                       @femr.ui.controllers.admin.TripController.managePost()
 GET         /admin/trips/edit/:id                              @femr.ui.controllers.admin.TripController.editGet(id: Integer)
@@ -85,6 +88,7 @@ GET         /medical                                           @femr.ui.controll
 POST        /medical                                           @femr.ui.controllers.MedicalController.indexPost()
 GET         /medical/prescriptionRow/:index                    @femr.ui.controllers.MedicalController.prescriptionRowGet( index: Integer )
 POST        /medical/deleteProblem/:patientId/:problem         @femr.ui.controllers.MedicalController.deleteExistingProblem(patientId: Integer, problem: String)
+GET         /translate                                         @femr.ui.controllers.MedicalController.translateGet()
 #Research
 GET         /research                                          @femr.ui.controllers.ResearchController.indexGet()
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()
@@ -107,6 +111,3 @@ GET         /assets/*file                                       controllers.Asse
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()
 POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()
-
-#Trauma Sheet
-GET         /trauma                                             @femr.ui.controllers.TraumaController.index()

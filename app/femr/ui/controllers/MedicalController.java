@@ -19,8 +19,10 @@ import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import femr.util.translation.TranslationResponseMap;
 import play.data.Form;
 import play.data.FormFactory;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -44,6 +46,8 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
+
+    private boolean showOg = false;
 
     @Inject
     public MedicalController(AssetsFinder assetsFinder,
@@ -117,12 +121,10 @@ public class MedicalController extends Controller {
         } catch (NullPointerException e) {
             return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
-
         return redirect(routes.MedicalController.editGet(patientId));
     }
 
     public Result editGet(int patientId) {
-
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
@@ -135,6 +137,7 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
         viewModelGet.setPatientEncounterItem(patientEncounter);
 
         //verify encounter is still open
@@ -150,6 +153,15 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
+
+        if (showOg) {
+            String toLanguage = currentUserSession.getLanguageCode();
+            String fromLanguage = patientEncounter.getLanguageCode();
+
+            List<String> test = new ArrayList<String>();
+            test.add(translate(patientEncounter.getChiefComplaints().get(0), fromLanguage, toLanguage));
+            patientEncounter.setChiefComplaints(test);
+        }
 
         //get prescriptions
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId(), currentUserSession.getTripId());
@@ -244,8 +256,40 @@ public class MedicalController extends Controller {
         //Alaa Serhan
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
 
-        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
+        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, patientEncounter, assetsFinder));
     }
+
+    public Result translateGet() {
+        String text = request().getQueryString("text");
+        //Harrison Shu
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        String toLanguage = currentUserSession.getLanguageCode();
+
+        // retrieve current patient encounter encounter
+        int patientId = Integer.parseInt(request().getQueryString("patientId"));
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (currentEncounterByPatientId.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
+        String fromLanguage = patientEncounter.getLanguageCode();
+
+        // Harrison Shu: Handles the creation of the response map and figures out whether or not to translate
+        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, text);
+
+        return ok(responseMapObject.getResponseJson());
+    }
+
+    public String translate(String text, String fromLanguage, String toLanguage) {
+        String data = "";
+        try {
+            data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
 
     /**
      * Get the populated partial view that represents 1 row of new prescription fields
@@ -407,8 +451,6 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
-
-
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

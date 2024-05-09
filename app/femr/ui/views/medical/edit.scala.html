@@ -1,6 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser,
         vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
-        viewModel: femr.ui.models.medical.EditViewModelGet, assets: AssetsFinder)
+        viewModel: femr.ui.models.medical.EditViewModelGet,
+        patientEncounter: femr.common.models.PatientEncounterItem,
+        assets: AssetsFinder)
 
 @import femr.ui.controllers.routes.HistoryController
 @import femr.ui.controllers.routes.MedicalController
@@ -17,7 +19,6 @@
         <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
-
         <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/medical/medical.js")"></script>
@@ -35,8 +36,36 @@
         @*Careful with the pagename passed into patientOverview() - it impacts what is displayed*@
         @patientOverview(viewModel.getPatientItem, viewModel.getPatientEncounterItem, viewModel.getSettings, "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId)
 
-
         <div id="mainWrap" class="backgroundForWrap">
+            <div id = "header">
+                <h4>Complaint</h4>
+                <div id = "toggle">
+                    <button type="button" id="toggleBtn" onclick="return change(this)" class="fButton fOtherButton">
+                        Translating
+                        <img src="@assets.path("img/graph-loader.gif")" alt="loading" id="loading"/>
+                    </button>
+                    <script type="text/javascript">
+                        function change(el)
+                        {
+                            if (el.innerHTML === "Show Original")
+                                el.innerHTML = "↻";
+                            else if (el.innerHTML === "↻")
+                                el.innerHTML = "Show Original";
+                        }
+                    </script>
+                </div>
+            </div>
+            <div id = "complaintInfo">
+                @* Chief Complaint*@
+                @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
+                    <span>@patientEncounter.getChiefComplaints.get(0)</span>
+                } else {
+                    <label>Complaint: </label>
+                    <span>N/A</span>
+                }
+            </div>
+            <div class="hidden" id="complaintInfoStore"></div>
+
             <div id="vitalsWrap">
                 <!-- Alaa Serhan - Referenced in vitalClientValidation.js for validationg height inputs -->
                 @if(viewModel.getSettings.isMetric) {

@@ -1,13 +1,13 @@
 import speedtest
-import psutil
+import psutil #not pipinstalled
 import time
 
 suffixes = ['b', 'kb', 'mb', 'gb', 'tb', 'pb']
 def humansize(nbytes):
 	i = 0
 	while nbytes >= 1024 and i < len(suffixes)-1:
-	  nbytes /= 1024.
-	  i += 1
+		nbytes /= 1024.
+		i += 1
 	f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
 	return '%s %s' % (f, suffixes[i])
 
@@ -44,14 +44,14 @@ def main():
 		servernames = []
 		st.get_servers(servernames)
 
-		down = st.download()
-		up = st.upload()
+		down = humansize(st.download())
+		up = humansize(st.upload())
 		ping = st.results.ping
 
 		out = (f"""{down}\n{up}\n{ping}""")
 		print(out)
 
 	except speedtest.ConfigRetrievalError:
-		print(f"""{0}\n{0}\n{0}""")
+		print(f"""{0.0}\n{0.0}\n{0.0}""")
 
 main()

@@ -102,9 +102,8 @@ hr {
     margin-left: 33%;
 }
 
-/* THE fEMR button heirarchy*/
+/* THE fEMR button hierarchy*/
 .fButton{
-    margin-top: 10px;
     border-radius: 4px;
     border: 1px solid #3f3f3d;
     padding: 5px 12px;
@@ -137,8 +136,25 @@ a.fRedButton{
 a.fRedButton:hover{
     text-decoration: none;
 }
-
-
+.fInlineButton button{
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #3f3f3d;
+    padding: 5px 8px;
+    cursor: pointer;
+    float: right;
+}
+.fInlineButton:after{
+    content: "";
+    clear: both;
+    display: table;
+}
+.fInlineButton button:not(:last-child) {
+    border-right: none;
+}
+.fInlineButton button:hover {
+    background-color: #bdbdbd;
+}
 
 .fLandingSearchButton{
     width: 100%;
@@ -253,7 +269,6 @@ a.fRedButton:hover{
 
 #patientOverviewWrap h3 {
     text-align: center;
-
 }
 
 #patientOverViewInfoPhoto {
@@ -268,9 +283,39 @@ a.fRedButton:hover{
 }
 
 #patientOverviewWrap span {
+    padding: 4px 0px 10px;
+}
+
+#complaintWrap {
+    margin-top: 15px;
+    overflow: hidden;
+    min-height: 150px;
+}
+
+#complaintInfo {
+    padding: 70px 10px;
+    text-align: center;
+}
+
+#complaintWrap span {
     padding: 4px;
 }
 
+#header h4 {
+    font-weight: bold;
+    float: left;
+    padding-left: 46%;
+}
+
+#toggle {
+    float: right;
+}
+
+#loading {
+    margin-left: 10px;
+    height: auto;
+    max-width: 18px;
+}
 
 .red {
     color: red;
@@ -346,6 +391,7 @@ float: right;
     z-index: 1030;
     right: 0;
     left: 0;
+    width: 100%; /* without this navbar extends past slightly */
     position: fixed;
     min-height: 60px;
     background: black;

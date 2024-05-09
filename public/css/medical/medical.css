@@ -51,6 +51,10 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     overflow: hidden;
 }
 
+.hidden {
+    height: 0px;
+}
+
 .historySubmitWrap{
     margin-top: 15px;
     margin-bottom: 5px;
@@ -318,4 +322,9 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
     width: auto;
     margin-right: 5px;
+}
+
+.rtl {
+    direction: rtl;
+    text-align: right;
 }

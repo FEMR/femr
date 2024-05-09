@@ -3,7 +3,6 @@ package femr.ui.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import controllers.AssetsFinder;
 import femr.business.services.core.IInventoryService;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;

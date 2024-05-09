@@ -181,7 +181,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Integer diabetic,
                                                 Integer alcohol,
                                                 Integer cholesterol,
-                                                Integer hypertension) {
+                                                Integer hypertension
+                                                ) {
         // Osman above
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -293,7 +294,8 @@ public class ItemModelMapper implements IItemModelMapper {
                 null,
                 null,
                 null,
-                null));
+                null
+                ));
         // Osman above
 
         if( patientEncounter.getMissionTrip() != null ) {
@@ -325,7 +327,11 @@ public class ItemModelMapper implements IItemModelMapper {
             patientEncounterItem.setPharmacistFullName(patientEncounter.getPharmacist().getFirstName() + " " + patientEncounter.getPharmacist().getLastName()); // Andrew Change
         }
         patientEncounterItem.setTurnAroundTime(dateUtils.getTurnAroundTime(patientEncounterItem));
+        if (patientEncounter.getLanguageCode() != null ) {
+            patientEncounterItem.setLanguageCode(patientEncounter.getLanguageCode());
+        }
         return patientEncounterItem;
+
 
     }
 

@@ -1,67 +1,6 @@
-#updates-content{
-    display: flex;
-    justify-content: space-between;
-}
 .name{
     width: 200px;
 }
 .isActive{
     text-align: center;
-}
-
-#right-div{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-#package-table-wrapper{
-    overflow-y: auto;
-    margin-top: 10px;
-    max-height: 150px;
-}
-
-#language-table-wrapper{
-    max-height: 355px;
-    overflow: auto;
-    margin-bottom: 25px;
-}
-
-.language-checkbox{
-    cursor: pointer;
-    float: right;
-}
-
-.status-box{
-    height: .8em;
-    width: .8em;
-    border: 1px solid black;
-}
-
-/* Style the button that is used to open and close the collapsible content */
-.collapsible {
-    background-color: #eee;
-    color: #444;
-    cursor: pointer;
-    padding: 5px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-}
-
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .collapsible:hover {
-    background-color: #ccc;
-}
-
-/* Style the collapsible content. Note: hidden by default */
-.content {
-    padding: 0 18px;
-    background-color: #f1f1f1;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
 }

@@ -68,10 +68,6 @@ public class User implements IUser {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")})
     private List<IMissionTrip> missionTrips;
-
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
-
     @Override
     public int getId() {
         return id;
@@ -208,15 +204,5 @@ public class User implements IUser {
     @Override
     public void setPasswordCreatedDate(DateTime date){
         this.PasswordCreatedDate = date;
-    }
-
-    @Override
-    public String getLanguageCode() {
-        return this.languageCode;
-    }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 }

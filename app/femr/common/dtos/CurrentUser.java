@@ -30,12 +30,9 @@ public class CurrentUser {
     private List<IRole> roles;
     //the id of the current trip, can be null if it doesn't exist
     private Integer tripId;
-
-    private String langCode;    //Harrison Shu
     long SessionTimeOut;
 
-    public CurrentUser(int id, String firstName, String lastName, String email,
-                       List<IRole> roles, Integer tripId, long time, String langCode) {
+    public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId, long time) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,7 +40,6 @@ public class CurrentUser {
         this.roles = roles;
         this.tripId = tripId;
         this.SessionTimeOut = time;
-        this.langCode = langCode;
     }
 
     public int getId() {
@@ -77,6 +73,4 @@ public class CurrentUser {
     public long getTimeout2() {
         return SessionTimeOut;
     }
-
-    public String getLanguageCode() { return langCode;}
 }

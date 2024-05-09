@@ -8,14 +8,15 @@
 @if(!isConsolidated) {
     <div class="leftHPI">
 
-        <div class="staticField" >
+        <div class="staticField">
             <label for="onset">Onset</label>
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "onset")) { onset =>
-                    <input name="tabFieldItems[@onset.getIndex].name" type="text" class="hidden" value="onset"/>
-                    <input name="tabFieldItems[@onset.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                    <input name="tabFieldItems[@onset.getIndex].value" type="text" class="fInput" value="@onset.getValue" id="onsetTab"/>
-                    <div class="hidden" id="onsetTabStore"></div>
+                <input name="tabFieldItems[@onset.getIndex].name" type="text" class="hidden" value="onset"/>
+                <input name="tabFieldItems[@onset.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@onset.getIndex].value" type="text" class="fInput" value="@onset.getValue" />
             }
+
+
         </div>
 
         <div class="staticField">
@@ -23,8 +24,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "radiation")) { radiation =>
                 <input name="tabFieldItems[@radiation.getIndex].name" type="text" class="hidden" value="radiation"/>
                 <input name="tabFieldItems[@radiation.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@radiation.getIndex].value" type="text" class="fInput" value="@radiation.getValue" id="radiationTab"/>
-                <div class="hidden" id="radiationTabStore"></div>
+                <input name="tabFieldItems[@radiation.getIndex].value" type="text" class="fInput" value="@radiation.getValue" />
             }
         </div>
 
@@ -36,8 +36,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "quality")) { quality =>
                 <input name="tabFieldItems[@quality.getIndex].name" type="text" class="hidden" value="quality"/>
                 <input name="tabFieldItems[@quality.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@quality.getIndex].value" type="text" class="fInput" value="@quality.getValue" id="qualityTab"/>
-                <div class="hidden" id="qualityTabStore"></div>
+                <input name="tabFieldItems[@quality.getIndex].value" type="text" class="fInput" value="@quality.getValue" />
             }
         </div>
 
@@ -55,8 +54,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "provokes")) { provokes =>
                 <input name="tabFieldItems[@provokes.getIndex].name" type="text" class="hidden" value="provokes"/>
                 <input name="tabFieldItems[@provokes.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@provokes.getIndex].value" type="text" class="fInput" value="@provokes.getValue" id="provokesTab"/>
-                <div class="hidden" id="provokesTabStore"></div>
+                <input name="tabFieldItems[@provokes.getIndex].value" type="text" class="fInput" value="@provokes.getValue" />
             }
         </div>
 
@@ -65,8 +63,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "palliates")) { palliates =>
                 <input name="tabFieldItems[@palliates.getIndex].name" type="text" class="hidden" value="palliates"/>
                 <input name="tabFieldItems[@palliates.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@palliates.getIndex].value" type="text" class="fInput" value="@palliates.getValue" id="palliatesTab"/>
-                <div class="hidden" id="palliatesTabStore"></div>
+                <input name="tabFieldItems[@palliates.getIndex].value" type="text" class="fInput" value="@palliates.getValue" />
             }
         </div>
 
@@ -75,8 +72,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "timeOfDay")) { timeOfDay =>
                 <input name="tabFieldItems[@timeOfDay.getIndex].name" type="text" class="hidden" value="timeOfDay"/>
                 <input name="tabFieldItems[@timeOfDay.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@timeOfDay.getIndex].value" type="text" class="fInput" value="@timeOfDay.getValue" id="timeTab"/>
-                <div class="hidden" id="timeTabStore"></div>
+                <input name="tabFieldItems[@timeOfDay.getIndex].value" type="text" class="fInput" value="@timeOfDay.getValue" />
             }
         </div>
 
@@ -85,8 +81,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "narrative")) { narrative =>
                 <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
                 <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <input name="tabFieldItems[@narrative.getIndex].value" type="text" class="fInput" value="@narrative.getValue" id="narrativeTab"/>
-                <div class="hidden" id="narrativeTabStore"></div>
+                <input name="tabFieldItems[@narrative.getIndex].value" type="text" class="fInput" value="@narrative.getValue" />
             }
         </div>
 
@@ -96,8 +91,7 @@
             @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "physicalExamination")) { physicalExamination =>
                 <input name="tabFieldItems[@physicalExamination.getIndex].name" type="text" class="hidden" value="physicalExamination"/>
                 <input name="tabFieldItems[@physicalExamination.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-                <textarea rows="3" name="tabFieldItems[@physicalExamination.getIndex].value" class="form-control input-sm" id="physicalTab">@physicalExamination.getValue</textarea>
-                <div class="hidden" id="physicalTabStore"></div>
+                <textarea rows="3" name="tabFieldItems[@physicalExamination.getIndex].value" class="form-control input-sm">@physicalExamination.getValue</textarea>
             }
         </div>
     </div>
@@ -108,8 +102,7 @@
         @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "narrative")) { narrative =>
             <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
             <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-            <textarea name="tabFieldItems[@narrative.getIndex].value" class="fNarrativeTextArea" id="narrativeTab">@narrative.getValue</textarea>
-            <div class="hidden" id="narrativeTabStore"></div>
+            <textarea name="tabFieldItems[@narrative.getIndex].value" class="fNarrativeTextArea" >@narrative.getValue</textarea>
         }
     </div>
 }

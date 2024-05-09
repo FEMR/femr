@@ -123,8 +123,7 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
-                        null
-                        );
+                        null);
                 //Osman
 
                 response.setResponseObject(patientItem);
@@ -305,8 +304,7 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
-                        null
-                        );
+                        null);
                 //Osman
                 response.setResponseObject(patientItem);
             }

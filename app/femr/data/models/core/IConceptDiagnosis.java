@@ -20,6 +20,7 @@ package femr.data.models.core;
 
 public interface IConceptDiagnosis {
 
+
     int getId();
 
     void setId(int id);
@@ -27,8 +28,4 @@ public interface IConceptDiagnosis {
     String getName();
 
     void setName(String name);
-
-    String getLanguageCode();
-
-    void setLanguageCode(String languageCode);
 }

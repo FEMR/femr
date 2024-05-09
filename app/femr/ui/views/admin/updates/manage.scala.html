@@ -17,132 +17,87 @@
     @downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt}
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
+        <div style="float:right">
+            <h2>Database Status</h2>
 
-        <div id="updates-content">
-            <div id="left-div">
-                <div id="network-status">
-                    <h2>Network Status</h2>
-
-                    <table id="networkstatus">
-                        <div>
-                            <div>
-                            @helper.form(action = UpdatesController.refreshInternetStatus()) {
-                                <td>
-                                    <input type="submit" class="fButton" value="Refresh Internet Status"/>
-                                </td>
-                            }
-                            </div>
-                            <div>
-                                @if(downloadSpeed > 5) {
-                                    <img src=@assets.path("networkIcons/good_connection_icon.png") width="75" height="75"/>
-                                } else if(downloadSpeed > 2 && downloadSpeed < 5) {
-                                <img src=@assets.path("networkIcons/okay_connection_icon.png") width="75" height="75"/>
-                                } else {
-                                <img src=@assets.path("networkIcons/poor_connection_icon.png") width="75" height="75"/>
-                                }
-                            </div>
-                        </div>
-                        @for((key,valyew) <- viewModel.getNetworkStatus) {
-                            <tr>
-                                <td>@key:</td>
-                                <td>@valyew</td>
-                            </tr>
-                        }
-                    </table>
-                </div>
-                <div id="kit-status">
-                    <h2>fEMR Kit Status</h2>
-
-                    <table id="kitstatus">
-                    @for((key2,valyew2) <- viewModel.getKitStatus) {
-                        <tr>
-                            <td>@key2:</td>
-                            <td>@valyew2</td>
-                        </tr>
-                    }
-                    </table>
-                </div>
-            </div>
-
-            <div id="middle-div">
-                <div id="languages">
-                    <h2>Languages</h2>
-                        <div id="language-table-wrapper">
-                            <table id="language-table">
-                            @for(language <- viewModel.getLanguages){
-                                <tr>
-                                    <td><div class="status-box" style="background-color:
-                                            @if(language.getStatus == "Optimized" ){green} else{
-                                            @if(language.getStatus == "Not Optimized"){yellow} else{red}};"></div></td>
-                                    <td>@language.getLanguageName</td>
-                                    <td><input type="checkbox" class="language-checkbox" name="@language.getCode" onClick="updateSchedule(name)"
-                                        @if(language.getUpdateScheduled){checked} else {
-                                            @if(language.getStatus == "Optimized"){checked disabled}} /></td>
-                                </tr>
-                            }
-                            </table>
-                        </div>
-                    <div>
-                        <input type="submit" class="fButton" value="Initialize Languages (dev)" onclick="initLanguages()"/>
-                    </div>
-                </div>
-            </div>
-
-            <div id="right-div">
-                <div id="language-package-updates">
-                    <h2>Scheduled Languages</h2>
-                    <input type="submit" class="fButton" value="Update Now" onclick="downloadPackages()"/>
-                        <img src="@assets.path("img/graph-loader.gif")" alt="loading" id="loading" hidden/>
-
-                    <div id="package-table-wrapper">
-                        <table style="height: 100%;">
-                            @for(language <- viewModel.getLanguageUpdates){
-                                <button type="button" class="collapsible">@language.getLanguageName</button>
-                                <div class="content">
-                                    @for(optLang <- viewModel.getOptimizedLanguages){
-                                        <p>@optLang.getLanguageName to @language.getLanguageName</p>
-                                        <p>@language.getLanguageName to @optLang.getLanguageName</p>
-                                    }
-                                </div>
-                            }
-                        </table>
-                    </div>
-                </div>
-                <div id="database-status">
-                    <h2>Database Status</h2>
-
-                    <table>
-                        @for((key,valyew) <- viewModel.getDatabaseStatus) {
-                            <tr>
-                                <td>@key:</td>
-                                <td>@valyew</td>
-                            </tr>
-                        }
-                        @helper.form(action = UpdatesController.databasePost()) {
-                            <tr>
-                                <td>Create Backup:</td>
-                                <td>
-                                    <input type="submit" class="fButton" value="Back Up Now"/>
-                                </td>
-                            </tr>
-                        }
-                    </table>
-                </div>
-                <div id="available-updates">
-                    <h2>Available Updates</h2>
-                    <table>
-                        <tr>
-                        @if(viewModel.isUpdateAvailable) {
-                            @helper.form(action = UpdatesController.kitUpdatePost()) {
-                                <td>Kit Update: Available</td><td>
-                                    <input type="submit" class="fButton" value="Update"/></td>
-                            }
-                        } else {<td>Kit Update: Already up to date</td>}
-                        </tr>
-
-                    </table>
-
-                </div>
-            </div>
+            <table>
+                @for((key,valyew) <- viewModel.getDatabaseStatus) {
+                    <tr>
+                        <td>@key:</td>
+                        <td>@valyew</td>
+                    </tr>
+                }
+                @helper.form(action = UpdatesController.databasePost()) {
+                    <tr>
+                        <td>Create Backup:</td>
+                        <td>
+                            <input type="submit" class="fButton" value="Back Up Now"/>
+                        </td>
+                    </tr>
+                }
+            </table>
         </div>
+
+
+        <div>
+            <h2>Network Status</h2>
+
+            <table id="networkstatus">
+                <div>
+                    <div>
+                    @helper.form(action = UpdatesController.refreshInternetStatus()) {
+                        <td>
+                            <input type="submit" class="fButton" value="Refresh Internet Status"/>
+                        </td>
+                    }
+                    </div>
+                    <div>
+                        @if(downloadSpeed > 5) {
+                            <img src=@assets.path("networkIcons/good_connection_icon.png") width="75" height="75"/>
+                        } else if(downloadSpeed > 2 && downloadSpeed < 5) {
+                            <img src=@assets.path("networkIcons/okay_connection_icon.png") width="75" height="75"/>
+                        } else {
+                            <img src=@assets.path("networkIcons/poor_connection_icon.png") width="75" height="75"/>
+                        }
+                    </div>
+                </div>
+                @for((key,valyew) <- viewModel.getNetworkStatus) {
+                    <tr>
+                        <td>@key:</td>
+                        <td>@valyew</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        <div style="float:right">
+            <h2>Available Updates</h2>
+            <table>
+                <tr>
+                    @if(viewModel.isUpdateAvailable) {
+                        @helper.form(action = UpdatesController.kitUpdatePost()) {
+                            <td>Kit Update: Available</td><td>
+                            <input type="submit" class="fButton" value="Update"/></td>
+                        }
+                    } else {<td>Kit Update: Already up to date</td>}
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <div>
+            <h2>fEMR Kit Status</h2>
+
+            <table id="kitstatus">
+                @for((key2,valyew2) <- viewModel.getKitStatus) {
+                    <tr>
+                        <td>@key2:</td>
+                        <td>@valyew2</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
 }

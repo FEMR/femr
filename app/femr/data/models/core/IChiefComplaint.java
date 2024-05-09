@@ -38,8 +38,4 @@ public interface IChiefComplaint {
     Integer getSortOrder();
 
     void setSortOrder(Integer sortOrder);
-
-    String getLanguageCode();
-
-    void setLanguageCode(String languageCode);
 }

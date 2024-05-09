@@ -38,8 +38,7 @@ public class ConceptMedicationForm implements IConceptMedicationForm {
     private String description;
     @Column(name="isDeleted")
     private Boolean isDeleted;
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
+
     @Override
     public int getId() {
         return id;
@@ -73,13 +72,5 @@ public class ConceptMedicationForm implements IConceptMedicationForm {
     @Override
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
-    }
-
-    @Override
-    public String getLanguageCode() { return this.languageCode; }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 }

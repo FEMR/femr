@@ -1,18 +1,9 @@
 package femr.ui.controllers;
 
-import femr.util.translation.TranslationServer;
-import femr.util.translation.TranslationJson;
-
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 
 public class BackEndControllerHelper  {
 
@@ -34,7 +25,7 @@ public class BackEndControllerHelper  {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath);
       Process p = pb.start();
-      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
       String line = "";
       while ((line = bfr.readLine()) != null) {
@@ -52,25 +43,4 @@ public class BackEndControllerHelper  {
 
     return speedInfo;
   }
-
-  public static String translate(String arg, String from, String to) {
-      String output = "";
-      try {
-        output = TranslationServer.makeServerRequest(arg, from, to);
-
-        //parse translation from JSON
-        ObjectMapper mapper = new ObjectMapper();
-        TranslationJson api = mapper.readValue(output, TranslationJson.class);
-        output = api.translatedText;
-
-      } catch(MalformedURLException e){
-        System.out.println("Malformed URL Exception");
-        System.out.println(e.getMessage());
-      } catch(IOException e){
-        System.out.println("IOException for parsing JSON");
-        System.out.println(e.getMessage());
-      }
-      return output;
-    }
-
 }

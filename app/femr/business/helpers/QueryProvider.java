@@ -166,6 +166,4 @@ public class QueryProvider {
     public static Query<InternetStatus> getInternetStatusQuery() {
         return Ebean.find(InternetStatus.class);
     }
-
-    public static Query<LanguageCode> getLanguage() {return Ebean.find(LanguageCode.class);}
 }

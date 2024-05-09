@@ -5,8 +5,7 @@
         <label for="medicalSurgicalHistory">Medical/Surgical History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory")) { medicalSurgicalHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@medicalSurgicalHistory.getIndex].name" value="medicalSurgicalHistory"/>
-            <textarea name="tabFieldItems[@medicalSurgicalHistory.getIndex].value" class="form-control input-sm" id="medicalTab">@medicalSurgicalHistory.getValue</textarea>
-            <div class="hidden" id="medicalTabStore"></div>
+            <textarea name="tabFieldItems[@medicalSurgicalHistory.getIndex].value" class="form-control input-sm" >@medicalSurgicalHistory.getValue</textarea>
         }
     </div>
 
@@ -14,8 +13,7 @@
         <label for="socialHistory">Social History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "socialHistory")) { socialHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@socialHistory.getIndex].name" value="socialHistory"/>
-            <textarea name="tabFieldItems[@socialHistory.getIndex].value" class="form-control input-sm" id="socialTab">@socialHistory.getValue</textarea>
-            <div class="hidden" id="socialTabStore"></div>
+            <textarea name="tabFieldItems[@socialHistory.getIndex].value" class="form-control input-sm" >@socialHistory.getValue</textarea>
         }
     </div>
 
@@ -23,8 +21,7 @@
         <label for="currentMedication">Current Medications</label>
         @defining(pmhTab.getTabFieldItemByName(null, "currentMedication")) { currentMedication =>
             <input type="text" class="hidden" name="tabFieldItems[@currentMedication.getIndex].name" value="currentMedication"/>
-            <textarea name="tabFieldItems[@currentMedication.getIndex].value" class="form-control input-sm" id="currentTab">@currentMedication.getValue</textarea>
-            <div class="hidden" id="currentTabStore"></div>
+            <textarea name="tabFieldItems[@currentMedication.getIndex].value" class="form-control input-sm">@currentMedication.getValue</textarea>
         }
     </div>
 
@@ -32,8 +29,7 @@
         <label for="familyHistory">Family History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "familyHistory")) { familyHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@familyHistory.getIndex].name" value="familyHistory"/>
-            <textarea name="tabFieldItems[@familyHistory.getIndex].value" class="form-control input-sm" id="familyTab">@familyHistory.getValue</textarea>
-            <div class="hidden" id="familyTabStore"></div>
+            <textarea name="tabFieldItems[@familyHistory.getIndex].value" class="form-control input-sm">@familyHistory.getValue</textarea>
         }
     </div>
 </div>

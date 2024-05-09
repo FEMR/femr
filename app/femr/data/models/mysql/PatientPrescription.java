@@ -55,9 +55,6 @@ public class PatientPrescription implements IPatientPrescription {
     @OneToMany(mappedBy = "originalPrescription", fetch = FetchType.LAZY)
     private List<PatientPrescriptionReplacement> patientPrescriptionReplacements;
 
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
-
     @Override
     public int getId() {
         return id;
@@ -161,13 +158,5 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setDateDispensed(DateTime dateDispensed) {
         this.dateDispensed = dateDispensed;
-    }
-
-    @Override
-    public String getLanguageCode() { return this.languageCode; }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 }

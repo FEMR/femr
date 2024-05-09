@@ -40,7 +40,6 @@ public class Photo implements IPhoto {
     @Basic(fetch=FetchType.LAZY) //Lazy load to prevent downloading full image unless needed
     @Column(name = "photo")
     private byte[] _photo;
-    private String languageCode;
 
     @Override
     public int getId() {
@@ -83,11 +82,5 @@ public class Photo implements IPhoto {
 
     @Override
     public void   setPhotoBlob(byte[] photo) { _photo = photo; }
-    @Override
-    public String getLanguageCode() { return this.languageCode; }
 
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
-    }
 }

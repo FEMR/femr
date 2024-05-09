@@ -19,6 +19,7 @@ import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import femr.util.translation.TranslationResponseMap;
 import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -267,32 +268,19 @@ public class MedicalController extends Controller {
         // retrieve current patient encounter encounter
         int patientId = Integer.parseInt(request().getQueryString("patientId"));
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
-
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
         String fromLanguage = patientEncounter.getLanguageCode();
 
-        // add whether the language is rtl to response
-        List<String> rtlLanguages = Arrays.asList("he", "ar");
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("toLanguageIsRtl", rtlLanguages.contains(toLanguage));
-        responseMap.put("fromLanguageIsRtl", rtlLanguages.contains(fromLanguage));
+        // Harrison Shu: Handles the creation of the response map and figures out whether or not to translate
+        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, text);
 
-        // if same to same (like en to en) don't translate
-        if (Objects.equals(toLanguage, fromLanguage)) {
-            responseMap.put("translation", "SameToSame");
-        } else {
-            responseMap.put("translation", translate(text, fromLanguage,toLanguage));
-        }
-
-        return ok(Json.toJson(responseMap));
+        return ok(responseMapObject.getResponseJson());
     }
 
-//    Calls Python Script to translate
-    private String translate(String text, String fromLanguage, String toLanguage) {
-
+    public String translate(String text, String fromLanguage, String toLanguage) {
         String data = "";
         try {
             data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
@@ -301,6 +289,7 @@ public class MedicalController extends Controller {
         }
         return data;
     }
+
 
     /**
      * Get the populated partial view that represents 1 row of new prescription fields

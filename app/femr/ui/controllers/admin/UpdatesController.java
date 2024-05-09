@@ -20,15 +20,16 @@ package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
+import femr.business.services.core.IInternetStatusService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUpdatesService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.core.IKitStatus;
-import femr.data.models.core.ILanguageCode;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.mysql.Roles;
+import femr.ui.controllers.BackEndControllerHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.updates.IndexViewModelGet;
@@ -40,7 +41,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -97,16 +97,10 @@ public class UpdatesController extends Controller {
 
         //TODO setIsUpdateAvailable according to something --- Team Lemur
 
-        ServiceResponse<List<? extends ILanguageCode>> languagesResponse = updatesService.retrieveLanguages();
-        if(languagesResponse.hasErrors()){
-            throw new RuntimeException();
-        }
-        for(ILanguageCode lang : languagesResponse.getResponseObject()) {
-            indexViewModel.setLanguages(lang);
-        }
-
         return ok(manage.render(currentUser, indexViewModel, assetsFinder, messages));
     }
+
+    //databasePost
     public Result databasePost() {
         ServiceResponse<List<? extends IDatabaseStatus>> databaseStatusesResponse = updatesService.updateDatabaseStatuses();
         this.messages = new ArrayList<>();
@@ -122,6 +116,7 @@ public class UpdatesController extends Controller {
 
         return manageGet();
     }
+
     public Result kitUpdatePost() {
         this.messages = new ArrayList<>();
 
@@ -149,39 +144,5 @@ public class UpdatesController extends Controller {
 
         return manageGet();
     }
-
-    public Result updateLanguage(){
-        String langCode = request().getQueryString("code");
-        boolean updateScheduled = request().getQueryString("update").equals("true");
-
-        ServiceResponse<List<? extends ILanguageCode>> updateResponse = updatesService.updateLanguage(langCode,updateScheduled);
-        if(updateResponse.hasErrors()){
-            throw new RuntimeException();
-        }
-
-        return manageGet();
-    }
-
-    public Result downloadPackages(){
-        String requestData = request().getQueryString("code").replaceAll("[\\[\\]\"]", "");
-        String[] codes = requestData.split(",");
-        for (String langCode : codes){
-            ServiceResponse<List<? extends ILanguageCode>> downloadPackagesResponse = updatesService.downloadPackages(langCode);
-            if(downloadPackagesResponse.hasErrors()) {
-                throw new RuntimeException();
-            }
-        }
-        System.out.println("I am done");
-        return manageGet();
-    }
-
-    public Result initializeLanguages(){
-        ServiceResponse<List<? extends ILanguageCode>> initializeLanguagesResponse = updatesService.initializeLanguages();
-        if (initializeLanguagesResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        return manageGet();
-    }
-
 
 }

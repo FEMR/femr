@@ -18,7 +18,6 @@ jobs:
                     apt-get update
                     apt-get install -y python-pip git
                     pip install awscli
-                    pip install argostranslate
                     apt-get clean && apt-get autoclean
       - checkout
       - restore_cache:
@@ -53,7 +52,6 @@ jobs:
                     apt-get update
                     apt-get install -y python-pip git
                     pip install awscli
-                    pip install argostranslate
                     apt-get clean && apt-get autoclean
       - checkout
       - restore_cache:

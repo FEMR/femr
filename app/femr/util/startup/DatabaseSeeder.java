@@ -48,7 +48,6 @@ public class DatabaseSeeder {
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<INetworkStatus> networkStatusRepository;
-    private final IRepository<ILanguageCode> languagesRepository;
     private final IRepository<IKitStatus> kitStatusRepository;
     private final IRepository<IDatabaseStatus> databaseStatusRepository;
     private final IRepository<ITabField> tabFieldRepository;
@@ -71,7 +70,6 @@ public class DatabaseSeeder {
                           IRepository<INetworkStatus> networkStatusRepository,
                           IRepository<IKitStatus> kitStatusRepository,
                           IRepository<IDatabaseStatus> databaseStatusRepository,
-                          IRepository<ILanguageCode> languagesRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
                           IRepository<ITabFieldType> tabFieldTypeRepository,
@@ -90,7 +88,6 @@ public class DatabaseSeeder {
         this.networkStatusRepository = networkStatusRepository;
         this.kitStatusRepository = kitStatusRepository;
         this.databaseStatusRepository = databaseStatusRepository;
-        this.languagesRepository = languagesRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
@@ -109,7 +106,6 @@ public class DatabaseSeeder {
         seedNetworkStatus();
         seedKitStatus();
         seedDatabaseStatus();
-        seedLanguages();
         seedSystemSettings();
         seedSystemSettingsDescriptions();
         seedAdminUser();
@@ -122,10 +118,7 @@ public class DatabaseSeeder {
         seedUserRoles();
         seedVitals();
     }
-    private void seedLanguages() {
-        List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
-        languagesRepository.createAll(languages);
-    }
+
     private void seedDatabaseStatus() {
         //TODO Feather to set initial values
         List<? extends IDatabaseStatus> databaseStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);

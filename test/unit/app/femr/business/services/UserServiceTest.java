@@ -20,6 +20,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
+
     IUserService userService;
     IUserRepository userRepository;
     IPasswordEncryptor passwordEncryptor;

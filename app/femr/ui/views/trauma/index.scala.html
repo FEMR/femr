@@ -1,0 +1,15 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.common.models.CityItem
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.views.html.partials.triage._
+@import femr.ui.controllers.routes.SearchController
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+
+
+@main("Trauma", currentUser, search = search("trauma"), assets = assets) {
+    <h3>Hello there, dev! :) You've reached the future Trauma Sheet Page.</h3>
+}

@@ -63,9 +63,6 @@ public class DataLayerModule extends AbstractModule {
         bind(INetworkStatus.class).toProvider(NetworkStatusProvider.class);
         bind(IKitStatus.class).toProvider(KitStatusProvider.class);
         bind(IDatabaseStatus.class).toProvider(DatabaseStatusProvider.class);
-
-        bind(ILanguageCode.class).toProvider(LanguageCodeProvider.class);
-
         bind(ITab.class).toProvider(TabProvider.class);
         bind(ITabField.class).toProvider(TabFieldProvider.class);
         bind(ITabFieldType.class).toProvider(TabFieldTypeProvider.class);
@@ -102,8 +99,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<INetworkStatus>>() {}).to(new TypeLiteral<Repository<INetworkStatus>>(){});
         bind(new TypeLiteral<IRepository<IKitStatus>>() {}).to(new TypeLiteral<Repository<IKitStatus>>(){});
         bind(new TypeLiteral<IRepository<IDatabaseStatus>>() {}).to(new TypeLiteral<Repository<IDatabaseStatus>>(){});
-
-        bind(new TypeLiteral<IRepository<ILanguageCode>>() {}).to(new TypeLiteral<Repository<ILanguageCode>>(){});
         bind(new TypeLiteral<IRepository<ITab>>(){}).to(new TypeLiteral<Repository<ITab>>(){});
         bind(new TypeLiteral<IRepository<ITabField>>(){}).to(new TypeLiteral<Repository<ITabField>>(){});
         bind(new TypeLiteral<IRepository<ITabFieldType>>(){}).to(new TypeLiteral<Repository<ITabFieldType>>(){});

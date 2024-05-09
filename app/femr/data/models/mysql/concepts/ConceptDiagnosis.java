@@ -31,8 +31,6 @@ public class ConceptDiagnosis implements IConceptDiagnosis {
     private int id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
 
     @Override
     public int getId() {
@@ -52,15 +50,5 @@ public class ConceptDiagnosis implements IConceptDiagnosis {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getLanguageCode() {
-        return this.languageCode;
-    }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 }

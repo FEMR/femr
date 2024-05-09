@@ -23,9 +23,6 @@ public class Feedback implements IFeedback {
     @Column(name = "feedback", nullable = false)
     private String feedback;
 
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
-
 
 
     //    Getters
@@ -53,16 +50,6 @@ public class Feedback implements IFeedback {
     @Override
     public void setFeedback (String theFeedback) {
         feedback = theFeedback;
-    }
-
-    @Override
-    public String getLanguageCode() {
-        return this.languageCode;
-    }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 
 }

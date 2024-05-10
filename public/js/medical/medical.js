@@ -354,22 +354,13 @@ $(document).ready(function () {
 
             if (response.translation.split(":")[0] === "SameToSame") {
                 // same to same (like en to en)
-                // option 1 - delete button
                 $("#toggleBtn").remove();
-                // option 2 - say original
-                //$("#loading").remove();
-                //$("#toggleBtn").text("Original");
-
             } else if (response.translation.split(".")[0] === "Translation Unavailable") {
-                // option 1 - end buffering
                 $("#loading").remove();
                 $("#toggleBtn").text("Unavailable");
-                // option 2 - delete button
-                // $("#toggleBtn").remove();
                 console.error(response.translation);
-
-            } else if (listTranslated.length !== jsonObj.length) {
-                console.log("backup translation required out of 16 tabs ", listTranslated.length, " recovered");
+            } else if (listTranslated.length !== jsonObj.length || response.toLanguageIsRtl) {
+                console.log("backup translation required (", listTranslated.length, "out of 16 tabs recovered)");
                 for (let i = 0; i < jsonObj.length; i++) {
                     $.ajax({
                         type: 'get',

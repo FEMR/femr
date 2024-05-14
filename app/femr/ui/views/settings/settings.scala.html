@@ -26,7 +26,7 @@
 @additionalMessages = {
 @for(message <- messages) {
     <p class="adminMessage">@message</p>
-}
+    }
 }
 
 <!DOCTYPE html>
@@ -49,6 +49,21 @@
         }
         .tab-container div {
             margin-bottom: 10px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            padding: 0;
+        }
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
         }
     </style>
     </head>
@@ -100,7 +115,7 @@
             </div>
         </div>
 
-    <script>
+        <script>
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -117,8 +132,11 @@
         // Hide dropdown content when switching tabs
         document.getElementById('dropdown-content').style.display = 'none';
     }
-
     </script>
+
+    </div>
+    </div>
 
     </body>
 </html>
+    ;}}}

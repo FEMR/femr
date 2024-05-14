@@ -1,0 +1,124 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.settings.EditViewModel],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        messages: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
+
+@import femr.common.models.MissionTripItem
+@import views.html.helper.options
+@import views.html.helper.select
+@import views.html.helper.FieldConstructor
+@import femr.ui.views.html.partials.admin.inputFieldConstructor
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.settings.SettingsController
+
+@implicitField = @{
+    FieldConstructor(inputFieldConstructor.f)
+}
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
+}
+@additionalScripts = {
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+}
+@additionalMessages = {
+@for(message <- messages) {
+    <p class="adminMessage">@message</p>
+}
+}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Settings</title>
+        <style>
+        .tab-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
+        }
+        .tab-content-container {
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Make the container full height of viewport */
+        }
+        .tab-container div {
+            margin-bottom: 10px;
+        }
+    </style>
+    </head>
+    <body>
+            <!-- Image Header -->
+        <img src="image_link" alt="Header Image" style="width: 100%;">
+
+        @admin("Edit User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
+            <div class="container">
+            @helper.form(action = SettingsController.editPost(Integer.parseInt(form("userId").getValue.get())), 'name -> "createForm") {
+                <input type="hidden" value="@form("userId").getValue.get()" name="userId"/>
+
+
+        <div class="editWrapBoth" id="editWrapLeft">
+
+            <!-- Tabs -->
+        <div class="tab-container">
+                <!-- Profile Tab -->
+            <div>
+                <button onclick="openTab(event, 'Profile')">Profile</button>
+            </div>
+                <!-- Language Tab -->
+            <div>
+                <button onclick="openTab(event, 'Language')">Language</button>
+            </div>
+        </div>
+
+            <!-- Profile Tab Content -->
+        <div id="Profile" class="tabcontent" style="display: none;">
+            <div class="tab-content-container">
+        Profile content goes here.
+            </div>
+        </div>
+
+            <!-- Language Tab Content -->
+        <div id="Language" class="tabcontent" style="display: none;">
+            <div class="tab-content-container">
+                document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                initializeGenderLabels();
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const storedLanguage = localStorage.getItem('languageCode') || 'en'; // Subject to change
+                            updateLanguage(storedLanguage);
+                            document.getElementById('languageSelect').value = storedLanguage;
+                        });
+            </div>
+        </div>
+
+    <script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByTagName("button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        // Hide dropdown content when switching tabs
+        document.getElementById('dropdown-content').style.display = 'none';
+    }
+
+    </script>
+
+    </body>
+</html>

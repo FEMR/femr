@@ -2,8 +2,6 @@ name: Check for LICENSE File in femr Directory
 
 on:
   push:
-    branches:
-      - temr-dev-noah
 
 jobs:
   check-license-file:

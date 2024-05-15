@@ -18,12 +18,24 @@
 */
 package femr.ui.models.sessions;
 
+import femr.util.stringhelpers.StringUtils;
+import play.data.validation.ValidationError;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 public class CreateViewModel {
     private String email;
     private String password;
     //used for password reset
     private String newPassword;
     private String newPasswordVerify;
+    private String firstName;
+    private String lastName;
+    private List<String> roles;
+    private String notes;
+    private String DateCreated; //Sam Zanni
 
     public String getEmail() {
         return email;
@@ -56,4 +68,40 @@ public class CreateViewModel {
     public void setNewPasswordVerify(String newPasswordVerify) {
         this.newPasswordVerify = newPasswordVerify;
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public String getDateCreated() { return DateCreated; } //Sam Zanni
+
+    public void setDateCreated(String DateCreated) { this.DateCreated = DateCreated; } //Sam Zanni
 }

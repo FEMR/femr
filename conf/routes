@@ -99,6 +99,7 @@ GET         /pdf/encounter/:encounterId                        @femr.ui.controll
 GET         /logout                                            @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                                       @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                                             @femr.ui.controllers.SessionsController.createPost()
+POST        /register                                          @femr.ui.controllers.SessionsController.createPostAccount()
 GET         /login                                             @femr.ui.controllers.SessionsController.createGet()
 #Reference
 GET         /reference                                         @femr.ui.controllers.ReferenceController.indexGet()

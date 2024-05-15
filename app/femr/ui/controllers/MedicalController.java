@@ -1,5 +1,6 @@
 package femr.ui.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.*;
@@ -19,6 +20,8 @@ import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import femr.util.translation.TranslationJson;
+import femr.util.translation.TranslationServer;
 import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -259,15 +262,15 @@ public class MedicalController extends Controller {
     }
 
     public Result translateGet() {
-        String text = request().getQueryString("text");
+        String jsonText = request().getQueryString("text");
+        int patientId = Integer.parseInt(request().getQueryString("patientId"));
+
         //Harrison Shu
-        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        String toLanguage = currentUserSession.getLanguageCode();
+        String toLanguage = sessionService.retrieveCurrentUserSession().getLanguageCode();
 
         // retrieve current patient encounter encounter
-        int patientId = Integer.parseInt(request().getQueryString("patientId"));
-        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
 
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
         }
@@ -284,22 +287,34 @@ public class MedicalController extends Controller {
         if (Objects.equals(toLanguage, fromLanguage)) {
             responseMap.put("translation", "SameToSame");
         } else {
-            responseMap.put("translation", translate(text, fromLanguage,toLanguage));
+            responseMap.put("translation", translate(jsonText, fromLanguage,toLanguage));
         }
 
         return ok(Json.toJson(responseMap));
     }
 
 //    Calls Python Script to translate
-    private String translate(String text, String fromLanguage, String toLanguage) {
-
+    private String translate(String jsonText, String fromLanguage, String toLanguage) {
         String data = "";
         try {
-            data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
+            data = TranslationServer.makeServerRequest(jsonText, fromLanguage, toLanguage);
+            data = parseJsonResponse(data);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return data;
+    }
+
+    public String parseJsonResponse(String jsonResponse){
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            TranslationJson api = mapper.readValue(jsonResponse, TranslationJson.class);
+            jsonResponse = api.translatedText;
+            return jsonResponse;
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     /**

@@ -1,0 +1,18 @@
+name: Check for LICENSE File in femr Directory
+
+on:
+  push:
+
+jobs:
+  check-license-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check if file exists
+        run: |
+          if [ ! -f "./LICENSE" ]; then
+            echo "File does not exist. Exiting with failure."
+            exit 1
+          fi

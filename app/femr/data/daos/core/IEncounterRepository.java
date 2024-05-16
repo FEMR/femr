@@ -17,7 +17,7 @@ public interface IEncounterRepository {
      * @param tripId id of the trip, may be null
      * @return the new patient encounter or null if an error happens
      */
-    IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId);
+    IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode);
 
     /**
      * Deletes a patient's encounter. this is a soft delete

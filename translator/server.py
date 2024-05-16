@@ -42,35 +42,51 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     @cached_property
     def translate_data(self):
-        text = self.query_data['text']
+        #parse request
+        length = int(self.headers['Content-Length'])
+        tab_list = json.loads(self.rfile.read(length).decode('utf-8'))
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        # Use Argos if Language Package Exists
-        if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
-            translatedText = argostranslate.translate.translate(text, from_code, to_code)
-            return translatedText
-        # Use Marian if Language Package Exists in Marian but not Argos
-        elif Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}").exists():
-            marian = MarianModel(from_code, to_code)
-            translatedText = marian.translate([text])
-            return translatedText[0]
-        # Use Argos "English in the Middle" if not in Argos and Marian by Default
-        elif (Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
-                Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists()) or \
-                (Path(f"{PATH}/translator/argos_models/translate-en_{from_code}.argosmodel").exists() and \
-                 Path(f"{PATH}/translator/argos_models/translate-en_{to_code}.argosmodel").exists()):
-            translatedText = argostranslate.translate.translate(text, from_code, to_code)
-            return translatedText
-        # If a package doesn't exist
-        else:
-            return "Translation Unavailable:" + from_code + to_code
+        #for each tab in tab_list, build delimiter string to translate
+        num_tabs = len(tab_list)
+        translate_string = ""
+        for i in range(num_tabs):
+            if(i == 0):
+                translate_string = tab_list[i]["text"]
+            else:
+                translate_string = translate_string + " @ " + tab_list[i]["text"].replace("@", "at")
 
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(self.get_response().encode("utf-8"))
+        #translate string and split into list on delimiter
+        translated_text = self.translate(translate_string, from_code, to_code)
+        translated_list = list(translated_text.split("@"))
+
+        #for each translation, place text in copy of tab_list to return
+        out = tab_list
+        for i in range(len(translated_list)):
+            out[i]["text"] = translated_list[i]
+        return json.dumps(out)
+
+    def translate(self, text, from_code, to_code):
+            # Use Argos if Language Package Exists
+            if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
+                translatedText = argostranslate.translate.translate(text, from_code, to_code)
+                return translatedText
+            # Use Marian if Language Package Exists in Marian but not Argos
+            elif Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}").exists():
+                marian = MarianModel(from_code, to_code)
+                translatedText = marian.translate([text])
+                return translatedText[0]
+            # Use Argos "English in the Middle" if not in Argos and Marian by Default
+            elif (Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
+                    Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists()) or \
+                    (Path(f"{PATH}/translator/argos_models/translate-en_{from_code}.argosmodel").exists() and \
+                     Path(f"{PATH}/translator/argos_models/translate-en_{to_code}.argosmodel").exists()):
+                translatedText = argostranslate.translate.translate(text, from_code, to_code)
+                return translatedText
+            # If a package doesn't exist
+            else:
+                return "Translation Unavailable"
 
     def get_response(self):
         return json.dumps(
@@ -80,6 +96,18 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             ensure_ascii=False
         )
 
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(self.get_response().encode("utf-8"))
+
+
+    def do_POST(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(self.get_response().encode("utf-8"))
 
 def port_open(port):
     #connect_ex returns 0 if it connects to a socket meaning port is closed

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -33,14 +34,24 @@ public class TranslationServer {
         try {
             // Harrison Shu
             // Encode the URL String parameter before creating URL to allow arabic and hebrew to be in the URL
-            String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
+//            String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
+//            System.out.println(text);
+            byte[] json = text.getBytes(StandardCharsets.UTF_8);
+            int length = json.length;
 
             //Make GET request
-            URL url = new URL("http://localhost:" + portNumber +"/?text=" +
-                    encodedText + "&from=" + from + "&to=" + to);
+            URL url = new URL("http://localhost:" + portNumber + "/?from=" + from + "&to=" + to);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+
+            con.setFixedLengthStreamingMode(length);
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.connect();
+
+            try(OutputStream os = con.getOutputStream()) {
+                os.write(json);
+            }
 
             //read response from server
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -49,7 +60,9 @@ public class TranslationServer {
 
             con.disconnect();
         } catch(IOException e){
-            return makeServerRequest(text, from, to);
+            System.out.println(e.getMessage());
+            return "Translation Unavailable";
+//            return makeServerRequest(text, from, to);
         }
         return response;
     }

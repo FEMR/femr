@@ -41,6 +41,22 @@
                     }
                 }
 
+                function updateInputField(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    const labelElement = document.querySelector(`label[for='${identifier}']`);
+                    if (inputElement && labelElement) {
+                        labelElement.textContent = value;
+                        inputElement.placeholder = value;
+                    }
+                }
+
+                function updateButtonValue(identifier, value) {
+                    const button = document.getElementById(identifier);
+                    if (button) {
+                        button.value = value;
+                    }
+                }
+
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
                     updateTextContent("graph_instructions", languageData[languageCode].graph_instructions);
@@ -69,6 +85,30 @@
                     updateTextContent("respiratory_rate", languageData[languageCode].respiratory_rate);
                     updateTextContent("oxygen_saturation", languageData[languageCode].oxygen_saturation);
                     updateTextContent("glucose", languageData[languageCode].glucose);
+                    updateTextContent("secondary_dataset_link", languageData[languageCode].secondary_dataset);
+                    updateTextContent("secondary_none", languageData[languageCode].none);
+                    updateTextContent("secondary_age", languageData[languageCode].age);
+                    updateTextContent("secondary_gender", languageData[languageCode].gender);
+                    updateTextContent("secondary_pregnancy_status", languageData[languageCode].pregnancy_status);
+                    updateTextContent("graph_type_link", languageData[languageCode].graph_type);
+                    updateTextContent("graph_bar", languageData[languageCode].bar_graph);
+                    updateTextContent("graph_pie", languageData[languageCode].pie_graph);
+                    updateTextContent("graph_line", languageData[languageCode].line_graph);
+                    updateTextContent("graph_scatter", languageData[languageCode].scatterplot);
+                    updateTextContent("graph_stacked_bar", languageData[languageCode].stacked_bar_graph);
+                    updateTextContent("graph_grouped_bar", languageData[languageCode].grouped_bar_graph);
+                    updateTextContent("graph_table", languageData[languageCode].table_graph);
+                    updateTextContent("filter_date_link", languageData[languageCode].filter_date);
+                    updateTextContent("start_date_li", languageData[languageCode].start_date);
+                    updateTextContent("end_date_li", languageData[languageCode].end_date);
+                    updateTextContent("filter_trip_label", languageData[languageCode].filter_trip);
+                    updateTextContent("filter_primary_dataset_label", languageData[languageCode].filter_primary_dataset);
+                    updateTextContent("group_primary_label", languageData[languageCode].group_primary);
+                    updateInputField("filterRangeStart", languageData[languageCode].start);
+                    updateInputField("filterRangeEnd", languageData[languageCode].end);
+                    updateButtonValue("clear-button", languageData[languageCode].clear);
+                    updateButtonValue("submit-button", languageData[languageCode].apply);
+                    updateButtonValue("export-button", languageData[languageCode].export_data_button)
                 }
 
                 document.getElementById('languageSelect').addEventListener('change', function() {
@@ -112,105 +152,101 @@
                             <li><a id="glucose" href="#">Glucose</a></li>
                         </ul>
                     </li>
-                        <li id="gdata2-menu" class="menu-item">
-                            <a class="opt-link">Secondary Dataset</a>
-                            <span class="val"></span>
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <ul class="submenu">
-                                <li><a class="clear" data-dname2="clear" href="#">None</a></li>
-                                <li><a data-dname2="age" href="#">Age</a></li>
-                                <li><a data-dname2="gender" href="#">Gender</a></li>
-                                <li><a data-dname2="pregnancyStatus" href="#">Pregnancy Status</a></li>
+                            <li id="gdata2-menu" class="menu-item">
+                                <a id="secondary_dataset_link" class="opt-link">Secondary Dataset</a>
+                                <span id="secondary_dataset_val" class="val"></span>
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                <ul class="submenu">
+                                    <li><a id="secondary_none" class="clear" data-dname2="clear" href="#">None</a></li>
+                                    <li><a id="secondary_age" data-dname2="age" href="#">Age</a></li>
+                                    <li><a id="secondary_gender" data-dname2="gender" href="#">Gender</a></li>
+                                    <li><a id="secondary_pregnancy_status" data-dname2="pregnancyStatus" href="#">Pregnancy Status</a></li>
+                                </ul>
+                            </li>
 
-                            </ul>
-                            @*
-                            <ul class="submenu">
-                                <li><a class="clear" data-dname2="clear" href="#">None</a></li>
-                                <li class="title">Demographics</li>
-                                <li><a data-dname2="gender" href="#">Gender</a></li>
-                                <li><a data-dname2="height" href="#">Height</a></li>
-                                <li><a data-dname2="weight" href="#">Weight</a></li>
-                                <li><a data-dname2="pregnancyStatus" href="#">Pregnancy Status</a></li>
-                                <li><a data-dname2="pregnancyTime" href="#">Weeks Pregnant</a></li>
-                                <li class="title">Medication</li>
-                                <li><a data-dname2="prescribedMeds" href="#">Prescribed Medications</a></li>
-                                <li><a data-dname2="dispensedMeds" href="#">Dispensed Medications</a></li>
-                                <li class="title">Vitals</li>
-                                <li><a data-dname2="temperature" href="#">Temperature</a></li>
-                                <li><a data-dname2="bloodPressureSystolic" href="#">Blood Pressure Systolic</a></li>
-                                <li><a data-dname2="bloodPressureDiastolic" href="#">Blood Pressure Diastolic</a></li>
-                                <li><a data-dname2="heartRate" href="#">Heart Rate</a></li>
-                                <li><a data-dname2="respiratoryRate" href="#">Respirations</a></li>
-                                <li><a data-dname2="oxygenSaturation" href="#">Oxygen Saturation</a></li>
-                                <li><a data-dname2="glucose" href="#">Glucose</a></li>
-                                @*
-                                <li><a class="clear" data-dname2="clear" href="#">Clear <span class="glyphicon glyphicon-remove"></span></a></li>
-                                * @
-                            </ul>
-                            *@
-                        </li>
-                        <li id="gtype-menu" class="menu-item">
-                            <a class="opt-link">Graph Type</a>
-                            <span class="val"></span>
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <ul class="submenu">
-                                <li><a data-gtype="bar" href="#">Bar Graph</a></li>
-                                <li><a data-gtype="pie" href="#">Pie Graph</a></li>
-                                <li><a data-gtype="line" href="#">Line Graph</a></li>
-                                <li><a data-gtype="scatter" href="#">Scatterplot</a></li>
-                                <li><a data-gtype="stacked-bar" href="#">Stacked Bar Graph</a></li>
-                                <li><a data-gtype="grouped-bar" href="#">Grouped Bar Graph</a></li>
-                                <li><a data-gtype="table" href="#">Table</a></li>
-                            </ul>
-                        </li>
+                            <li id="gtype-menu" class="menu-item">
+                                <a id="graph_type_link" class="opt-link">Graph Type</a>
+                                <span id="graph_type_val" class="val"></span>
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                <ul class="submenu">
+                                    <li><a id="graph_bar" data-gtype="bar" href="#">Bar Graph</a></li>
+                                    <li><a id="graph_pie" data-gtype="pie" href="#">Pie Graph</a></li>
+                                    <li><a id="graph_line" data-gtype="line" href="#">Line Graph</a></li>
+                                    <li><a id="graph_scatter" data-gtype="scatter" href="#">Scatterplot</a></li>
+                                    <li><a id="graph_stacked_bar" data-gtype="stacked-bar" href="#">Stacked Bar Graph</a></li>
+                                    <li><a id="graph_grouped_bar" data-gtype="grouped-bar" href="#">Grouped Bar Graph</a></li>
+                                    <li><a id="graph_table" data-gtype="table" href="#">Table</a></li>
+                                </ul>
+                            </li>
 
-                        <li id="gfilter-menu" class="menu-item">
-                            <a class="opt-link">Filter Date (DD/MM/YYYY)</a>
-                            <span class="val">
-                                <span class="date">
-                                    <span hidden class="start">@viewModel.getStartDate()</span><span hidden class="end">@viewModel.getEndDate()</span>
-                                    <span id="start-up"></span> - <span  id="start-end"></span>
+@*                            This code allows for translation of "Start Date" and "End Date" text headings fo Filter Date
+                            tab in research page. Bug related to CSS preventing id'd field from rendering, leaving previous
+                            functionality for now, will troubleshoot this at a later date. *@
+
+@*                            <li id="gfilter-menu" class="menu-item">*@
+@*                                <a id="filter_date_link" class="opt-link">Filter Date (DD/MM/YYYY)</a>*@
+@*                                <span id="filter_date_val" class="val">*@
+@*                                    <span class="date">*@
+@*                                            <!-- Hidden spans for original data retrieval, unchanged -->*@
+@*                                        <span hidden class="start">@viewModel.getStartDate()</span>*@
+@*                                        <span hidden class="end">@viewModel.getEndDate()</span>*@
+@*                                        <span id="start-up"></span> - <span id="start-end"></span>*@
+@*                                    </span>*@
+@*                                </span>*@
+@*                                <span class="glyphicon glyphicon-chevron-right"></span>*@
+@*                                <ul class="submenu">*@
+@*                                    <li id="start_date_li">Start Date*@
+@*                                        (DD/MM/YYYY)*@
+@*                                        <!-- Maintain original functionality with minimal ID changes -->*@
+@*                                        <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()" value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />*@
+@*                                            <!-- Ensure mydate() function works correctly -->*@
+@*                                        <input type="text" id="ndt" onclick="mydate()" format="dd/MM/yyyy" value="@viewModel.getStartDate()" />*@
+@*                                    </li>*@
+@*                                    <li id="end_date_li">End Date*@
+@*                                        (DD/MM/YYYY)*@
+@*                                        <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />*@
+@*                                        <input type="text" id="ndt2" onclick="mydate2()" format="dd/MM/yyyy" value="@viewModel.getEndDate()" />*@
+@*                                    </li>*@
+@*                                </ul>*@
+@*                            </li>*@
+
+                            <li id="gfilter-menu" class="menu-item">
+                                <a id="filter_date_link" class="opt-link">Filter Date (DD/MM/YYYY)</a>
+                                <span class="val">
+                                    <span class="date">
+                                        <span hidden class="start">@viewModel.getStartDate()</span><span hidden class="end">@viewModel.getEndDate()</span>
+                                        <span id="start-up"></span> - <span  id="start-end"></span>
+                                    </span>
                                 </span>
-                            </span>
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <ul class="submenu">
-                                <li>Start Date
-                                    (DD/MM/YYYY)
-                                    <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()"  hidden value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />
-                                    <input type="text" id="ndt"  onclick="mydate()"  format="dd/MM/yyyy" value="@viewModel.getStartDate()"  />
-                                </li>
-                                <li>End Date
-                                    (DD/MM/YYYY)
-                                    <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
-                                    <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
-                                </li>
-                            </ul>
-                        </li>
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                <ul class="submenu">
+                                    <li>Start Date
+                                        (DD/MM/YYYY)
+                                        <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()"  hidden value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />
+                                        <input type="text" id="ndt"  onclick="mydate()"  format="dd/MM/yyyy" value="@viewModel.getStartDate()"  />
+                                    </li>
+                                    <li>End Date
+                                        (DD/MM/YYYY)
+                                        <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
+                                        <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
+                                    </li>
+                                </ul>
+                            </li>
 
+                            <li class="controls">
+                                <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />
+                                <input type="hidden" id="secondaryDataset" name="secondaryDataset" value="" />
+                                <input type="hidden" id="graphType" name="graphType" value="" />
 
-                        <li class="controls">
-
-                            <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />
-                            <input type="hidden" id="secondaryDataset" name="secondaryDataset" value="" />
-                            <input type="hidden" id="graphType" name="graphType" value="" />
-
-
-                            @*
-                            <span class="medication">
-                                <label>Filter Medication</label>
-                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
-
-                            </span>
-                                *@
                                 <span class="medication">
-                                <label>Filter Trip</label>
+                                    <label id="filter_trip_label">Filter Trip</label>
                                     <select id="MissionTripId" name="MissionTripId" class="medication">
-                                        <option selected id="default" value="-1">-- Select Trip --</option> @*Andrew Trip Filter*@
+                                        <option selected id="default" value="-1">-- Select Trip --</option>
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
                                                     @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
-                                                        <option value = "@missionTrip.getId()"> @missionItem.getMissionTrips.get(tripIndex - 1).getFriendlyTripTitle </option>
+                                                        <option value="@missionTrip.getId()">@missionItem.getMissionTrips.get(tripIndex - 1).getFriendlyTripTitle</option>
                                                     }
                                                 }
                                             }
@@ -218,21 +254,23 @@
                                     </select>
                                 </span>
 
-                            <span class="filter">
-                                <label>Filter Primary Dataset</label>
-                                <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" /> &ndash;
-                                <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
-                                <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
-                            </span>
+                                <span class="filter">
+                                    <label id="filter_primary_dataset_label">Filter Primary Dataset</label>
+                                    <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" />
+                                            &ndash;
+                                    <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
+                                    <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
+                                </span>
 
+                                <span class="group">
+                                    <label id="group_primary_label" for="groupPrimary">
+                                        <input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary
+                                    </label>
+                                    <input type="text" name="groupFactor" id="groupFactor" value="10" />
+                                </span>
+                            </li>
 
-
-                            <span class="group">
-                                <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
-                                <input type="text" name="groupFactor" id="groupFactor" value="10" />
-                            </span>
-                        </li>
-                        <li class="submit">
+                            <li class="submit">
                             <input id="clear-button" class="clear fButton pull-left" type="button" value="Clear" />
                             <input id="submit-button" class="submit fButton pull-right" type="submit" value="Apply" />
                         </li>

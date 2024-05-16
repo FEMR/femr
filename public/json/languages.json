@@ -260,7 +260,10 @@
     "end": "End",
     "clear": "Clear",
     "apply": "Apply",
-    "export_data_button": "Export Data"
+    "export_data_button": "Export Data",
+    "manage_trips": "Manage Trips",
+    "manage_teams": "Manage Teams",
+    "manage_cities": "Manage Cities"
   },
   "es": {
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
@@ -522,7 +525,10 @@
     "end": "Fin",
     "clear": "Limpiar",
     "apply": "Aplicar",
-    "export_data_button": "Exportar Datos"
+    "export_data_button": "Exportar Datos",
+    "manage_trips": "Gestionar Viajes",
+    "manage_teams": "Gestionar Equipos",
+    "manage_cities": "Gestionar Ciudades"
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",
@@ -783,7 +789,10 @@
     "end": "Fin",
     "clear": "Effacer",
     "apply": "Appliquer",
-    "export_data_button": "Exporter les Données"
+    "export_data_button": "Exporter les Données",
+    "manage_trips": "Gérer les Voyages",
+    "manage_teams": "Gérer les Équipes",
+    "manage_cities": "Gérer les Villes"
   },
   "ka": {
     "home_index_h2_Welcome": "fEMR 2.4.1-beta ಗೆ ಸ್ವಾಗತ,",

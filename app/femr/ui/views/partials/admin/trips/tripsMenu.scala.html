@@ -1,10 +1,43 @@
 @import femr.ui.controllers.admin.routes.TripController
 
+<script>
+    document.addEventListener('DOMContentLoaded', function(event) {
+        let languageData;
+        fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    languageData = data;
+                    const storedLanguage = localStorage.getItem('languageCode');
+                    updateLanguage(storedLanguage);
+                    document.getElementById('languageSelect').value = storedLanguage;
+                });
+
+        function updateTextContent(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        function updateLanguage(languageCode = "en") {
+            localStorage.setItem('languageCode', languageCode);
+            updateTextContent("manage_trips_btn", languageData[languageCode].manage_trips);
+            updateTextContent("manage_teams_btn", languageData[languageCode].manage_teams);
+            updateTextContent("manage_cities_btn", languageData[languageCode].manage_cities);
+        }
+
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            updateLanguage(this.value);
+        });
+    });
+</script>
+
+
 <div class="tripOptionsWrap">
-    <a href="@TripController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+    <a id="manage_trips_btn" href="@TripController.manageGet()" class="fButton fOtherButton fAdminButton userBtns">
         Manage Trips</a>
-    <a href="@TripController.teamsGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+    <a id="manage_teams_btn" href="@TripController.teamsGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
         Manage Teams</a>
-    <a href="@TripController.citiesGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+    <a id="manage_cities_btn" href="@TripController.citiesGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
         Manage Cities</a>
 </div>

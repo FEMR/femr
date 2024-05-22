@@ -261,7 +261,11 @@
     "export_data_button": "Export Data",
     "manage_trips": "Manage Trips",
     "manage_teams": "Manage Teams",
-    "manage_cities": "Manage Cities"
+    "manage_cities": "Manage Cities",
+    "no_trip_assigned_title": "Your account is not assigned to a trip",
+    "no_trip_assigned_text": "In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.",
+    "manage_trip_users": "Manage Trip Users »",
+    "formulary_view_info": "You are viewing the formulary for"
   },
   "es": {
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
@@ -527,7 +531,11 @@
     "export_data_button": "Exportar Datos",
     "manage_trips": "Gestionar Viajes",
     "manage_teams": "Gestionar Equipos",
-    "manage_cities": "Gestionar Ciudades"
+    "manage_cities": "Gestionar Ciudades",
+    "manage_trip_users": "Gestionar Usuarios del Viaje »",
+    "formulary_view_info": "Está viendo el formulario para",
+    "no_trip_assigned_title": "Tu cuenta no está asignada a un viaje",
+    "no_trip_assigned_text": "Para gestionar tu formulario, debes estar asignado a un viaje. Por favor, asígnate a un viaje antes de usar la función de inventario."
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",
@@ -792,7 +800,12 @@
     "export_data_button": "Exporter les Données",
     "manage_trips": "Gérer les Voyages",
     "manage_teams": "Gérer les Équipes",
-    "manage_cities": "Gérer les Villes"
+    "manage_cities": "Gérer les Villes",
+    "formulary_view_info": "Vous consultez le formulaire pour",
+    "manage_trip_users": "Gérer les Utilisateurs du Voyage",
+    "no_trip_assigned_title": "Votre compte n'est pas assigné à un voyage",
+    "no_trip_assigned_text": "Pour gérer votre formulaire, vous devez être assigné à un voyage. Veuillez vous assigner à un voyage avant d'utiliser la fonctionnalité d'inventaire."
+
   },
   "ka": {
     "home_index_h2_Welcome": "fEMR 2.4.1-beta ಗೆ ಸ್ವಾಗತ,",
@@ -1054,7 +1067,12 @@
     "end": "ಅಂತ್ಯ",
     "clear": "ಸ್ಪಷ್ಟ",
     "apply": "ಅನ್ವಯಿಸು",
-    "export_data_button": "ಡೇಟಾ ರಫ್ತು"
+    "export_data_button": "ಡೇಟಾ ರಫ್ತು",
+    "manage_trip_users": "ಪ್ರಯಾಣದ ಬಳಕೆದಾರರನ್ನು ನಿರ್ವಹಿಸಿ",
+    "formulary_view_info": "ನೀವು ಫಾರ್ಮ್ಯುಲರಿ ನೋಡುತ್ತಿದ್ದೀರಿ",
+    "no_trip_assigned_title": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಯಾವುದೇ ಪ್ರಯಾಣಕ್ಕೆ ನಿಯೋಜಿಸಲಾಗಿಲ್ಲ",
+    "no_trip_assigned_text": "ನಿಮ್ಮ ಫಾರ್ಮ್ಯುಲರಿಯನ್ನು ನಿರ್ವಹಿಸಲು ನೀವು ಯಾವುದಾದರೂ ಪ್ರಯಾಣಕ್ಕೆ ನಿಯೋಜಿತವಾಗಿರಬೇಕು. ದಯವಿಟ್ಟು ಇನ್ವೆಂಟರಿ ಫೀಚರ್ ಬಳಸುವ ಮುನ್ನ ನೀವು ನಿಮ್ಮನ್ನು ಯಾವುದಾದರೂ ಪ್ರಯಾಣಕ್ಕೆ ನಿಯೋಜಿಸಿ."
+
   },
   "ar": {
     "home_index_h2_Welcome": "مرحباً بكم في fEMR 2.4.1-beta،",
@@ -1318,6 +1336,10 @@
     "end": "نهاية",
     "clear": "مسح",
     "apply": "تطبيق",
-    "export_data_button": "تصدير البيانات"
+    "export_data_button": "تصدير البيانات",
+    "manage_trip_users": "إدارة مستخدمي الرحلة",
+    "formulary_view_info": "أنت تشاهد النموذج لـ",
+    "no_trip_assigned_title": "حسابك ليس مخصصًا لرحلة",
+    "no_trip_assigned_text": "لإدارة نموذجك، يجب أن تكون مخصصًا لرحلة. يرجى تخصيص نفسك لرحلة قبل استخدام ميزة المخزون."
   }
 }

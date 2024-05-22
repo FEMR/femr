@@ -535,7 +535,15 @@
     "manage_trip_users": "Gestionar Usuarios del Viaje »",
     "formulary_view_info": "Está viendo el formulario para",
     "no_trip_assigned_title": "Tu cuenta no está asignada a un viaje",
-    "no_trip_assigned_text": "Para gestionar tu formulario, debes estar asignado a un viaje. Por favor, asígnate a un viaje antes de usar la función de inventario."
+    "no_trip_assigned_text": "Para gestionar tu formulario, debes estar asignado a un viaje. Por favor, asígnate a un viaje antes de usar la función de inventario.",
+    "edit": "Editar",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "email": "Correo electrónico",
+    "about": "Acerca de",
+    "role": "Rol",
+    "last_login": "Último acceso",
+    "toggle": "Alternar"
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",

@@ -2,15 +2,44 @@
 
 @import femr.ui.controllers.admin.routes.InventoryController
 @import femr.ui.controllers.admin.routes.TripController
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const storedLanguage = localStorage.getItem('languageCode');
+                        updateLanguage(storedLanguage);
+                        document.getElementById('languageSelect').value = storedLanguage;
+                    });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("no_trip_assigned_title", languageData[languageCode].no_trip_assigned_title);
+                updateTextContent("no_trip_assigned_text", languageData[languageCode].no_trip_assigned_text);
+                updateTextContent("manage_trip_users_btn", languageData[languageCode].manage_trip_users);
+                updateTextContent("formulary_view_info", languageData[languageCode].formulary_view_info)
+            }
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+        });
+</script>
 
 @if(missionTripItem == null) {
     <div class="alert warning">
-
-        <h3>Your account is not assigned to a trip</h3>
-
-        <p>In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
-
-        <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
+        <h3 id="no_trip_assigned_title">Your account is not assigned to a trip</h3>
+        <p id="no_trip_assigned_text">In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
+        <a id="manage_trip_users_btn" class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
     </div>
 
 } else {
@@ -21,6 +50,6 @@
             Custom Medication</a>
     </div>
 
-    <p>You are viewing the formulary for <b>@missionTripItem.getFriendlyTripTitle</b></p>
+    <p id="formulary_view_info">You are viewing the formulary for <b>@missionTripItem.getFriendlyTripTitle</b></p>
 }
 

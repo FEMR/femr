@@ -3,6 +3,47 @@
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.views.html.partials.admin.toggleButton
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const storedLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(storedLanguage);
+                        const languageSelect = document.getElementById('languageSelect');
+                        if (languageSelect) {
+                            languageSelect.value = storedLanguage;
+                            languageSelect.addEventListener('change', function() {
+                                updateLanguage(this.value);
+                            });
+                        }
+                    })
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("edit_heading", languageData[languageCode].edit);
+                updateTextContent("first_name_heading", languageData[languageCode].first_name);
+                updateTextContent("last_name_heading", languageData[languageCode].last_name);
+                updateTextContent("email_heading", languageData[languageCode].email);
+                updateTextContent("about_heading", languageData[languageCode].about);
+                updateTextContent("role_heading", languageData[languageCode].role);
+                updateTextContent("last_login_heading", languageData[languageCode].last_login);
+                updateTextContent("toggle_heading", languageData[languageCode].toggle);
+            }
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+        });
+</script>
 
     @additionalStyles = {
         <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
@@ -21,14 +62,14 @@
     <table id="userTable">
         <thead>
             <tr>
-                <th>Edit</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>About</th>
-                <th>Role</th>
-                <th>Last Login</th>
-                <th>Toggle</th>
+                <th id="edit_heading">Edit</th>
+                <th id="first_name_heading">First Name</th>
+                <th id="last_name_heading">Last Name</th>
+                <th id="email_heading">Email</th>
+                <th id="about_heading">About</th>
+                <th id="role_heading">Role</th>
+                <th id="last_login_heading">Last Login</th>
+                <th id="toggle_heading">Toggle</th>
             </tr>
         </thead>
         <tbody>

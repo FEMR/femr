@@ -66,4 +66,7 @@ public interface IPatientPrescription {
     DateTime getDateDispensed();
 
     void setDateDispensed(DateTime dateDispensed);
+
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
 }

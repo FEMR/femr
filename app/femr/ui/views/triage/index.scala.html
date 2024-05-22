@@ -15,13 +15,210 @@
     <script type="text/javascript" src="@assets.path("js/libraries/jquery.jWindowCrop.js")"></script>
     @*<script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>*@
     <script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>
-
     <script type="text/javascript" src="@assets.path("js/libraries/exif.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/megapix-image.js")"></script>
     <script type="text/javascript" src="@assets.path("js/triage/triageClientValidation.js")"></script>
     <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                initializeGenderLabels();
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const storedLanguage = localStorage.getItem('languageCode') || 'en';
+                            updateLanguage(storedLanguage);
+                            document.getElementById('languageSelect').value = storedLanguage;
+                        });
+
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+                function updateInputFieldValue(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    // No need to find a label element if you're just updating an input's placeholder
+                    if (inputElement) {
+                        inputElement.placeholder = value;
+                    }
+                }
+                function updateInputField(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    const labelElement = document.querySelector(`label[for='${identifier}']`);
+                    if (inputElement && labelElement) {
+                        labelElement.textContent = value;
+                        inputElement.placeholder = value;
+                    }
+
+                }
+
+                function replaceGenderString(languageData, language) {
+                    // Only proceed if the language data for "Gender" is available
+                    if(languageData[language] && languageData[language]['triage_index_Gender']) {
+                        // Select all label elements in the document
+                        const labels = document.querySelectorAll('label[data-original-text="Gender"]');
+
+                        // Iterate over each label
+                        labels.forEach(label => {
+                            // Replace the label's text content with the translated term from your language data
+                            label.textContent = languageData[language]['triage_index_Gender'];
+                            // If there is a nested span with specific classes, re-append it to keep the markup consistent
+                            const redBoldSpan = label.querySelector('.red.bold');
+                            if (redBoldSpan) {
+                                label.appendChild(redBoldSpan);
+                            }
+                        });
+                    }
+                }
+
+                // Call this function once on page load to initialize the data-original-text attributes
+                function initializeGenderLabels() {
+                    const genderLabels = document.querySelectorAll('label');
+                    genderLabels.forEach(label => {
+                        if(label.textContent.includes('Gender')) {
+                            label.setAttribute('data-original-text', 'Gender');
+                        }
+                    });
+                }
+
+                function updateGenderLabels(languageData, language) {
+                    // Check if the language data exists for the selected language
+                    if(languageData[language]) {
+                        // Update the Male button
+                        // if(languageData[language]['triage_index_Gender']) {
+                        //     const genderLabelElement = document.querySelector("label[for='genderBtns']");
+                        //     if (genderLabelElement) {
+                        //         genderLabelElement.textContent = languageData[language]['triage_index_Gender'] + " ";
+                        //     }
+                        // }
+                        if(languageData[language]['triage_index_Male']) {
+                            const maleBtn = document.getElementById('maleBtn');
+                            if (maleBtn) {
+                                maleBtn.nextSibling.textContent = languageData[language]['triage_index_Male'];
+                            }
+                        }
+                        // Update the Female button
+                        if(languageData[language]['triage_index_Female']) {
+                            const femaleBtn = document.getElementById('femaleBtn');
+                            if (femaleBtn) {
+                                femaleBtn.nextSibling.textContent = languageData[language]['triage_index_Female'];
+                            }
+                        }
+                    }
+                }
+                function updateFileInputText(languageData, language) {
+                    const fileInputLabel = document.getElementById('chooseFileLabel');
+                    const fileChosenText = document.getElementById('fileChosenText');
+
+                    if (fileInputLabel && languageData[language] && languageData[language]['triage_index_choose']) {
+                        fileInputLabel.textContent = languageData[language]['triage_index_choose'];
+                    }
+
+                    if (fileChosenText && languageData[language] && languageData[language]['triage_index_No']) {
+                        fileChosenText.textContent = languageData[language]['triage_index_No'];
+                    }
+                }
+                document.getElementById('photoInput').addEventListener('change', function() {
+                    const fileChosenText = document.getElementById('fileChosenText');
+                    fileChosenText.textContent = this.files.length ? this.files[0].name : languageData[currentLanguage]['triage_index_No'];
+                });
+
+                function updateAgeClassificationLabels(languageData, language) {
+                    const classifications = document.querySelectorAll('#classificationRadioWrap label');
+                    classifications.forEach(label => {
+                        // Extracting the key from the label's ID (label_infant -> infant)
+                        const classification = label.id.replace('label_', '');
+                        const span = label.querySelector('span'); // Finds the span inside the current label
+                        const translationKey = "ageClassification_" + classification; // Constructs the translation key
+
+                        // Check if the translation exists for the given key and language
+                        if(languageData[language] && languageData[language][translationKey]) {
+                            const labelText = languageData[language][translationKey];
+                            // Updating the text inside the span
+                            if (span) {
+                                span.textContent = labelText;
+                            }
+                        }
+                    });
+                }
+                function updateAgeInputPlaceholders(languageCode) {
+                    // Update placeholders
+                    const yearsInput = document.getElementById('yearsInput'); // You need to ensure this is the correct ID
+                    const monthsInput = document.getElementById('monthsInput'); // You need to ensure this is the correct ID
+
+                    if (yearsInput && monthsInput && languageData[languageCode]) {
+                        yearsInput.placeholder = languageData[languageCode].triage_index_Years;
+                        monthsInput.placeholder = languageData[languageCode].triage_index_Month;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    const language = languageCode;
+                    updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
+                    updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
+                    updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
+                    updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
+                    updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
+                    updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
+                    updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
+                    const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
+                    if (patientDemographics) {
+                        patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
+                    }
+                    updateInputField("firstName", languageData[language].triage_index_firstName);
+                    updateInputField("lastName", languageData[language].triage_index_lastName);
+                    updateInputField("phoneNumber", languageData[language].triage_index_phoneNumber);
+                    updateInputField("address", languageData[language].triage_index_address);
+
+                    updateInputField("city", languageData[language].triage_index_City);
+                    updateTextContent("ageLabel", languageData[language].triage_index_Age);
+                    const orTexts = document.querySelectorAll(".orSpan");
+                    orTexts.forEach(orText => {
+                        orText.textContent = languageData[language].triage_index_OR;
+                    });
+                    updateTextContent("birthDateLabel", languageData[language].triage_index_Birth);
+                    updateAgeClassificationLabels(languageData, language);
+                    updateGenderLabels(languageData, language);
+                    replaceGenderString(languageData, language);
+                    updateTextContent("photoLabel", languageData[language].triage_index_Patient1);
+                    updateFileInputText(languageData, language);
+                    updateTextContent("vitalsHeading", languageData[language].triage_index_Vitals);
+                    updateTextContent("temperatureLabel", languageData[language].triage_index_Temperature);
+                    updateTextContent("oxygenLabel", languageData[language].triage_index_Oxygen);
+                    updateTextContent("bloodPressureTitle", languageData[language].triage_index_Blood);
+                    updateTextContent("heightLabel", languageData[language].triage_index_Height);
+                    updateInputFieldValue("systolicInput", languageData[language].triage_index_Systolic);
+                    updateInputFieldValue("diastolicInput", languageData[language].triage_index_Diastolic);
+                    updateInputFieldValue("metersInput", languageData[language].triage_index_Meters);
+                    updateInputFieldValue("centimetersInput", languageData[language].triage_index_Centimeters);
+                    updateTextContent("heartRateLabel", languageData[language].triage_index_Heart);
+                    updateTextContent("weightLabel", languageData[language].triage_index_Weight);
+                    updateTextContent("respirationsLabel", languageData[language].triage_index_Respirations);
+                    updateTextContent("bmiLabel", languageData[language].triage_index_BMI);
+                    updateTextContent("weeksPregnantLabel", languageData[language].triage_index_Weeks);
+                    updateInputFieldValue("weeksPregnant", languageData[language].triage_index_Weeks1);
+                    updateTextContent("glucoseLabel", languageData[language].triage_index_Glucose);
+                    updateTextContent("historyOfLabel", languageData[language].triage_index_History);
+                    updateTextContent("diabetesLabel", languageData[language].triage_index_Diabetes);
+                    updateTextContent("hypertensionLabel", languageData[language].triage_index_Hypertension);
+                    updateTextContent("highCholesterolLabel", languageData[language].triage_index_High);
+                    updateTextContent("tobaccoUseDisorderLabel", languageData[language].triage_index_Tobacco);
+                    updateTextContent("substanceAlcoholAbuseLabel", languageData[language].triage_index_Substance_Alcohol);
+                    updateTextContent("chiefComplaintTitle", languageData[language].triage_index_Chief);
+                    updateAgeInputPlaceholders(languageCode);
+                }
+            });
+    </script>
 }
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/triage.css")">
@@ -33,20 +230,20 @@
 
     <div id="triageContentWrap">
         @if(viewModel.isSearchError) {
-            <p>That patient could not be found.</p>
+            <p id="triage_index_p_That">That patient could not be found.</p>
         }
         @if(viewModel.isLinkToMedical()){
-            <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank">Go To Medical</a></p>
+            <p class="newEncounterWrap" id="triage_index_p_Patient"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank" id="triage_index_a_Go">Go To Medical</a></p>
         }
-        <h2 class="text-center">Check In - Triage</h2>
+        <h2 class="text-center" id="triage_index_h2_Check">Check In - Triage</h2>
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                    <h2>General Info
-                        <b title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
-                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
-                        </b>
-                    </h2>
+                <h2 id="triage_index_h2_General">General Info
+                    <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                        <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                    </b>
+                </h2>
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -64,20 +261,32 @@
                         }
                 </div>
                 <br>
-
                 <div id="ageClassificationWrap">
-                    <label>Age<span class="red bold">*</span></label>
-
+                    <label id="ageLabel">Age<span class="red bold">*</span></label>
                     <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
+                    <input type="text" id="yearsInput" placeholder="Years" />
+                    <input type="text" id="monthsInput" placeholder="Months" />
 
-                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
+
                     <span class="orSpan">OR</span>
-                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <div id="birthDateWrapper">
+                        <label id="birthDateLabel" for="birthDateInput">Birth Date<span class="red bold">*</span></label>
+                        <input type="date" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
+                    </div>
                     <span class="orSpan">OR</span>
+                    @*                    <div class="generalInfoInput">*@
+                    @*                        <div id="classificationRadioWrap">*@
+                    @*                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {*@
+                    @*                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>*@
+                    @*                        }*@
+                    @*                        </div>*@
+                    @*                    </div>*@
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
-                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
-                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>
+                        @for((key, value) <- viewModel.getPossibleAgeClassifications) {
+                            <label id="@("label_" + key)"><input type="radio" name="ageClassification" value="@key" />
+                                <span id="@("span_" + key)">@value</span>
+                            </label>
                         }
                         </div>
                     </div>
@@ -90,11 +299,37 @@
                 <div class="generalInfoInput">
 
 
-                    <label for="photo">Patient Photo</label>
+                    <label id="photoLabel" for="photo">Patient Photo</label>
+                    @*                    <div id="photoInputFormDiv">*@
+                    @*                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />*@
+                    @*                        <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>*@
+                    @*                    </div>*@
+                    <style>
+                            #chooseFileLabel {
+                                background-color: #ffffff; /* White color */
+                                /* Other styling properties for your button */
+                                padding: 10px 20px;
+                                border: 1px solid #ccc; /* Light gray border for some definition */
+                                border-radius: 5px;
+                                display: inline-block;
+                                cursor: pointer;
+                                /* Add more styling here if needed */
+                            }
+
+                            /* Optional: Style for hover effect */
+                            #chooseFileLabel:hover {
+                                background-color: #f0f0f0; /* Slightly off-white color on hover */
+                            }
+                    </style>
+
                     <div id="photoInputFormDiv">
-                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+                        <label for="photoInput" id="chooseFileLabel" class="btn">Choose File</label>
+                        <input type="file" class="fInput hidden" id="photoInput" name="patientPhoto" />
+                        <span id="fileChosenText">No file chosen</span>
                         <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>
                     </div>
+
+
                     <div id="patientPhotoDiv" hidden="true">
                         <div class="btn-group" >
                             <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPatient.getPathToPhoto" />
@@ -125,49 +360,46 @@
             </div>
 
             <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
-                <h2>Vitals</h2>
+                <h2 id="vitalsHeading">Vitals</h2>
 
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                            <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
                             as well as in vitalClientValidation.js for validating height inputs -->
                         @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
                         } else {
                             <input type="hidden" id="vitalUnits" value="imp" />
                         }
-
                         <div class="vitalWrap">
-                            <label for="temperature">Temperature</label> <!---  Alaa Serhan -->
+                            <label for="temperature" id="temperatureLabel">Temperature</label> <!---  Alaa Serhan -->
                             @if(viewModel.getSettings.isMetric) {
                                 <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;C"/>
                             } else {
                                 <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
                             }
-
                         </div>
 
                         <div class="vitalWrap">
                             <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
                             <div class="doubleVital">
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                                <input type="number" step="number" min="0" class="fInput" id="systolicInput" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                                <input type="number" step="number" min="0" class="fInput" id="diastolicInput" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
                             </div>
                         </div>
                         <div class="vitalWrap">
-                            <label for="heartRate">Heart Rate</label>
+                            <label for="heartRate" id="heartRateLabel">Heart Rate</label>
                             <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(1).getName" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
                         </div>
 
                         <div class="vitalWrap">
-                            <label for="respirations">Respirations</label>
+                            <label id="respirationsLabel" for="respirations">Respirations</label>
                             <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
                         </div>
 
                         <div class="vitalWrap">
-                            <label for="weeksPregnant">Weeks Pregnant</label>
-
+                            <label id="weeksPregnantLabel" for="weeksPregnant">Weeks Pregnant</label>
 
                             @if(viewModel.getPatient.getSex == "Female") {
                                 <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
@@ -176,38 +408,45 @@
                             }
 
 
+
                         </div>
 
                             <!--Osman-->
                         <br/>
 
                         <div class="vitalWrap">
-                            <label>History of:
-                            </label>
+                            <label id="historyOfLabel">History of:</label>
                         </div>
 
 
 
-                        <label class="btn btn-default"> Diabetes
+                        <label class="btn btn-default">
+                            <span id="diabetesLabel">Diabetes</span>
                             <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
                         </label>
+
                         <br>
-                        <label class="btn btn-default">Hypertension
+                        <label class="btn btn-default">
+                            <span id="hypertensionLabel">Hypertension</span>
                             <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
                         </label>
                         <br>
-                        <label class="btn btn-default">High Cholesterol
+                        <label class="btn btn-default">
+                            <span id="highCholesterolLabel">High Cholesterol</span>
                             <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
                         </label>
                         <br>
-                        <label class="btn btn-default"> Tobacco Use Disorder
+                        <label class="btn btn-default">
+                            <span id="tobaccoUseDisorderLabel">Tobacco Use Disorder</span>
                             <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
                         </label>
                         <br>
-                        <label class="btn btn-default">Substance/Alcohol Abuse
+                        <label class="btn btn-default">
+                            <span id="substanceAlcoholAbuseLabel">Substance/Alcohol Abuse</span>
                             <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
                         </label>
                         <br>
+
 
 
                     </div>
@@ -222,17 +461,17 @@
 
 
                         <div class="vitalWrap">
-                            <label for="oxygen">Oxygen Saturation</label>
+                            <label for="oxygen" id="oxygenLabel">Oxygen Saturation</label>
 
                             <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
                         </div>
                         <div class="vitalWrap">
 
-                            <label for="heightFeet">Height</label>
+                            <label for="heightFeet" id="heightLabel">Height</label>
                             <div class="doubleVital">
                             @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                <input type="number" step="number" min="0" class="fInput" id="metersInput" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
+                                <input type="number" step="number" min="0" class="fInput" id="centimetersInput" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
                             } else {
                                 <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
                                 <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
@@ -240,7 +479,7 @@
                             </div>
                         </div>
                         <div class="vitalWrap">
-                            <label for="weight">Weight</label>
+                            <label for="weight" id="weightLabel">Weight</label>
                             @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
                                 <input type="number" step="any" min="0" class="fInput" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
                             } else {
@@ -249,12 +488,12 @@
 
                         </div>
                         <div class="vitalWrap">
-                            <label >BMI</label>
+                            <label id="bmiLabel">BMI</label>
 
                             <input type="text" id="bmi" class="fInput" disabled="true"/>
                         </div>
                         <div class="vitalWrap">
-                            <label>Glucose</label>
+                            <label id="glucoseLabel">Glucose</label>
 
                             <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
                         </div>
@@ -276,7 +515,7 @@
                         </label>
                     </div>
 
-@*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
+                    @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 
                     <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
                     @if(viewModel.getSettings.isMultipleChiefComplaint) {
@@ -288,22 +527,22 @@
                 </div>
 
 
-@*                <div class="submitResetWrap hidden">*@
-@*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-@*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-@*                        No</button>*@
-@*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-@*                        Yes</button>*@
-@*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-@*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-@*                             prompted will it receive a true/false value -->*@
-@*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-@*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-@*                </div>*@
+                @*                <div class="submitResetWrap hidden">*@
+                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
+                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
+                @*                        No</button>*@
+                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
+                @*                        Yes</button>*@
+                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
+                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
+                @*                             prompted will it receive a true/false value -->*@
+                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
+                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
+                @*                </div>*@
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>
-                    <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+                    <button type="button" class="fButton fOtherButton newPatientBtn pull-left" id="triageResetBtn">Reset Fields</button>
 
 
                     @if(viewModel.getPatient.getId != 0) {

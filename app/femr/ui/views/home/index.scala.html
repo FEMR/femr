@@ -1,5 +1,4 @@
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
-
 @import femr.ui.views.html.layouts.main
 
     @additionalScripts = {
@@ -13,24 +12,60 @@
                         $('#feedbackResponse').show().delay(2000).fadeOut('fast');
                     }, 2000);
                 }
-
         </script>
+        <script>
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    let languageData;
+                    fetch('@routes.Assets.versioned("json/languages.json")')
+                            .then(response => response.json())
+                            .then(data => {
+                                languageData = data;
+                                const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                                updateLanguage(initialLanguage);
+                                document.getElementById('languageSelect').value = initialLanguage;
+                            });
 
+                    document.getElementById('languageSelect').addEventListener('change', function() {
+                        updateLanguage(this.value);
+                    });
+
+                    function updateTextContent(elementId, value) {
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = value;
+                        }
+                    }
+
+                    function updateLanguage(languageCode = "en", currUser = " Admin!") {
+                        localStorage.setItem('languageCode', languageCode);
+                        updateTextContent("home_index_h2_Welcome", languageData[languageCode].home_index_h2_Welcome + currUser);
+                        updateTextContent("home_index_div_Your", languageData[languageCode].home_index_div_Your);
+                        updateTextContent("home_index_p_Please", languageData[languageCode].home_index_p_Please);
+                        updateTextContent("home_index_p_Or", languageData[languageCode].home_index_p_Or);
+                        updateTextContent("home_index_p_Search", languageData[languageCode].home_index_p_Search);
+                        const patientSearch = document.getElementById("patientSearch");
+                        if (patientSearch) {
+                            patientSearch.placeholder = languageData[languageCode].home_index_div_ID;
+                        }
+                    }
+                });
+        </script>
     }
 
 
   @top = {
     <div class="jumbotron">
       <div class="container">
-        <h2>Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
-          <div id="feedbackResponse">Your feedback has been received.</div>
+@*          TODO: Incorporate the FirstName*@
+        <h2 id="home_index_h2_Welcome">Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
+          <div id="home_index_div_Your">Your feedback has been received.</div>
         @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
-        <p>Please select a tab at the top to get started!</p>
+        <p id="home_index_p_Please">Please select a tab at the top to get started!</p>
 
-        <p>or</p>
-        <p>Search Below:</p>
+        <p id="home_index_p_Or">or</p>
+        <p id="home_index_p_Search">Search Below:</p>
         <div id="patientSearchContainer">
-            <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="Loading&hellip;" disabled="disabled"/>
+            <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="ID, Name, or Phone #" disabled="disabled"/>
         </div>
       </div>
     </div>

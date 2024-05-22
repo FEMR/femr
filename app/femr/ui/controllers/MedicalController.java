@@ -246,6 +246,24 @@ public class MedicalController extends Controller {
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
     }
+    // put translate get method from tEMR team here, was written by Harrison
+    public String translateGet() {
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        String toLanguage = currentUserSession.getLanguageCode();
+        return toLanguage;
+    }
+
+    //    Calls Python Script to translate
+//    private String translate(String text, String fromLanguage, String toLanguage) {
+//
+//        String data = "";
+//        try {
+//            data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return data;
+//    }
 
     /**
      * Get the populated partial view that represents 1 row of new prescription fields

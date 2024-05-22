@@ -52,7 +52,15 @@
 }
 
 #vitalContainer {
-    overflow: hidden;
+    max-height: 500px; /* Default maximum height */
+    overflow-y: auto;  /* Enables vertical scrolling if the content overflows */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    #vitalContainer {
+        max-height: 300px;  /* Smaller height for smaller screens */
+    }
 }
 
 #chiefComplaintWrap {
@@ -202,10 +210,11 @@
     font-size: 10px;
 }
 
-  .submitResetWrap {
+.submitResetWrap {
     margin-top: 15px;
-    margin-bottom: 5px;
-    overflow: hidden;
+    margin-bottom: 20px;  /* Increase bottom margin */
+    overflow: visible;  /* Change to visible to avoid cropping */
+    clear: both;  /* Clear floats to ensure the buttons are always visible */
 }
 
 .historyInput {

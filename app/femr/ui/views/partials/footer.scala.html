@@ -1,3 +1,34 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(initialLanguage);
+                        document.getElementById('languageSelect').value = initialLanguage;
+                    });
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                updateLanguage(this.value);
+            });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("langCode_feedbackBtn", languageData[languageCode].langCode_feedbackBtn);
+                updateTextContent("langCode_googleChrome", languageData[languageCode].langCode_googleChrome);
+            }
+        });
+</script>
 <footer>
     <hr />
     <div class="row">
@@ -6,11 +37,11 @@
         </div>
         <div class="col-xs-4">
             <div class="leaveFeedback">
-               <a href="/feedback"> <button type="button" class="fButton fRedButton fOtherButton "> Leave Feedback </button></a>
+               <a href="/feedback"> <button type="button" class="fButton fRedButton fOtherButton " id="langCode_feedbackBtn"> Leave Feedback </button></a>
             </div>
         </div>
         <div class="col-xs-4">
-            <p class="text-right">Designed for use in Google Chrome</p>
+            <p class="text-right" id="langCode_googleChrome">Designed for use in Google Chrome</p>
         </div>
     </div>
 </footer>

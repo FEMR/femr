@@ -34,13 +34,22 @@
                             document.getElementById('languageSelect').value = storedLanguage;
                         });
 
-                function updateTextContent(elementId, value) {
+                /*function updateTextContent(elementId, value) {
                     const element = document.getElementById(elementId);
                     if (element) {
                         element.textContent = value;
                     }
+                }*/
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        if (element.tagName === 'OPTION') {
+                            element.text = value;
+                        } else {
+                            element.textContent = value;
+                        }
+                    }
                 }
-
                 function updateInputField(identifier, value) {
                     const inputElement = document.getElementById(identifier);
                     const labelElement = document.querySelector(`label[for='${identifier}']`);
@@ -108,7 +117,8 @@
                     updateInputField("filterRangeEnd", languageData[languageCode].end);
                     updateButtonValue("clear-button", languageData[languageCode].clear);
                     updateButtonValue("submit-button", languageData[languageCode].apply);
-                    updateButtonValue("export-button", languageData[languageCode].export_data_button)
+                    updateButtonValue("export-button", languageData[languageCode].export_data_button);
+                    updateTextContent("select_trip_option", languageData[language].select_trip);
                 }
 
                 document.getElementById('languageSelect').addEventListener('change', function() {
@@ -240,8 +250,10 @@
 
                                 <span class="medication">
                                     <label id="filter_trip_label">Filter Trip</label>
-                                    <select id="MissionTripId" name="MissionTripId" class="medication">
-                                        <option selected id="default" value="-1">-- Select Trip --</option>
+                                        <select id="MissionTripId" name="MissionTripId" class="medication">
+@*                                            <option selected id="select_trip_option" value="-1">-- Select Trip --</option>*@
+@*                                            Removed the "select_trip string as it wont be translated with scheme, user can infer this option is referencing trip selection*@
+                                            <option selected id="select_trip_option" value="-1"></option>
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {

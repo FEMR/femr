@@ -258,13 +258,6 @@ public class MedicalController extends Controller {
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, patientEncounter, assetsFinder));
     }
-    // put translate get method from tEMR team here, was written by Harrison
-    public String translateGet() {
-        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        String toLanguage = currentUserSession.getLanguageCode();
-        return toLanguage;
-    }
-
     //    Calls Python Script to translate
 //    private String translate(String text, String fromLanguage, String toLanguage) {
 //

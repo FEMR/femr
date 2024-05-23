@@ -22,6 +22,7 @@ import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import femr.util.translation.TranslationJson;
 import femr.util.translation.TranslationServer;
+import femr.util.translation.TranslationResponseMap;
 import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -269,7 +270,7 @@ public class MedicalController extends Controller {
         String toLanguage = sessionService.retrieveCurrentUserSession().getLanguageCode();
 
         // retrieve current patient encounter encounter
-
+        int patientId = Integer.parseInt(request().getQueryString("patientId"));
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
@@ -277,21 +278,12 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
         String fromLanguage = patientEncounter.getLanguageCode();
 
-        // add whether the language is rtl to response
-        List<String> rtlLanguages = Arrays.asList("he", "ar");
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("toLanguageIsRtl", rtlLanguages.contains(toLanguage));
-        responseMap.put("fromLanguageIsRtl", rtlLanguages.contains(fromLanguage));
+        // Harrison Shu: Handles the creation of the response map and figures out whether or not to translate
+        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, text);
 
-        // if same to same (like en to en) don't translate
-        if (Objects.equals(toLanguage, fromLanguage)) {
-            responseMap.put("translation", "SameToSame");
-        } else {
-            responseMap.put("translation", translate(jsonText, fromLanguage,toLanguage));
-        }
-
-        return ok(Json.toJson(responseMap));
+        return ok(responseMapObject.getResponseJson());
     }
+
 
 //    Calls Python Script to translate
     private String translate(String jsonText, String fromLanguage, String toLanguage) {
@@ -304,6 +296,7 @@ public class MedicalController extends Controller {
         }
         return data;
     }
+
 
     public String parseJsonResponse(String jsonResponse){
         try{

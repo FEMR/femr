@@ -20,7 +20,7 @@
 
 .form-signin {
     max-width: 500px;
-    padding: 15px;
+    padding: 0 15px;
     margin: 0 auto;
 }
 
@@ -38,7 +38,7 @@
     margin: 0px auto;
 
     /*background:#f0f0f0;*/
-    padding: 6% 4%;
+    padding: 0% 4%;
 }
 @media (max-width: 410px){
     #login{
@@ -90,4 +90,18 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background: #f90000;
+}
+
+h1 {
+    padding-top: 20%;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+    font-size: medium;
+}
+
+#emptymsg {
+    margin-top: 100px;
 }

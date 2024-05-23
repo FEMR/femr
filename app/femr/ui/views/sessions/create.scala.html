@@ -1,17 +1,22 @@
-@(createForm: Form[femr.ui.models.sessions.CreateViewModel], errorMsg: Integer, assets: AssetsFinder)
+@(createForm: Form[femr.ui.models.sessions.CreateViewModel],
+        errorMsg: Integer,
+        messages: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder,
+        availableRoles: java.util.List[_ <: java.lang.String])
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
+@import femr.ui.controllers.admin.routes.UsersController
+
     @styles = {
         <link rel="stylesheet" href="@assets.path("css/login.css")">
     }
-@main("Login", styles = styles, assets = assets) {
-    @if(errorMsg.equals(1)){
-        <div id="errormsg" style="color:red">
-                <h1>Login Attempt Failed! Try again.</h1>
-        </div>
+
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
     }
 
+@main("Login", styles = styles, assets = assets) {
     @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
         <div id="login">
             <h1>Please sign in</h1>
@@ -22,6 +27,99 @@
             }
             <input type="password" name="password" placeholder="Password" />
             <input type="submit" value="Log in" />
+        </div>
+    }
+    @helper.form(action = SessionsController.createPostAccount(), 'class -> "form-signin") {
+        <div id="login">
+            <h2> OR </h2>
+            <input type="submit" value="Create an account" />
+
+            @if(errorMsg.equals(2)){
+                @main("Add User", styles = styles, assets = assets, scripts = additionalScripts) {
+                    <div id="createWrap">
+                    @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal", 'name -> "createForm") {
+
+                        @helper.inputText(createForm("email"),
+                            'class -> "fInput",
+                            'placeholder -> "Email Address",
+                            '_label -> "Email Address",
+                            '_isRequired -> true
+                        )
+
+                        @helper.inputPassword(createForm("password"),
+                            'class -> "fInput",
+                            'placeholder -> "Password",
+                            '_label -> "Password",
+                            '_isRequired -> true
+                        )
+                            <!-- added for FEMR-159 added by Vivek-->
+
+                        @helper.inputPassword(createForm("passwordVerify"),
+                            'class -> "fInput",
+                            'placeholder -> "Verify Password",
+                            '_label -> null,
+                            'type -> "password"
+                        )
+
+                        @helper.inputText(createForm("firstName"),
+                            'class -> "fInput",
+                            'placeholder -> "First Name",
+                            '_label -> "First Name",
+                            '_isRequired -> true
+                        )
+
+                        @helper.inputText(createForm("lastName"),
+                            'class -> "fInput",
+                            'placeholder -> "Last Name",
+                            '_label -> "Last Name",
+                            '_isRequired -> false
+                        )
+
+                        @helper.inputText(createForm("notes"),
+                            'class -> "fInput",
+                            'placeholder -> "About User",
+                            '_label -> "About User",
+                            '_isRequired -> false
+                        )
+
+                        <div id="roleWrap">
+                            <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
+                            <span class="errors"></span>
+                            @for(error <- createForm("roles").errors) {
+                                <p class="createUserError"> @error.message</p>
+                            }
+
+                            <br/>
+                            @for(role <- availableRoles) {
+                                <label class="btn btn-default">
+                                    <input type="checkbox" name="roles[]" value="@role"> @role
+                                </label>
+                                <br/>
+                            }
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    @for(message <- messages) {
+                        <p class="adminMessage">@message</p>
+                    }
+
+                    <button class="fButton fSubmitButton" id="addUserSubmitBtn" type="submit">Submit</button>
+                }
+                }
+            }
+
+            @if(errorMsg.equals(1)){
+                <div id="errormsg" style="color:red">
+                    <h1>Login Attempt Failed! Try again.</h1>
+                </div>
+            } else {
+                <div id="emptymsg">
+                    <br/>
+                </div>
+            }
+
             <img src="@assets.path("img/logo_color_sm.png")" />
         </div>
     }

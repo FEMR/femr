@@ -132,5 +132,4 @@ if __name__ == "__main__":
     for port in PORTS:
         if(port_open(port)):
             start_server(port)
-
-
+            

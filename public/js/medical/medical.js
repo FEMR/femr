@@ -339,55 +339,60 @@ $(document).ready(function () {
         textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val().replace("@","at");
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
-
     console.log("text:", textToTranslate);
+    console.log(jsonObj);
 
     // get translation
     $.ajax({
         type: 'get',
         url: '/translate',
-        data: {text : textToTranslate, patientId: patientId},
+        data: {text : JSON.stringify(jsonObj), patientId: patientId},
         success: function(response){
+            console.log("response:", response);
             console.log("translation:", response.translation);
 
-            var listTranslated = response.translation.split("@");
-
-            if (response.translation.split(":")[0] === "SameToSame") {
-                // same to same (like en to en)
+            if(response.translation === "SameToSame"){
                 $("#toggleBtn").remove();
-            } else if (response.translation.split(".")[0] === "Translation Unavailable") {
-                $("#loading").remove();
-                $("#toggleBtn").text("Unavailable");
-                console.error(response.translation);
-            } else if (listTranslated.length !== jsonObj.length || response.toLanguageIsRtl) {
-                console.log("backup translation required (", listTranslated.length, "out of 16 tabs recovered)");
-                for (let i = 0; i < jsonObj.length; i++) {
-                    $.ajax({
-                        type: 'get',
-                        url: '/translate',
-                        data: {text: jsonObj[i].text, patientId: patientId},
-                        success: function (response) {
-                            if (i === jsonObj.length - 1) {
-                                // end buffering on last field
-                                $("#loading").remove();
-                                $("#toggleBtn").text("Show Original");
-                            }
-                            populateField(response.translation, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
-                        },
-                        failure: function (result) {
-                            console.error('Failed to fetch backup translation');
-                        }
-                    });
+            }
+            else{
+                var listTranslated = JSON.parse(response.translation);
+                console.log(listTranslated);
+                if(listTranslated[0]["text"] === "Translation Unavailable"){
+                    //option 1 - end buffering
+                        $("#loading").remove();
+                        $("#toggleBtn").text("Unavailable");
                 }
-            } else {
-                // end buffering if no backup
-                $("#loading").remove();
-                $("#toggleBtn").text("Show Original");
+                //ELSE IF NOT CORRECT ATM
+                else if (listTranslated.length !== jsonObj.length) {
+                    console.log("backup translation required out of 16 tabs ", listTranslated.length, " recovered");
+                    for (let i = 0; i < jsonObj.length; i++) {
+                        $.ajax({
+                            type: 'get',
+                            url: '/translate',
+                            data: {text: jsonObj[i].text, patientId: patientId},
+                            success: function (response) {
+                                if (i === jsonObj.length - 1) {
+                                    // end buffering on last field
+                                    $("#loading").remove();
+                                    $("#toggleBtn").text("Show Original");
+                                }
+                                populateField(response.translation, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
+                            },
+                            failure: function (result) {
+                                console.error('Failed to fetch backup translation');
+                            }
+                        });
+                    }
+            }
+                else{
+                    $("#loading").remove();
+                    $("#toggleBtn").text("Show Original");
 
-                // for each field populate them
-                for (let i = 0; i < jsonObj.length; i++) {
-                    var textOut = listTranslated[i];
-                    populateField(textOut, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
+                    // for each field populate them
+                    for (let i = 0; i < jsonObj.length; i++) {
+                        var textOut = listTranslated[i]["text"];
+                        populateField(textOut, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
+                    }
                 }
             }
         },

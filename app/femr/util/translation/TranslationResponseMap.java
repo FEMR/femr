@@ -1,5 +1,5 @@
 package femr.util.translation;
-import femr.ui.controllers.BackEndControllerHelper;
+import femr.ui.controllers.MedicalController;
 import java.util.*;
 import play.libs.Json;
 
@@ -37,7 +37,7 @@ public class TranslationResponseMap {
         } else {
             String data = "";
             try {
-                data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
+                data = MedicalController.translate(text, fromLanguage, toLanguage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

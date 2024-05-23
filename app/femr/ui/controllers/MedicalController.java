@@ -266,27 +266,25 @@ public class MedicalController extends Controller {
         String jsonText = request().getQueryString("text");
         int patientId = Integer.parseInt(request().getQueryString("patientId"));
 
-        //Harrison Shu
-        String toLanguage = sessionService.retrieveCurrentUserSession().getLanguageCode();
-
         // retrieve current patient encounter encounter
-        int patientId = Integer.parseInt(request().getQueryString("patientId"));
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
         }
-        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
-        String fromLanguage = patientEncounter.getLanguageCode();
+        //Harrison Shu
+        String toLanguage = sessionService.retrieveCurrentUserSession().getLanguageCode();
+        String fromLanguage = currentEncounterByPatientId.getResponseObject().getLanguageCode();
+
 
         // Harrison Shu: Handles the creation of the response map and figures out whether or not to translate
-        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, text);
+        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, jsonText);
 
         return ok(responseMapObject.getResponseJson());
     }
 
 
 //    Calls Python Script to translate
-    private String translate(String jsonText, String fromLanguage, String toLanguage) {
+    public static String translate(String jsonText, String fromLanguage, String toLanguage) {
         String data = "";
         try {
             data = TranslationServer.makeServerRequest(jsonText, fromLanguage, toLanguage);
@@ -297,8 +295,7 @@ public class MedicalController extends Controller {
         return data;
     }
 
-
-    public String parseJsonResponse(String jsonResponse){
+    public static String parseJsonResponse(String jsonResponse){
         try{
             ObjectMapper mapper = new ObjectMapper();
             TranslationJson api = mapper.readValue(jsonResponse, TranslationJson.class);

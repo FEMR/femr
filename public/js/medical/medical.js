@@ -339,7 +339,6 @@ $(document).ready(function () {
         textToTranslate = textToTranslate + " @ " + $(jsonObj[i].id).val().replace("@","at");
         jsonObj[i].text = $(jsonObj[i].id).val();
     }
-
     console.log("text:", textToTranslate);
     console.log(jsonObj);
 

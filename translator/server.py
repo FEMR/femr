@@ -15,10 +15,8 @@ import socket
 import time
 
 PORTS = [8000, 5000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008]
-TIMEOUT = 3600
+TIMEOUT = int(sys.argv[1])
 PATH = os.getcwd()
-
-
 
 class MarianModel:
     def __init__(self, source_lang: str, dest_lang: str) -> None:
@@ -55,16 +53,20 @@ class WebRequestHandler(BaseHTTPRequestHandler):
             if(i == 0):
                 translate_string = tab_list[i]["text"]
             else:
-                translate_string = translate_string + " @ " + tab_list[i]["text"].replace("@", "at")
+                if(tab_list[i]["text"] != ""):
+                    translate_string = translate_string + " @ " + tab_list[i]["text"].replace("@", "at")
 
         #translate string and split into list on delimiter
         translated_text = self.translate(translate_string, from_code, to_code)
-        translated_list = list(translated_text.split("@"))
+        translated_list = list(translated_text.split(" @ "))
 
         #for each translation, place text in copy of tab_list to return
         out = tab_list
-        for i in range(len(translated_list)):
-            out[i]["text"] = translated_list[i]
+        for i in range(len(out)):
+            if(i < len(translated_list)):
+                out[i]["text"] = translated_list[i]
+            else:
+                out[i]["text"] = ""
         return json.dumps(out)
 
     def translate(self, text, from_code, to_code):
@@ -101,7 +103,6 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(self.get_response().encode("utf-8"))
-
 
     def do_POST(self):
         self.send_response(200)

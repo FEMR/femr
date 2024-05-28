@@ -27,6 +27,19 @@ def get_installed_package_names():
         models.append(model_name)
     return models
 
+# Returns true if all paths exist in either a tuple or a list of tuples of to/from language codes
+def packages_downloaded(paths):
+    if isinstance(paths, tuple):
+        return Path(f"{PATH}/translator/argos_models/translate-{paths[0]}_{paths[1]}.argosmodel").exists()
+    elif isinstance(paths, list):
+        for path_tuple in list:
+            if package_paths_exist(path_tuple) == False:
+                return False
+        return True
+    else:
+        return False
+
+
 #Installs all packages from local directory
 def install_packages():
     installed_packages = get_installed_package_names()

@@ -10,7 +10,8 @@ from http.server import HTTPServer
 from pathlib import Path
 from transformers import MarianMTModel, MarianTokenizer
 from typing import Sequence
-from libargos import install_packages
+from libargos import install_packages, packages_downloaded
+from libmarian import package_downloaded
 import socket
 import time
 
@@ -71,21 +72,21 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     def translate(self, text, from_code, to_code):
             # Use Argos if Language Package Exists
-            if Path(f"{PATH}/translator/argos_models/translate-{from_code}_{to_code}.argosmodel").exists():
+            if packages_downloaded((from_code, to_code)):
                 translatedText = argostranslate.translate.translate(text, from_code, to_code)
                 return translatedText
+
             # Use Marian if Language Package Exists in Marian but not Argos
-            elif Path(f"{PATH}/translator/marian_models/opus-mt-{from_code}-{to_code}").exists():
+            elif package_downloaded(from_code, to_code):
                 marian = MarianModel(from_code, to_code)
                 translatedText = marian.translate([text])
                 return translatedText[0]
+
             # Use Argos "English in the Middle" if not in Argos and Marian by Default
-            elif (Path(f"{PATH}/translator/argos_models/translate-{from_code}_en.argosmodel").exists() and \
-                    Path(f"{PATH}/translator/argos_models/translate-{to_code}_en.argosmodel").exists()) or \
-                    (Path(f"{PATH}/translator/argos_models/translate-en_{from_code}.argosmodel").exists() and \
-                     Path(f"{PATH}/translator/argos_models/translate-en_{to_code}.argosmodel").exists()):
+            elif packages_downloaded([(from_code ,"en"), (to_code, "en"), ("en", from_code), ("en", to_code)]):
                 translatedText = argostranslate.translate.translate(text, from_code, to_code)
                 return translatedText
+
             # If a package doesn't exist
             else:
                 return "Translation Unavailable"

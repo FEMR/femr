@@ -70,14 +70,14 @@
                         <div id="language-table-wrapper">
                             <table id="language-table">
                             @for(language <- viewModel.getLanguages){
-                                <tr>
-                                    <td><div class="status-box" style="background-color:
-                                            @if(language.getStatus == "Optimized" ){green} else{
-                                            @if(language.getStatus == "Not Optimized"){yellow} else{red}};"></div></td>
-                                    <td>@language.getLanguageName</td>
-                                    <td><input type="checkbox" class="language-checkbox" name="@language.getCode" onClick="updateSchedule(name)"
+                                <tr style="background-color: @if(language.getStatus == "Optimized"){#90EE90} else{
+                                        @if(language.getStatus == "Not Optimized"){#FFFF8F} else{#AA4A44}};"
+                                class="language-row">
+                                    <td class="checkbox-wrapper"><input type="checkbox" class="language-checkbox" name="@language.getCode" onClick="updateSchedule(name)"
                                         @if(language.getUpdateScheduled){checked} else {
                                             @if(language.getStatus == "Optimized"){checked disabled}} /></td>
+                                    <td>@language.getLanguageName</td>
+
                                 </tr>
                             }
                             </table>

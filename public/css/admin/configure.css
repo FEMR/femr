@@ -27,10 +27,20 @@
     overflow: auto;
     margin-bottom: 25px;
 }
+#language-table {
+    width: 100%;
+}
+
+.language-row:hover{
+    filter: brightness(80%);
+}
+
+.checkbox-wrapper{
+    padding-left: 4px;
+}
 
 .language-checkbox{
     cursor: pointer;
-    float: right;
 }
 
 .status-box{

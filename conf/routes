@@ -72,7 +72,10 @@ GET         /search/typeahead/medicationsWithID                @femr.ui.controll
 GET         /search/typeahead/medicationAdministrations        @femr.ui.controllers.SearchController.typeaheadMedicationAdministrationsJSONGet()
 
 #Settings
-#GET         /settings                                          @femr.ui.controllers.SettingsController.index()
+#GET        /settings                                          @femr.ui.controllers.SettingsController.index()
+POST        /settings/update                                   @femr.ui.controllers.SettingsController.update()
+
+
 #Photo
 GET         /photo/patient/:id                                 @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean ?= false)
 GET         /photo/encounter/:id                               @femr.ui.controllers.PhotoController.GetPhoto(id: Int)

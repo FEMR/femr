@@ -21,7 +21,7 @@ val appDependencies = Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.apache.commons" % "commons-collections4" % "4.0",
   "org.apache.commons" % "commons-text" % "1.3",
-  "org.mockito" % "mockito-core" % "3.5.13",
+  "org.mockito" % "mockito-inline" % "3.5.13",
   "com.google.code.gson" % "gson" % "2.3.1",
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",

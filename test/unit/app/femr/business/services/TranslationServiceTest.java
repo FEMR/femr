@@ -60,13 +60,13 @@ public class TranslationServiceTest {
     // TranslationServer Tests
     @Test
     public void getPortFromLogNoFileTest(){
-        String logPath = "test/server.log";
+        String logPath = "test/none.server.log";
         Assert.assertEquals(0, TranslationServer.getPortFromLog(logPath, false));
     }
 
     @Test
     public void getPortFromLogEmptyFileTest() throws IOException {
-        String logPath = "test/server.log";
+        String logPath = "test/empty.server.log";
         File log = new File(logPath);
         log.createNewFile();
         Assert.assertEquals(0, TranslationServer.getPortFromLog(logPath, false));
@@ -91,7 +91,7 @@ public class TranslationServiceTest {
         File log = new File(logPath);
         log.createNewFile();
         FileWriter writer = new FileWriter(logPath);
-        writer.write("Serving at port: 8000");
+        writer.write("Serving at port: 8010");
         writer.close();
         Assert.assertTrue(TranslationServer.serverNotRunning("test/server.log"));
         log.delete();

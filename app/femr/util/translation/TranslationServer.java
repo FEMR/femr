@@ -86,7 +86,7 @@ public class TranslationServer {
             File log = new File("translator/server.log");
             String absPath = "translator/server.py";
             try {
-                ProcessBuilder pb = new ProcessBuilder("python", absPath);
+                ProcessBuilder pb = new ProcessBuilder("python3", absPath);
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();

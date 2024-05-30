@@ -9,6 +9,8 @@ import femr.ui.views.html.sessions.create;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+
 public class SettingsController extends Controller {
     private final AssetsFinder assetsFinder;
     private ISessionService sessionService;
@@ -27,6 +29,6 @@ public class SettingsController extends Controller {
             return ok(index.render(currentUser, assetsFinder));
         }
 
-        return ok(create.render(null, 0, assetsFinder));
+        return ok(create.render(null, 0, null, assetsFinder, new ArrayList<String>()));
     }
 }

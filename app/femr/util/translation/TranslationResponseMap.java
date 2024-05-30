@@ -45,7 +45,7 @@ public class TranslationResponseMap {
         }
     }
 
-    private Map<String, Object> getResponseMap() {
+    public Map<String, Object> getResponseMap() {
         return this.responseMap;
     }
 

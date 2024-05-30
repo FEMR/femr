@@ -362,21 +362,21 @@ $(document).ready(function () {
                         $("#loading").remove();
                         $("#toggleBtn").text("Unavailable");
                 }
-                //ELSE IF NOT CORRECT ATM
-                else if (listTranslated.length !== jsonObj.length) {
+                else if (listTranslated[0]["text"] === "Delimiter Error") {
                     console.log("backup translation required out of 16 tabs ", listTranslated.length, " recovered");
                     for (let i = 0; i < jsonObj.length; i++) {
                         $.ajax({
                             type: 'get',
                             url: '/translate',
-                            data: {text: jsonObj[i].text, patientId: patientId},
+                            data: {text: JSON.stringify([jsonObj[i]]), patientId: patientId},
                             success: function (response) {
                                 if (i === jsonObj.length - 1) {
                                     // end buffering on last field
                                     $("#loading").remove();
                                     $("#toggleBtn").text("Show Original");
                                 }
-                                populateField(response.translation, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
+                                var textOut = JSON.parse(response.translation)[0]["text"]
+                                populateField(textOut, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
                             },
                             failure: function (result) {
                                 console.error('Failed to fetch backup translation');

@@ -42,32 +42,40 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def translate_data(self):
         #parse request
         length = int(self.headers['Content-Length'])
-        tab_list = json.loads(self.rfile.read(length).decode('utf-8'))
+        input_list = json.loads(self.rfile.read(length).decode('utf-8'))
         from_code = self.query_data['from']
         to_code = self.query_data['to']
 
-        #for each tab in tab_list, build delimiter string to translate
-        num_tabs = len(tab_list)
+        input_len = len(input_list)
+        output_list = input_list
+
+        bool_array = [False] * input_len
+        #for each tab in field_list, build delimiter string to translate
+
+        translation_count = 0
         translate_string = ""
-        for i in range(num_tabs):
-            if(i == 0):
-                translate_string = tab_list[i]["text"]
-            else:
-                if(tab_list[i]["text"] != ""):
-                    translate_string = translate_string + " @ " + tab_list[i]["text"].replace("@", "at")
+        for i in range(input_len):
+            if(input_list[i]["text"] != ""):
+                translation_count = translation_count + 1
+                translate_string = translate_string + " @ " + input_list[i]["text"]
+                bool_array[i] = True
 
-        #translate string and split into list on delimiter
-        translated_text = self.translate(translate_string, from_code, to_code)
-        translated_list = list(translated_text.split(" @ "))
+        #remove first "@"
+        translate_string = translate_string[3:]
+        translated_string = self.translate(translate_string, from_code, to_code)
+        translated_list = list(translated_string.split(" @ "))
 
-        #for each translation, place text in copy of tab_list to return
-        out = tab_list
-        for i in range(len(out)):
-            if(i < len(translated_list)):
-                out[i]["text"] = translated_list[i]
-            else:
-                out[i]["text"] = ""
-        return json.dumps(out)
+        if(len(translated_list) != translation_count):
+            output_list[0]["text"] = "Delimiter Error"
+            return json.dumps(output_list)
+
+        for i in range(input_len):
+            if(bool_array[i]):
+                output_list[i]["text"] = translated_list.pop(0)
+                bool_array[i] = False
+
+
+        return json.dumps(output_list)
 
     def translate(self, text, from_code, to_code):
             # Use Argos if Language Package Exists

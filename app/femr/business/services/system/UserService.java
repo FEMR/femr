@@ -249,6 +249,26 @@ public class UserService implements IUserService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<UserItem> updateUserLanguageCode(UserItem userItem, String languageCode) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        if (userItem == null) {
+            response.addError("", "send a user");
+            return response;
+        }
+
+        try {
+            IUser user = userRepository.retrieveUserById(userItem.getId());
+            user.setLanguageCode(languageCode);
+            user = userRepository.updateUser(user);
+            response.setResponseObject(itemModelMapper.createUserItem(user));
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+
     /**
      * {@inheritDoc}
      */

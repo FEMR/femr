@@ -85,6 +85,9 @@ public interface IUserService {
      */
     ServiceResponse<UserItem> updateUser(UserItem userItem, String newPassword);
 
+
+    ServiceResponse<UserItem> updateUserLanguageCode(UserItem userItem, String languageCode);
+
     /**
      * Retrieves a user by their email address. TODO: stop returning data models
      *

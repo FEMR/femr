@@ -74,12 +74,8 @@ public class SettingsController extends Controller {
             userItem.setPasswordReset(false);
         }
 
-        String newPassword = null;
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getNewPassword()) && viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())) {
-            newPassword = viewModel.getNewPassword();
-        }
 
-        ServiceResponse<UserItem> updateResponse = userService.updateUser(userItem, newPassword);
+        ServiceResponse<UserItem> updateResponse = userService.updateUser(userItem, null);
         if (updateResponse.hasErrors()) {
             return internalServerError();
         }

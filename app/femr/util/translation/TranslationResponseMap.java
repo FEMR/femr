@@ -7,7 +7,7 @@ import play.libs.Json;
 // Harrison Shu
 // represents the Response item that is returned from the backend Java GET Endpoint
 public class TranslationResponseMap {
-    List<String> rtlLanguages = Arrays.asList("he", "ar");
+    List<String> rtlLanguages = Arrays.asList("he", "ar", "ja");
     private String toLanguage;
     private String fromLanguage;
     private String text;

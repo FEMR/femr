@@ -80,6 +80,8 @@ public class TranslationServer {
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.connect();
 
+            // con = makePOST(portNumber);
+
             try(OutputStream os = con.getOutputStream()) {
                 os.write(json);
             }
@@ -101,14 +103,35 @@ public class TranslationServer {
 
         String logPath = "translator/server.log";
         String absPath = "translator/server.py";
+
+        String[] validPythonCommands = {"python", "python3", "py", "py3"};
         if(serverNotRunning(logPath)){
             File log = new File(logPath);
+
+
             try {
                 log.createNewFile();
-                ProcessBuilder pb = new ProcessBuilder("python", absPath, timeout);
-                pb.redirectOutput(log);
-                pb.redirectErrorStream(true);
-                pb.start();
+                boolean serverStarted = false;
+
+                for (String pythonCommand : validPythonCommands){
+                    ProcessBuilder pb = new ProcessBuilder(pythonCommand, absPath, timeout);
+                    pb.redirectOutput(log);
+                    pb.redirectErrorStream(true);
+
+                    try{
+                        pb.start();
+                        serverStarted = true;
+                        break;
+                    }
+                    catch (IOException e){
+                        System.out.println("Failed to start process with command: " + pythonCommand);
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+                if (!serverStarted){
+                    throw new IOException("All attempts to start the process failed.");
+                }
             } catch (IOException e) {
                 System.out.println("An I/O error has occurred.");
                 System.out.println(e.getMessage());

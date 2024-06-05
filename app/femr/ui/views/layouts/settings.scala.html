@@ -1,3 +1,4 @@
+@import femr.ui.controllers.admin.routes.UsersController
 @(title: String,
         currentUser: femr.common.dtos.CurrentUser,
         styles: Html = Html(""),
@@ -71,7 +72,7 @@
 @main(title, currentUser, adminStyles, assets = assets) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a id="settings_profile" href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
+            <a id="settings_profile" href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
                 Profile</a>
             <a id="settings_language" href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
                 Language</a>

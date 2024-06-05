@@ -34,6 +34,7 @@ public class UserItem {
     private String PasswordCreatedDate;
     private String DateCreated; //Sam Zanni
     private Integer CreatedBy; //Sam Zanni
+    private String languageCode;
 
     public UserItem() {
         this.roles = new ArrayList<>();
@@ -149,5 +150,13 @@ public class UserItem {
     public Integer getCreatedBy() {return CreatedBy; } //Sam Zanni
 
     public void setCreatedBy (Integer CreatedBy) { this.CreatedBy = CreatedBy; } //Sam Zanni
+
+    public String getLanguageCode() {
+        return this.languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 
  }

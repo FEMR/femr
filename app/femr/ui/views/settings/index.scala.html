@@ -9,7 +9,10 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        let initialLanguage = @currentUser.getLanguageCode();
+                        if (initialLanguage == null) {
+                            initialLanguage = "en";
+                        }
                         updateLanguage(initialLanguage);
                         document.getElementById('languageSelect').value = initialLanguage;
                     });

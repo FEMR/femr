@@ -36,10 +36,6 @@ public class UserItem {
     private Integer CreatedBy; //Sam Zanni
     private String languageCode;
 
-    public UserItem() {
-        this.roles = new ArrayList<>();
-    }
-
     public String getFirstName() {
         return firstName;
     }

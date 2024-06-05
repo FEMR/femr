@@ -41,11 +41,7 @@ public class SettingsController extends Controller {
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        if (currentUser != null) {
-            return ok(index.render(currentUser, assetsFinder));
-        }
-
-        return ok(create.render(null, 0, null, assetsFinder, new ArrayList<String>()));
+        return ok(femr.ui.views.html.settings.index.render(currentUser, assetsFinder);
     }
 
     public Result update() {

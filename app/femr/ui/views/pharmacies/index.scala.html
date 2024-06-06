@@ -38,7 +38,7 @@
     </script>
     <div class="container">
     @helper.form(action = PharmaciesController.indexPost()) {
-        @searchBox("Pharmacy", patientId, message)
+        @searchBox("Pharmacy", currentUser, patientId, message)
     }
     </div>
 }

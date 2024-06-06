@@ -10,11 +10,9 @@
                     .then(data => {
                         languageData = data;
                         let initialLanguage = @currentUser.getLanguageCode();
-                        console.log(initialLanguage);
                         if (initialLanguage == null) {
                             initialLanguage = "en";
                         }
-                        console.log(initialLanguage);
                         updateLanguage(initialLanguage);
                         document.getElementById('languageSelect').value = initialLanguage;
                     });

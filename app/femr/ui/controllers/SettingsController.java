@@ -40,8 +40,7 @@ public class SettingsController extends Controller {
 
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
-        return ok(femr.ui.views.html.settings.index.render(currentUser, editViewModelForm, assetsFinder));
+        return ok(femr.ui.views.html.settings.index.render(currentUser, assetsFinder));
     }
 
     public Result update() {
@@ -52,7 +51,7 @@ public class SettingsController extends Controller {
 
         Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
         if (editViewModelForm.hasErrors()) {
-            return badRequest(index.render(currentUser, editViewModelForm, assetsFinder));
+            return badRequest(index.render(currentUser, assetsFinder));
         }
 
         EditViewModel viewModel = editViewModelForm.get();

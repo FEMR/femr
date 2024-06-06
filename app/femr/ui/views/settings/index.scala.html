@@ -1,6 +1,13 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.settings.EditViewModel],
+        assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.settings
+@import views.html.helper
+@import views.html.helper.FieldConstructor
+@import views.html.helper.select
+@import views.html.helper.options
+@import femr.ui.controllers.routes.SettingsController
 
 <script>
         document.addEventListener('DOMContentLoaded', function(event) {
@@ -39,6 +46,27 @@
 
 @settings("Settings Panel", currentUser, assets = assets) {
     <h3 id="settings_welcome">Welcome, User. Please select a language.</h3>
+    @helper.form(action = SettingsController.update(), 'name -> "createForm") {
+        <input type="hidden" value="@form("userId").getValue.get()" name="userId"/>
+
+        <div class="editWrapBoth" id="editWrapLeft">
+
+            @helper.inputText(form("firstName"),
+                'class -> "fInput",
+                '_label -> "First Name"
+            )
+
+            @helper.inputText(form("lastName"),
+                'class -> "fInput",
+                '_label -> "Last Name"
+            )
+
+            @helper.inputText(form("languageCode"),
+                'class -> "fInput",
+                '_label -> "Language"
+            )
+        }
+</div>
     <p class="userStatus">
         <select id="languageSelect" style="margin-left: 10px">
             <option value="en">English</option>

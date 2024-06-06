@@ -93,6 +93,13 @@
                 function updateGenderLabels(languageData, language) {
                     // Check if the language data exists for the selected language
                     if(languageData[language]) {
+                        // Update the Male button
+                        // if(languageData[language]['triage_index_Gender']) {
+                        //     const genderLabelElement = document.querySelector("label[for='genderBtns']");
+                        //     if (genderLabelElement) {
+                        //         genderLabelElement.textContent = languageData[language]['triage_index_Gender'] + " ";
+                        //     }
+                        // }
                         if(languageData[language]['triage_index_Male']) {
                             const maleBtn = document.getElementById('maleBtn');
                             if (maleBtn) {
@@ -108,6 +115,23 @@
                         }
                     }
                 }
+                function updateFileInputText(languageData, language) {
+                    const fileInputLabel = document.getElementById('chooseFileLabel');
+                    const fileChosenText = document.getElementById('fileChosenText');
+
+                    if (fileInputLabel && languageData[language] && languageData[language]['triage_index_choose']) {
+                        fileInputLabel.textContent = languageData[language]['triage_index_choose'];
+                    }
+
+                    if (fileChosenText && languageData[language] && languageData[language]['triage_index_No']) {
+                        fileChosenText.textContent = languageData[language]['triage_index_No'];
+                    }
+                }
+                document.getElementById('photoInput').addEventListener('change', function() {
+                    const fileChosenText = document.getElementById('fileChosenText');
+                    fileChosenText.textContent = this.files.length ? this.files[0].name : languageData[currentLanguage]['triage_index_No'];
+                });
+
                 function updateAgeClassificationLabels(languageData, language) {
                     const classifications = document.querySelectorAll('#classificationRadioWrap label');
                     classifications.forEach(label => {
@@ -126,62 +150,6 @@
                         }
                     });
                 }
-
-                function updateLabels(languageData, language) {
-                    // Update gender labels
-                    if (languageData[language]) {
-                        // Update the Male button
-                        if (languageData[language]['triage_index_Male']) {
-                            const maleBtn = document.getElementById('maleBtn');
-                            if (maleBtn) {
-                                maleBtn.nextSibling.textContent = languageData[language]['triage_index_Male'];
-                            }
-                        }
-                        // Update the Female button
-                        if (languageData[language]['triage_index_Female']) {
-                            const femaleBtn = document.getElementById('femaleBtn');
-                            if (femaleBtn) {
-                                femaleBtn.nextSibling.textContent = languageData[language]['triage_index_Female'];
-                            }
-                        }
-                    }
-                    // Update age classification labels
-                    const classifications = document.querySelectorAll('#classificationRadioWrap label');
-                    classifications.forEach(label => {
-                        // Extracting the key from the label's ID (label_infant -> infant)
-                        const classification = label.id.replace('label_', '');
-                        const span = label.querySelector('span'); // Finds the span inside the current label
-                        const translationKey = "ageClassification_" + classification; // Constructs the translation key
-
-                        // Check if the translation exists for the given key and language
-                        if (languageData[language] && languageData[language][translationKey]) {
-                            const labelText = languageData[language][translationKey];
-                            // Updating the text inside the span
-                            if (span) {
-                                span.textContent = labelText;
-                            }
-                        }
-                    });
-                }
-
-                function updateFileInputText(languageData, language) {
-                    const fileInputLabel = document.getElementById('chooseFileLabel');
-                    const fileChosenText = document.getElementById('fileChosenText');
-
-                    if (fileInputLabel && languageData[language] && languageData[language]['triage_index_choose']) {
-                        fileInputLabel.textContent = languageData[language]['triage_index_choose'];
-                    }
-
-                    if (fileChosenText && languageData[language] && languageData[language]['triage_index_No']) {
-                        fileChosenText.textContent = languageData[language]['triage_index_No'];
-                    }
-                }
-                document.getElementById('photoInput').addEventListener('change', function() {
-                    const fileChosenText = document.getElementById('fileChosenText');
-                    fileChosenText.textContent = this.files.length ? this.files[0].name : languageData[currentLanguage]['triage_index_No'];
-                });
-
-
                 function updateAgeInputPlaceholders(languageCode) {
                     // Update placeholders
                     const yearsInput = document.getElementById('yearsInput'); // You need to ensure this is the correct ID

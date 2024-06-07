@@ -7,8 +7,11 @@ import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
+import femr.data.models.mysql.User;
 import femr.ui.models.settings.EditViewModel;
+import femr.ui.models.settings.IndexViewModelGet;
 import femr.ui.views.html.settings.index;
+
 
 import femr.ui.views.html.sessions.create;
 import femr.util.stringhelpers.StringUtils;
@@ -17,6 +20,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.data.Form;
 
+import javax.xml.ws.Service;
 import java.util.ArrayList;
 
 import java.util.ArrayList;
@@ -40,7 +44,18 @@ public class SettingsController extends Controller {
 
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(femr.ui.views.html.settings.index.render(currentUser, assetsFinder));
+        System.out.println("Test");
+        /*ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(currentUser.getId());
+        if (userServiceResponse.hasErrors()){
+            System.out.println("Test1333");
+            throw new RuntimeException();
+        }*/
+        System.out.println("Test1");
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        System.out.println("Test2");
+        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
+        System.out.println("Test3");
+        return ok(femr.ui.views.html.settings.index.render(currentUser, viewModelGet, editViewModelForm, assetsFinder));
     }
 
     public Result update() {
@@ -49,9 +64,10 @@ public class SettingsController extends Controller {
             return unauthorized();
         }
 
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
         Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
         if (editViewModelForm.hasErrors()) {
-            return badRequest(index.render(currentUser, assetsFinder));
+            return badRequest(index.render(currentUser, viewModelGet, editViewModelForm, assetsFinder));
         }
 
         EditViewModel viewModel = editViewModelForm.get();

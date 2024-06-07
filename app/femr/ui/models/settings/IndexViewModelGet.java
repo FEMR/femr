@@ -20,15 +20,16 @@
 package femr.ui.models.settings;
 
 import femr.data.models.core.IUser;
+import femr.common.models.UserItem;
 
 public class IndexViewModelGet {
-    private IUser user;
+    private UserItem user;
 
-    public IUser getUser() {
+    public UserItem getUser() {
         return user;
     }
 
-    public void setUser(IUser user) {
+    public void setUser(UserItem user) {
         this.user = user;
     }
 }

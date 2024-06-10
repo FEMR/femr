@@ -44,18 +44,7 @@ public class SettingsController extends Controller {
 
     public Result index() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        System.out.println("Test");
-        /*ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(currentUser.getId());
-        if (userServiceResponse.hasErrors()){
-            System.out.println("Test1333");
-            throw new RuntimeException();
-        }*/
-        System.out.println("Test1");
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
-        System.out.println("Test2");
-        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
-        System.out.println("Test3");
-        return ok(femr.ui.views.html.settings.index.render(currentUser, viewModelGet, editViewModelForm, assetsFinder));
+        return ok(femr.ui.views.html.settings.index.render(currentUser, assetsFinder));
     }
 
     public Result update() {
@@ -67,7 +56,7 @@ public class SettingsController extends Controller {
         IndexViewModelGet viewModelGet = new IndexViewModelGet();
         Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
         if (editViewModelForm.hasErrors()) {
-            return badRequest(index.render(currentUser, viewModelGet, editViewModelForm, assetsFinder));
+            return badRequest(index.render(currentUser, assetsFinder));
         }
 
         EditViewModel viewModel = editViewModelForm.get();

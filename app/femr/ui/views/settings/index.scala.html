@@ -1,6 +1,6 @@
 @(currentUser: femr.common.dtos.CurrentUser,
-        viewModelGet: femr.ui.models.settings.IndexViewModelGet,
-        form: play.data.Form[femr.ui.models.settings.EditViewModel],
+        //viewModelGet: femr.ui.models.settings.IndexViewModelGet,
+        //form: play.data.Form[femr.ui.models.settings.EditViewModel],
         assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.settings
@@ -17,10 +17,8 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        let initialLanguage = @currentUser.getLanguageCode();
-                        if (initialLanguage == null) {
-                            initialLanguage = "en";
-                        }
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        //const initialLanguage = currentUser.getLanguageCode();
                         updateLanguage(initialLanguage);
                         document.getElementById('languageSelect').value = initialLanguage;
                     });
@@ -36,16 +34,15 @@
                 }
             }
 
-            function updateLanguage(languageCode = "en") {
+            function updateLanguage(languageCode) {
                 localStorage.setItem('languageCode', languageCode);
-                //updateTextContent("admin_welcome", languageData[languageCode].admin_welcome);
+                updateTextContent("settings_title", languageData[languageCode].settings_title);
+                updateTextContent("settings_language", languageData[languageCode].settings_language);
             }
         });
 </script>
 
 @settings("Settings Panel", currentUser, assets = assets) {
-    <h3 id="settings_welcome">Welcome, User. Please select a language.</h3>
-
     <p class="userStatus">
         <select id="languageSelect" style="margin-left: 10px">
             <option value="en">English</option>

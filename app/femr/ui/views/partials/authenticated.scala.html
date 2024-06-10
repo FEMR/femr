@@ -21,7 +21,7 @@
                     .then(data => {
                         languageData = data;
                         const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                        //const initialLanguage = @currentUser.getLanguageCode();
+                        //const initialLanguage = currentUser.getLanguageCode();
                         updateLanguage(initialLanguage);
                         document.getElementById('languageSelect').value = initialLanguage;
                     });
@@ -47,6 +47,7 @@
                 updateTextContent("langCode_admin", languageData[languageCode].langCode_admin);
                 updateTextContent("langCode_superUser", languageData[languageCode].langCode_superUser);
                 updateTextContent("langCode_reference", languageData[languageCode].langCode_reference);
+                updateTextContent("langCode_settings", languageData[languageCode].langCode_settings);
             }
         });
 </script>

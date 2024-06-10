@@ -20,7 +20,10 @@
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
-                                updateLanguage();
+                                const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                                //const initialLanguage = currentUser.getLanguageCode();
+                                updateLanguage(initialLanguage);
+                                document.getElementById('languageSelect').value = initialLanguage;
                             });
 
                     document.getElementById('languageSelect').addEventListener('change', function() {
@@ -34,7 +37,7 @@
                         }
                     }
 
-                    function updateLanguage(languageCode = "en", currUser = " Admin!") {
+                    function updateLanguage(languageCode, currUser = " Admin!") {
                         const language = languageCode;
                         updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
                         updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);

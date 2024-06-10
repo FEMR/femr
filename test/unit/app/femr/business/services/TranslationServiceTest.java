@@ -57,6 +57,14 @@ public class TranslationServiceTest {
         Assert.assertEquals("Hello, World", medicalController.parseJsonResponse(data));
     }
 
+    @Test
+    public void translateTest(){
+        String data = "Hello, World";
+        String from = "en";
+        String to = "es";
+        Assert.assertEquals("Hola, Mundo", medicalController.translate(data, from, to));
+    }
+
     // TranslationServer Tests
     @Test
     public void getPortFromLogNoFileTest(){

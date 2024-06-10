@@ -5,6 +5,7 @@
         availableRoles: java.util.List[_ <: java.lang.String])
 
 @import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.main_no_footer
 @import femr.ui.controllers.routes.SessionsController
 @import femr.ui.controllers.admin.routes.UsersController
 
@@ -35,7 +36,7 @@
             <input type="submit" value="Create an account" />
 
             @if(errorMsg.equals(2)){
-                @main("Add User", styles = styles, assets = assets, scripts = additionalScripts) {
+                @main_no_footer("Add User", styles = styles, assets = assets, scripts = additionalScripts) {
                     <div id="createWrap">
                     @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal", 'name -> "createForm") {
 

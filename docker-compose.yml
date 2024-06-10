@@ -1,4 +1,4 @@
-version: "3"
+#version: "3"
 services:
 
   db:
@@ -15,12 +15,12 @@ services:
       - '3306'
     volumes:
       - db-data:/var/lib/mysql
-      
+
   femr:
-    image: spencerklawans/femr:latest
-    links: 
+    image: djump13/test-image:latest
+    links:
       - db:mysql
-    depends_on: 
+    depends_on:
       - db
     tty: true
     ports:
@@ -34,6 +34,17 @@ services:
       DB_USER: 'root'
       DB_PASS: 'password'
 
+  dns:
+    restart: always
+    image: strm/dnsmasq
+    volumes:
+      - './dns.conf:/etc/dnsmasq.conf'
+    ports:
+      - "53:53/udp"
+    expose:
+      - "53"
+    cap_add:
+      - NET_ADMIN
 
 volumes:
   db-data:

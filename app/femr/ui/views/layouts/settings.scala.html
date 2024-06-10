@@ -24,8 +24,8 @@
                         .then(response => response.json())
                         .then(data => {
                             languageData = data;
-                            //const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                            const initialLanguage = @currentUser.getLanguageCode();
+                            const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                            //const initialLanguage = currentUser.getLanguageCode();
                             updateLanguage(initialLanguage);
                             document.getElementById('languageSelect').value = initialLanguage;
                         });
@@ -53,12 +53,6 @@
 
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
-                    updateChildTextContent("admin_configure", languageData[languageCode].admin_configure);
-                    updateChildTextContent("admin_inventory", languageData[languageCode].admin_inventory);
-                    updateChildTextContent("admin_trips", languageData[languageCode].admin_trips);
-                    updateChildTextContent("admin_users", languageData[languageCode].admin_users);
-                    updateChildTextContent("admin_updates", languageData[languageCode].admin_updates);
-                    //updateTextContent("admin_title", languageData[languageCode].admin_title);
                 }
             });
     </script>
@@ -72,16 +66,14 @@
 
 @main(title, currentUser, adminStyles, assets = assets) {
     <div id="admin-panels">
-        <div id="admin-left-panel">
-            <a id="settings_profile" href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
-                Profile</a>
-            <a id="settings_language" href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
-                Language</a>
-        </div>
         <div id="admin-right-panel">
             <div id="title">
-                <h2 id="admin_title">Settings Panel</h2>
+                <h2 id="settings_title">Settings Panel</h2>
             </div>
+            <div id="info">
+                <h3 id="settings_language">Language Preference.</h3>
+            </div>
+
             @message
             <div id="adminContent">
             @content

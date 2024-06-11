@@ -29,9 +29,7 @@
                         .then(response => response.json())
                         .then(data => {
                             languageData = data;
-                            const storedLanguage = localStorage.getItem('languageCode') || 'en';
-                            updateLanguage(storedLanguage);
-                            document.getElementById('languageSelect').value = storedLanguage;
+                            updateLanguage("@{currentUser.getLanguageCode()}");
                         });
 
                 /*function updateTextContent(elementId, value) {
@@ -120,10 +118,6 @@
                     updateButtonValue("export-button", languageData[languageCode].export_data_button);
                     updateTextContent("select_trip_option", languageData[language].select_trip);
                 }
-
-                document.getElementById('languageSelect').addEventListener('change', function() {
-                    updateLanguage(this.value);
-                });
             });
     </script>
 

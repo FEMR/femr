@@ -47,34 +47,19 @@ public class SettingsController extends Controller {
         return ok(femr.ui.views.html.settings.index.render(currentUser, assetsFinder));
     }
 
-    public Result update() {
+    public Result update(String languageCode) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         if (currentUser == null) {
             return unauthorized();
         }
 
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
-        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class).bindFromRequest();
-        if (editViewModelForm.hasErrors()) {
-            return badRequest(index.render(currentUser, assetsFinder));
-        }
-
-        EditViewModel viewModel = editViewModelForm.get();
         ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(currentUser.getId());
         if (userServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
         UserItem userItem = userServiceResponse.getResponseObject();
-        userItem.setFirstName(viewModel.getFirstName());
-        userItem.setLastName(viewModel.getLastName());
-        userItem.setLanguageCode(viewModel.getLanguageCode());
-
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPasswordReset()) && viewModel.getPasswordReset().equals("on")) {
-            userItem.setPasswordReset(true);
-        } else {
-            userItem.setPasswordReset(false);
-        }
+        userItem.setLanguageCode(languageCode);
 
 
         ServiceResponse<UserItem> updateResponse = userService.updateUser(userItem, null);

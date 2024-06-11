@@ -73,7 +73,7 @@ GET         /search/typeahead/medicationAdministrations        @femr.ui.controll
 
 #Settings
 GET        /settings                                          @femr.ui.controllers.SettingsController.index()
-POST        /settings/update                                   @femr.ui.controllers.SettingsController.update()
+POST        /settings/update                                   @femr.ui.controllers.SettingsController.update(languageCode: String)
 
 
 #Photo

@@ -26,6 +26,145 @@
         <script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/fuse.js")"></script>
+        <script>
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    let languageData;
+                    fetch('@routes.Assets.versioned("json/languages.json")')
+                            .then(response => response.json())
+                            .then(data => {
+                                languageData = data;
+                                const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                                //const initialLanguage = currentUser.getLanguageCode();
+                                updateLanguage(initialLanguage);
+                                document.getElementById('languageSelect').value = initialLanguage;
+                            });
+
+                    document.getElementById('languageSelect').addEventListener('change', function() {
+                        updateLanguage(this.value);
+                    });
+                    function updateInputField(identifier, value) {
+                        const inputElement = document.getElementById(identifier);
+                        const labelElement = document.querySelector(`label[for='${identifier}']`);
+                        if (inputElement && labelElement) {
+                            labelElement.textContent = value;
+                            inputElement.placeholder = value;
+                        }
+
+                    }
+
+                    function updateTextContentInLineVar(elementId, value) {
+                        const element = document.getElementById(elementId);
+                        // console.log(elementId);
+                        // console.log(element);
+                        // console.log(element.textContent.split("-"))
+                        tmp = element.textContent.split("-");
+                        if (element) {
+                            element.textContent = value ;
+                            for (let i = 1; i < tmp.length; i++) {
+                                element.textContent = element.textContent+"- "+tmp[i];
+                            }
+                        }
+                    }
+
+                    function updateInputFieldValue(identifier, value) {
+                        const inputElement = document.getElementById(identifier);
+                        // No need to find a label element if you're just updating an input's placeholder
+                        if (inputElement) {
+                            inputElement.placeholder = value;
+                        }
+                    }
+
+
+                    function updateTextContent(elementId, value) {
+                        const element = document.getElementById(elementId);
+                        // console.log(elementId);
+                        if (element) {
+                            element.textContent = value;
+                        }
+                    }
+
+                    function updateLanguage(languageCode ) {
+                        localStorage.setItem('languageCode', languageCode);
+                        const language = languageCode;
+                        // in hpi fields
+                        updateTextContent("partials_medical_tabs_hpi_onset", languageData[language].partials_medical_tabs_hpi_onset);
+                        updateTextContent("partials_medical_tabs_hpi_Radiation", languageData[language].partials_medical_tabs_hpi_Radiation);
+                        updateTextContent("partials_medical_tabs_hpi_Quality", languageData[language].partials_medical_tabs_hpi_Quality);
+                        updateTextContent("partials_medical_tabs_hpi_Provokes", languageData[language].partials_medical_tabs_hpi_Provokes);
+                        updateTextContent("partials_medical_tabs_hpi_Palliates", languageData[language].partials_medical_tabs_hpi_Palliates);
+                        updateTextContent("partials_medical_tabs_hpi_Time", languageData[language].partials_medical_tabs_hpi_Time);
+                        updateTextContent("partials_medical_tabs_hpi_Narrative", languageData[language].partials_medical_tabs_hpi_Narrative);
+                        updateTextContent("partials_medical_tabs_hpi_Physical", languageData[language].partials_medical_tabs_hpi_Physical);
+                        updateTextContent("partials_medical_tabs_hpi_severity", languageData[language].partials_medical_tabs_hpi_severity);
+
+                        // in edit page
+                        updateTextContent("medicalSubmitBtn", languageData[language].medical_edit_Submit);
+                        updateTextContent("medical_edit_History", languageData[language].medical_edit_History);
+                        updateTextContent("medical_edit_View", languageData[language].medical_edit_View);
+                        updateTextContent("newVitalsBtn", languageData[language].medical_edit_Record);
+                        updateTextContent("medical_edit_Complaint", languageData[language].medical_edit_Complaint);
+                        updateTextContent("medical_edit_Complaint2", languageData[language].medical_edit_Complaint);
+                        updateTextContent("hip", languageData[language].medical_edit_HPI);
+                        updateTextContent("treatment", languageData[language].medical_edit_Treatment);
+                        updateTextContent("phm", languageData[language].medical_edit_PMH);
+                        updateTextContent("photos", languageData[language].medical_edit_Photos);
+
+                        //treatment
+                        updateTextContent("partials_medical_tabs_treatment_Assessment", languageData[language].partials_medical_tabs_treatment_Assessment);
+                        updateTextContent("partials_medical_tabs_treatment_Diagnosis", languageData[language].partials_medical_tabs_treatment_Diagnosis);
+                        updateTextContent("partials_medical_tabs_treatment_Prescriptions", languageData[language].partials_medical_tabs_treatment_Prescriptions);
+                        updateTextContent("partials_medical_tabs_treatment_Administration", languageData[language].partials_medical_tabs_treatment_Administration);
+                        updateTextContent("partials_medical_tabs_treatment_Days", languageData[language].partials_medical_tabs_treatment_Days);
+                        updateTextContent("partials_medical_tabs_treatment_Amount", languageData[language].partials_medical_tabs_treatment_Amount);
+                        updateTextContent("partials_medical_tabs_treatment_looking", languageData[language].partials_medical_tabs_treatment_looking);
+                        updateTextContent("partials_medical_tabs_treatment_Procedure", languageData[language].partials_medical_tabs_treatment_Procedure);
+                        updateTextContent("partials_medical_tabs_treatment_Pharmacy", languageData[language].partials_medical_tabs_treatment_Pharmacy);
+
+                        //pmh
+                        updateTextContent("partials_medical_tabs_pmh_Medical", languageData[language].partials_medical_tabs_pmh_Medical);
+                        updateTextContent("partials_medical_tabs_pmh_Social", languageData[language].partials_medical_tabs_pmh_Social);
+                        updateTextContent("partials_medical_tabs_pmh_Medications", languageData[language].partials_medical_tabs_pmh_Medications);
+                        updateTextContent("partials_medical_tabs_pmh_Family", languageData[language].partials_medical_tabs_pmh_Family);
+
+                        //photo
+                        updateTextContent("partials_medical_tabs_photo_Add", languageData[language].partials_medical_tabs_photo_Add);
+                        updateTextContent("btnEditText", languageData[language].partials_medical_tabs_photo_Edit);
+                        updateTextContent("btnDeletePhoto", languageData[language].partials_medical_tabs_photo_Delete);
+
+                        //vitals
+                        updateTextContent("medical_vitals_Smoking", languageData[language].medical_vitals_Smoking);
+                        updateTextContent("medical_vitals_Diabetes", languageData[language].medical_vitals_Diabetes);
+                        updateTextContent("medical_vitals_Alcohol", languageData[language].medical_vitals_Alcohol);
+                        updateTextContent("medical_vitals_Cholesterol", languageData[language].medical_vitals_Cholesterol);
+                        updateTextContent("medical_vitals_Hypertension", languageData[language].medical_vitals_Hypertension);
+
+                        //New Vitals --- NOT Working
+                        updateTextContent("medical_new_vitals_Smoking", languageData[language].medical_new_vitals_Smoking);
+                        updateTextContent("newSystolic", languageData[language].medical_new_vitals_systolic);
+                        updateTextContent("newDiastolic", languageData[language].medical_new_vitals_diastolic);
+                        updateTextContent("medical_new_vitals_Diabetes", languageData[language].medical_new_vitals_Diabetes);
+                        updateTextContent("medical_new_vitals_Alcohol", languageData[language].medical_new_vitals_Alcohol);
+                        updateTextContent("medical_new_vitals_Cholesterol", languageData[language].medical_new_vitals_Cholesterol);
+                        updateTextContent("medical_new_vitals_Hypertension", languageData[language].medical_new_vitals_Hypertension);
+                        updateTextContent("saveVitalsBtn", languageData[language].medical_new_vitals_Save);
+                        updateTextContent("cancelVitalsBtn", languageData[language].medical_new_vitals_Cancel);
+                        updateInputFieldValue("weeksPreg", languageData[language].medical_new_vitals_weeks);
+
+                        //Overview
+                        updateTextContent("partials_medical_Overview_Name", languageData[language].partials_medical_Overview_Name);
+                        updateTextContent("partials_medical_Overview_Age", languageData[language].partials_medical_Overview_Age);
+                        updateTextContent("partials_medical_Overview_Sex", languageData[language].partials_medical_Overview_Sex);
+                        updateTextContent("partials_medical_Overview_City", languageData[language].partials_medical_Overview_City);
+                        updateTextContent("partials_medical_Overview_Pregnant", languageData[language].partials_medical_Overview_Pregnant);
+                        updateTextContentInLineVar("partials_medical_Overview_Patient", languageData[language].partials_medical_Overview_Patient);
+
+                        const patientSearch = document.getElementById("patientSearch");
+                        if (patientSearch) {
+                            patientSearch.placeholder = languageData[language].home_index_div_ID;
+                        }
+                    }
+                });
+        </script>
     }
 
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical"), assets = assets) {
@@ -38,7 +177,7 @@
 
         <div id="mainWrap" class="backgroundForWrap">
             <div id = "header">
-                <h4>Complaint</h4>
+                <h4 id="medical_edit_Complaint">Complaint</h4>
                 <div id = "toggle">
                     <button type="button" id="toggleBtn" onclick="return change(this)" class="fButton fOtherButton">
                         Translating
@@ -60,7 +199,8 @@
                 @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
                     <span>@patientEncounter.getChiefComplaints.get(0)</span>
                 } else {
-                    <label>Complaint: </label>
+                    <label id="medical_edit_Complaint2">Complaint: </label>
+@*                    TODO Complaint*@
                     <span>N/A</span>
                 }
             </div>
@@ -136,8 +276,8 @@
                             }
 
                             <a href="@{HistoryController.indexPatientGet(
-                                Integer.toString(viewModel.getPatientItem.getId)).url}" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
-                            <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="fButton fOtherButton pull-left" target="_blank">View in Pharmacy</a>
+                                Integer.toString(viewModel.getPatientItem.getId)).url}" class="fButton fOtherButton pull-left" target="_blank" id="medical_edit_History">Patient History</a>
+                            <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="fButton fOtherButton pull-left" target="_blank" id="medical_edit_View">View in Pharmacy</a>
                         </div>
 
                     </div>

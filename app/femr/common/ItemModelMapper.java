@@ -327,9 +327,9 @@ public class ItemModelMapper implements IItemModelMapper {
             patientEncounterItem.setPharmacistFullName(patientEncounter.getPharmacist().getFirstName() + " " + patientEncounter.getPharmacist().getLastName()); // Andrew Change
         }
         patientEncounterItem.setTurnAroundTime(dateUtils.getTurnAroundTime(patientEncounterItem));
-        if (patientEncounter.getLanguageCode() != null ) {
-            patientEncounterItem.setLanguageCode(patientEncounter.getLanguageCode());
-        }
+       // if (patientEncounter.getLanguageCode() != null ) {
+        patientEncounterItem.setLanguageCode("en");
+        //}
         return patientEncounterItem;
 
 

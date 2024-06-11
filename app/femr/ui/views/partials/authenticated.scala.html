@@ -1,3 +1,4 @@
+@import femr.ui.controllers.SettingsController
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
@@ -11,6 +12,7 @@
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 @import femr.ui.controllers.routes.ReferenceController
+@import femr.ui.controllers.routes.SettingsController
 
 <script>
         document.addEventListener('DOMContentLoaded', function(event) {
@@ -19,14 +21,8 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                        updateLanguage(initialLanguage);
-                        document.getElementById('languageSelect').value = initialLanguage;
+                        updateLanguage("@{currentUser.getLanguageCode()}");
                     });
-
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                updateLanguage(this.value);
-            });
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
@@ -35,7 +31,7 @@
                 }
             }
 
-            function updateLanguage(languageCode = "en") {
+            function updateLanguage(languageCode) {
                 localStorage.setItem('languageCode', languageCode);
                 updateTextContent("langCode_triage", languageData[languageCode].langCode_triage);
                 updateTextContent("langCode_medical", languageData[languageCode].langCode_medical);
@@ -45,6 +41,7 @@
                 updateTextContent("langCode_admin", languageData[languageCode].langCode_admin);
                 updateTextContent("langCode_superUser", languageData[languageCode].langCode_superUser);
                 updateTextContent("langCode_reference", languageData[languageCode].langCode_reference);
+                updateTextContent("langCode_settings", languageData[languageCode].langCode_settings);
             }
         });
 </script>
@@ -85,77 +82,10 @@
         @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
             <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">SuperUser</a></li>
         }
+        <li><a id="langCode_settings" href="@SettingsController.index()">Settings</a></li>
         <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span id="langCode_reference">Reference</span></a></li>
     </ul>
     <p class="userStatus">
-        <select id="languageSelect" style="margin-right: 10px">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="ka">ಕನ್ನಡ</option>
-            <option value="fr">Français</option>
-            <option value="ar">العربية</option>
-            <option value="az">Azərbaycanca</option>
-            <option value="bg">български</option>
-            <option value="bn">বাংলা</option>
-            <option value="bs">Bosanski</option>
-            <option value="cs">Čeština</option>
-            <option value="da">Dansk</option>
-            <option value="de">Deutsch</option>
-            <option value="el">Ελληνικά</option>
-            <option value="et">Eesti</option>
-            <option value="fa">فارسی</option>
-            <option value="fi">Suomi</option>
-            <option value="fil">Filipino</option>
-            <option value="he">עברית</option>
-            <option value="hi">हिन्दी</option>
-            <option value="hr">Hrvatski</option>
-            <option value="hu">Magyar</option>
-            <option value="hy">Հայերեն</option>
-            <option value="id">Bahasa Indonesia</option>
-            <option value="it">Italiano</option>
-            <option value="ja">日本語</option>
-            <option value="ka">ქართული</option>
-            <option value="kk">Қазақ тілі</option>
-            <option value="km">ភាសាខ្មែរ</option>
-            <option value="ko">한국어</option>
-            <option value="ku">Kurdî</option>
-            <option value="ky">Кыргызча</option>
-            <option value="lo">ລາວ</option>
-            <option value="lt">Lietuvių</option>
-            <option value="lv">Latviešu</option>
-            <option value="mk">Македонски</option>
-            <option value="mn">Монгол</option>
-            <option value="ms">Bahasa Melayu</option>
-            <option value="my">ဗမာ</option>
-            <option value="ne">नेपाली</option>
-            <option value="nl">Nederlands</option>
-            <option value="no">Norsk</option>
-            <option value="pl">Polski</option>
-            <option value="ps">پښتو</option>
-            <option value="pt">Português</option>
-            <option value="ro">Română</option>
-            <option value="ru">Русский</option>
-            <option value="sd">سنڌي</option>
-            <option value="si">සිංහල</option>
-            <option value="sk">Slovenčina</option>
-            <option value="sl">Slovenščina</option>
-            <option value="sq">Shqip</option>
-            <option value="sr">Српски</option>
-            <option value="sv">Svenska</option>
-            <option value="sw">Kiswahili</option>
-            <option value="ta">தமிழ்</option>
-            <option value="tg">Тоҷикӣ</option>
-            <option value="th">ไทย</option>
-            <option value="tk">Türkmen</option>
-            <option value="tr">Türkçe</option>
-            <option value="uk">Українська</option>
-            <option value="ur">اردو</option>
-            <option value="uz">Oʻzbek</option>
-            <option value="vi">Tiếng Việt</option>
-            <option value="zh">中文</option>
-
-        </select>
-
         @currentUser.getFirstName @currentUser.getLastName
         <a href="@SessionsController.delete()">
             <span class="glyphicon glyphicon-log-out"></span>

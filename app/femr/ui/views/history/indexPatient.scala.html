@@ -16,6 +16,90 @@
 }
 @additionalScripts = {
     <script type="text/javascript" src="@assets.path("js/history/history.js")"></script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                            //const initialLanguage = currentUser.getLanguageCode();
+                            updateLanguage(initialLanguage);
+                            document.getElementById('languageSelect').value = initialLanguage;
+                        });
+
+                document.getElementById('languageSelect').addEventListener('change', function() {
+                    updateLanguage(this.value);
+                });
+                function updateInputField(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    const labelElement = document.querySelector(`label[for='${identifier}']`);
+                    if (inputElement && labelElement) {
+                        labelElement.textContent = value;
+                        inputElement.placeholder = value;
+                    }
+
+                }
+
+                function updateInputFieldValue(identifier, value) {
+                    const inputElement = document.getElementById(identifier);
+                    // No need to find a label element if you're just updating an input's placeholder
+                    if (inputElement) {
+                        inputElement.placeholder = value;
+                    }
+                }
+
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    // console.log(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateTextContentInLineVar(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    // console.log(elementId);
+                    // console.log(element);
+                    tmp = element.textContent.split(":")[1];
+                    if (element) {
+                         element.textContent = value + tmp;
+                    }
+                }
+
+                function updateLanguage(languageCode ) {
+                    localStorage.setItem('languageCode', languageCode);
+                    const language = languageCode;
+                    // in hpi fields
+                    console.log("test")
+                    updateTextContent("history_patient_First", languageData[language].history_patient_First);
+                    updateTextContent("history_patient_Last", languageData[language].history_patient_Last);
+                    updateTextContent("history_patient_Phone", languageData[language].history_patient_Phone);
+                    updateTextContent("history_patient_Address", languageData[language].history_patient_Address);
+                    updateTextContent("history_patient_City", languageData[language].history_patient_City);
+                    updateTextContent("history_patient_Age", languageData[language].history_patient_Age);
+                    updateTextContent("history_patient_Sex", languageData[language].history_patient_Sex);
+                    updateTextContent("history_patient_Previous", languageData[language].history_patient_Previous);
+                    updateTextContent("history_patient_General", languageData[language].history_patient_General);
+                    updateTextContent("history_patient_Chief", languageData[language].history_patient_Chief);
+                    updateTextContent("encounterAlert", languageData[language].history_patient_Click);
+                    updateTextContent("deletePatientBtn", languageData[language].history_patient_Delete);
+                    updateTextContent("history_patient_Pharmacy", languageData[language].history_patient_Pharmacy);
+                    updateTextContent("history_patient_Medical", languageData[language].history_patient_Medical);
+                    updateTextContent("history_patient_Triage", languageData[language].history_patient_Triage);
+                    updateTextContentInLineVar("history_patient_Patient", languageData[language].history_patient_Patient);
+
+
+                    const patientSearch = document.getElementById("patientSearch");
+                    if (patientSearch) {
+                        patientSearch.placeholder = languageData[language].home_index_div_ID;
+                    }
+                }
+            });
+    </script>
+
 }
 
 @main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history"), assets = assets) {
@@ -115,7 +199,7 @@
             }
             </div>
             <div id="patientInformation">
-                <h1 class="bold margin-top-zero">Patient Id: @viewModel.getPatientItem.getId</h1>
+                <h1 class="bold margin-top-zero" id="history_patient_Patient">Patient Id: @viewModel.getPatientItem.getId</h1>
 
                 @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
                     @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
@@ -127,9 +211,9 @@
                     </span>
                 }
 
-                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Medical</a>
-                <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Pharmacy</a>
-                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">See This Patient In Triage</a>
+                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right" id="history_patient_Medical">View in Medical</a>
+                <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right" id="history_patient_Pharmacy">View in Pharmacy</a>
+                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right"id="history_patient_Triage">See This Patient In Triage</a>
 
                 <br/><br/>
             </div>
@@ -138,28 +222,28 @@
 
         <div class="row inputRow">
             <div class="col-sm-6 col-xs-12 col-md-6">
-                <h3 class="pull-left bold margin-top-zero">General Info</h3>
+                <h3 class="pull-left bold margin-top-zero" id="history_patient_General">General Info</h3>
                 <div class="medicalHistoryLineDivide"></div>
                 <div class="text-center">
-                    <label class="inputLabel">First Name:</label>
+                    <label class="inputLabel" id="history_patient_First">First Name:</label>
                     <input type="text" class="form-control input-sm pull-left" name="firstName" value="@viewModel.getPatientItem.getFirstName" readonly/>
-                    <label class="inputLabel">Last Name:</label>
+                    <label class="inputLabel" id="history_patient_Last">Last Name:</label>
                     <input type="text" class="form-control input-sm pull-left" name="lastName" value="@viewModel.getPatientItem.getLastName" readonly/>
-                    <label class="inputLabel">Phone Number:</label>
+                    <label class="inputLabel" id="history_patient_Phone">Phone Number:</label>
                     <input type="tel" class="form-control input-sm pull-left" name="phoneNumber" value="@viewModel.getPatientItem.getPhoneNumber" readonly/>
-                    <label class="inputLabel">Address:</label>
+                    <label class="inputLabel" id="history_patient_Address">Address:</label>
                     <input type="text" class="form-control input-sm pull-left" name="address" value="@viewModel.getPatientItem.getAddress" readonly/>
-                    <label class="inputLabel">City:</label>
+                    <label class="inputLabel" id="history_patient_City">City:</label>
                     <input type="text" class="form-control input-sm pull-left" name="city" value="@viewModel.getPatientItem.getCity" readonly/>
-                    <label class="inputLabel">Age:</label>
+                    <label class="inputLabel" id="history_patient_Age">Age:</label>
                     <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getPatientItem.getAge" readonly/>
-                    <label class="inputLabel">Sex:</label>
+                    <label class="inputLabel" id="history_patient_Sex">Sex:</label>
                     <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getPatientItem.getSex" readonly/>
                     @*display pregnancy?*@
                 </div>
             </div>
             <div class="col-sm-6 col-xs-12 col-md-6">
-                <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
+                <h3 class="pull-left bold margin-top-zero" id="history_patient_Previous">Previous Encounters</h3>
 
                 <div class="medicalHistoryLineDivide"></div>
                 <ol>
@@ -168,9 +252,9 @@
                         <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
                             <p class="date">@patientEncounter.getTriageDateOfVisit</p>
                             @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0){
-                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1)  @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
+                                <p class ="chiefComplaint"><strong id="history_patient_Chief">Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1)  @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
                             }else{
-                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> N/A</p>
+                                <p class ="chiefComplaint"><strong id="history_patient_Chief">Chief complaint: </strong> N/A</p>
                             }
                         </a>
                     </li>

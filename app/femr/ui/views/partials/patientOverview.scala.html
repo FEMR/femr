@@ -7,7 +7,7 @@
 
 <div id="patientOverviewWrap" class="backgroundForWrap">
 
-    <h3>Patient Overview - @pageName</h3>
+    <h3 id="partials_medical_Overview_Patient">Patient Overview - @pageName</h3>
 
     @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
         <img src="@patient.getPathToPhoto" height="90" width="90">
@@ -16,10 +16,10 @@
         <div id= "patientOverViewInfo">
     }
 
-    <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
-    <label for="">Age: </label><span>@patient.getAge</span>
-    <label for="">Sex: </label><span>@patient.getSex</span>
-    <label for="">City: </label><span>@patient.getCity</span>
+    <label id="partials_medical_Overview_Name">Name: </label><span>@patient.getFirstName @patient.getLastName</span>
+    <label for="" id="partials_medical_Overview_Age">Age: </label><span>@patient.getAge</span>
+    <label for="" id="partials_medical_Overview_Sex">Sex: </label><span>@patient.getSex</span>
+    <label for="" id="partials_medical_Overview_City">City: </label><span>@patient.getCity</span>
     <!-- [FEMR-217] - views/medical/edit.scala.html no longer passes simply "Medical" - now passes "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId -->
     <!-- broken in commit 23c533c -->
     <!-- Currently assumes "Medical -" will start pageName argument.  If this changes, updated string in conditional execution -->
@@ -34,7 +34,7 @@
 
     @* Weeks Pregnant *@
 
-    <label>Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
+    <label id="partials_medical_Overview_Pregnant">Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
 
 </div>
 </div>

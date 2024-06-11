@@ -1,4 +1,7 @@
-@(page: java.lang.String, patientId: java.lang.Integer, message: java.lang.String)
+@(page: java.lang.String,
+        currentUser: femr.common.dtos.CurrentUser,
+        patientId: java.lang.Integer,
+        message: java.lang.String)
 
 <script>
         document.addEventListener('DOMContentLoaded', function(event) {
@@ -7,14 +10,9 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                        updateLanguage(initialLanguage);
-                        document.getElementById('languageSelect').value = initialLanguage;
-                    });
+                        updateLanguage("@{currentUser.getLanguageCode()}");
 
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                updateLanguage(this.value);
-            });
+                    });
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);

@@ -16,37 +16,46 @@
         <script>
                 document.addEventListener('DOMContentLoaded', function(event) {
                     let languageData;
+
+                    // Fetch language data
                     fetch('@routes.Assets.versioned("json/languages.json")')
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
-                                updateLanguage();
-                            });
+                                updateLanguage("@{currentUser.getLanguageCode()}");
 
-                    document.getElementById('languageSelect').addEventListener('change', function() {
-                        updateLanguage(this.value);
-                    });
+                            })
+                            .catch(error => console.error('Error fetching language data:', error));
 
                     function updateTextContent(elementId, value) {
                         const element = document.getElementById(elementId);
                         if (element) {
                             element.textContent = value;
+                        } else {
+                            console.error(`Element with ID '${elementId}' not found.`);
                         }
                     }
 
-                    function updateLanguage(languageCode = "en", currUser = " Admin!") {
+                    function updateLanguage(languageCode, currUser = " Admin!") {
                         const language = languageCode;
-                        updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
-                        updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
-                        updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
-                        updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);
-                        updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
-                        const patientSearch = document.getElementById("patientSearch");
-                        if (patientSearch) {
-                            patientSearch.placeholder = languageData[language].home_index_div_ID;
+                        if (languageData && languageData[language]) {
+                            updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
+                            updateTextContent("home_index_div_Your", languageData[language].home_index_div_Your);
+                            updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
+                            updateTextContent("home_index_p_Or", languageData[language].home_index_p_Or);
+                            updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
+                            const patientSearch = document.getElementById("patientSearch");
+                            if (patientSearch) {
+                                patientSearch.placeholder = languageData[language].home_index_div_ID;
+                            } else {
+                                console.error("Element with ID 'patientSearch' not found.");
+                            }
+                        } else {
+                            console.error(`Language data for code '${language}' not found.`);
                         }
                     }
                 });
+
         </script>
     }
 

@@ -2,18 +2,18 @@
 <script>
         document.addEventListener('DOMContentLoaded', function(event) {
             let languageData;
+            let languageCode;
             fetch('@routes.Assets.versioned("json/languages.json")')
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
                         const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        //const initialLanguage = currentUser.getLanguageCode();
                         updateLanguage(initialLanguage);
                         document.getElementById('languageSelect').value = initialLanguage;
+                        languageCode = "en";
+                        updateLanguage(languageCode);
                     });
-
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                updateLanguage(this.value);
-            });
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);

@@ -78,5 +78,11 @@ public class CurrentUser {
         return SessionTimeOut;
     }
 
-    public String getLanguageCode() { return langCode;}
+    public String getLanguageCode() {
+        return this.langCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.langCode = languageCode;
+    }
 }

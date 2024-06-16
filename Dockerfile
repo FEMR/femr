@@ -4,7 +4,7 @@ RUN apt-get update -y
 RUN apt-get install -y sudo
 
 #get java
-RUN sudo apt install -y openjdk-8-jdk
+RUN sudo apt install -y openjdk-17-jdk
 
 RUN sudo apt-get install -y wget
 RUN sudo apt-get install -y unzip

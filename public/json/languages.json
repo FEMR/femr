@@ -259,7 +259,7 @@
     "end": "End",
     "clear": "Clear",
     "apply": "Apply",
-    "export_data_button": "Export Data",
+
     "manage_trips": "Manage Trips",
     "manage_teams": "Manage Teams",
     "manage_cities": "Manage Cities",
@@ -268,7 +268,7 @@
     "manage_trip_users": "Manage Trip Users »",
     "formulary_view_info": "You are viewing the formulary for",
     "settings_title": "Settings Panel",
-    "settings_language": "Language Preference",
+    "settings_language": "Langua99ge Preference",
 
 
 
@@ -355,9 +355,15 @@
     "history_patient_Medical" :  "View in Medical:",
     "history_patient_Pharmacy" :  "View in Pharmacy:",
     "history_patient_Triage" :  "See This Patient In Triage:",
-    "history_patient_Patient" :  "Patient Id:"
+    "history_patient_Patient" :  "Patient Id:",
+    "export_data_button": "Export Data",
+    "research_select_lang" : "Select Language",
+    "research_select_lang_sub" : "-- Select Language --"
   },
   "es": {
+    "research_select_lang_sub":"-- Seleccione el idioma --",
+    "export_data_button": "Exportar dato2s",
+    "research_select_lang" : "Seleccione el idioma",
     "home_index_h2_Welcome": "Bienvenido a fEMR 2.4.1-beta,",
     "home_index_div_Your": "Se han recibido sus comentarios.",
     "home_index_p_Please": "¡Seleccione una pestaña en la parte superior para comenzar!",
@@ -617,7 +623,7 @@
     "end": "Fin",
     "clear": "Claro",
     "apply": "Aplicar",
-    "export_data_button": "Exportar datos",
+
     "manage_trips": "Administrar viajes",
     "manage_teams": "Administrar equipos",
     "manage_cities": "Administrar ciudades",
@@ -698,6 +704,7 @@
     "history_patient_Pharmacy": "Ver en Farmacia:",
     "history_patient_Triage": "Vea a este paciente en triaje:",
     "history_patient_Patient": "ID del paciente:"
+
   },
   "fr": {
     "home_index_h2_Welcome": "Bienvenue sur fEMR 2.4.1-beta,",

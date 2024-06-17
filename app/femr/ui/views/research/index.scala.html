@@ -115,8 +115,12 @@
                     updateInputField("filterRangeEnd", languageData[languageCode].end);
                     updateButtonValue("clear-button", languageData[languageCode].clear);
                     updateButtonValue("submit-button", languageData[languageCode].apply);
+                    updateTextContent("research_select_lang", languageData[languageCode].research_select_lang);
+                    updateTextContent("default", languageData[languageCode].research_select_lang_sub);
                     updateButtonValue("export-button", languageData[languageCode].export_data_button);
-                    updateTextContent("select_trip_option", languageData[language].select_trip);
+                    updateTextContent("select_trip_option", languageData[languageCode].select_trip);
+
+
                 }
             });
     </script>
@@ -282,9 +286,9 @@
                         </li>
                         <li class="export">
                             <span class="language">
-                                <label>Select Language</label>
+                                <label id="research_select_lang" >Select Language</label>
                                 <select id="ExportLanguage" name="ExportLanguage" class="language">
-                                    <option selected id="default" value="-1">-- Select Language --</option> @*Sean Hershey Language Select*@
+                                    <option selected id="default" value="-1" id="research_select_lang_sub">-- Select Language --</option> @*Sean Hershey Language Select*@
                                 </select>
                             </span>
 

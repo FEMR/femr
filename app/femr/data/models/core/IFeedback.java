@@ -16,4 +16,7 @@ public interface IFeedback {
     void setDate (DateTime theDate);
     void setFeedback (String theFeedback);
 
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
+
 }

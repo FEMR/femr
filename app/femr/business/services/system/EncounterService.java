@@ -18,12 +18,15 @@
 */
 package femr.business.services.system;
 
+import femr.business.services.core.ISessionService;
+import femr.common.dtos.CurrentUser;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
+import femr.business.services.core.ISessionService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -46,6 +49,7 @@ public class EncounterService implements IEncounterService {
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IPatientRepository patientRepository;
     private final IEncounterRepository patientEncounterRepository;
+    private final ISessionService sessionService;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IUserRepository userRepository;
@@ -56,6 +60,7 @@ public class EncounterService implements IEncounterService {
     public EncounterService(IRepository<IChiefComplaint> chiefComplaintRepository,
                             IPatientRepository patientRepository,
                             IEncounterRepository patientEncounterRepository,
+                            ISessionService sessionService,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IUserRepository userRepository,
@@ -65,6 +70,7 @@ public class EncounterService implements IEncounterService {
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
+        this.sessionService = sessionService;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.userRepository = userRepository;
@@ -77,7 +83,7 @@ public class EncounterService implements IEncounterService {
      */
     @Override
     public ServiceResponse<PatientEncounterItem> createPatientEncounter(int patientId, int userId, Integer tripId, String ageClassification, List<String> chiefComplaints) {
-
+        System.out.println("Create Patient Encounter");
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
 
         try {
@@ -98,8 +104,9 @@ public class EncounterService implements IEncounterService {
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();
 
-            IPatientEncounter newPatientEncounter = patientEncounterRepository.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId);
-
+            CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+            String languageCode = currentUserSession.getLanguageCode();
+            IPatientEncounter newPatientEncounter = patientEncounterRepository.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId, languageCode);
             List<IChiefComplaint> chiefComplaintBeans = new ArrayList<>();
             Integer chiefComplaintSortOrder = 0;
             for (String cc : chiefComplaints) {

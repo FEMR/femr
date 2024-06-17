@@ -84,4 +84,7 @@ public interface IUser {
     Integer getCreatedBy(); //Sam Zanni
 
     void setCreatedBy(Integer CreatedBy); //Sam Zanni
+
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
 }

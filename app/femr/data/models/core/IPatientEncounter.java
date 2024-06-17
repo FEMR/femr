@@ -88,4 +88,7 @@ public interface IPatientEncounter {
 
     void setReasonDeleted(String reason);
 
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
+
 }

@@ -1,5 +1,6 @@
 package femr.ui.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.*;
@@ -19,8 +20,12 @@ import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import femr.util.translation.TranslationJson;
+import femr.util.translation.TranslationServer;
+import femr.util.translation.TranslationResponseMap;
 import play.data.Form;
 import play.data.FormFactory;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -44,6 +49,8 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
+
+    private boolean showOg = false;
 
     @Inject
     public MedicalController(AssetsFinder assetsFinder,
@@ -117,12 +124,10 @@ public class MedicalController extends Controller {
         } catch (NullPointerException e) {
             return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
-
         return redirect(routes.MedicalController.editGet(patientId));
     }
 
     public Result editGet(int patientId) {
-
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
@@ -135,6 +140,7 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
         viewModelGet.setPatientEncounterItem(patientEncounter);
 
         //verify encounter is still open
@@ -150,6 +156,15 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
+
+        if (showOg) {
+            String toLanguage = currentUserSession.getLanguageCode();
+            String fromLanguage = patientEncounter.getLanguageCode();
+
+            List<String> test = new ArrayList<String>();
+            test.add(translate(patientEncounter.getChiefComplaints().get(0), fromLanguage, toLanguage));
+            patientEncounter.setChiefComplaints(test);
+        }
 
         //get prescriptions
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId(), currentUserSession.getTripId());
@@ -244,7 +259,63 @@ public class MedicalController extends Controller {
         //Alaa Serhan
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
 
-        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, assetsFinder));
+        return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet, patientEncounter, assetsFinder));
+    }
+    //    Calls Python Script to translate
+//    private String translate(String text, String fromLanguage, String toLanguage) {
+//
+//        String data = "";
+//        try {
+//            data = BackEndControllerHelper.translate(text, fromLanguage, toLanguage);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return data;
+//    }
+
+    public Result translateGet() {
+        String jsonText = request().getQueryString("text");
+        int patientId = Integer.parseInt(request().getQueryString("patientId"));
+
+        // retrieve current patient encounter encounter
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (currentEncounterByPatientId.hasErrors()) {
+            throw new RuntimeException();
+        }
+        //Harrison Shu
+        String toLanguage = sessionService.retrieveCurrentUserSession().getLanguageCode();
+        String fromLanguage = currentEncounterByPatientId.getResponseObject().getLanguageCode();
+
+
+        // Harrison Shu: Handles the creation of the response map and figures out whether or not to translate
+        TranslationResponseMap responseMapObject = new TranslationResponseMap(fromLanguage, toLanguage, jsonText);
+
+        return ok(responseMapObject.getResponseJson());
+    }
+
+
+//    Calls Python Script to translate
+    public static String translate(String jsonText, String fromLanguage, String toLanguage) {
+        String data = "";
+        try {
+            data = TranslationServer.makeServerRequest(jsonText, fromLanguage, toLanguage);
+            data = parseJsonResponse(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    public static String parseJsonResponse(String jsonResponse){
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            TranslationJson api = mapper.readValue(jsonResponse, TranslationJson.class);
+            jsonResponse = api.translatedText;
+            return jsonResponse;
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -407,8 +478,6 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
-
-
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

@@ -89,7 +89,7 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = userRepository.retrieveRolesByName(user.getRoles());
 
             // AJ Saclayan - Password Constraints
-            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, userId);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, user.isDeleted(), false, roles, userId);
             encryptAndSetUserPassword(newUser);
 
 

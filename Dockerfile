@@ -24,7 +24,8 @@ RUN mkdir -p $PROJECT_HOME/activator $PROJECT_HOME/app
 WORKDIR $PROJECT_WORKPLACE/activator
 
 # Install Play Framework
-RUN curl -O http://downloads.typesafe.com/typesafe-activator/1.3.6/typesafe-activator-1.3.6.zip 
+RUN curl -O https://downloads.typesafe.com/typesafe-activator/1.3.6/typesafe-activator-1.3.6.zip
+
 RUN unzip typesafe-activator-1.3.6.zip -d / && rm typesafe-activator-1.3.6.zip && ls && sudo chmod a+x /activator-dist-1.3.6/activator
 ENV PATH $PATH:/activator-1.3.6
 
@@ -35,11 +36,16 @@ RUN \
 
 # Install sbt
 RUN \
-  curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb && \
+  mkdir /working/ && \
+  cd /working/ && \
+  curl -L -o sbt-$SBT_VERSION.deb https://repo.scala-sbt.org/scalasbt/debian/sbt-$SBT_VERSION.deb && \
   dpkg -i sbt-$SBT_VERSION.deb && \
   rm sbt-$SBT_VERSION.deb && \
   apt-get update && \
-  apt-get install sbt
+  apt-get install sbt && \
+  cd && \
+  rm -r /working/ && \
+  sbt sbtVersion
 
 # Setup path variables and copy fEMR into container
 ENV PATH $PROJECT_HOME/activator/activator-dist-1.3.10/bin:$PATH

@@ -32,6 +32,9 @@ GET         /admin/updates                                     @femr.ui.controll
 POST        /admin/updates/database                            @femr.ui.controllers.admin.UpdatesController.databasePost()
 POST        /admin/updates/kit                                 @femr.ui.controllers.admin.UpdatesController.kitUpdatePost()
 GET         /admin/updates/internet                            @femr.ui.controllers.admin.UpdatesController.refreshInternetStatus()
+GET         /admin/updates/initLanguages                       @femr.ui.controllers.admin.UpdatesController.initializeLanguages()
+GET         /admin/updates/downloadPackages                    @femr.ui.controllers.admin.UpdatesController.downloadPackages()
+GET         /admin/updates/scheduleUpdate                      @femr.ui.controllers.admin.UpdatesController.updateLanguage()
 GET         /admin/trips                                       @femr.ui.controllers.admin.TripController.manageGet()
 POST        /admin/trips                                       @femr.ui.controllers.admin.TripController.managePost()
 GET         /admin/trips/edit/:id                              @femr.ui.controllers.admin.TripController.editGet(id: Integer)
@@ -67,6 +70,12 @@ GET         /search/typeahead/cities                           @femr.ui.controll
 GET         /search/typeahead/diagnoses                        @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
 GET         /search/typeahead/medicationsWithID                @femr.ui.controllers.SearchController.typeaheadMedicationsWithIDJSONGet()
 GET         /search/typeahead/medicationAdministrations        @femr.ui.controllers.SearchController.typeaheadMedicationAdministrationsJSONGet()
+
+#Settings
+GET        /settings                                          @femr.ui.controllers.SettingsController.index()
+POST        /settings/update                                   @femr.ui.controllers.SettingsController.update(languageCode: String)
+
+
 #Photo
 GET         /photo/patient/:id                                 @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean ?= false)
 GET         /photo/encounter/:id                               @femr.ui.controllers.PhotoController.GetPhoto(id: Int)
@@ -85,6 +94,7 @@ GET         /medical                                           @femr.ui.controll
 POST        /medical                                           @femr.ui.controllers.MedicalController.indexPost()
 GET         /medical/prescriptionRow/:index                    @femr.ui.controllers.MedicalController.prescriptionRowGet( index: Integer )
 POST        /medical/deleteProblem/:patientId/:problem         @femr.ui.controllers.MedicalController.deleteExistingProblem(patientId: Integer, problem: String)
+GET         /translate                                         @femr.ui.controllers.MedicalController.translateGet()
 #Research
 GET         /research                                          @femr.ui.controllers.ResearchController.indexGet()
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()
@@ -95,6 +105,7 @@ GET         /pdf/encounter/:encounterId                        @femr.ui.controll
 GET         /logout                                            @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                                       @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                                             @femr.ui.controllers.SessionsController.createPost()
+POST        /register                                          @femr.ui.controllers.SessionsController.createPostAccount()
 GET         /login                                             @femr.ui.controllers.SessionsController.createGet()
 #Reference
 GET         /reference                                         @femr.ui.controllers.ReferenceController.indexGet()

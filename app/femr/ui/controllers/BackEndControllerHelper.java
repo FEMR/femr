@@ -1,9 +1,9 @@
 package femr.ui.controllers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.util.ArrayList;
+
 
 public class BackEndControllerHelper  {
 
@@ -25,7 +25,7 @@ public class BackEndControllerHelper  {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath);
       Process p = pb.start();
-      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
 
       String line = "";
       while ((line = bfr.readLine()) != null) {

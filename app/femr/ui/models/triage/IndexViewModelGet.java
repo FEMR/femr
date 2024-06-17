@@ -18,6 +18,7 @@
 */
 package femr.ui.models.triage;
 
+import akka.http.javadsl.model.headers.Age;
 import femr.common.models.PatientItem;
 import femr.common.models.SettingItem;
 import femr.common.models.VitalItem;

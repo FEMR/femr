@@ -1,6 +1,6 @@
 @(chiefComplaint: String, severity: femr.common.models.TabFieldItem)
 
-<label for="severity">Severity</label>
+<label for="severity" id ="partials_medical_tabs_hpi_severity" >Severity</label>
 <input name="tabFieldItems[@severity.getIndex].name" type="text" class="hidden" value="severity"/>
 <input name="tabFieldItems[@severity.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
 <select name="tabFieldItems[@severity.getIndex].value" id="severityDropDown">

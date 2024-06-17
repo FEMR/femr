@@ -495,18 +495,23 @@ function mydate()
     document.getElementById("startDate").hidden=false;
     document.getElementById("ndt").hidden=true;
 }
-function mydate1()
-{
-    d=new Date(document.getElementById("startDate").value);
-    dt=d.getUTCDate();
-    mn=d.getUTCMonth();
-    mn++;
-    yy=d.getFullYear();
-    document.getElementById("ndt").value=dt+"/"+mn+"/"+yy;
-    document.getElementById("ndt").hidden=false;
-    document.getElementById("startDate").hidden=true;
-    document.getElementById("start-up").innerHTML=dt+"/"+mn+"/"+yy;
+function mydate1() {
+    var startDateElement = document.getElementById("startDate");
+    if (startDateElement) {
+        var d = new Date(startDateElement.value);
+        var dt = d.getUTCDate();
+        var mn = d.getUTCMonth() + 1; // Month is zero-based, hence the increment
+        var yy = d.getFullYear();
+        var ndtElement = document.getElementById("ndt");
+        if (ndtElement) {
+            ndtElement.value = dt + "/" + mn + "/" + yy;
+            ndtElement.hidden = false;
+            startDateElement.hidden = true;
+            document.getElementById("start-up").textContent = dt + "/" + mn + "/" + yy;
+        }
+    }
 }
+ßßßß
 function mydate2()
 {
     //alert("");

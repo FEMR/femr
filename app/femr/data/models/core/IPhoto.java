@@ -41,5 +41,7 @@ public interface IPhoto {
 
     byte[]   getPhotoBlob();
     void     setPhotoBlob(byte[] photo);
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
 
 }

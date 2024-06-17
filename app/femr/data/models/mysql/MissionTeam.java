@@ -38,6 +38,7 @@ public class MissionTeam implements IMissionTeam {
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "missionTeam")
     private List<MissionTrip> missionTrips;
+    private String languageCode;
 
     @Override
     public int getId() {
@@ -82,5 +83,12 @@ public class MissionTeam implements IMissionTeam {
     @Override
     public void setMissionTrips(List<MissionTrip> missionTrips) {
         this.missionTrips = missionTrips;
+    }
+    @Override
+    public String getLanguageCode() { return this.languageCode; }
+
+    @Override
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

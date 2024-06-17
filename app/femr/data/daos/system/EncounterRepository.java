@@ -41,7 +41,7 @@ public class EncounterRepository implements IEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId){
+    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode){
 
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
 
@@ -57,7 +57,7 @@ public class EncounterRepository implements IEncounterRepository {
                 patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
             if (tripId != null)
                 patientEncounter.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), tripId));
-
+            patientEncounter.setLanguageCode(languageCode);
             Ebean.save(patientEncounter);
         }catch (Exception ex){
 

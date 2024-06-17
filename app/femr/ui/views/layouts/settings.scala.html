@@ -1,0 +1,78 @@
+@import femr.ui.controllers.admin.routes.UsersController
+@(title: String,
+        currentUser: femr.common.dtos.CurrentUser,
+        styles: Html = Html(""),
+        scripts: Html = Html(""),
+        message: Html = Html(""),
+        outsideContainerTop: Html = Html(""),
+        outsideContainerBottom: Html = Html(""),
+        assets: AssetsFinder)(content: Html)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.admin.routes.ConfigureController
+@import femr.ui.controllers.admin.routes.InventoryController
+
+@adminScripts = {
+    <script type = "text/javascript" src="@assets.path("js/admin/admin.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
+@scripts
+
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            updateLanguage("@{currentUser.getLanguageCode()}");
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateChildTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                        if (textNode) {
+                            textNode.textContent = value;
+                        }
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                }
+            });
+    </script>
+}
+
+@adminStyles = {
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/admin/admin.css")">
+@styles
+}
+
+@main(title, currentUser, adminStyles, assets = assets) {
+    <div id="admin-panels">
+        <div id="admin-right-panel">
+            <div id="title">
+                <h2 id="settings_title">Settings Panel</h2>
+            </div>
+            <div id="info">
+                <h3 id="settings_language">Language Preference</h3>
+            </div>
+
+            @message
+            <div id="adminContent">
+            @content
+            </div>
+
+        </div>
+    </div>
+
+}

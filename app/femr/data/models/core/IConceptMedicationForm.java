@@ -38,4 +38,7 @@ public interface IConceptMedicationForm {
     Boolean getIsDeleted();
 
     void setIsDeleted(Boolean isDeleted);
+
+    String getLanguageCode();
+    void setLanguageCode(String languageCode);
 }

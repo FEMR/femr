@@ -249,4 +249,5 @@ public class PatientItem {
 
     public Integer getHypertension() {return hypertension;}
     public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
+
 }

@@ -6,9 +6,32 @@
 
 
 @main("Medical", currentUser, assets = assets) {
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            updateLanguage("@{currentUser.getLanguageCode()}");
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    updateTextContent("search_box_title", languageData[languageCode].title_medical_search);
+                }
+            });
+    </script>
     <div class="container">
     @helper.form(action = MedicalController.indexPost()) {
-        @searchBox("Medical", patientId, message)
+        @searchBox("Medical", currentUser, patientId, message)
     }
     </div>
 }

@@ -3,19 +3,14 @@
 @import femr.ui.views.html.layouts.admin
 
 <script>
-        document.addEventListener('DOMContentLoaded', function(event) {
+        document.addEventListener('DOMContentLoaded', function() {
             let languageData;
             fetch('@routes.Assets.versioned("json/languages.json")')
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        updateLanguage("@{currentUser.getLanguageCode()}");
-                        document.getElementById('languageSelect').value = initialLanguage;
+                        updateLanguage("@{currentUser.getLanguageCode}");
                     });
-
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                updateLanguage(this.value);
-            });
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);

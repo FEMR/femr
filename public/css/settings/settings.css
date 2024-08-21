@@ -1,0 +1,35 @@
+#settings {
+    width: 100%;
+    overflow: hidden;
+}
+
+#title {
+    border-bottom: 1px solid black;
+}
+
+#settings-panel {
+    background-color: #e9e6e6;
+    border: 3px solid #3f3f3d;
+    border-radius: 10px;
+    min-height: 400px;
+    padding: 10px;
+    min-width: 400px;
+}
+
+.settingsContent {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.languageSelect {
+    width: 200px;
+}
+
+@media (min-width: 1000px){
+    #settings-panel {
+        margin-top: 100px;
+        float: left;
+        width: 100%;
+    }
+}

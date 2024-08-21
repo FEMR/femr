@@ -511,7 +511,7 @@ function mydate1() {
         }
     }
 }
-ßßßß
+
 function mydate2()
 {
     //alert("");

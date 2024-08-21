@@ -9,7 +9,6 @@
                     languageData = data;
                     const storedLanguage = localStorage.getItem('languageCode');
                     updateLanguage(storedLanguage);
-                    document.getElementById('languageSelect').value = storedLanguage;
                 });
 
         function updateTextContent(elementId, value) {
@@ -25,10 +24,6 @@
             updateTextContent("manage_teams_btn", languageData[languageCode].manage_teams);
             updateTextContent("manage_cities_btn", languageData[languageCode].manage_cities);
         }
-
-        document.getElementById('languageSelect').addEventListener('change', function() {
-            updateLanguage(this.value);
-        });
     });
 </script>
 

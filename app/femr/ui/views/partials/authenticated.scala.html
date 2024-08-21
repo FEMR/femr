@@ -1,4 +1,3 @@
-@import femr.ui.controllers.SettingsController
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
@@ -21,7 +20,7 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        updateLanguage("@{currentUser.getLanguageCode()}");
+                        updateLanguage("@{currentUser.getLanguageCode}");
                     });
 
             function updateTextContent(elementId, value) {
@@ -79,15 +78,15 @@
         @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
             <li><a id="langCode_admin" href="@AdminController.index()">Admin</a></li>
         }
-        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {z
             <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">SuperUser</a></li>
         }
-        <li><a id="langCode_settings" href="@SettingsController.index()">Settings</a></li>
         <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span id="langCode_reference">Reference</span></a></li>
     </ul>
     <p class="userStatus">
         @currentUser.getFirstName @currentUser.getLastName
-        <a href="@SessionsController.delete()">
+        <a href="@SettingsController.index()" class="glyphicon glyphicon-cog settings"><span id="langCode_settings">Settings</span></a>
+        <a href="@SessionsController.delete()" class="log-out">
             <span class="glyphicon glyphicon-log-out"></span>
         </a>
     </p>

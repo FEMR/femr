@@ -1,6 +1,6 @@
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 <script>
-        document.addEventListener('DOMContentLoaded', function(event) {
+        document.addEventListener('DOMContentLoaded', function() {
             let languageData;
             let languageCode;
             fetch('@routes.Assets.versioned("json/languages.json")')
@@ -8,9 +8,7 @@
                     .then(data => {
                         languageData = data;
                         const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                        //const initialLanguage = currentUser.getLanguageCode();
                         updateLanguage(initialLanguage);
-                        document.getElementById('languageSelect').value = initialLanguage;
                         languageCode = "en";
                         updateLanguage(languageCode);
                     });

@@ -348,9 +348,6 @@ $(document).ready(function () {
         url: '/translate',
         data: {text : JSON.stringify(jsonObj), patientId: patientId},
         success: function(response){
-            console.log("response:", response);
-            console.log("translation:", response.translation);
-
             if(response.translation === "SameToSame"){
                 $("#toggleBtn").remove();
             }

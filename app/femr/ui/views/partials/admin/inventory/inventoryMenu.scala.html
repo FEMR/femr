@@ -11,7 +11,6 @@
                         languageData = data;
                         const storedLanguage = localStorage.getItem('languageCode');
                         updateLanguage(storedLanguage);
-                        document.getElementById('languageSelect').value = storedLanguage;
                     });
 
             function updateTextContent(elementId, value) {
@@ -29,9 +28,6 @@
                 updateTextContent("formulary_view_info", languageData[languageCode].formulary_view_info)
             }
 
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                updateLanguage(this.value);
-            });
         });
 </script>
 

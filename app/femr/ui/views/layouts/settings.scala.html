@@ -1,4 +1,5 @@
-@import femr.ui.controllers.admin.routes.UsersController
+@import femr.ui.controllers.routes.SettingsController
+
 @(title: String,
         currentUser: femr.common.dtos.CurrentUser,
         styles: Html = Html(""),
@@ -6,73 +7,68 @@
         message: Html = Html(""),
         outsideContainerTop: Html = Html(""),
         outsideContainerBottom: Html = Html(""),
-        assets: AssetsFinder)(content: Html)
+        assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.controllers.admin.routes.ConfigureController
-@import femr.ui.controllers.admin.routes.InventoryController
 
-@adminScripts = {
-    <script type = "text/javascript" src="@assets.path("js/admin/admin.js")"></script>
+@settingsScripts = {
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
-@scripts
-
+    <script type = "text/javascript" src="@assets.path("js/settings/settings.js")"></script>
     <script>
-            document.addEventListener('DOMContentLoaded', function(event) {
-                let languageData;
-                fetch('@routes.Assets.versioned("json/languages.json")')
-                        .then(response => response.json())
-                        .then(data => {
-                            languageData = data;
-                            updateLanguage("@{currentUser.getLanguageCode()}");
-                        });
-
-                function updateTextContent(elementId, value) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        element.textContent = value;
-                    }
-                }
-
-                function updateChildTextContent(elementId, value) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                        if (textNode) {
-                            textNode.textContent = value;
-                        }
-                    }
-                }
-
-                function updateLanguage(languageCode = "en") {
-                    localStorage.setItem('languageCode', languageCode);
-                }
-            });
+        $(document).ready(function () {
+            console.log("@{currentUser.getLanguageCode}");
+            mySelect.value = "@{currentUser.getLanguageCode}";
+        });
     </script>
+@scripts
 }
 
-@adminStyles = {
+@settingsStyles = {
     <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
-    <link rel="stylesheet" href="@assets.path("css/admin/admin.css")">
+    <link rel="stylesheet" href="@assets.path("css/settings/settings.css")">
 @styles
 }
 
-@main(title, currentUser, adminStyles, assets = assets) {
-    <div id="admin-panels">
-        <div id="admin-right-panel">
+@main(title, currentUser, settingsStyles, settingsScripts, assets = assets) {
+    <div id="settings">
+        <div id="settings-panel">
             <div id="title">
-                <h2 id="settings_title">Settings Panel</h2>
-            </div>
-            <div id="info">
-                <h3 id="settings_language">Language Preference</h3>
+                <h2 id="settings_title">Settings</h2>
             </div>
 
-            @message
-            <div id="adminContent">
-            @content
+            <div class="settingsContent">
+                <label id="settings_language">Language Preference</label>
+                <select id="languageSelect" class="fSelect languageSelect">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="ka">ಕನ್ನಡ</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="az">Azərbaycanca</option>
+                    <option value="cs">Čeština</option>
+                    <option value="da">Dansk</option>
+                    <option value="de">Deutsch</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="fa">فارسی</option>
+                    <option value="fi">Suomi</option>
+                    <option value="he">עברית</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="hu">Magyar</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="it">Italiano</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="pl">Polski</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="sv">Svenska</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="vi">Tiếng Việt</option>
+                    <option value="zh">中文</option>
+                </select>
             </div>
-
         </div>
+        @message
     </div>
-
 }

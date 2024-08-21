@@ -67,6 +67,7 @@ public class SettingsController extends Controller {
             return internalServerError();
         }
 
+
         return redirect("/settings");
     }
 

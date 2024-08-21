@@ -36,12 +36,8 @@
                                 const initialLanguage = localStorage.getItem('languageCode') || 'en';
                                 //const initialLanguage = currentUser.getLanguageCode();
                                 updateLanguage(initialLanguage);
-                                document.getElementById('languageSelect').value = initialLanguage;
                             });
 
-                    document.getElementById('languageSelect').addEventListener('change', function() {
-                        updateLanguage(this.value);
-                    });
                     function updateInputField(identifier, value) {
                         const inputElement = document.getElementById(identifier);
                         const labelElement = document.querySelector(`label[for='${identifier}']`);

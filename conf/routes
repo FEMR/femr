@@ -63,19 +63,16 @@ GET         /history/patient/withMatches/p                     @femr.ui.controll
 #Search
 GET         /search/:page                                      @femr.ui.controllers.SearchController.handleSearch(page: String)
 GET         /search/check/:query                               @femr.ui.controllers.SearchController.doesPatientExist(query: String)
-GET         /search/dupPatient/findMatch         @femr.ui.controllers.SearchController.doesPatientExistForSearch(first: String, last: String, phone: String ?= null, addr: String ?= null, age: java.lang.Long ?= null, gender: String, city: String)
+GET         /search/dupPatient/findMatch                       @femr.ui.controllers.SearchController.doesPatientExistForSearch(first: String, last: String, phone: String ?= null, addr: String ?= null, age: java.lang.Long ?= null, gender: String, city: String)
 GET         /search/typeahead/patients                         @femr.ui.controllers.SearchController.typeaheadPatientsJSONGet()
 # AJ Saclayan!  Adding in typeahead
 GET         /search/typeahead/cities                           @femr.ui.controllers.SearchController.typeaheadCitiesJSONGet()
 GET         /search/typeahead/diagnoses                        @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
 GET         /search/typeahead/medicationsWithID                @femr.ui.controllers.SearchController.typeaheadMedicationsWithIDJSONGet()
 GET         /search/typeahead/medicationAdministrations        @femr.ui.controllers.SearchController.typeaheadMedicationAdministrationsJSONGet()
-
 #Settings
-GET        /settings                                          @femr.ui.controllers.SettingsController.index()
-POST        /settings/update                                   @femr.ui.controllers.SettingsController.update(languageCode: String)
-
-
+GET         /settings                                          @femr.ui.controllers.SettingsController.index()
+POST        /settings/update/:languageCode                     @femr.ui.controllers.SettingsController.update(languageCode: String)
 #Photo
 GET         /photo/patient/:id                                 @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean ?= false)
 GET         /photo/encounter/:id                               @femr.ui.controllers.PhotoController.GetPhoto(id: Int)

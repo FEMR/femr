@@ -4,10 +4,6 @@
         assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.settings
-@import views.html.helper
-@import views.html.helper.FieldConstructor
-@import views.html.helper.select
-@import views.html.helper.options
 @import femr.ui.controllers.routes.SettingsController
 
 <script>
@@ -17,13 +13,9 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        updateLanguage("@{currentUser.getLanguageCode()}");
-                        //document.getElementById('languageSelect').value = initialLanguage;
+                        updateLanguage("@{currentUser.getLanguageCode}");
                     });
 
-            //document.getElementById('languageSelect').addEventListener('change', function() {
-                //updateLanguage(this.value);
-            //});
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
@@ -40,36 +32,4 @@
         });
 </script>
 
-@settings("Settings Panel", currentUser, assets = assets) {
-    <p class="userStatus">
-        <select id="languageSelect" style="margin-left: 10px">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="ka">ಕನ್ನಡ</option>
-            <option value="fr">Français</option>
-            <option value="ar">العربية</option>
-            <option value="az">Azərbaycanca</option>
-            <option value="cs">Čeština</option>
-            <option value="da">Dansk</option>
-            <option value="de">Deutsch</option>
-            <option value="el">Ελληνικά</option>
-            <option value="fa">فارسی</option>
-            <option value="fi">Suomi</option>
-            <option value="he">עברית</option>
-            <option value="hi">हिन्दी</option>
-            <option value="hu">Magyar</option>
-            <option value="id">Bahasa Indonesia</option>
-            <option value="it">Italiano</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
-            <option value="pl">Polski</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-            <option value="sk">Slovenčina</option>
-            <option value="sv">Svenska</option>
-            <option value="tr">Türkçe</option>
-            <option value="vi">Tiếng Việt</option>
-            <option value="zh">中文</option>
-        </select>
-    </p>
-}
+@settings("Settings Panel", currentUser, assets = assets)

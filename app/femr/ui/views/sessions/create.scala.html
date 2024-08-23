@@ -23,140 +23,140 @@
     }
 
 @main("Login", styles = additionalStyles, scripts = additionalScripts, assets = assets) {
-    @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
+    <div class="signInRegister">
         <div id="login">
-            <h1>Please sign in</h1>
-            @if(createForm != null && createForm.get.getEmail != null && createForm.get.getEmail != "" ) {
-                <input type="text" name="email" value='@createForm.get.getEmail' />
-            } else {
-                <input type="text" name="email" placeholder="Email" />
-            }
-            <input type="password" name="password" placeholder="Password" />
-            <input type="submit" value="Log in" />
-        </div>
-    }
-
-    @helper.form(action = SessionsController.editRegisterPost(), 'class -> "form-signin") {
-        <div id="login">
-            <h2> OR </h2>
-            <input type="submit" value="Create an account" />
-        </div>
-    }
-
-    <br/>
-
-    <div id="login">
-
-    @if(errorMsg.equals(2)){
-        <div class="errorMessage">
-            @if(messages != null) {
-                @for(message <- messages) {
-                    <h2>@message</h2>
+        @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
+                <h1>Please sign in</h1>
+                @if(createForm != null && createForm.get.getEmail != null && createForm.get.getEmail != "" ) {
+                    <input type="text" name="email" value='@createForm.get.getEmail' />
+                } else {
+                    <input type="text" name="email" placeholder="Email" />
                 }
-            }
+                <input type="password" name="password" placeholder="Password" />
+                <input type="submit" value="Log in" />
+        }
+
+        @helper.form(action = SessionsController.editRegisterPost(), 'class -> "form-signin bottomButton") {
+                <h2> OR </h2>
+                <input type="submit" value="Create an account" />
+        }
+
         </div>
 
-        @helper.form(action = SessionsController.createAccountPost(), 'class -> "form-horizontal createWrap", 'name -> "createForm") {
+        <br/>
 
-            @helper.inputText(createForm("email"),
-                'class -> "fInput",
-                'placeholder -> "Email Address",
-                '_label -> "Email Address",
-                '_isRequired -> true
-            )
+        @if(errorMsg.equals(2)){
+            <div id="login">
 
-            <div class="passwordWrap">
-                <div class="passwordFieldsWrap">
-                    @helper.inputPassword(createForm("password"),
+                <div class="errorMessage">
+                    @if(messages != null) {
+                        @for(message <- messages) {
+                            <h2>@message</h2>
+                        }
+                    }
+                </div>
+
+                @helper.form(action = SessionsController.createAccountPost(), 'class -> "form-horizontal createWrap", 'name -> "createForm") {
+
+                    @helper.inputText(createForm("email"),
                         'class -> "fInput",
-                        'placeholder -> "Password",
-                        '_label -> "Password",
+                        'placeholder -> "Email Address",
+                        '_label -> "Email Address",
                         '_isRequired -> true
                     )
 
-                        <!-- added for FEMR-159 added by Vivek-->
-                    @helper.inputPassword(createForm("passwordVerify"),
-                        'class -> "fInput verify",
-                        'placeholder -> "Verify Password",
-                        '_label -> null,
-                        'type -> "password"
+                    <div class="passwordWrap">
+                        <div class="passwordFieldsWrap">
+                            @helper.inputPassword(createForm("password"),
+                                'class -> "fInput",
+                                'placeholder -> "Password",
+                                '_label -> "Password",
+                                '_isRequired -> true
+                            )
+
+                                <!-- added for FEMR-159 added by Vivek-->
+                            @helper.inputPassword(createForm("passwordVerify"),
+                                'class -> "fInput verify",
+                                'placeholder -> "Verify Password",
+                                '_label -> null,
+                                'type -> "password"
+                            )
+                        </div>
+                    </div>
+
+                    @helper.inputText(createForm("firstName"),
+                        'class -> "fInput",
+                        'placeholder -> "First Name",
+                        '_label -> "First Name",
+                        '_isRequired -> true
                     )
-                </div>
-            </div>
 
-            @helper.inputText(createForm("firstName"),
-                'class -> "fInput",
-                'placeholder -> "First Name",
-                '_label -> "First Name",
-                '_isRequired -> true
-            )
+                    @helper.inputText(createForm("lastName"),
+                        'class -> "fInput",
+                        'placeholder -> "Last Name",
+                        '_label -> "Last Name",
+                        '_isRequired -> false
+                    )
 
-            @helper.inputText(createForm("lastName"),
-                'class -> "fInput",
-                'placeholder -> "Last Name",
-                '_label -> "Last Name",
-                '_isRequired -> false
-            )
+                    <div class="fieldWrap">
+                        <label id="settings_language">Language Preference</label>
+                        <select type="select" id="language" name="language" class="fInput languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="ka">ಕನ್ನಡ</option>
+                            <option value="fr">Français</option>
+                            <option value="ar">العربية</option>
+                            <option value="az">Azərbaycanca</option>
+                            <option value="cs">Čeština</option>
+                            <option value="da">Dansk</option>
+                            <option value="de">Deutsch</option>
+                            <option value="el">Ελληνικά</option>
+                            <option value="fa">فارسی</option>
+                            <option value="fi">Suomi</option>
+                            <option value="he">עברית</option>
+                            <option value="hi">हिन्दी</option>
+                            <option value="hu">Magyar</option>
+                            <option value="id">Bahasa Indonesia</option>
+                            <option value="it">Italiano</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="pl">Polski</option>
+                            <option value="pt">Português</option>
+                            <option value="ru">Русский</option>
+                            <option value="sk">Slovenčina</option>
+                            <option value="sv">Svenska</option>
+                            <option value="tr">Türkçe</option>
+                            <option value="vi">Tiếng Việt</option>
+                            <option value="zh">中文</option>
+                        </select>
+                    </div>
 
-            <div class="fieldWrap">
-                <label id="settings_language">Language Preference</label>
-                <select type="select" id="language" name="language" class="fInput languageSelect">
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="ka">ಕನ್ನಡ</option>
-                    <option value="fr">Français</option>
-                    <option value="ar">العربية</option>
-                    <option value="az">Azərbaycanca</option>
-                    <option value="cs">Čeština</option>
-                    <option value="da">Dansk</option>
-                    <option value="de">Deutsch</option>
-                    <option value="el">Ελληνικά</option>
-                    <option value="fa">فارسی</option>
-                    <option value="fi">Suomi</option>
-                    <option value="he">עברית</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="hu">Magyar</option>
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="it">Italiano</option>
-                    <option value="ja">日本語</option>
-                    <option value="ko">한국어</option>
-                    <option value="pl">Polski</option>
-                    <option value="pt">Português</option>
-                    <option value="ru">Русский</option>
-                    <option value="sk">Slovenčina</option>
-                    <option value="sv">Svenska</option>
-                    <option value="tr">Türkçe</option>
-                    <option value="vi">Tiếng Việt</option>
-                    <option value="zh">中文</option>
-                </select>
-            </div>
+                    @helper.inputText(createForm("notes"),
+                        'class -> "fInput",
+                        'placeholder -> "About User",
+                        '_label -> "About User",
+                        '_isRequired -> false
+                    )
 
-            @helper.inputText(createForm("notes"),
-                'class -> "fInput",
-                'placeholder -> "About User",
-                '_label -> "About User",
-                '_isRequired -> false
-            )
+                    <div id="roleWrap" class="roleWrap">
+                        <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
+                        <span class="errors"></span>
+                        @for(error <- createForm("roles").errors) {
+                            <p class="createUserError"> @error.message</p>
+                        }
 
-            <div id="roleWrap" class="roleWrap">
-                <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
-                <span class="errors"></span>
-                @for(error <- createForm("roles").errors) {
-                    <p class="createUserError"> @error.message</p>
-                }
-
-                <br/>
-                @for(role <- availableRoles) {
-                    <label class="btn btn-default">
-                        <input type="checkbox" name="roles[]" value="@role"> @role
-                    </label>
-                    <br/>
+                        <br/>
+                        @for(role <- availableRoles) {
+                            <label class="btn btn-default">
+                                <input type="checkbox" name="roles[]" value="@role"> @role
+                            </label>
+                            <br/>
+                        }
+                    </div>
+                    <input type="submit" class="registerSubmit" id="addUserSubmitBtn"/>
                 }
             </div>
-            <button class="fButton fSubmitButton" id="addUserSubmitBtn" type="submit">Submit</button>
-@*            <input type="submit" class="registerSubmit" id="addUserSubmitBtn"/>*@
         }
-    }
 
     <div class="errorMessage">
         @if(errorMsg.equals(1)){
@@ -168,8 +168,8 @@
         }
     </div>
 
-    <img src="@assets.path("img/logo_color_sm.png")" />
-
 </div>
+
+<img src="@assets.path("img/logo_color_sm.png")" class="femrImage" alt="femr logo"/>
 
 }

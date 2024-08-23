@@ -858,3 +858,35 @@ input[style] {
     flex: 2;
     margin-right: 0;
 }
+
+.jumbotron{
+    height: calc(100vh - 170px);
+}
+
+.femrImage{
+    margin-top: calc(100vh - 705px);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-height: 780px) {
+    .femrImage {
+        display: none !important;
+    }
+    .bottomButton {
+        margin-bottom: calc(100vh - 600px)!important;
+    }
+}
+
+@media (max-height: 560px){
+    footer{
+        display: none;
+    }
+    .jumbotron{
+        height: calc(100vh - 80px);
+    }
+    .signInRegister {
+        display: flex;
+    }
+}

@@ -1,12 +1,11 @@
 $(document).ready(function () {
     var urlPieces = window.location.href.split('/');
 
-
     if ($.inArray("edit", urlPieces) !== -1) {
         editUsers.bindRoleDropDownClick();
         editUsers.bindRoleBadge();
         editUsers.bindSubmitButton();
-    } else if ($.inArray("create", urlPieces) !== -1) {
+    } else if ($.inArray("create", urlPieces) !== -1 || $.inArray("register", urlPieces) !== -1 ) {
         createUsers.bindSubmitButton();
     } else {
         manageUsers.bindUserToggleButtons();

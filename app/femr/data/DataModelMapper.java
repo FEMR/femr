@@ -523,13 +523,11 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId) {
+    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId, String language_code) {
 
-        if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(password) || StringUtils.isNullOrWhiteSpace(email) || date == null || roles == null || roles.size() < 1) {
-
+        if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(password) || StringUtils.isNullOrWhiteSpace(email) || date == null || roles == null || roles.size() < 1 || language_code == null) {
             return null;
         }
-
         IUser user = userProvider.get();
 
         user.setFirstName(firstName);
@@ -544,6 +542,8 @@ public class DataModelMapper implements IDataModelMapper{
         user.setPasswordCreatedDate(date);
         user.setDateCreated(date);
         user.setCreatedBy(userId);
+        user.setLanguageCode(language_code);
+
         return user;
     }
 

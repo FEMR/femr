@@ -11,6 +11,7 @@ import femr.common.models.UserItem;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IUser;
 import femr.data.models.mysql.NetworkStatus;
+import femr.data.models.mysql.SystemSetting;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
@@ -26,6 +27,7 @@ import play.mvc.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import femr.util.InternetConnnection.InternetCheck;
@@ -71,7 +73,11 @@ public class SessionsController extends Controller {
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {
-            return ok(create.render(createViewModelForm.bindFromRequest(), 1, null, assetsFinder, new ArrayList<String>()));
+            if (response.getErrors().containsValue("Not Activated.")) {
+                return ok(create.render(createViewModelForm.bindFromRequest(), 3, null, assetsFinder, new ArrayList<String>()));
+            } else {
+                return ok(create.render(createViewModelForm.bindFromRequest(), 1, null, assetsFinder, new ArrayList<String>()));
+            }
         }else{
             IUser user = userService.retrieveById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());
@@ -101,7 +107,20 @@ public class SessionsController extends Controller {
 
     }
 
-    public Result createPostAccount() {
+    public Result editRegisterPost() {
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+        Form<CreateViewModel> form = createViewModelForm.bindFromRequest();
+
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
+        if (roleServiceResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        List<String> messages = new ArrayList<>();
+
+        return ok(create.render(form, 2, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
+    }
+
+    public Result createAccountPost() {
         CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
 
         final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
@@ -146,6 +165,7 @@ public class SessionsController extends Controller {
             return ok(create.render(form, 0, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
         }
     }
+
 
     public Result editPasswordGet(IUser user){
 
@@ -223,6 +243,7 @@ public class SessionsController extends Controller {
         user.setNotes(viewModel.getNotes());
         user.setRoles(viewModel.getRoles());
         user.setDateCreated(viewModel.getDateCreated());
+        user.setLanguageCode(viewModel.getLanguage());
         return user;
     }
 }

@@ -245,7 +245,7 @@ public interface IDataModelMapper {
      * @param userId          id of the user responsible for creating new users, not null
      * @return an implementation of IUser or null if processing fails
      */
-    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId);
+    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId, String language_code);
 
     /**
      * Provider a reference object for a user

@@ -33,6 +33,7 @@ public class CreateViewModel {
     private String newPasswordVerify;
     private String firstName;
     private String lastName;
+    private String language;
     private List<String> roles;
     private String notes;
     private String DateCreated; //Sam Zanni
@@ -83,6 +84,14 @@ public class CreateViewModel {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getNotes() {

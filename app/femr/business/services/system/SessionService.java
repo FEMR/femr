@@ -90,13 +90,14 @@ public class SessionService implements ISessionService {
 
         if (userWithEmail == null) {
             //user doesn't exist
-
             response.addError("", "Invalid email or password.");
-        } else if (userWithEmail.getDeleted() || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
-            //user has been deleted or they entered a wrong password
-
+        } else if (!passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+            //user entered a wrong password
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
             response.addError("", "Invalid email or password.");
+        } else if (userWithEmail.getDeleted()) {
+            //user is deleted
+            response.addError("", "Not Activated.");
         } else {
             //success!
 

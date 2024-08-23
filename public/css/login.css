@@ -35,10 +35,10 @@
 
 #login {
     width: 400px;
-    margin: 0px auto;
+    margin: 0 auto;
 
     /*background:#f0f0f0;*/
-    padding: 0% 4%;
+    padding: 0 20px;
 }
 @media (max-width: 410px){
     #login{
@@ -99,9 +99,48 @@ h1 {
 
 h2 {
     text-align: center;
-    font-size: medium;
+    font-size: large;
+    font-weight: bold;
 }
 
 #emptymsg {
     margin-top: 100px;
+}
+
+/*User form response*/
+.createUserError {
+    color: rgb(198, 0, 0);
+}
+
+.createWrap, .passwordWrap, .roleWrap {
+    margin-top: 4%;
+}
+
+.fieldWrap {
+    margin-top: inherit;
+}
+
+.passwordFieldsWrap {
+    margin-top: 0 !important;
+}
+
+.fInput {
+    margin-bottom: 0 !important;
+    width: 100%;
+}
+
+.registerSubmit {
+    margin-top: 20px;
+    outline: 0;
+    border: 1px solid rgb(198, 0, 0);
+    box-shadow: 0 0 3px rgb(250, 0, 0);
+}
+
+.errorMessage {
+    color: rgb(198, 0, 0);
+}
+
+.btn {
+    width: 150px;
+    text-align: left;
 }

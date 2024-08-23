@@ -125,7 +125,7 @@ $(document).ready(function () {
                         'No matching patients found',
                         '</div>'
                     ].join('\n'),
-                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' +
+                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' + ///medical/edit/
                         '<img class="photo" src="{{photo}}" height="80" width="80">' +
                         '<span class="name">({{id}}) {{firstName}} {{lastName}} {{phoneNumber}}</span>' +
                         '<span class="age">{{age}}</span>' +

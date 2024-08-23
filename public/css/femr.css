@@ -14,7 +14,7 @@
     div.leaveFeedback a {
         color: #333;
         text-decoration: underline;
-        color: #ad0000;
+        color: rgb(198, 0, 0);
     }
 
     div.leaveFeedback a:hover { }
@@ -50,21 +50,29 @@ hr {
 #nameOrIdSearchForm {
     border: 1px solid black;
     width: 200px;
-    margin: auto;
     display: flex;
-    margin-top: 20px;
+    float: right;
 }
 
 
 #nameOrIdSearchForm:focus, .fButtonSearch:focus{
-    display: flex;
     outline: 0;
-    margin-top: 20px;
     border: 1px solid rgb(198, 0, 0);
     box-shadow: 0 0 3px rgb(250, 0, 0);
 }
 
+.nameOrIdSearchButton {
+    margin-left: 5px;
+    float: left;
+}
 
+.nameOrIdSearchFormWrap {
+    max-width: fit-content;
+    display: flex;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .idSearchForm {
     margin-top: 10px;
@@ -124,8 +132,7 @@ hr {
     padding-left:50px;
 }
 .fRedButton{
-    /*background-color: rgb(198, 0, 0);*/
-    background-color: #ad0000;
+    background-color: rgb(198, 0, 0);
 }
 a.fRedButton{
     color: #000000;
@@ -318,7 +325,7 @@ a.fRedButton:hover{
 }
 
 .red {
-    color: red;
+    color: rgb(198, 0, 0);
 }
 /*
 #portraitWrap img{
@@ -372,10 +379,15 @@ float: right;
     width: 300px;
     text-align: center;
     margin: 0 auto;
+    height: calc(100vh - 215px);
 }
 
 .searchWrap p {
     font-size: 20px;
+}
+
+.searchTitle {
+    margin-top: 70px;
 }
 
 /* fEMR's background with border */
@@ -558,14 +570,6 @@ float: right;
     height: 20px;
 }
 
-@media ( max-width: 767px ){
-
-    .reference span{
-
-        display: inline;
-    }
-}
-
 .glyphicon-log-out {
     color: rgb(198, 0, 0);
 }
@@ -696,7 +700,6 @@ input[style] {
 }
 
 .tt-highlight{
-
     background-color: yellow;
 }
 
@@ -724,11 +727,9 @@ input[style] {
 }
 
 #patientSearchContainer input.patientSearch{
-
     width: 100%;
     height: 44px;
     line-height: 44px;
-    margin-top: 10px;
 }
 
 #patientSearchContainer .patientResult{
@@ -860,11 +861,11 @@ input[style] {
 }
 
 .jumbotron{
-    height: calc(100vh - 170px);
+    height: calc(100vh - 175px);
 }
 
 .femrImage{
-    margin-top: calc(100vh - 705px);
+    margin-top: calc(100vh - 710px);
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -889,4 +890,12 @@ input[style] {
     .signInRegister {
         display: flex;
     }
+}
+
+.researchWrap {
+    height: calc(100vh - 145px);
+}
+
+.footerTextRight {
+    white-space: nowrap;
 }

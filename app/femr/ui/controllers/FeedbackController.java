@@ -58,7 +58,7 @@ public class FeedbackController extends Controller {
 
         if(!viewModel.getFeedbackMsg().equals("")){
             userService.createFeedback(viewModel.getFeedbackMsg());
-            return redirect("/?feedback=received");
+            return redirect("/");
         }
 
         return redirect("/feedback");

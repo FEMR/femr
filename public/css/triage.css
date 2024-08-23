@@ -1,11 +1,15 @@
 /* General Page styles */
 
+.triageTitle {
+    margin-top: 10px;
+}
+
 #triageContentWrap {
     overflow: hidden;
 }
 
 #triageContentWrap > p {
-    color: red;
+    color: rgb(198, 0, 0);
     text-align: center;
     font-weight: bold
 }
@@ -14,6 +18,7 @@
     padding-left: 5px;
     margin-bottom: 10px;
 }
+
 .orSpan{
     display: block;
     text-align: center;
@@ -29,13 +34,14 @@
 #genInfoWrap {
     float: left;
     width: 40%;
-    padding: 5px;
+    padding: 1%;
+    margin-right: 1%;
 }
 
 #vitalsWrap {
     float: left;
-    width: 60%;
-    padding: 5px;
+    width: 59%;
+    padding: 1%;
     position: absolute;
     height: 100%;
     display: inline-block;
@@ -52,19 +58,40 @@
 }
 
 #vitalContainer {
-    max-height: 500px; /* Default maximum height */
     overflow-y: auto;  /* Enables vertical scrolling if the content overflows */
 }
 
-/* Media query for smaller screens */
-@media (max-width: 768px) {
-    #vitalContainer {
-        max-height: 300px;  /* Smaller height for smaller screens */
-    }
+.generalTitleWrap {
+    display: flex;
+}
+
+.generalTitle {
+    width: auto;
+}
+
+.generalTitleQuestion {
+    margin-top: 15px;
+    margin-left: 5px;
+}
+
+#triage_index_b_patientDemographics {
+    line-height: 10px;
+}
+
+.historyOfWrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.historyOfButton {
+    margin-right: 1%;
+    margin-bottom: 1%;
 }
 
 #chiefComplaintWrap {
     margin-top: 20px;
+    max-height: 180px;
+    overflow-y: scroll;
 }
 
 #addChiefComplaint {
@@ -132,7 +159,11 @@
 }
 
 #chiefComplaint {
-    width: 100%;
+    width: 100% !important;
+}
+
+.chiefComplaintLabel {
+    font-weight: bold;
 }
 
 .generalInfoInput {
@@ -141,7 +172,7 @@
 }
 
 .fa-question-circle {
-    color: #c60000;
+    color: rgb(198, 0, 0);
 }
 
 
@@ -152,9 +183,9 @@
 
 .triage-form .error-message{
     display: block;
-    color: red;
+    color: rgb(198, 0, 0);
     text-align: center;
-    border: 1px solid red;
+    border: 1px solid rgb(198, 0, 0);
     padding: 5px;
     border-radius: 4px;
     background-color: #f7dddd;
@@ -162,7 +193,7 @@
 }
 
 .triage-form .has-errors label{
-    color: red;
+    color: rgb(198, 0, 0);
 }
 
 .triage-form .has-errors label.range-message{
@@ -174,7 +205,7 @@
 
 .triage-form .has-errors input,
 .triage-form .has-errors select{
-    border-color: red;
+    border-color: rgb(198, 0, 0);
 }
 
 .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"] {
@@ -208,11 +239,18 @@
 }
 #classificationRadioWrap span{
     font-size: 10px;
+    font-weight: normal;
+}
+
+.ageRadio {
+    accent-color: rgb(198, 0, 0);
 }
 
 .submitResetWrap {
     margin-top: 15px;
     margin-bottom: 20px;  /* Increase bottom margin */
+    margin-left: 1%;
+    margin-right: 1%;
     overflow: visible;  /* Change to visible to avoid cropping */
     clear: both;  /* Clear floats to ensure the buttons are always visible */
 }
@@ -274,7 +312,6 @@
 
     .vitalWrap input {
         width: 75%;
-        float: right;
     }
 }
 
@@ -327,6 +364,7 @@
 
     #genInfoWrap {
         width: 100%;
+        margin-bottom: 1%;
     }
 
     .vitalWrap input {

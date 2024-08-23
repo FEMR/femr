@@ -47,6 +47,7 @@
 #admin-panels {
     width: 100%;
     overflow: hidden;
+    margin-bottom: calc(100vh - 825px);
 }
 #admin-left-panel{
     margin-top: 100px;

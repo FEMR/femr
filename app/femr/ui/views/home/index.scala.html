@@ -1,81 +1,80 @@
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 @import femr.ui.views.html.layouts.main
 
-    @additionalScripts = {
-        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
-        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+@additionalScripts = {
+    <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
 
-        <script>
-                if (window.location.search.indexOf('feedback=received') > -1) {
-                    $('#feedbackResponse').css({"display":"block"});
-                    setTimeout(function () {
-                        $('#feedbackResponse').show().delay(2000).fadeOut('fast');
-                    }, 2000);
+    <script>
+            if (window.location.search.indexOf('feedback=received') > -1) {
+                $('#feedbackResponse').css({"display":"block"});
+                setTimeout(function () {
+                    $('#feedbackResponse').show().delay(2000).fadeOut('fast');
+                }, 2000);
+            }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+
+            // Fetch language data
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}","@{currentUser.getFirstName}");
+
+                    })
+                    .catch(error => console.error('Error fetching language data:', error));
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                } else {
+                    console.error(`Element with ID '${elementId}' not found.`);
                 }
-        </script>
-        <script>
-                document.addEventListener('DOMContentLoaded', function(event) {
-                    let languageData;
+            }
 
-                    // Fetch language data
-                    fetch('@routes.Assets.versioned("json/languages.json")')
-                            .then(response => response.json())
-                            .then(data => {
-                                languageData = data;
-                                updateLanguage("@{currentUser.getLanguageCode}");
-
-                            })
-                            .catch(error => console.error('Error fetching language data:', error));
-
-                    function updateTextContent(elementId, value) {
-                        const element = document.getElementById(elementId);
-                        if (element) {
-                            element.textContent = value;
-                        } else {
-                            console.error(`Element with ID '${elementId}' not found.`);
-                        }
+            function updateLanguage(languageCode, currUser) {
+                const language = languageCode;
+                if (languageData && languageData[language]) {
+                    updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + " " + currUser + "!");
+                    updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
+                    updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
+                    const patientSearch = document.getElementById("patientSearch");
+                    if (patientSearch) {
+                        patientSearch.placeholder = languageData[language].home_index_div_ID;
+                    } else {
+                        console.error("Element with ID 'patientSearch' not found.");
                     }
-
-                    function updateLanguage(languageCode, currUser = " Admin!") {
-                        const language = languageCode;
-                        if (languageData && languageData[language]) {
-                            updateTextContent("home_index_h2_Welcome", languageData[language].home_index_h2_Welcome + currUser);
-                            updateTextContent("home_index_p_Please", languageData[language].home_index_p_Please);
-                            updateTextContent("home_index_p_Search", languageData[language].home_index_p_Search);
-                            const patientSearch = document.getElementById("patientSearch");
-                            if (patientSearch) {
-                                patientSearch.placeholder = languageData[language].home_index_div_ID;
-                            } else {
-                                console.error("Element with ID 'patientSearch' not found.");
-                            }
-                        } else {
-                            console.error(`Language data for code '${language}' not found.`);
-                        }
-                    }
-                });
-
-        </script>
-    }
+                } else {
+                    console.error(`Language data for code '${language}' not found.`);
+                }
+            }
+        });
+    </script>
+}
 
 
-  @top = {
+@top = {
     <div class="jumbotron">
-      <div class="container">
-        <h2 id="home_index_h2_Welcome">Welcome to fEMR 3.0.0, @currentUser.getFirstName!</h2>
-        @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
-        <p id="home_index_p_Please">Please select a tab at the top to get started!</p>
-        <p id="home_index_p_Search">Search Below:</p>
-        <div id="patientSearchContainer">
-            <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="ID, Name, or Phone #" disabled="disabled"/>
+        <div class="container">
+            <h2 id="home_index_h2_Welcome">Welcome to fEMR 3.0.0, @currentUser.getFirstName!</h2>
+            @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
+            <p id="home_index_p_Please">Please select a tab at the top to get started!</p>
+            <p id="home_index_p_Search">Search Below:</p>
+            <div id="patientSearchContainer">
+                <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="ID, Name, or Phone #" />
+            </div>
         </div>
-      </div>
     </div>
-  }
+}
 
 @main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
-  @*<ul>
-  @for(role <- currentUser.getRoles) {
-    <li>@role.getName</li>
-  }
-  </ul> *@
+    @*<ul>
+        @for(role <- currentUser.getRoles) {
+        <li>@role.getName</li>
+        }
+    </ul> *@
 }

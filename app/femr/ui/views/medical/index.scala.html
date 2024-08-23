@@ -13,7 +13,7 @@
                         .then(response => response.json())
                         .then(data => {
                             languageData = data;
-                            updateLanguage("@{currentUser.getLanguageCode()}");
+                            updateLanguage("@{currentUser.getLanguageCode}");
                         });
 
                 function updateTextContent(elementId, value) {

@@ -7,26 +7,38 @@
     @page.toLowerCase match {
         case "triage" => {
             @helper.form(action = SearchController.handleSearch("triage")) {
-                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
-                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+                <div class="nameOrIdSearchFormWrap">
+                    <label for="nameOrIdSearchForm"></label>
+                    <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                    <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton nameOrIdSearchButton">Search</button>
+                </div>
             }
         }
         case "history" => {
             @helper.form(action = SearchController.handleSearch("history")) {
-                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
-                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+                <div class="nameOrIdSearchFormWrap">
+                    <label for="nameOrIdSearchForm"></label>
+                    <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                    <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton nameOrIdSearchButton">Search</button>
+                </div>
             }
         }
         case "medical" => {
             @helper.form(action = SearchController.handleSearch("medical")) {
-                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
-                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+                <div class="nameOrIdSearchFormWrap">
+                    <label for="nameOrIdSearchForm"></label>
+                    <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                    <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton nameOrIdSearchButton">Search</button>
+                </div>
             }
         }
         case "pharmacy" => {
             @helper.form(action = SearchController.handleSearch("pharmacy")) {
-                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
-                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+                <div class="nameOrIdSearchFormWrap">
+                    <label for="nameOrIdSearchForm"></label>
+                    <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                    <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton nameOrIdSearchButton">Search</button>
+                </div>
             }
         }
         case _ => {

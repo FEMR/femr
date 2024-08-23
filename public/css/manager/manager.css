@@ -1,6 +1,7 @@
 
 .managerPanel {
     margin-top: 100px;
+    height: calc(100vh - 245px)
 }
 
 div.scrollable {

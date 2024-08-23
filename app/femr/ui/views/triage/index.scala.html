@@ -52,7 +52,6 @@
                         labelElement.textContent = value;
                         inputElement.placeholder = value;
                     }
-
                 }
 
                 function replaceGenderString(languageData, language) {
@@ -229,15 +228,18 @@
         @if(viewModel.isLinkToMedical()){
             <p class="newEncounterWrap" id="triage_index_p_Patient"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank" id="triage_index_a_Go">Go To Medical</a></p>
         }
-        <h2 class="text-center" id="triage_index_h2_Check">Check In - Triage</h2>
+        <h2 class="text-center triageTitle" id="triage_index_h2_Check">Check In - Triage</h2>
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                <h2 id="triage_index_h2_General">General Info
-                    <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
-                        <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
-                    </b>
-                </h2>
+                <div class="generalTitleWrap">
+                    <h2 class="generalTitle" id="triage_index_h2_General">General Info</h2>
+                    <h2 class="generalTitleQuestion">
+                        <b id="triage_index_b_patientDemographics" title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                        </b>
+                    </h2>
+                </div>
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -247,25 +249,28 @@
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <br>
                 <div class="generalInfoInput" id="citySearchContainer">
-                    <label for="city">City<span class="red bold">*</span></label>
+                    <label for="city">City</label><span class="red bold">*</span>
                     @if(viewModel.getPatient.getCity == null) {
-                        <input type = "text" class="citySearch fInput" name="city" id="city" required>
+                        <input type="text" class="citySearch fInput" name="city" id="city" required>
                     } else {
-                        <input type = "text" class = "citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
+                        <input type="text" class="citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
                         }
                 </div>
                 <br>
                 <div id="ageClassificationWrap">
-                    <label id="ageLabel">Age<span class="red bold">*</span></label>
-                    <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
-                    <input type="text" id="yearsInput" placeholder="Years" />
-                    <input type="text" id="monthsInput" placeholder="Months" />
-
+                    <div class="generalInfoInput">
+                        <label id="ageLabel">Age</label><span class="red bold">*</span>
+                        <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
+                        <input class="fInput ageInput" type="text" id="yearsInput" placeholder="Years" />
+                        <input class="fInput ageInput" type="text" id="monthsInput" placeholder="Months" />
+                    </div>
 
                     <span class="orSpan">OR</span>
                     <div id="birthDateWrapper">
-                        <label id="birthDateLabel" for="birthDateInput">Birth Date<span class="red bold">*</span></label>
-                        <input type="date" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
+                        <div class="generalInfoInput">
+                            <label id="birthDateLabel" for="birthDateInput">Birth Date</label><span class="red bold">*</span>
+                            <input type="date" class="fInput" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
+                        </div>
                     </div>
                     <span class="orSpan">OR</span>
                     @*                    <div class="generalInfoInput">*@
@@ -278,7 +283,7 @@
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
                         @for((key, value) <- viewModel.getPossibleAgeClassifications) {
-                            <label id="@("label_" + key)"><input type="radio" name="ageClassification" value="@key" />
+                            <label class="ageRadio" id="@("label_" + key)"><input type="radio" name="ageClassification" value="@key" />
                                 <span id="@("span_" + key)">@value</span>
                             </label>
                         }
@@ -401,50 +406,9 @@
                                 <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
                             }
 
-
-
                         </div>
-
-                            <!--Osman-->
-                        <br/>
-
-                        <div class="vitalWrap">
-                            <label id="historyOfLabel">History of:</label>
-                        </div>
-
-
-
-                        <label class="btn btn-default">
-                            <span id="diabetesLabel">Diabetes</span>
-                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
-                        </label>
-
-                        <br>
-                        <label class="btn btn-default">
-                            <span id="hypertensionLabel">Hypertension</span>
-                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">
-                            <span id="highCholesterolLabel">High Cholesterol</span>
-                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">
-                            <span id="tobaccoUseDisorderLabel">Tobacco Use Disorder</span>
-                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
-                        </label>
-                        <br>
-                        <label class="btn btn-default">
-                            <span id="substanceAlcoholAbuseLabel">Substance/Alcohol Abuse</span>
-                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
-                        </label>
-                        <br>
-
-
 
                     </div>
-
 
                     <div id="rightVitalsWrap">
                         @if(viewModel.getSettings.isMetric) { <!-- Alaa Serhan -->
@@ -452,7 +416,6 @@
                         } else {
                             <input type="hidden" id="vitalUnits" value="imp" />
                         }
-
 
                         <div class="vitalWrap">
                             <label for="oxygen" id="oxygenLabel">Oxygen Saturation</label>
@@ -497,17 +460,50 @@
 
                     </div>
 
+                        <!--Osman-->
+                    <br/>
+
+                    <label id="historyOfLabel">History of:</label>
+
+                    <div class="historyOfWrap">
+                        <label class="btn btn-default historyOfButton">
+                            <span id="diabetesLabel">Diabetes</span>
+                            <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        </label>
+
+                        <br>
+                        <label class="btn btn-default historyOfButton">
+                            <span id="hypertensionLabel">Hypertension</span>
+                            <input type="checkbox" step="any" class="fButton" id="hypertension" name="hypertension" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default historyOfButton">
+                            <span id="highCholesterolLabel">High Cholesterol</span>
+                            <input type="checkbox" step="any" class="fButton" id="cholesterol" name="cholesterol" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default historyOfButton">
+                            <span id="tobaccoUseDisorderLabel">Tobacco Use Disorder</span>
+                            <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                        </label>
+                        <br>
+                        <label class="btn btn-default historyOfButton">
+                            <span id="substanceAlcoholAbuseLabel">Substance/Alcohol Abuse</span>
+                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                        </label>
+                    </div>
                 </div>
+
                 <div id="chiefComplaintWrap">
 
-                    <div id="chiefComplaintTitle">
-                        <label for="chiefComplaint">
+                        <label for="chiefComplaint" class="chiefComplaintLabel">
                             @if(viewModel.getSettings.isMultipleChiefComplaint) {
                                 <span id="addChiefComplaint">+</span>
                             }
+                            <div id="chiefComplaintTitle">
                             Chief Complaint
+                            </div>
                         </label>
-                    </div>
 
                     @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 

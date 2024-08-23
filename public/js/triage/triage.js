@@ -843,7 +843,7 @@ $(document).ready(function () {
             // Reenable search input field
             $("input.citySearch").removeClass("loading")
                 .removeAttr("disabled")
-                .attr("placeholder", "City Name");
+                .attr("placeholder", "City");
 
             //$("input.citySearch").removeClass("loading")
             //    .removeAttr("disabled")

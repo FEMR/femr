@@ -1,6 +1,7 @@
 #settings {
     width: 100%;
     overflow: hidden;
+    margin-bottom: calc(100vh - 625px);
 }
 
 #title {

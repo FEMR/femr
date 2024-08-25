@@ -37,7 +37,7 @@ public class TranslationServer {
         }
         catch(Exception e){
             System.out.println("Problem retrieving port number from log");
-            throw new RuntimeException(e);
+            return portNumber;
         }
         return portNumber;
     }

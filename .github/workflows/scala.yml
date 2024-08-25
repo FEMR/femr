@@ -2,9 +2,9 @@ name: Scala CI
 
 on:
   push:
-    branches: [ super-femr ]
+    branches: [ master ]
   pull_request:
-    branches: [ super-femr ]
+    branches: [ master ]
 
 jobs:
   build:

@@ -555,4 +555,9 @@ public class DataModelMapper implements IDataModelMapper{
 
         return Ebean.getReference(userProvider.get().getClass(), userId);
     }
+
+    @Override
+    public IUser createUser(String firstName, String lastName, String email, DateTime currentDateTime, String notes, String password, boolean b, boolean b1, List<? extends IRole> roles, int i) {
+        return null;
+    }
 }

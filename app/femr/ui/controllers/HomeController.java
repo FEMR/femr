@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class HomeController extends Controller {
 
     private final AssetsFinder assetsFinder;
-    private ISessionService sessionService;
+    private final ISessionService sessionService;
 
     @Inject
     public HomeController(AssetsFinder assetsFinder, ISessionService sessionService) {

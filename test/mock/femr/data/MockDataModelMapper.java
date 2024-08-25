@@ -144,6 +144,11 @@ public class MockDataModelMapper implements IDataModelMapper{
     }
 
     @Override
+    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId, String language_code) {
+        return null;
+    }
+
+    @Override
     public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId) {
         return null;
     }

@@ -254,4 +254,6 @@ public interface IDataModelMapper {
      * @return a User reference object
      */
     IUser createUser(int userId);
+
+    IUser createUser(String firstName, String lastName, String email, DateTime currentDateTime, String notes, String password, boolean b, boolean b1, List<? extends IRole> roles, int i);
 }

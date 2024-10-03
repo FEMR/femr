@@ -104,7 +104,6 @@ public class DatabaseSeeder {
     }
 
     private void seed() {
-
         seedMissionTripInformation();
         seedNetworkStatus();
         seedKitStatus();

@@ -100,7 +100,7 @@ public class UserService implements IUserService {
             newUser = userRepository.createUser(newUser);
             response.setResponseObject(itemModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
-            response.addError("", ex.getMessage());
+            response.addError("error creating user", ex.getMessage());
         }
 
 

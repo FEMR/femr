@@ -80,7 +80,7 @@ Email: kevin.zurek@teamfemr.org
 ```
 include "application.conf"
 settings.researchOnly=0
-db.default.url="jdbc:mysql://127.0.0.1:3306/femr_db?characterEncoding=UTF-8&useSSL=false"
+db.default.url="jdbc:mysql://127.0.0.1:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true"
 db.default.username="femr"
 db.default.password="password"
 photos.defaultProfilePhoto="./public/img/defaultProfile.png"

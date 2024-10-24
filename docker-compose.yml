@@ -2,7 +2,7 @@ version: "3"
 services:
 
   db:
-    image: mysql:5.7
+    image: mysql:9.1.0
     restart: always
     environment:
       MYSQL_DATABASE: 'femr_db'
@@ -17,7 +17,7 @@ services:
       - db-data:/var/lib/mysql
       
   femr:
-    image: spencerklawans/femr:latest
+    build: .
     links: 
       - db:mysql
     depends_on: 
@@ -30,9 +30,10 @@ services:
     volumes:
       - ./femr/conf:/home/femrapp/conf
     environment:
-      DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false'
-      DB_USER: 'root'
+      DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true'
+      DB_USER: 'femr'
       DB_PASS: 'password'
+
 
 
 volumes:

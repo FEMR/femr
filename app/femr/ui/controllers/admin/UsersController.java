@@ -124,6 +124,8 @@ public class UsersController extends Controller {
             CreateViewModel viewModel = form.bindFromRequest().get();
             UserItem user = createUserItem(viewModel);
 
+            user.setLanguageCode(currentUser.getLanguageCode());
+
             ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword(), currentUser.getId());
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));

@@ -11,7 +11,7 @@ import play.mvc.*;
 import femr.ui.views.html.reference.index;
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE, Roles.SUPERUSER})
 public class ReferenceController extends Controller {
 
     private final AssetsFinder assetsFinder;

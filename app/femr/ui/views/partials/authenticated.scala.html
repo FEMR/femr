@@ -78,8 +78,8 @@
         @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
             <li><a id="langCode_admin" href="@AdminController.index()">Admin</a></li>
         }
-        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {z
-            <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">SuperUser</a></li>
+        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+            <li><a id="langCode_superUser" href="@SuperuserController.indexGet()">Admin Panel</a></li>
         }
         <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span id="langCode_reference">Reference</span></a></li>
     </ul>

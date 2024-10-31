@@ -270,7 +270,7 @@ CREATE TABLE `custom_fields` (
   KEY `fk_custom_fields_custom_type_id_idx` (`custom_type_id`),
   KEY `fk_custom_fields_user_id_idx` (`user_id`),
   KEY `fk_custom_fields_custom_size_id_idx` (`custom_size_id`),
-  CONSTRAINT `fk_custom_fields_custom_size_id` FOREIGN KEY (`custom_size_id`) REFERENCES tab_field_sizes (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_custom_fields_custom_size_id` FOREIGN KEY (`custom_size_id`) REFERENCES `custom_field_sizes` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_custom_fields_custom_tab_id` FOREIGN KEY (`custom_tab_id`) REFERENCES `custom_tabs` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_custom_fields_custom_type_id` FOREIGN KEY (`custom_type_id`) REFERENCES `custom_field_types` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_custom_fields_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION

@@ -107,7 +107,10 @@ public class HistoryController extends Controller {
 
         //too much logic - move patient photo finding up to the service layer
         for (PatientItem patientItem : patientItems)
-            patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
+            if(patientItem.getPhotoId() != null)
+                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), false).toString());
+            else
+                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
         viewModel.setPatientItems(patientItems);
         viewModel.setRankedPatientItems(new ArrayList<>());
         viewModel.setPatientItem(patientItems.get(0));

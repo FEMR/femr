@@ -344,6 +344,7 @@ public class DataModelMapper implements IDataModelMapper{
         patient.setSex(sex);
         patient.setAddress(address);
         patient.setCity(city);
+
         if (photoID != null)
             patient.setPhoto(Ebean.getReference(photoProvider.get().getClass(), photoID));
 

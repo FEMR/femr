@@ -53,7 +53,7 @@ public interface IPhotoService {
      * Saves a patient's photo and updates the patients photoId field to point
      * to the updated photo.
      *
-     * @param File        image to be uploaded
+     * @param image        image to be uploaded
      * @param patientId   id of the patient, not null
      * @param deleteFlag  true if photo is being deleted instead of saved, not null
      * @return a service response that contains true if creation successful, false if not

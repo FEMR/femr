@@ -105,7 +105,7 @@ public class TranslationServer {
             File log = new File(logPath);
             try {
                 log.createNewFile();
-                ProcessBuilder pb = new ProcessBuilder("python3", absPath, timeout);
+                ProcessBuilder pb = new ProcessBuilder("python", absPath, timeout);
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();

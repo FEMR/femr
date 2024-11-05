@@ -12,6 +12,41 @@
 @additionalScripts = {
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script>
+            let languageData;
+
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}","@{currentUser.getFirstName}");
+
+                    })
+                    .catch(error => console.error('Error fetching language data:', error));
+
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                } else {
+                    console.error(`Element with ID '${elementId}' not found.`);
+                }
+            }
+
+            function updateLanguage(languageCode) {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("trips_teams_Add", languageData[languageCode].trips_teams_Add);
+                updateTextContent("trips_teams_Description1", languageData[languageCode].trips_teams_Description1);
+                updateTextContent("trips_teams_Submit", languageData[languageCode].trips_teams_Submit);
+                updateTextContent("trips_teams_TeamName1", languageData[languageCode].trips_teams_TeamName1);
+                updateTextContent("trips_teams_Location", languageData[languageCode].trips_teams_Location);
+                updateTextContent("trips_teams_TeamName2", languageData[languageCode].trips_teams_TeamName2);
+                updateTextContent("trips_teams_Description2", languageData[languageCode].trips_teams_Description2);
+                updateTextContent("trips_teams_Origin", languageData[languageCode].trips_teams_Origin);
+
+            }
+    </script>
 }
 
 @admin("Trips - Manage Teams", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
@@ -25,21 +60,24 @@
     @helper.form(action = TripController.teamsPost()) {
 
         <div id="addTeamWrap">
-            <h1>Add Team:</h1>
+            <h1 id="trips_teams_Add">Add Team:</h1>
             <div>
-                <label>Team Name<span class="red bold">*</span>:
+                <label>
+                    <span id="trips_teams_TeamName1">Team Name</span>
+                    <span class="red bold">*</span>
                     <input class="fInput" type="text" name="newTeamName"/>
                 </label>
             </div>
 
             <div>
-                <label>Team Location:
+                <label><span id="trips_teams_Location">Team Origin:</span>
                     <input class="fInput" type="text" name="newTeamLocation"/>
                 </label>
             </div>
 
             <div>
-                <label>Team Description:
+                <label>
+                    <span id="trips_teams_Description1">Team Description:</span>
                     <input class="fInput" type="text" name="newTeamDescription"/>
                 </label>
             </div>
@@ -49,7 +87,7 @@
 
 
         <div id="submitWrap">
-            <button type="submit" class="fButton">Submit</button>
+            <button type="submit" class="fButton" id="trips_teams_Submit">Submit</button>
         </div>
     }
 
@@ -58,9 +96,9 @@
         <table id="teamTable">
             <thead>
                 <tr>
-                    <th>Team Name</th>
-                    <th>Description</th>
-                    <th>Origin</th>
+                    <th id="trips_teams_TeamName2">Team Name</th>
+                    <th id="trips_teams_Description2">Description</th>
+                    <th id="trips_teams_Origin">Origin</th>
                 </tr>
             </thead>
             <tbody>

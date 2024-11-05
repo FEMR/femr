@@ -12,6 +12,38 @@
 @additionalScripts = {
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script>
+            let languageData;
+
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}","@{currentUser.getFirstName}");
+
+                    })
+                    .catch(error => console.error('Error fetching language data:', error));
+
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                } else {
+                    console.error(`Element with ID '${elementId}' not found.`);
+                }
+            }
+
+            function updateLanguage(languageCode) {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("trips_cities_Add", languageData[languageCode].trips_cities_Add);
+                updateTextContent("trips_cities_City", languageData[languageCode].trips_cities_City);
+                updateTextContent("trips_cities_Country", languageData[languageCode].trips_cities_Country);
+                updateTextContent("trips_cities_Submit", languageData[languageCode].trips_cities_Submit);
+                updateTextContent("trips_cities_tCity", languageData[languageCode].trips_cities_tCity);
+                updateTextContent("trips_cities_tCountry", languageData[languageCode].trips_cities_tCountry);
+            }
+    </script>
 }
 
 @admin("Trips - Manage Cities", currentUser, scripts = additionalScripts, styles = additionalStyles, assets = assets) {
@@ -24,15 +56,18 @@
 
     @helper.form(action = TripController.citiesPost()) {
         <div id="addCityWrap">
-            <h1>Add City:</h1>
+            <h1 id="trips_cities_Add">Add City</h1>
             <div>
-                <label>City:<span class="red bold">*</span>
+                <label><span id="trips_cities_City">City:</span>
+                    <span class="red bold">*</span>
                     <input class="fInput" type="text" name="newCity"/>
                 </label>
             </div>
 
             <div>
-                <label>Country:<span class="red bold">*</span>
+                <label>
+                    <span id="trips_cities_Country">Country:</span>
+                    <span class="red bold">*</span>
                     <select class="fSelect" name="newCityCountry">
                         <option selected disabled value=""></option>
                         @for(countryIndex <- 1 to viewModel.getAvailableCountries.size) {
@@ -43,7 +78,7 @@
             </div>
         </div>
         <div id="submitWrap">
-            <button type="submit" class="fButton">Submit</button>
+            <button type="submit" class="fButton" id="trips_cities_Submit">Submit</button>
         </div>
     }
 
@@ -52,8 +87,8 @@
         <table id="cityTable">
             <thead>
                 <tr>
-                    <th>City</th>
-                    <th>Country</th>
+                    <th id="trips_cities_tCity">City</th>
+                    <th id="trips_cities_tCountry">Country</th>
                 </tr>
             </thead>
             <tbody>

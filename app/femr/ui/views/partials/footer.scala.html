@@ -2,15 +2,12 @@
 <script>
         document.addEventListener('DOMContentLoaded', function() {
             let languageData;
-            let languageCode;
             fetch('@routes.Assets.versioned("json/languages.json")')
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
                         const initialLanguage = localStorage.getItem('languageCode') || 'en';
                         updateLanguage(initialLanguage);
-                        languageCode = "en";
-                        updateLanguage(languageCode);
                     });
 
             function updateTextContent(elementId, value) {

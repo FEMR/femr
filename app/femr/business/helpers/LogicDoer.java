@@ -116,9 +116,10 @@ public class LogicDoer {
         if (dateOfPharmacyVisit != null) {
             isClosed = true;
 
-        } else if (dateOfMedicalVisit != null) {
-            //give 1 day before closing
-            DateTime dayAfterMedicalVisit = dateOfMedicalVisit.plusDays(1);
+        } else
+        if (dateOfMedicalVisit != null) {
+        //give 1 day before closing
+        DateTime dayAfterMedicalVisit = dateOfMedicalVisit.plusDays(1);
             if (dateNow.isAfter(dayAfterMedicalVisit)) {
                 isClosed = true;
             }

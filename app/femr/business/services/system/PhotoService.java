@@ -105,11 +105,13 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
+    public ServiceResponse<Boolean> createPatientPhoto(File image, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
+
+            String imageString = encodePhoto(image);
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
 
@@ -212,7 +214,6 @@ public class PhotoService implements IPhotoService {
         }
         return response;
     }
-
 
 
     /**
@@ -412,6 +413,18 @@ public class PhotoService implements IPhotoService {
             e.printStackTrace();
         }
         return image;
+    }
+
+    private static String encodePhoto(File file){
+        try {
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            return Base64.encodeBase64String(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+
     }
 
 

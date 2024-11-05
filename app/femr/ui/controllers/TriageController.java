@@ -19,6 +19,7 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,14 +201,17 @@ public class TriageController extends Controller {
 
         patientItem = patientServiceResponse.getResponseObject();
 
-        photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        //photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript
         //currently javascript is required
-        //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
+        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<File> filePart = body.getFile("patientPhoto");
+        photoService.createPatientPhoto(filePart.getFile(), patientItem.getId(), viewModel.getDeletePhoto());
 
 
         List<String> chiefComplaints = parseChiefComplaintsJSON(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientItem.getId(), currentUser.getId(), currentUser.getTripId(), viewModel.getAgeClassification(), chiefComplaints);
+
         PatientEncounterItem patientEncounterItem;
         if (patientEncounterServiceResponse.hasErrors()) {
 

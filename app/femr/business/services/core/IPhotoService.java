@@ -53,14 +53,13 @@ public interface IPhotoService {
      * Saves a patient's photo and updates the patients photoId field to point
      * to the updated photo.
      *
-     * @param imageString image to save as a base64 encoded string, TODO: make not null
+     * @param image        image to be uploaded
      * @param patientId   id of the patient, not null
      * @param deleteFlag  true if photo is being deleted instead of saved, not null
      * @return a service response that contains true if creation successful, false if not
      * and/or errors if they exist.
      */
-    ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
-
+    ServiceResponse<Boolean> createPatientPhoto(File image, int patientId, Boolean deleteFlag);
 
     /**
      *  Returns patient photo in binary form.  Will determine where to fetch the photo (file system or blob)

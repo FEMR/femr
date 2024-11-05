@@ -428,7 +428,7 @@ public class PatientService implements IPatientService {
 
         Integer photoId = null;
         if (patient.getPhoto() != null){
-            photoId = patient.getPhoto().getId();
+           photoId = patient.getPhoto().getId();
         }
 
         return photoId;

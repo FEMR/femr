@@ -17,7 +17,7 @@
     @additionalStyles = {
         <link rel="stylesheet" href="@assets.path("css/login.css")">
     }
-
+`
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
     }
@@ -56,6 +56,8 @@
                     }
                 </div>
 
+                <h2>Please note: Before you can log in your account must be approved by an admin.</h2>
+
                 @helper.form(action = SessionsController.createAccountPost(), 'class -> "form-horizontal createWrap", 'name -> "createForm") {
 
                     @helper.inputText(createForm("email"),
@@ -83,6 +85,8 @@
                             )
                         </div>
                     </div>
+
+
 
                     @helper.inputText(createForm("firstName"),
                         'class -> "fInput",

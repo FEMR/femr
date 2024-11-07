@@ -56,6 +56,8 @@
                     }
                 </div>
 
+                <h2>Please note: Before you can log in your account must be approved by an admin.</h2>
+
                 @helper.form(action = SessionsController.createAccountPost(), 'class -> "form-horizontal createWrap", 'name -> "createForm") {
 
                     @helper.inputText(createForm("email"),

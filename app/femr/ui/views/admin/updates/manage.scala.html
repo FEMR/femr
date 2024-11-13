@@ -9,12 +9,19 @@
     @additionalStyles = {
         <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
     }
+
     @additionalMessages = {
+
         @for(message <- messages) {
-        <p class="adminMessage">@message</p>
+            <p class="adminMessage">@message</p>
         }
+
     }
-    @downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt}
+
+   @{/*@downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt} */}
+    @downloadSpeedMapVal = @{viewModel.getNetworkStatus.get("Download")}
+    @dSpeedList = @{downloadSpeedMapVal.split(" ")}
+    @dSpeedVal = @{dSpeedList(0).toInt}
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
 
@@ -22,7 +29,6 @@
             <div id="left-div">
                 <div id="network-status">
                     <h2>Network Status</h2>
-
                     <table id="networkstatus">
                         <div>
                             <div>
@@ -33,9 +39,9 @@
                             }
                             </div>
                             <div>
-                                @if(downloadSpeed > 5) {
+                                @if(dSpeedVal > 5) {
                                     <img src=@assets.path("networkIcons/good_connection_icon.png") width="75" height="75"/>
-                                } else if(downloadSpeed > 2 && downloadSpeed < 5) {
+                                } else if(dSpeedVal > 2 && dSpeedVal < 5) {
                                 <img src=@assets.path("networkIcons/okay_connection_icon.png") width="75" height="75"/>
                                 } else {
                                 <img src=@assets.path("networkIcons/poor_connection_icon.png") width="75" height="75"/>
@@ -48,6 +54,7 @@
                                 <td>@valyew</td>
                             </tr>
                         }
+
                     </table>
                 </div>
                 <div id="kit-status">
@@ -87,6 +94,7 @@
                     </div>
                 </div>
             </div>
+
 
             <div id="right-div">
                 <div id="language-package-updates">
@@ -132,7 +140,7 @@
                     <h2>Available Updates</h2>
                     <table>
                         <tr>
-                        @if(viewModel.isUpdateAvailable) {
+                         @if(viewModel.isUpdateAvailable) {
                             @helper.form(action = UpdatesController.kitUpdatePost()) {
                                 <td>Kit Update: Available</td><td>
                                     <input type="submit" class="fButton" value="Update"/></td>
@@ -145,4 +153,5 @@
                 </div>
             </div>
         </div>
+
 }

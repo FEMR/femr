@@ -18,10 +18,7 @@
 
     }
 
-   @{/*@downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt} */}
-    @downloadSpeedMapVal = @{viewModel.getNetworkStatus.get("Download")}
-    @dSpeedList = @{downloadSpeedMapVal.split(" ")}
-    @dSpeedVal = @{dSpeedList(0).toInt}
+   @downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt}
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
 
@@ -39,22 +36,21 @@
                             }
                             </div>
                             <div>
-                                @if(dSpeedVal > 5) {
+                                @if(downloadSpeed > 5) {
                                     <img src=@assets.path("networkIcons/good_connection_icon.png") width="75" height="75"/>
-                                } else if(dSpeedVal > 2 && dSpeedVal < 5) {
+                                } else if(downloadSpeed > 2 && downloadSpeed < 5) {
                                 <img src=@assets.path("networkIcons/okay_connection_icon.png") width="75" height="75"/>
                                 } else {
                                 <img src=@assets.path("networkIcons/poor_connection_icon.png") width="75" height="75"/>
                                 }
                             </div>
                         </div>
-                        @for((key,valyew) <- viewModel.getNetworkStatus) {
+                         @for((key,valyew) <- viewModel.getNetworkStatus) {
                             <tr>
                                 <td>@key:</td>
                                 <td>@valyew</td>
                             </tr>
                         }
-
                     </table>
                 </div>
                 <div id="kit-status">

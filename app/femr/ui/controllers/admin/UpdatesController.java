@@ -148,7 +148,6 @@ public class UpdatesController extends Controller {
         return manageGet();
     }
 
-    //TODO: fix this , it throws runTimeException always...
     public Result refreshInternetStatus() {
         ServiceResponse<List<? extends INetworkStatus>> updateResponse = updatesService.updateNetworkStatuses();
         if (updateResponse.hasErrors()) {

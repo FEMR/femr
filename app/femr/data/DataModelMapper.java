@@ -451,6 +451,7 @@ public class DataModelMapper implements IDataModelMapper{
         if (StringUtils.isNullOrWhiteSpace(description)) photo.setDescription("");
         else photo.setDescription(description);
         photo.setFilePath(filePath);
+        photo.setInsertTS(new Date());
 
         if(photoData != null)
             photo.setPhotoBlob(photoData);

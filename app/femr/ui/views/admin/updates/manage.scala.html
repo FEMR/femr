@@ -18,7 +18,8 @@
 
     }
 
-   @downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt}
+@downloadSpeed = @{ viewModel.getNetworkStatus.get("Download").split(" ")(0).toFloat.toInt }
+
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
 

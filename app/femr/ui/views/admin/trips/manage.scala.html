@@ -12,6 +12,46 @@
 @additionalScripts = {
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script>
+            let languageData;
+
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}","@{currentUser.getFirstName}");
+
+                    })
+                    .catch(error => console.error('Error fetching language data:', error));
+
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                } else {
+                    console.error(`Element with ID '${elementId}' not found.`);
+                }
+            }
+
+            function updateLanguage(languageCode) {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("trips_manage_Add", languageData[languageCode].trips_manage_Add);
+                updateTextContent("trips_manage_Team", languageData[languageCode].trips_manage_Team);
+                updateTextContent("trips_manage_TripCity", languageData[languageCode].trips_manage_TripCity);
+                updateTextContent("trips_manage_TripCountry", languageData[languageCode].trips_manage_TripCountry);
+                updateTextContent("trips_manage_Start1", languageData[languageCode].trips_manage_Start1);
+                updateTextContent("trips_manage_End1", languageData[languageCode].trips_manage_End1);
+                updateTextContent("trips_manage_Submit", languageData[languageCode].trips_manage_Submit);
+                updateTextContent("trips_manage_Edit", languageData[languageCode].trips_manage_Edit);
+                updateTextContent("trips_manage_Name", languageData[languageCode].trips_manage_Name);
+                updateTextContent("trips_manage_Country", languageData[languageCode].trips_manage_Country);
+                updateTextContent("trips_manage_City", languageData[languageCode].trips_manage_City);
+                updateTextContent("trips_manage_Start2", languageData[languageCode].trips_manage_Start2);
+                updateTextContent("trips_manage_End2", languageData[languageCode].trips_manage_End2);
+
+            }
+    </script>
 }
 
 @admin("Trips - Manage Trips", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
@@ -24,9 +64,10 @@
 
     @helper.form(action = TripController.managePost()) {
         <div id="addTripWrap">
-            <h1>Add Trip:</h1>
+            <h1 id="trips_manage_Add">Add Trip:</h1>
             <div>
-                <label>Trip Team:<span class="red bold">*</span>
+                <label><span id="trips_manage_Team">Trip Team:</span>
+                    <span class="red bold">*</span>
                     <select class="fSelect" name="newTripTeamName">
                         <option selected value=""></option>
                         @for(teamIndex <- 1 to viewModel.getMissionItems.size) {
@@ -38,7 +79,7 @@
                 </label>
             </div>
             <div>
-                <label>Trip City:<span class="red bold">*</span>
+                <label><span id="trips_manage_TripCity">Trip City:</span><span class="red bold">*</span>
                     <select class="fSelect" name="newTripCity">
                         <option selected value=""></option>
                         @for(tripIndex <- 1 to viewModel.getAvailableCities.size) {
@@ -50,25 +91,27 @@
                 </label>
             </div>
             <div>
-                <label>Trip Country:
+                <label><span id="trips_manage_TripCountry">Trip Country:</span>
                     <input class="fInput" type="text" value="" name="newTripCountry" readonly/>
                 </label>
             </div>
 
             <div>
-                <label>Start Date:<span class="red bold">*</span>
+                <label><span id="trips_manage_Start1">Start Date:</span>
+                    <span class="red bold">*</span>
                     <input type="date" name="newTripStartDate"/>
                 </label>
             </div>
             <div>
-                <label>End Date:<span class="red bold">*</span>
+                <label><span id="trips_manage_End1">End Date:</span>
+                    <span class="red bold">*</span>
                     <input type="date" name="newTripEndDate"/>
                 </label>
             </div>
         </div>
 
         <div id="submitWrap">
-            <button type="submit" class="fButton">Submit</button>
+            <button type="submit" class="fButton" id="trips_manage_Submit">Submit</button>
         </div>
     }
 
@@ -77,12 +120,12 @@
         <table id="tripTable">
             <thead>
                 <tr>
-                    <th>Edit</th>
-                    <th>Team Name</th>
-                    <th>Country</th>
-                    <th>City</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th id="trips_manage_Edit">Edit</th>
+                    <th id="trips_manage_Name">Team Name</th>
+                    <th id="trips_manage_Country">Country</th>
+                    <th id="trips_manage_City">City</th>
+                    <th id="trips_manage_Start2">Start Date</th>
+                    <th id="trips_manage_End2">End Date</th>
                 </tr>
             </thead>
             <tbody>

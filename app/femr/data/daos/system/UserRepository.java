@@ -237,9 +237,12 @@ public class UserRepository implements IUserRepository {
     @Override
     public List<? extends IRole> retrieveAllRoles(){
 
-        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
-                .where()
+        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery().where();
+
+                /*
                 .ne("name", "SuperUser");
+                Why remove SuperUser from role list? Caused bug where updating SuperUser removed its role...
+                 */
 
         List<? extends IRole> allRoles;
         try{

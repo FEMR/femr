@@ -33,6 +33,7 @@ services:
       DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true'
       DB_USER: 'femr'
       DB_PASS: 'password'
+      IS_DOCKER: 'true'
 
     volumes:
       - ./speedtest:/usr/src/speedtest

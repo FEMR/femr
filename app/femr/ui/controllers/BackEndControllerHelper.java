@@ -23,7 +23,12 @@ public class BackEndControllerHelper  {
   public static ArrayList<String> executeSpeedTestScript(String absPath) {
     ArrayList<String> speedInfo = new ArrayList<>();
     try {
-      ProcessBuilder pb = new ProcessBuilder("python3", absPath);
+      ProcessBuilder pb;
+      if(absPath.equals("/usr/src/speedtest/sptest.py")){
+        pb = new ProcessBuilder("python3", absPath);
+      }else{
+        pb = new ProcessBuilder("python", absPath);
+      }
       Process p = pb.start();
       BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
 

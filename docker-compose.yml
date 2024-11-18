@@ -28,15 +28,14 @@ services:
     tty: true
     ports:
       - '9000:9000'
-    expose:
-      - '9000'
-    volumes:
-      - ./femr/conf:/home/femrapp/conf
+
     environment:
       DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true'
       DB_USER: 'femr'
       DB_PASS: 'password'
 
+    volumes:
+      - ./speedtest:/usr/src/speedtest
 
 
 volumes:

@@ -83,7 +83,7 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends INetworkStatus>> response = new ServiceResponse<>();
         ArrayList<String> data = new ArrayList<>();
         try {
-            data = BackEndControllerHelper.executeSpeedTestScript("speedtest/sptest.py");
+            data = BackEndControllerHelper.executeSpeedTestScript("/usr/src/speedtest/sptest.py");
             //Update Status
             Float Ping = Float.parseFloat(data.get(2));
             String updatedStatus = "Connection stable";

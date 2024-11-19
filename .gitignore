@@ -29,6 +29,9 @@ hs_err_pid*
 # except for .gitignore
 !.gitignore
 
+#except for .github/workflows
+!.github
+
 conf/application.conf
 conf/application.*.conf
 conf/application.example.conf

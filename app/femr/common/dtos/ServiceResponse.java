@@ -34,7 +34,7 @@ public class ServiceResponse<T> {
     }
 
     public boolean hasErrors() {
-        return errors.size() > 0;
+        return !errors.isEmpty();
     }
 
     public T getResponseObject() {

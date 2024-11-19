@@ -75,6 +75,8 @@ public class UpdatesController extends Controller {
         if (networkStatusesResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
+
         for (INetworkStatus ns : networkStatusesResponse.getResponseObject()) {
             indexViewModel.setNetworkStatus(ns.getName(), ns.getValue());
         }
@@ -83,6 +85,8 @@ public class UpdatesController extends Controller {
         if (kitStatusesResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
+
         for (IKitStatus ks : kitStatusesResponse.getResponseObject()) {
             indexViewModel.setKitStatus(ks.getName(), ks.getValue());
         }
@@ -91,6 +95,8 @@ public class UpdatesController extends Controller {
         if (databaseStatusResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
+
         for (IDatabaseStatus ds : databaseStatusResponse.getResponseObject()) {
             indexViewModel.setDatabaseStatus(ds.getName(), ds.getValue());
         }
@@ -101,6 +107,7 @@ public class UpdatesController extends Controller {
         if(languagesResponse.hasErrors()){
             throw new RuntimeException();
         }
+
         for(ILanguageCode lang : languagesResponse.getResponseObject()) {
             indexViewModel.setLanguages(lang);
         }
@@ -140,6 +147,7 @@ public class UpdatesController extends Controller {
 
         return manageGet();
     }
+
     public Result refreshInternetStatus() {
         ServiceResponse<List<? extends INetworkStatus>> updateResponse = updatesService.updateNetworkStatuses();
         if (updateResponse.hasErrors()) {
@@ -151,6 +159,7 @@ public class UpdatesController extends Controller {
     }
 
     public Result updateLanguage(){
+
         String langCode = request().getQueryString("code");
         boolean updateScheduled = request().getQueryString("update").equals("true");
 

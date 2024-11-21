@@ -35,6 +35,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +85,15 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends INetworkStatus>> response = new ServiceResponse<>();
         ArrayList<String> data = new ArrayList<>();
         try {
-            data = BackEndControllerHelper.executeSpeedTestScript("speedtest/sptest.py");
+            String isDocker = System.getenv("IS_DOCKER");
+            if("true".equals(isDocker)) { //running in docker
+                data = BackEndControllerHelper.executeSpeedTestScript("/usr/src/speedtest/sptest.py");
+            }else{ //running in IDE
+                Path speedPath = Paths.get(System.getProperty("user.dir"), "speedtest", "sptest.py");
+                data = BackEndControllerHelper.executeSpeedTestScript(speedPath.toString());
+            }
+            //data = BackEndControllerHelper.executeSpeedTestScript("/usr/src/speedtest/sptest.py");
+            //data = BackEndControllerHelper.executeSpeedTestScript("speedtest/sptest.py");
             //Update Status
             Float Ping = Float.parseFloat(data.get(2));
             String updatedStatus = "Connection stable";

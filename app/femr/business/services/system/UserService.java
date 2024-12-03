@@ -72,7 +72,11 @@ public class UserService implements IUserService {
         newFeedback.setDate(dateUtils.getCurrentDateTime());
         newFeedback.setFeedback(feedback);
 
-        feedbackRepository.create(newFeedback);
+        if (feedbackRepository.create(newFeedback) != null){
+            response.setResponseObject(true);
+        }else{
+            response.setResponseObject(false);
+        }
 
         return response;
     }

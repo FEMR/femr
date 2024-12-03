@@ -23,8 +23,8 @@ public class Feedback implements IFeedback {
     @Column(name = "feedback", nullable = false)
     private String feedback;
 
-    @Column(name="language_code", nullable=true, length=5)
-    private String languageCode;
+//    @Column(name="language_code", nullable=true, length=5)
+//    private String languageCode;
 
 
 
@@ -55,14 +55,14 @@ public class Feedback implements IFeedback {
         feedback = theFeedback;
     }
 
-    @Override
-    public String getLanguageCode() {
-        return this.languageCode;
-    }
-
-    @Override
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
-    }
+//    @Override
+//    public String getLanguageCode() {
+//        return this.languageCode;
+//    }
+//
+//    @Override
+//    public void setLanguageCode(String languageCode) {
+//        this.languageCode = languageCode;
+//    }
 
 }

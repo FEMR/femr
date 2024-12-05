@@ -23,17 +23,24 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker Dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
-          path: sbt-build-cache
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
+          path: |
+            ~/.ivy2
+            ~/.sbt
+          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
-            ${{ runner.os }}-sbt-
+            sbt-${{ runner.os }}-
 
-      - name: Inject sbt-build-cache
+      - name: Inject sbt cache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
         with:
-          cache-source: sbt-build-cache
+          cache-map: |
+            {
+              "~/.ivy2": "/root/.ivy2",
+              "~/.sbt": "/root/.sbt"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
       - name: Build and Push Docker Image to Registry
         uses: docker/build-push-action@v6

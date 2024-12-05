@@ -6,6 +6,7 @@ import controllers.AssetsFinder;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -28,6 +29,7 @@ public class FeedbackController extends Controller {
     private final ISessionService sessionService;
     private final FormFactory formFactory;
     private final IUserService userService;
+    private String SuccessMessage = "";
 
 
     @Inject
@@ -47,7 +49,7 @@ public class FeedbackController extends Controller {
     // GET
     public Result indexGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(feedback.render(currentUser, assetsFinder));
+        return ok(feedback.render(currentUser, assetsFinder, SuccessMessage));
     }
 
     // POST
@@ -57,11 +59,14 @@ public class FeedbackController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         if(!viewModel.getFeedbackMsg().equals("")){
-            userService.createFeedback(viewModel.getFeedbackMsg());
-            return redirect("/");
+            ServiceResponse<Boolean> success = userService.createFeedback(viewModel.getFeedbackMsg());
+            if (success.getResponseObject()){
+                SuccessMessage = "Successfully sent feedback!";
+                return ok(feedback.render(currentUser, assetsFinder, SuccessMessage));
+            }
         }
-
-        return redirect("/feedback");
+        SuccessMessage = "Failed to send feedback. Please try again or contact a nerd!";
+        return ok(feedback.render(currentUser, assetsFinder, SuccessMessage));
     }
 
 

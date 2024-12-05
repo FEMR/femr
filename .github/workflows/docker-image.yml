@@ -3,29 +3,15 @@ name: Docker Image CI/CD
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
-
+      - karan
 jobs:
   push_to_registry:
     name: Push Docker Image to Docker Hub
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Check Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Cache SBT Dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.ivy2
-            ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
-          restore-keys: |
-            ${{ runner.os }}-sbt-
 
       - name: Login to Docker Registry
         uses: docker/login-action@v3
@@ -33,33 +19,27 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_EMAIL }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and Push Docker Image to Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: teamfemrdev/teamfemr:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  build:
-    name: Build Docker Image on Pull Request
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Repository
-        uses: actions/checkout@v4
-
-      - name: Cache SBT Dependencies
+      - name: Cache Docker Dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.ivy2
-            ~/.sbt
+          path: sbt-build-cache
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
           restore-keys: |
             ${{ runner.os }}-sbt-
 
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
+      - name: Inject sbt-build-cache
+        uses: reproducible-containers/buildkit-cache-dance@4b2444fec0c0fb9dbf175a96c094720a692ef810 # v2.1.4
+        with:
+          cache-source: sbt-build-cache
+
+      - name: Build and Push Docker Image to Registry
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+          tags: teamfemrdev/teamfemr:latest

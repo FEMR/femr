@@ -26,8 +26,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.ivy2
-            ~/.sbt
+            root/.ivy2
+            root/.sbt
           key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
             sbt-${{ runner.os }}-
@@ -37,8 +37,8 @@ jobs:
         with:
           cache-map: |
             {
-              "~/.ivy2": "/root/.ivy2",
-              "~/.sbt": "/root/.sbt"
+              "root/.ivy2": "/root/.ivy2",
+              "root/.sbt": "/root/.sbt"
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 

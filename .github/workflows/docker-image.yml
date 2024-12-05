@@ -17,6 +17,16 @@ jobs:
       - name: Check Repository
         uses: actions/checkout@v4
 
+      - name: Cache SBT Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ivy2
+            ~/.sbt
+          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
+          restore-keys: |
+            ${{ runner.os }}-sbt-
+
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -38,5 +48,18 @@ jobs:
       - name: Check Repository
         uses: actions/checkout@v4
 
-      - name: Build the Docker Image
-        run: docker build . --file Dockerfile --tag femr-femr:latest
+      - name: Cache SBT Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ivy2
+            ~/.sbt
+          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
+          restore-keys: |
+            ${{ runner.os }}-sbt-
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false

@@ -2,11 +2,6 @@ name: Docker Image CI/CD
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
   push_to_registry:
@@ -14,18 +9,8 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Check Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Cache SBT Dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.ivy2
-            ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
-          restore-keys: |
-            ${{ runner.os }}-sbt-
 
       - name: Login to Docker Registry
         uses: docker/login-action@v3
@@ -33,33 +18,34 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_EMAIL }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and Push Docker Image to Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: teamfemrdev/teamfemr:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  build:
-    name: Build Docker Image on Pull Request
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Repository
-        uses: actions/checkout@v4
-
-      - name: Cache SBT Dependencies
-        uses: actions/cache@v4
+      - name: Cache Docker Dependencies
+        uses: actions/cache@v3
         with:
           path: |
-            ~/.ivy2
-            ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/Build.sbt') }}
+            root/.ivy2
+            root/.sbt
+          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
-            ${{ runner.os }}-sbt-
+            sbt-${{ runner.os }}-
 
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
+      - name: Inject sbt cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "root/.ivy2": "/root/.ivy2",
+              "root/.sbt": "/root/.sbt"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build and Push Docker Image to Registry
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: teamfemrdev/teamfemr:latest

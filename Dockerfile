@@ -2,7 +2,7 @@ FROM sbtscala/scala-sbt:eclipse-temurin-jammy-8u352-b08_1.9.0_2.12.17 AS builder
 
 #build varaibles
 #ENV SBT_VERSION 1.1.5
-ENV PROJECT_HOME /usr/src
+ENV PROJECT_HOME=/usr/src
 
 #RUN mkdir -p $PROJECT_HOME/activator $PROJECT_HOME/app
 

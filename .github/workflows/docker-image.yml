@@ -2,8 +2,7 @@ name: Docker Image CI/CD
 
 on:
   push:
-    branches:
-      - karan
+
 jobs:
   push_to_registry:
     name: Push Docker Image to Docker Hub

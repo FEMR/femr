@@ -9,52 +9,30 @@ on:
       - karan
 
 jobs:
-  build_and_push_docker_image:
+  push_to_registry:
     name: Push Docker Image to Docker Hub
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64]
-
     steps:
-      - name: Checkout Repository
+      - name: Check Repository
         uses: actions/checkout@v4
-
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_EMAIL }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Cache Docker Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            root/.ivy2
-            root/.sbt
-          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
-          restore-keys: |
-            sbt-${{ runner.os }}-
-
-      - name: Inject sbt cache into Docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
-        with:
-          cache-map: |
-            {
-              "root/.ivy2": "/root/.ivy2",
-              "root/.sbt": "/root/.sbt"
-            }
-          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
-
       - name: Build and Push Docker Image to Registry
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: ${{ matrix.platform }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: teamfemrdev/teamfemr:latest
+  build:
+    name: Build Docker Image on Pull Request
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Repository
+        uses: actions/checkout@v4
+      - name: Build the Docker Image
+        run: docker build . --file Dockerfile --tag femr-femr:latest

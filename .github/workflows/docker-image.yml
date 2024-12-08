@@ -11,10 +11,7 @@ on:
 jobs:
   build_and_push_docker_image:
     name: Push Docker Image to Docker Hub
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64]
-    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || 'macos-latest' }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
@@ -35,9 +32,9 @@ jobs:
           path: |
             root/.ivy2
             root/.sbt
-          key: sbt-${{ runner.os }}-${{ matrix.platform }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
-            sbt-${{ runner.os }}-${{ matrix.platform }}
+            sbt-${{ runner.os }}-
 
       - name: Inject sbt cache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
@@ -53,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: ${{ github.event_name != 'pull_request' }}

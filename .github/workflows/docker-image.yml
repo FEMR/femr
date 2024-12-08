@@ -10,9 +10,16 @@ on:
 
 jobs:
   build_image_pr_test:
+    # Only runs build on PRs.
+    # Only does linux/amd64 build do to speed. Once Github adds more ARM runners, we can add more platforms.
+
     name: Build Image Test For PR
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [linux/amd64] # Add linux/arm64 when more runners are available.
 
     steps:
       - name: Checkout Repository
@@ -27,16 +34,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Caches dependencies separately for each platform.
       - name: Cache Docker Dependencies
         uses: actions/cache@v3
         with:
           path: |
             root/.ivy2
             root/.sbt
-          key: sbt-${{ runner.os }}-linux/amd64-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          key: sbt-${{ runner.os }}-${{matrix.platform}}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
-            sbt-${{ runner.os }}-linux/amd64
+            sbt-${{ runner.os }}-${{matrix.platform}}
 
+      # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
       - name: Inject sbt cache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
         with:
@@ -47,14 +56,14 @@ jobs:
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
-      - name: Build and Push Docker Image to Registry
+      - name: Build Docker Image
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: false
+          push: false # Doesn't push to dockerhub on PRs.
           tags: teamfemrdev/teamfemr:latest
 
   build_and_push_image:
@@ -79,6 +88,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Caches dependencies separately for each platform.
       - name: Cache Docker Dependencies
         uses: actions/cache@v3
         with:
@@ -89,6 +99,7 @@ jobs:
           restore-keys: |
             sbt-${{ runner.os }}-${{matrix.platform}}
 
+      # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
       - name: Inject sbt cache into Docker
         uses: reproducible-containers/buildkit-cache-dance@v3.1.0
         with:

@@ -1,20 +1,23 @@
 # Integration Tests
 
-## Env Vars
+Integration tests for fEMR. This project will bring up the entire fEMR stack with docker then run tests against it.
+
+Assumes that the femr docker container's name is `femr-femr`, otherwise you will need to re-build it with the new name.
+
+## Run with Docker
+
+Ensure that the femr container is built with name `femr-femr`, before running the tests.
+
+In the `integration-test` directory, run the tests with:
 
 ```bash
-docker run -it --rm -v $(pwd):/app -w /app femr-femr pandoc README.md -o README.md
+docker compose up --build
 ```
 
-## Running Tests
+## Build Image
+
+In the root of the fEMR repository:
 
 ```bash
-docker-compose -f docker-compose.test.yml up --build
+docker compose build
 ```
-
-## Running Tests with Coverage
-
-```bash
-docker-compose -f docker-compose.test.yml -f docker-compose.coverage.yml up --build
-```
-

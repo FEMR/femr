@@ -663,7 +663,8 @@ $(document).ready(function () {
             patientPhotoFeature.flagForDeletion();
     });
 
-    $('#triageSubmitBtn').click(function () {
+    $('#triageSubmitBtn').click(function (e) {
+        e.preventDefault();
         var pass = validate();
         var patientInfo = triageFields.patientInformation;
         var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();

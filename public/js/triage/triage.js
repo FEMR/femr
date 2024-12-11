@@ -391,8 +391,8 @@ var triageFields = {
         address: $('#address'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
-        years: $('#years'),
-        months: $('#months'),
+        years: $('#yearsInput'),
+        months: $('#monthsInput'),
         ageClassification: $('[name=ageClassification]'),
         city: $('#city'),
         maleButton: $('#maleBtn'),
@@ -691,8 +691,14 @@ $(document).ready(function () {
                 //checkIfDuplicatePatient();
                 checkIfDuplicatePatientMatch();
             }
+
             pass = !isDiabeticScreeningPromptNecessary;
         }
+
+        if (pass === true) {
+            $('.triage-form').submit(); // Submit the form only if validation is successful
+        }
+
         return pass; //located in triageClientValidation.js
     });
 

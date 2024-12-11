@@ -34,7 +34,7 @@ var triageFieldValidator = {
         }
 
         //Validate Age
-        if ( (patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
+        if ((patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
             (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))
         ){
             $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");

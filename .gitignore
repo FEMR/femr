@@ -72,9 +72,6 @@ credentials.yml
 util/PhotoMigration$Photo.class
 util/PhotoMigration.class
 
-#development database
-docker-compose.yml
-
 speedtest/__pycache__
 
 #Translation Models and Log

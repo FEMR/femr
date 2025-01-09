@@ -36,7 +36,7 @@ def test_can_login_and_logout_to_admin():
     # Test Login
     driver.set_window_size(1361, 1157)
     driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("admin")
+    driver.find_element(By.NAME, "email").send_keys("admins")
     driver.find_element(By.NAME, "password").send_keys("admin")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
     assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text

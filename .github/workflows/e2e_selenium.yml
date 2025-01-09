@@ -15,8 +15,36 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Production image
-        run: docker image build -t femr .
+      # Caches dependencies separately for each platform.
+      - name: Cache Docker Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            root/.ivy2
+            root/.sbt
+          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          restore-keys: |
+            sbt-${{ runner.os }}
+
+      # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
+      - name: Inject sbt cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "root/.ivy2": "/root/.ivy2",
+              "root/.sbt": "/root/.sbt"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build Production fEMR Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false # Doesn't push to dockerhub on PRs.
+          tags: femr
 
       - name: Build Integration Test Container
         run: cd integration_test;

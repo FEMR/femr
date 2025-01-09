@@ -1,0 +1,30 @@
+name: Build and test - with Dev image
+
+on:
+  push:
+#    branches: [main]/
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Production image
+        run: docker image build -t femr .
+
+      - name: Build Integration Test Container
+        run: cd integration_test
+             docker image build -t tester .
+
+      - name: Run tests
+        run: |
+          docker run \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -e FEMR_IMAGE_NAME="femr" \
+          tester

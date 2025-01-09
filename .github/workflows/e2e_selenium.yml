@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
           context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: false # Doesn't push to dockerhub on PRs.
+          load: true
           tags: femr
 
       - name: Build Integration Test Container

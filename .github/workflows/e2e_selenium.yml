@@ -1,4 +1,4 @@
-name: Build and test - with Dev image
+name: Build and Run Integration Tests
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
         run: docker image build -t femr .
 
       - name: Build Integration Test Container
-        run: cd integration_test
+        run: cd integration_test;
              docker image build -t tester .
 
       - name: Run tests

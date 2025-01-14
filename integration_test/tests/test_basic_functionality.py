@@ -34,7 +34,7 @@ def test_can_login_and_logout_to_admin():
     driver.get(f"{femr_address}/")
 
     # Test Login
-    driver.set_window_size(1361, 1157)
+    driver.set_window_size(1362, 1157)
     driver.find_element(By.NAME, "email").click()
     driver.find_element(By.NAME, "email").send_keys("admin")
     driver.find_element(By.NAME, "password").send_keys("admin")

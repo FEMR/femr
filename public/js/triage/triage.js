@@ -330,7 +330,7 @@ var diabeticScreeningFeature = {
         //disable age classification, need to handle absence of POST data
         var value = $("[name=ageClassification]:checked").val();
         triageFields.patientInformation.ageClassification.prop('disabled', true);
-        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anythign (normal behavior)
+        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anything (normal behavior)
             triageFields.patientInformation.ageClassification.last().append("<input type='text' class='hidden' name='ageClassification' value='" + value + "'/>");
         }
         //disable sex buttons, since this is weird and added to the label we still get POST data
@@ -663,6 +663,8 @@ $(document).ready(function () {
             patientPhotoFeature.flagForDeletion();
     });
 
+    var warned = false;
+
     $('#triageSubmitBtn').click(function (e) {
         e.preventDefault();
         var pass = validate();
@@ -670,9 +672,15 @@ $(document).ready(function () {
         var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
         var url = "/search/check/" + query;
 
+        if (!warned && pass === false){
+            alert("Alert: Some entered values exceed expected ranges. Please verify the values and resubmit if they are correct.");
+            warned = true;
+            return
+        }
+
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
-        if (pass === true){
+        if (pass === true || warned === true) {
             //get the base64 URI string from the canvas
             patientPhotoFeature.prepareForPOST();
             //make sure the feature is turned on before JSONifying

@@ -904,10 +904,10 @@ $(function () {
 
 
 /* BMI auto- calculator */
-window.setInterval(function () {
+function calculateBMI() {
     if ($('#heightFeet').val() && $('#weight').val()) {
         var vitalsUnits = $('#vitalsUnits').val(); /* Alaa Serhan */
-        var weight_lbs = parseInt($('#weight').val());
+        var weight = parseInt($('#weight').val());
         var height_in = parseInt($('#heightInches').val());
         var height_ft = parseInt($('#heightFeet').val());
 
@@ -915,21 +915,28 @@ window.setInterval(function () {
             height_in = 0;
         }
 
+        var bmiScore;
         if (vitalsUnits == "metric") {
-            // Get total height in meters from seperate meters, centimeters
-            var heightMeters = (height_ft * 100 + height_in) / 100;
-            var weightKilograms = weight_lbs;//seems weird
+            // Get total height in meters from separate meters, centimeters
+            const heightMeters = (height_ft * 100 + height_in) / 100;
             // Calculate BMI (Metric)
-            $('#bmi').val(calculateBMIScore("metric", weightKilograms, heightMeters));
+            bmiScore = calculateBMIScore("metric", weight, heightMeters);
         } else {
             // Get total height in inches
             var totalInches = height_in + height_ft * 12;
             // Calculate BMI (Imperial)
-            $('#bmi').val(calculateBMIScore("standard", weight_lbs, totalInches));
+            bmiScore = calculateBMIScore("standard", weight, totalInches);
         }
+        // Set the BMI value or clear it if the score is null
+        $('#bmi').val(bmiScore !== null ? bmiScore : '');
     }
+    else {
+        $('#bmi').val('');
+    }
+}
 
-}, 500);
+// Attach event listeners to height and weight input fields
+$('#heightFeet, #heightInches, #weight').on('input change', calculateBMI);
 
 $("#heightInches").change(function(){
     var isMetric = ($("#vitalsUnits").val() === "metric");

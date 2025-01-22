@@ -61,9 +61,7 @@ var vitalClientValidator = function (vitalElements) {
         }
         if (vitalIsInvalid("height", heightInches, isMetric)) {
             $(vitalElements.heightInches).parents(".vitalWrap").addClass("has-errors");
-
-            var heightLimit = isMetric ? "2.8 meters" : "9 feet";
-            $(vitalElements.heightFeet).before(getRangeMessage("height", isMetric, "Height should be " + heightLimit + " or lower"));
+            $(vitalElements.heightFeet).before(getRangeMessage("height", isMetric));
             isValid = false;
         }
     }

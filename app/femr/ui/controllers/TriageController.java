@@ -159,7 +159,6 @@ public class TriageController extends Controller {
         final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class).bindFromRequest();
         IndexViewModelPost viewModel = IndexViewModelForm.get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
         //create a new patient
         //or get current patient for new encounter
         ServiceResponse<PatientItem> patientServiceResponse;
@@ -200,14 +199,7 @@ public class TriageController extends Controller {
         }
 
         patientItem = patientServiceResponse.getResponseObject();
-
-        //photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
-        //V code for saving photo without javascript
-        //currently javascript is required
-        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
-        Http.MultipartFormData.FilePart<File> filePart = body.getFile("patientPhoto");
-        photoService.createPatientPhoto(filePart.getFile(), patientItem.getId(), viewModel.getDeletePhoto());
-
+        photoService.createPatientPhoto(patientItem.getPathToPhoto(), patientItem.getId(), viewModel.getDeletePhoto());
 
         List<String> chiefComplaints = parseChiefComplaintsJSON(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientItem.getId(), currentUser.getId(), currentUser.getTripId(), viewModel.getAgeClassification(), chiefComplaints);
@@ -379,7 +371,7 @@ public class TriageController extends Controller {
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
-
+        patient.setPathToPhoto(viewModelPost.getPatientPhotoCropped());
         return patient;
     }
 

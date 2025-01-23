@@ -220,6 +220,10 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setPathToPhoto(pathToPatientPhoto);
             patientItem.setPhotoId(photoId);
         }
+
+        if (pathToPatientPhoto != null) {
+            patientItem.setPathToPhoto(pathToPatientPhoto);
+        }
         if (weeksPregnant != null)
             patientItem.setWeeksPregnant(weeksPregnant);
 

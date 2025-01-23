@@ -336,8 +336,8 @@ public class PatientService implements IPatientService {
                     patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
             newPatient = patientRepository.savePatient(newPatient);
 
-            String photoPath = getPatientPhotoPathOrNull(newPatient);
             Integer photoId = getPatientPhotoIdOrNull(newPatient);
+            String photoPath = patient.getPathToPhoto();
 
             response.setResponseObject(
                     itemModelMapper.createPatientItem(newPatient.getId(),
@@ -364,7 +364,6 @@ public class PatientService implements IPatientService {
                     //Osman
             );
         } catch (Exception ex) {
-
             Logger.error("PatientService-createPatient", ex);
             response.addError("exception", ex.getMessage());
         }

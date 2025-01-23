@@ -26,7 +26,7 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
 ### CI
-This repo uses Github Actions workflows for continuous integration, which can be found under the Actions tab in Github (https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch. When a pull request is submitted to master, a Docker image is built for testing purposes. On a successful merge with master, the docker image will be published to [dockerhub](https://hub.docker.com/r/teamfemrdev/teamfemr).
+This repo uses Github Actions workflows for continuous integration, which can be found under the [Actions tab in Github](https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch. When a pull request is submitted to master, a Docker image is built for testing purposes. On a successful merge with master, the docker image will be published to [dockerhub](https://hub.docker.com/r/teamfemrdev/teamfemr).
 
 ### Setting up weekly backup reminder
 

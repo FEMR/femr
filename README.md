@@ -73,7 +73,7 @@ Email: kevin.zurek@teamfemr.org
 
 ### Step 4: Configuring IntelliJ
 
-1. Open IntelliJ IDEA Ultimate. Then open the `femr` project with `super-femr` branch checked out.
+1. Open IntelliJ IDEA Ultimate. Then open the `femr` project with `master` branch checked out.
 
 2. In IntelliJ IDEA Ultimate and go to `Preferences` -> `Plugins` -> click `Marketplace` -> Then download `Scala` and `Play Framework`. Then restart the IDE.
 

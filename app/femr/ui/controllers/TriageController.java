@@ -371,7 +371,6 @@ public class TriageController extends Controller {
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
-        System.out.println(viewModelPost.getPatientPhotoCropped());
         patient.setPathToPhoto(viewModelPost.getPatientPhotoCropped());
         return patient;
     }

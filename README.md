@@ -12,9 +12,11 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
 3. [Team FEMR](https://teamfemr.org)
+4. [Confluence](https://calpoly-se-capstone.atlassian.net/wiki/spaces/fEMR/pages/45809675/START+HERE+What+is+fEMR)
 
 ### tEMR Community
 1. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
+2. [Cal Poly JIRA](https://calpoly-se-capstone.atlassian.net/jira/software/projects/FEMR/summary)
 
 ### Dependencies
 
@@ -49,12 +51,12 @@ Email: kevin.zurek@teamfemr.org
 ## Running the application using Docker
 1. Make sure you have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 2. Clone the [FEMR/femr](https://github.com/FEMR/femr) repo: `git clone https://github.com/FEMR/femr.git`
-3. Checkout the [super-femr](https://github.com/FEMR/femr/tree/super-femr) branch: `git checkout super-femr`.
+3. Checkout the [master](https://github.com/FEMR/femr/tree/master) branch: `git checkout master`.
 4. Cd into the femr directory: `cd femr`    
 5. Run `docker-compose up` to start the app.
 6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/
     
-# Setting up the project with IntelliJ on macOS
+# Setting up the project with IntelliJ on macOS and Windows
 
 ### Step 1: Download and Install the following Software and Dependencies 
 - [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)

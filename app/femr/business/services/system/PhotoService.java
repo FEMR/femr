@@ -108,11 +108,7 @@ public class PhotoService implements IPhotoService {
     public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
         try {
-            System.out.println("This is inside: " + imageString);
             IPatient patient = patientRepository.retrievePatientById(patientId);
-//            System.out.println(patientId + " " + image);
-//            String imageString = encodePhoto(image);
-            System.out.println("This is after: " + imageString);
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
 

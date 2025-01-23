@@ -61,9 +61,7 @@ var vitalClientValidator = function (vitalElements) {
         }
         if (vitalIsInvalid("height", heightInches, isMetric)) {
             $(vitalElements.heightInches).parents(".vitalWrap").addClass("has-errors");
-
-            var heightLimit = isMetric ? "2.8 meters" : "9 feet";
-            $(vitalElements.heightFeet).before(getRangeMessage("height", isMetric, "Height should be " + heightLimit + " or lower"));
+            $(vitalElements.heightFeet).before(getRangeMessage("height", isMetric));
             isValid = false;
         }
     }
@@ -89,7 +87,7 @@ function getRangeMessage(index, isMetric, customMessage){
 
     var message = document.createElement("label");
     message.setAttribute("class", "range-message");
-    var text = customMessage || document.createTextNode("Must be between " + min + " and " + max + " and max 2 decimal places");
+    var text = customMessage || document.createTextNode("Expected to be between " + min + " and " + max + " and max 2 decimal places");
     message.append(text);
     return message;
 
@@ -111,82 +109,82 @@ var vitalFieldRanges = {
         // breaths per minute
         imperial: {
             min: 6,
-            max: 60
+            max: 30
         }
     },
     bloodPressureSystolic: {
         imperial: {
-            min: 40,
-            max: 300
+            min: 90,
+            max: 200
         }
     },
     bloodPressureDiastolic: {
         imperial: {
-            min: 30,
-            max: 200
+            min: 50,
+            max: 100
         }
     },
     heartRate: {
         // beats per minute
         imperial: {
-            min: 4,
-            max: 350
+            min: 50,
+            max: 120
         }
     },
     oxygenSaturation: {
         // %
         imperial: {
-            min: 70,
+            min: 90,
             max: 100
         }
     },
     temperature: {
         // Fahrenheit
         imperial: {
-            min: 90,
-            max: 110
+            min: 97.0,
+            max: 100.0
         },
         // Celcius
         metric: {
-            min: 32,
-            max: 43
+            min: 36.0,
+            max: 37.8
         }
     },
     weight: {
         // lbs
         imperial: {
             min: 4,
-            max: 1000
+            max: 400
         },
         // kg
         metric: {
             min: 2,
-            max: 455
+            max: 180
         }
     },
     height: {
         // in inches
         imperial: {
-            min: 0,
-            max: 108
+            min: 15,
+            max: 84
         },
         // cm
         metric: {
-            min: 0,
-            max: 280
+            min: 38,
+            max: 213
         }
     },
     glucose: {
         // mg/dL
         imperial: {
-            min: 0,
-            max: 700
+            min: 60,
+            max: 200
         }
     },
     weeksPregnant: {
         imperial: {
             min: 1,
-            max: 45
+            max: 42
         }
     }
 };

@@ -199,12 +199,6 @@ public class TriageController extends Controller {
         }
 
         patientItem = patientServiceResponse.getResponseObject();
-        System.out.println("This is right after " + patientItem.getPathToPhoto());
-        //photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
-        //V code for saving photo without javascript
-        //currently javascript is required
-//        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
-//        Http.MultipartFormData.FilePart<File> filePart = body.getFile("patientPhoto");
         photoService.createPatientPhoto(patientItem.getPathToPhoto(), patientItem.getId(), viewModel.getDeletePhoto());
 
         List<String> chiefComplaints = parseChiefComplaintsJSON(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON());

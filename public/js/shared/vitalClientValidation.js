@@ -1,3 +1,43 @@
+var patientVitals = triageFields.patientVitals;//located in triage.js
+
+const validateRespiratoryRate = () => {
+    var isMetric = ($("#vitalsUnits").val() == "metric");
+    if (vitalIsInvalid("respiratoryRate", patientVitals.respiratoryRate.val(), isMetric)) {
+        $(patientVitals.respiratoryRate).parent(".vitalWrap").addClass("has-errors");
+        $(patientVitals.respiratoryRate).before(getRangeMessage("respiratoryRate", isMetric));
+        return false;
+    }
+    $(patientVitals.respiratoryRate).parent(".vitalWrap").removeClass("has-errors");
+    $(patientVitals.respiratoryRate).prev("label.range-message").remove();
+    return true;
+}
+
+$('#respiratoryRate').on('change', validateRespiratoryRate);
+
+const validateBloodPressureSystolic = () => {
+    var isMetric = ($("#vitalsUnits").val() == "metric");
+    if (vitalIsInvalid("bloodPressureSystolic", patientVitals.bloodPressureSystolic.val(), isMetric)) {
+        $(patientVitals.bloodPressureSystolic).parents(".vitalWrap").addClass("has-errors");
+        $(patientVitals.bloodPressureSystolic).before(getRangeMessage("bloodPressureSystolic", isMetric));
+        return false;
+    }
+    return true;
+}
+
+$('#bloodPressureSystolic').on('change', validateBloodPressureSystolic);
+
+const validateBloodPressureDiastolic = () => {
+    var isMetric = ($("#vitalsUnits").val() == "metric");
+    if (vitalIsInvalid("bloodPressureDiastolic", patientVitals.bloodPressureDiastolic.val(), isMetric)) {
+        $(patientVitals.bloodPressureDiastolic).parents(".vitalWrap").addClass("has-errors");
+        $(patientVitals.bloodPressureDiastolic).before(getRangeMessage("bloodPressureDiastolic", isMetric));
+        return false;
+    }
+    return true;
+}
+
+$('#bloodPressureDiastolic').on('change', validateBloodPressureDiastolic);
+
 var vitalClientValidator = function (vitalElements) {
     var isMetric = ($("#vitalsUnits").val() == "metric");
     var isValid = true;
@@ -7,17 +47,11 @@ var vitalClientValidator = function (vitalElements) {
     $("#vitalContainer label.range-message").remove();
 
     //Respirations
-    if (vitalIsInvalid("respiratoryRate", vitalElements.respiratoryRate.val(), isMetric)) {
-        $(vitalElements.respiratoryRate).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.respiratoryRate).before(getRangeMessage("respiratoryRate", isMetric));
-        isValid = false;
-    }
+    if (!validateRespiratoryRate()) { isValid = false; }
+
     //Blood Pressure - Systolic
-    if (vitalIsInvalid("bloodPressureSystolic", vitalElements.bloodPressureSystolic.val(), isMetric)) {
-        $(vitalElements.bloodPressureSystolic).parents(".vitalWrap").addClass("has-errors");
-        $(vitalElements.bloodPressureSystolic).before(getRangeMessage("bloodPressureSystolic", isMetric));
-        isValid = false;
-    }
+    if (!validateBloodPressureSystolic(isMetric)) { isValid = false; }
+
     //Blood Pressure - Diastolic
     if (vitalIsInvalid("bloodPressureDiastolic", vitalElements.bloodPressureDiastolic.val(), isMetric)) {
         $(vitalElements.bloodPressureDiastolic).parents(".vitalWrap").addClass("has-errors");

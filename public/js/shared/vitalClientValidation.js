@@ -1,18 +1,20 @@
 var patientVitals = triageFields.patientVitals;//located in triage.js
 
-const validateRespiratoryRate = () => {
+const validateVital = (index, vitalReference, multipleParents) => {
     var isMetric = ($("#vitalsUnits").val() == "metric");
-    if (vitalIsInvalid("respiratoryRate", patientVitals.respiratoryRate.val(), isMetric)) {
-        $(patientVitals.respiratoryRate).parent(".vitalWrap").addClass("has-errors");
-        $(patientVitals.respiratoryRate).before(getRangeMessage("respiratoryRate", isMetric));
+    const parent = multipleParents ? $(vitalReference).parents(".vitalWrap") : $(vitalReference).parent(".vitalWrap");
+    if (vitalIsInvalid(index, vitalReference.val(), isMetric)) {
+        parent.addClass("has-errors");
+        $(vitalReference).before(getRangeMessage(index, isMetric));
         return false;
+    } else {
+        parent.removeClass("has-errors");
+        $(vitalReference).prev("label.range-message").remove();
+        return true;
     }
-    $(patientVitals.respiratoryRate).parent(".vitalWrap").removeClass("has-errors");
-    $(patientVitals.respiratoryRate).prev("label.range-message").remove();
-    return true;
 }
 
-$('#respiratoryRate').on('change', validateRespiratoryRate);
+$('#respiratoryRate').on('change', validateVital("respiratoryRate", patientVitals.respiratoryRate, false));
 
 const validateBloodPressureSystolic = () => {
     var isMetric = ($("#vitalsUnits").val() == "metric");

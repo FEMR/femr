@@ -379,8 +379,12 @@
                         <div class="vitalWrap">
                             <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
                             <div class="doubleVital">
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                                <div class="vitalWrap">
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                                </div>
+                                <div class="vitalWrap">
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                                </div>
                             </div>
                         </div>
                         <div class="vitalWrap">

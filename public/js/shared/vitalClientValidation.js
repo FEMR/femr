@@ -50,7 +50,6 @@ $('#glucose').on('change', () => {validateVital("glucose", patientVitals.glucose
 $('#weeksPregnant').on('change', () => {validateVital("weeksPregnant", patientVitals.weeksPregnant)});
 
 var vitalClientValidator = function (vitalElements) {
-    var isMetric = ($("#vitalsUnits").val() == "metric");
     var isValid = true;
 
     // remove all errors before validating
@@ -82,13 +81,16 @@ var vitalClientValidator = function (vitalElements) {
 
 };
 
-function getRangeMessage(index, isMetric, customMessage){
+function getRangeMessage(index, isMetric){
     var min = (isMetric && vitalFieldRanges[index].hasOwnProperty('metric')) ? vitalFieldRanges[index]['metric'].min : vitalFieldRanges[index]['imperial'].min;
     var max = (isMetric && vitalFieldRanges[index].hasOwnProperty('metric')) ? vitalFieldRanges[index]['metric'].max : vitalFieldRanges[index]['imperial'].max;
 
     var message = document.createElement("label");
     message.setAttribute("class", "range-message");
-    var text = customMessage || document.createTextNode("Expected to be between " + min + " and " + max + " and max 2 decimal places");
+    message.setAttribute("id", "range-message-" + index);
+    message.setAttribute("data-min", min);
+    message.setAttribute("data-max", max);
+    var text = document.createTextNode("Should be greater than: " + min + " and should be less than: " + max);
     message.append(text);
     return message;
 

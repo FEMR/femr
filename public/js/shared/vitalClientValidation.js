@@ -23,7 +23,6 @@ function validateHeight (index, heightReferenceMajor, heightReferenceMinor) {
         var heightMinor = parseFloat(heightReferenceMinor.val()) || 0;
 
         if (isMetric) {
-            // yea I know its called heightInches, but its actually centimeters
             heightMinor += heightMajor * 100;
         } else {
             heightMinor += heightMajor * 12;

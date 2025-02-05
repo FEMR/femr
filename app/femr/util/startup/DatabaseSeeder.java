@@ -1322,13 +1322,35 @@ public class DatabaseSeeder {
     }
 
     private void seedUserRoles() {
-      //Retrieve other roles in the database excluding SuperUser role which is fine
-        //because we are only looking for Manager
-      List<? extends IRole> roles = userRepository.retrieveAllRoles();
-      if (!containRole(roles, "Manager")) {
-        // Manager role doesn't exist, add it
+        // Create TestNurse, used for selenium E2E testing. seedUserRoles() is called after seedAdminUser(), which
+        // creates two users. Therefore, we will only create testNurse if the count is two (otherwise we might try and create twice)
+        int userCount = userRepository.countUsers();
+        if (userCount == 2) {
+            String defaultTestNurseUsername = configuration.getString("default.testnurse.username");
+            String defaultTestNursePassword = configuration.getString("default.testnurse.password");
 
-          userRepository.createRole(Roles.MANAGER, "Manager");
-      }
+            User testNurse = new User();
+            String encryptedTestNursePassword = passwordEncryptor.encryptPassword(defaultTestNursePassword);
+            testNurse.setFirstName("TestNurse");
+            testNurse.setLastName("");
+            testNurse.setEmail(defaultTestNurseUsername);
+            testNurse.setPassword(encryptedTestNursePassword);
+            testNurse.setLastLogin(dateUtils.getCurrentDateTime());
+            testNurse.setDateCreated(dateUtils.getCurrentDateTime());
+            testNurse.setDeleted(false);
+            IRole role1 = userRepository.retrieveRoleByName("Nurse");
+            testNurse.addRole(role1);
+            testNurse.setPasswordReset(false);
+            testNurse.setPasswordCreatedDate(dateUtils.getCurrentDateTime());
+            userRepository.createUser(testNurse);
+
+            //Retrieve other roles in the database excluding SuperUser role which is fine
+            //because we are only looking for Manager
+            List<? extends IRole> roles = userRepository.retrieveAllRoles();
+            if (!containRole(roles, "Manager")) {
+                // Manager role doesn't exist, add it
+                userRepository.createRole(Roles.MANAGER, "Manager");
+            }
+        }
     }
 }

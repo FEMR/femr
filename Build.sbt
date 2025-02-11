@@ -26,7 +26,9 @@ val appDependencies = Seq(
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",
   "com.h2database" % "h2" % "1.4.193",
-  "com.jcraft" % "jsch" % "0.1.54"
+  "com.jcraft" % "jsch" % "0.1.54",
+  "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "7.6.1",
+  "ca.uhn.hapi.fhir" % "hapi-fhir-structures-r5" % "7.6.1"
 )
 
 

@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, successMessage: java.lang.String)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.FeedbackController
@@ -53,7 +53,7 @@
             <textarea  class="fTextArea" name="feedbackMsg" id="usrFeedback" cols="50" rows="10" maxlength="10000" required></textarea>
             <button type="submit" class="fButton fSubmitButton" id="feedback_submit">Submit</button>
         }
-
+        <span id="feedback_success_message">@successMessage</span>
         <p id="feedback_disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
     </div>
 }

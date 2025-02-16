@@ -59,7 +59,7 @@ public interface IPhotoService {
      * @return a service response that contains true if creation successful, false if not
      * and/or errors if they exist.
      */
-    ServiceResponse<Boolean> createPatientPhoto(File image, int patientId, Boolean deleteFlag);
+    ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
 
     /**
      *  Returns patient photo in binary form.  Will determine where to fetch the photo (file system or blob)

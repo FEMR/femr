@@ -330,7 +330,7 @@ var diabeticScreeningFeature = {
         //disable age classification, need to handle absence of POST data
         var value = $("[name=ageClassification]:checked").val();
         triageFields.patientInformation.ageClassification.prop('disabled', true);
-        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anythign (normal behavior)
+        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anything (normal behavior)
             triageFields.patientInformation.ageClassification.last().append("<input type='text' class='hidden' name='ageClassification' value='" + value + "'/>");
         }
         //disable sex buttons, since this is weird and added to the label we still get POST data
@@ -391,8 +391,8 @@ var triageFields = {
         address: $('#address'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
-        years: $('#years'),
-        months: $('#months'),
+        years: $('#yearsInput'),
+        months: $('#monthsInput'),
         ageClassification: $('[name=ageClassification]'),
         city: $('#city'),
         maleButton: $('#maleBtn'),
@@ -664,14 +664,14 @@ $(document).ready(function () {
     });
 
     $('#triageSubmitBtn').click(function () {
-        var pass = validate();
+        var pass = validatePatientInformation();
         var patientInfo = triageFields.patientInformation;
         var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
         var url = "/search/check/" + query;
 
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
-        if (pass === true){
+        if (pass === true) {
             //get the base64 URI string from the canvas
             patientPhotoFeature.prepareForPOST();
             //make sure the feature is turned on before JSONifying
@@ -690,6 +690,7 @@ $(document).ready(function () {
                 //checkIfDuplicatePatient();
                 checkIfDuplicatePatientMatch();
             }
+
             pass = !isDiabeticScreeningPromptNecessary;
         }
         return pass; //located in triageClientValidation.js
@@ -889,10 +890,10 @@ $(function () {
 
 
 /* BMI auto- calculator */
-window.setInterval(function () {
+function calculateBMI() {
     if ($('#heightFeet').val() && $('#weight').val()) {
         var vitalsUnits = $('#vitalsUnits').val(); /* Alaa Serhan */
-        var weight_lbs = parseInt($('#weight').val());
+        var weight = parseInt($('#weight').val());
         var height_in = parseInt($('#heightInches').val());
         var height_ft = parseInt($('#heightFeet').val());
 
@@ -900,21 +901,28 @@ window.setInterval(function () {
             height_in = 0;
         }
 
+        var bmiScore;
         if (vitalsUnits == "metric") {
-            // Get total height in meters from seperate meters, centimeters
-            var heightMeters = (height_ft * 100 + height_in) / 100;
-            var weightKilograms = weight_lbs;//seems weird
+            // Get total height in meters from separate meters, centimeters
+            const heightMeters = (height_ft * 100 + height_in) / 100;
             // Calculate BMI (Metric)
-            $('#bmi').val(calculateBMIScore("metric", weightKilograms, heightMeters));
+            bmiScore = calculateBMIScore("metric", weight, heightMeters);
         } else {
             // Get total height in inches
             var totalInches = height_in + height_ft * 12;
             // Calculate BMI (Imperial)
-            $('#bmi').val(calculateBMIScore("standard", weight_lbs, totalInches));
+            bmiScore = calculateBMIScore("standard", weight, totalInches);
         }
+        // Set the BMI value or clear it if the score is null
+        $('#bmi').val(bmiScore !== null ? bmiScore : '');
     }
+    else {
+        $('#bmi').val('');
+    }
+}
 
-}, 500);
+// Attach event listeners to height and weight input fields
+$('#heightFeet, #heightInches, #weight').on('input change', calculateBMI);
 
 $("#heightInches").change(function(){
     var isMetric = ($("#vitalsUnits").val() === "metric");

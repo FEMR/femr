@@ -12,9 +12,11 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
 3. [Team FEMR](https://teamfemr.org)
+4. [Confluence](https://calpoly-se-capstone.atlassian.net/wiki/spaces/fEMR/pages/45809675/START+HERE+What+is+fEMR)
 
 ### tEMR Community
 1. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
+2. [Cal Poly JIRA](https://calpoly-se-capstone.atlassian.net/jira/software/projects/FEMR/summary)
 
 ### Dependencies
 
@@ -24,7 +26,7 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
 ### CI
-This repo uses Github Actions workflows for continuous integration, which can be found under the Actions tab in Github (https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch.
+This repo uses Github Actions workflows for continuous integration, which can be found under the [Actions tab in Github](https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch. When a pull request is submitted to master, a Docker image is built for testing purposes. On a successful merge with master, the docker image will be published to [dockerhub](https://hub.docker.com/r/teamfemrdev/teamfemr).
 
 ### Setting up weekly backup reminder
 
@@ -49,12 +51,12 @@ Email: kevin.zurek@teamfemr.org
 ## Running the application using Docker
 1. Make sure you have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 2. Clone the [FEMR/femr](https://github.com/FEMR/femr) repo: `git clone https://github.com/FEMR/femr.git`
-3. Checkout the [super-femr](https://github.com/FEMR/femr/tree/super-femr) branch: `git checkout super-femr`.
+3. Checkout the [master](https://github.com/FEMR/femr/tree/master) branch: `git checkout master`.
 4. Cd into the femr directory: `cd femr`    
 5. Run `docker-compose up` to start the app.
 6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/
     
-# Setting up the project with IntelliJ on macOS
+# Setting up the project with IntelliJ on macOS and Windows
 
 ### Step 1: Download and Install the following Software and Dependencies 
 - [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)
@@ -71,7 +73,7 @@ Email: kevin.zurek@teamfemr.org
 
 ### Step 4: Configuring IntelliJ
 
-1. Open IntelliJ IDEA Ultimate. Then open the `femr` project with `super-femr` branch checked out.
+1. Open IntelliJ IDEA Ultimate. Then open the `femr` project with `master` branch checked out.
 
 2. In IntelliJ IDEA Ultimate and go to `Preferences` -> `Plugins` -> click `Marketplace` -> Then download `Scala` and `Play Framework`. Then restart the IDE.
 

@@ -105,13 +105,10 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> createPatientPhoto(File image, int patientId, Boolean deleteFlag) {
+    public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
-
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
-
-            String imageString = encodePhoto(image);
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
 

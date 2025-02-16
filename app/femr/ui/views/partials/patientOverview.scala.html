@@ -9,7 +9,7 @@
 
     <h3 id="partials_medical_Overview_Patient">Patient Overview - @pageName</h3>
 
-    @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
+    @if(patient.getPathToPhoto != null) {
         <img src="@patient.getPathToPhoto" height="90" width="90">
         <div id= "patientOverViewInfoPhoto">
     } else {

@@ -2,7 +2,7 @@ FROM sbtscala/scala-sbt:eclipse-temurin-jammy-8u352-b08_1.9.0_2.12.17 AS builder
 
 #build varaibles
 #ENV SBT_VERSION 1.1.5
-ENV PROJECT_HOME /usr/src
+ENV PROJECT_HOME=/usr/src
 
 #RUN mkdir -p $PROJECT_HOME/activator $PROJECT_HOME/app
 
@@ -22,28 +22,28 @@ RUN apt-get update && apt-get install -y \
 
 # Install curl
 #RUN \
- # apt-get update && \
- # apt-get -y install curl
+# apt-get update && \
+# apt-get -y install curl
 
 # Install sbt
 #RUN \
-  #mkdir /working/ && \
-  #cd /working/ && \
-  #curl -L -o sbt-$SBT_VERSION.deb https://repo.scala-sbt.org/scalasbt/debian/sbt-$SBT_VERSION.deb && \
-  #dpkg -i sbt-$SBT_VERSION.deb && \
-  #rm sbt-$SBT_VERSION.deb && \
-  #apt-get update && \
-  #apt-get install sbt && \
-  #cd && \
-  #rm -r /working/ && \
-  #sbt sbtVersion
+#mkdir /working/ && \
+#cd /working/ && \
+#curl -L -o sbt-$SBT_VERSION.deb https://repo.scala-sbt.org/scalasbt/debian/sbt-$SBT_VERSION.deb && \
+#dpkg -i sbt-$SBT_VERSION.deb && \
+#rm sbt-$SBT_VERSION.deb && \
+#apt-get update && \
+#apt-get install sbt && \
+#cd && \
+#rm -r /working/ && \
+#sbt sbtVersion
 
 COPY Build.sbt .
 COPY project ./project
 
 RUN --mount=type=cache,target=/root/.ivy2 \
-        --mount=type=cache,target=/root/.sbt \
-        sbt update
+    --mount=type=cache,target=/root/.sbt \
+    sbt update
 
 # Setup path variables and copy fEMR into container
 #ENV PATH $PROJECT_HOME/activator/activator-dist-1.3.10/bin:$PATH
@@ -70,9 +70,9 @@ RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-heade
 RUN pip3 install psutil
 
 #database variables
-ENV DB_URL "jdbc:mysql://localhost:3306/femr_db?characterEncoding=UTF-8&useSSL=false"
-ENV DB_USER "username"
-ENV DB_PASS "password"
+ENV DB_URL="jdbc:mysql://localhost:3306/femr_db?characterEncoding=UTF-8&useSSL=false"
+ENV DB_USER="username"
+ENV DB_PASS="password"
 
 COPY --from=builder /usr/src/app/target/universal/femr-* /opt/bin/femr
 

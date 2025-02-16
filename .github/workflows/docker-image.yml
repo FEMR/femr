@@ -9,12 +9,20 @@ on:
       - master
 
 jobs:
-  push_to_registry:
-    name: Push Docker Image to Docker Hub
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+  build_image_pr_test:
+    # Only runs build on PRs.
+    # Only does linux/amd64 build do to speed. Once Github adds more ARM runners, we can add more platforms.
+
+    name: Build Image Test For PR
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [linux/amd64] # Add linux/arm64 when more runners are available.
+
     steps:
-      - name: Check Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Login to Docker Registry
@@ -23,20 +31,91 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_EMAIL }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and Push Docker Image to Registry
-        uses: docker/build-push-action@v5
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Caches dependencies separately for each platform.
+      - name: Cache Docker Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            root/.ivy2
+            root/.sbt
+          key: sbt-${{ runner.os }}-${{matrix.platform}}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          restore-keys: |
+            sbt-${{ runner.os }}-${{matrix.platform}}
+
+      # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
+      - name: Inject sbt cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "root/.ivy2": "/root/.ivy2",
+              "root/.sbt": "/root/.sbt"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
+          platforms: ${{ matrix.platform }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false # Doesn't push to dockerhub on PRs.
           tags: teamfemrdev/teamfemr:latest
 
-  build:
-    name: Build Docker Image on Pull Request
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+  build_and_push_image:
+    name: Push Docker Image to Docker Hub
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'push'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+
     steps:
-      - name: Check Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Build the Docker Image
-        run: docker build . --file Dockerfile --tag femr-femr:latest
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_EMAIL }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Caches dependencies separately for each platform.
+      - name: Cache Docker Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            root/.ivy2
+            root/.sbt
+          key: sbt-${{ runner.os }}-${{matrix.platform}}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          restore-keys: |
+            sbt-${{ runner.os }}-${{matrix.platform}}
+
+      # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
+      - name: Inject sbt cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "root/.ivy2": "/root/.ivy2",
+              "root/.sbt": "/root/.sbt"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build and Push Docker Image to Registry
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+          tags: teamfemrdev/teamfemr:latest

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    stop_signal: SIGKILL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app

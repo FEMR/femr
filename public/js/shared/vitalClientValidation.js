@@ -1,5 +1,54 @@
-var vitalClientValidator = function (vitalElements) {
+var patientVitals = triageFields.patientVitals;//located in triage.js
+
+function validateVital (index, vitalReference) {
     var isMetric = ($("#vitalsUnits").val() == "metric");
+    const parent = $(vitalReference).parent(".vitalWrap");
+    parent.removeClass("has-errors");
+    $(vitalReference).prev("label.range-message").remove();
+    if (vitalIsInvalid(index, vitalReference.val(), isMetric)) {
+        parent.addClass("has-errors");
+        $(vitalReference).before(getRangeMessage(index, isMetric));
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function validateHeight (index, heightReferenceMajor, heightReferenceMinor) {
+    var isMetric = ($("#vitalsUnits").val() == "metric");
+    $(heightReferenceMinor).parents(".vitalWrap").removeClass("has-errors");
+    $(heightReferenceMajor).prev("label.range-message").remove();
+    if ($.trim(heightReferenceMajor.val().length) > 0 || $.trim(heightReferenceMinor.val().length) > 0) {
+        var heightMajor = parseFloat(heightReferenceMajor.val()) || 0;
+        var heightMinor = parseFloat(heightReferenceMinor.val()) || 0;
+
+        if (isMetric) {
+            heightMinor += heightMajor * 100;
+        } else {
+            heightMinor += heightMajor * 12;
+        }
+        if (vitalIsInvalid(index, heightMinor, isMetric)) {
+            $(heightReferenceMinor).parents(".vitalWrap").addClass("has-errors");
+            $(heightReferenceMajor).before(getRangeMessage(index, isMetric));
+            return false;
+        }
+        return true;
+    }
+}
+
+$('#respiratoryRate').on('change', () => {validateVital("respiratoryRate", patientVitals.respiratoryRate)});
+$('#bloodPressureSystolic').on('change', () => {validateVital("bloodPressureSystolic", patientVitals.bloodPressureSystolic)})
+$('#bloodPressureDiastolic').on('change', () => {validateVital("bloodPressureDiastolic", patientVitals.bloodPressureDiastolic)});
+$('#heartRate').on('change', () => {validateVital("heartRate", patientVitals.heartRate)});
+$('#oxygenSaturation').on('change', () => {validateVital("oxygenSaturation", patientVitals.oxygenSaturation)});
+$('#temperature').on('change', () => {validateVital("temperature", patientVitals.temperature)});
+$('#weight').on('change', () => {validateVital("weight", patientVitals.weight)});
+$('#heightFeet').on('change', () => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)});
+$('#heightInches').on('change', () => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)});
+$('#glucose').on('change', () => {validateVital("glucose", patientVitals.glucose)});
+$('#weeksPregnant').on('change', () => {validateVital("weeksPregnant", patientVitals.weeksPregnant)});
+
+var vitalClientValidator = function (vitalElements) {
     var isValid = true;
 
     // remove all errors before validating
@@ -7,89 +56,40 @@ var vitalClientValidator = function (vitalElements) {
     $("#vitalContainer label.range-message").remove();
 
     //Respirations
-    if (vitalIsInvalid("respiratoryRate", vitalElements.respiratoryRate.val(), isMetric)) {
-        $(vitalElements.respiratoryRate).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.respiratoryRate).before(getRangeMessage("respiratoryRate", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("respiratoryRate", vitalElements.respiratoryRate)) { isValid = false; }
     //Blood Pressure - Systolic
-    if (vitalIsInvalid("bloodPressureSystolic", vitalElements.bloodPressureSystolic.val(), isMetric)) {
-        $(vitalElements.bloodPressureSystolic).parents(".vitalWrap").addClass("has-errors");
-        $(vitalElements.bloodPressureSystolic).before(getRangeMessage("bloodPressureSystolic", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("bloodPressureSystolic", vitalElements.bloodPressureSystolic)) { isValid = false; }
     //Blood Pressure - Diastolic
-    if (vitalIsInvalid("bloodPressureDiastolic", vitalElements.bloodPressureDiastolic.val(), isMetric)) {
-        $(vitalElements.bloodPressureDiastolic).parents(".vitalWrap").addClass("has-errors");
-        $(vitalElements.bloodPressureDiastolic).before(getRangeMessage("bloodPressureDiastolic", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("bloodPressureDiastolic", vitalElements.bloodPressureDiastolic)) { isValid = false; }
     //Heart Rate
-    if (vitalIsInvalid("heartRate", vitalElements.heartRate.val(), isMetric)) {
-        $(vitalElements.heartRate).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.heartRate).before(getRangeMessage("heartRate", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("heartRate", vitalElements.heartRate)) { isValid = false; }
     //Oxygen
-    if (vitalIsInvalid("oxygenSaturation", vitalElements.oxygenSaturation.val(), isMetric)) {
-        $(vitalElements.oxygenSaturation).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.oxygenSaturation).before(getRangeMessage("oxygenSaturation", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("oxygenSaturation", vitalElements.oxygenSaturation)) { isValid = false; }
     //Temperature
-    if (vitalIsInvalid("temperature", vitalElements.temperature.val(), isMetric)) {
-        $(vitalElements.temperature).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.temperature).before(getRangeMessage("temperature", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("temperature", vitalElements.temperature)) { isValid = false; }
     //Weight
-    if (vitalIsInvalid("weight", vitalElements.weight.val(), isMetric)) {
-        $(vitalElements.weight).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.weight).before(getRangeMessage("weight", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("weight", vitalElements.weight)) { isValid = false; }
     //Height
-    if ($.trim(vitalElements.heightFeet.val().length) > 0 || $.trim(vitalElements.heightInches.val().length) > 0) {
-        var heightFeet = parseFloat(vitalElements.heightFeet.val()) || 0;
-        var heightInches = parseFloat(vitalElements.heightInches.val()) || 0;
-
-        if (isMetric) {
-            // yea I know its called heightInches, but its actually centimeters
-            heightInches += heightFeet * 100;
-        } else {
-            heightInches += heightFeet * 12;
-        }
-        if (vitalIsInvalid("height", heightInches, isMetric)) {
-            $(vitalElements.heightInches).parents(".vitalWrap").addClass("has-errors");
-
-            var heightLimit = isMetric ? "2.8 meters" : "9 feet";
-            $(vitalElements.heightFeet).before(getRangeMessage("height", isMetric, "Height should be " + heightLimit + " or lower"));
-            isValid = false;
-        }
-    }
+    if (!validateHeight("height", vitalElements.heightFeet, vitalElements.heightInches)) { isValid = false; }
     //Glucose
-    if (vitalIsInvalid("glucose", vitalElements.glucose.val(), isMetric)) {
-        $(vitalElements.glucose).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.glucose).before(getRangeMessage("glucose", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("glucose", vitalElements.glucose)) { isValid = false; }
     //Pregnant - Weeks
-    if (vitalIsInvalid("weeksPregnant", vitalElements.weeksPregnant.val(), isMetric)) {
-        $(vitalElements.weeksPregnant).parent(".vitalWrap").addClass("has-errors");
-        $(vitalElements.weeksPregnant).before(getRangeMessage("weeksPregnant", isMetric));
-        isValid = false;
-    }
+    if (!validateVital("weeksPregnant", vitalElements.weeksPregnant)) { isValid = false; }
+
     return isValid;
 
 };
 
-function getRangeMessage(index, isMetric, customMessage){
+function getRangeMessage(index, isMetric){
     var min = (isMetric && vitalFieldRanges[index].hasOwnProperty('metric')) ? vitalFieldRanges[index]['metric'].min : vitalFieldRanges[index]['imperial'].min;
     var max = (isMetric && vitalFieldRanges[index].hasOwnProperty('metric')) ? vitalFieldRanges[index]['metric'].max : vitalFieldRanges[index]['imperial'].max;
 
     var message = document.createElement("label");
     message.setAttribute("class", "range-message");
-    var text = customMessage || document.createTextNode("Must be between " + min + " and " + max + " and max 2 decimal places");
+    message.setAttribute("id", "range-message-" + index);
+    message.setAttribute("data-min", min);
+    message.setAttribute("data-max", max);
+    var text = document.createTextNode("Should be greater than: " + min + " and should be less than: " + max);
     message.append(text);
     return message;
 
@@ -111,82 +111,82 @@ var vitalFieldRanges = {
         // breaths per minute
         imperial: {
             min: 6,
-            max: 60
+            max: 30
         }
     },
     bloodPressureSystolic: {
         imperial: {
-            min: 40,
-            max: 300
+            min: 90,
+            max: 200
         }
     },
     bloodPressureDiastolic: {
         imperial: {
-            min: 30,
-            max: 200
+            min: 50,
+            max: 100
         }
     },
     heartRate: {
         // beats per minute
         imperial: {
-            min: 4,
-            max: 350
+            min: 50,
+            max: 120
         }
     },
     oxygenSaturation: {
         // %
         imperial: {
-            min: 70,
+            min: 90,
             max: 100
         }
     },
     temperature: {
         // Fahrenheit
         imperial: {
-            min: 90,
-            max: 110
+            min: 97.0,
+            max: 100.0
         },
         // Celcius
         metric: {
-            min: 32,
-            max: 43
+            min: 36.0,
+            max: 37.8
         }
     },
     weight: {
         // lbs
         imperial: {
             min: 4,
-            max: 1000
+            max: 400
         },
         // kg
         metric: {
             min: 2,
-            max: 455
+            max: 180
         }
     },
     height: {
         // in inches
         imperial: {
-            min: 0,
-            max: 108
+            min: 15,
+            max: 84
         },
         // cm
         metric: {
-            min: 0,
-            max: 280
+            min: 38,
+            max: 213
         }
     },
     glucose: {
         // mg/dL
         imperial: {
-            min: 0,
-            max: 700
+            min: 60,
+            max: 200
         }
     },
     weeksPregnant: {
         imperial: {
             min: 1,
-            max: 45
+            max: 42
         }
     }
 };

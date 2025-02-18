@@ -13,10 +13,13 @@ import requests
 
 @pytest.fixture
 def driver():
-    driver_address = os.getenv("SELENIUM_ADDRESS")
-    assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
-    options = webdriver.ChromeOptions()
-    drvr = webdriver.Remote(command_executor=driver_address, options=options)
+    if os.getenv("USE_REMOTE"):
+        driver_address = os.getenv("SELENIUM_ADDRESS")
+        assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
+        options = webdriver.ChromeOptions()
+        drvr = webdriver.Remote(command_executor=driver_address, options=options)
+    else:
+        drvr = webdriver.Chrome()
     yield drvr
     drvr.quit()
 

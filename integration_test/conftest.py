@@ -18,7 +18,7 @@ client = docker.from_env()
 
 try:
     femr_image = os.getenv("FEMR_IMAGE_NAME", "femr-femr")
-    
+
     # Verify Image exists
     client.images.get(femr_image)
 except:
@@ -48,13 +48,13 @@ def run_before_and_after_tests(request):
     with sql_container_spec as mysql:
         network.connect(mysql._container.id, aliases=["db"])
 
-        femr_container_spec = DockerContainer(femr_image)\
-            .with_bind_ports("9000", "9000")\
+        femr_container_spec = DockerContainer(femr_image) \
+            .with_name("femr-femr")\
+            .with_bind_ports(9000, 9000)\
             .with_env("DB_URL", f'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true')\
             .with_env("DB_USER", 'femr')\
             .with_env("DB_PASS", 'password')\
-            .with_env("IS_DOCKER",'true')
-        
+            .with_env("IS_DOCKER",'true')\
                 
 
         with femr_container_spec as femr_container:
@@ -66,7 +66,7 @@ def run_before_and_after_tests(request):
 
             femr_address = f"http://{femr_container.get_container_host_ip()}:{femr_container.get_exposed_port(9000)}"
             os.environ["FEMR_ADDRESS"] = femr_address
-            
+
             yield
     
 

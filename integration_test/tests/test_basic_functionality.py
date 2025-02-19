@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support import expected_conditions as EC
 import os
 import requests
 
@@ -145,8 +146,12 @@ def test_search(driver):
 
     driver.find_element(By.ID, "triageSubmitBtn").click()
 
-    # Test searching
-    driver.find_element(By.ID, "nameOrIdSearchForm").send_keys("Search")
+    # Test searching. We use a wait here to avoid race conditions/element not loaded yet
+    wait = WebDriverWait(driver, 10)
+    search_form = wait.until(
+        EC.visibility_of_element_located((By.ID, "nameOrIdSearchForm"))
+    )
+    search_form.send_keys("Search")
     driver.find_element(By.ID, "searchBtn").click()
     assert driver.find_element(By.ID, "nameOrIdSearchForm").get_attribute("placeholder") != "Invalid Patient"
 

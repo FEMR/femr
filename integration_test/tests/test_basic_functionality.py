@@ -18,6 +18,7 @@ def driver():
     driver_address = os.getenv("SELENIUM_ADDRESS")
     assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
     options = webdriver.ChromeOptions()
+    options.add_argument("--disable-dev-shm-usage")
     drvr = webdriver.Remote(command_executor=driver_address, options=options)
     yield drvr
     drvr.quit()
@@ -279,8 +280,87 @@ def test_account_creation_and_admin_approval(driver):
     assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
 
 
+# Tests pharmacy flow by creating a triage for a patient, searching for them in medical, assigning them a medication, and filling them in pharmacy
+def test_pharmacy(driver):
+    femr_address = os.getenv("FEMR_ADDRESS")
 
+    assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
 
+    driver.get(f"{femr_address}/")
+
+    driver.set_window_size(1362, 1157)
+    driver.find_element(By.NAME, "email").click()
+    driver.find_element(By.NAME, "email").send_keys("testnurse")
+    driver.find_element(By.NAME, "password").send_keys("testnurse")
+    driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
+    driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
+
+    # Enter test patient info
+    driver.find_element(By.ID, "firstName").send_keys("Pharmacy")
+    driver.find_element(By.ID, "lastName").send_keys("Testing")
+    #driver.find_element(By.ID, "").send_keys("")
+    driver.find_element(By.ID, "city").send_keys("Port-au-Prince")
+    driver.find_element(By.ID, "yearsInput").send_keys("25")
+    driver.find_element(By.ID, "monthsInput").send_keys("3")
+    driver.find_element(By.CSS_SELECTOR, "label.btn.btn-default.width-50").click()
+    driver.find_element(By.ID, "temperature").send_keys("36")
+    driver.find_element(By.ID, "bloodPressureSystolic").send_keys("90")
+    driver.find_element(By.ID, "bloodPressureDiastolic").send_keys("90")
+    driver.find_element(By.ID, "heartRate").send_keys("80")
+    driver.find_element(By.ID, "respiratoryRate").send_keys("8")
+    driver.find_element(By.ID, "oxygenSaturation").send_keys("90")
+    driver.find_element(By.ID, "heightFeet").send_keys("1")
+    driver.find_element(By.ID, "heightInches").send_keys("77")
+    driver.find_element(By.ID, "weight").send_keys("68")
+    driver.find_element(By.ID, "glucose").send_keys("70")
+
+    driver.find_element(By.ID, "triageSubmitBtn").click()
+
+    # Wait to ensure loading
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.visibility_of_element_located((By.ID, "langCode_medical")))
+
+    # Save the patient's ID:
+    patient_id = driver.find_element(By.ID, "history_patient_Patient").text[11:]
+
+    driver.find_element(By.ID, "langCode_medical").click()
+
+    driver.find_element(By.ID, "id").send_keys(patient_id)
+
+    driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > button").click()
+
+    assert "Patient Overview" in driver.find_element(By.ID, "partials_medical_Overview_Patient").text
+
+    driver.find_element(By.CSS_SELECTOR, "#treatment").click()
+
+    driver.find_element(By.NAME, "prescriptions[0].medicationName").send_keys("Test Medication")
+
+    select_element = driver.find_element(By.XPATH, '//*[@name="prescriptions[0].administrationID"]')
+    select_object = Select(select_element)
+    select_object.select_by_value("1")
+
+    driver.find_element(By.ID, "medicalSubmitBtn").click()
+
+    # Wait to ensure loading
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.visibility_of_element_located((By.ID, "langCode_pharmacy")))
+
+    assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
+
+    driver.find_element(By.ID, "langCode_pharmacy").click()
+
+    # Wait to ensure loading
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.visibility_of_element_located((By.ID, "id")))
+    driver.find_element(By.ID, "id").send_keys(patient_id)
+    driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > button").click()
+
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)")))
+    driver.find_element(By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)").click()
+    driver.find_element(By.ID, "pharmacySubmitBtn").click()
+
+    assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
 
 
 

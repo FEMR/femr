@@ -3,6 +3,7 @@ import time
 import json
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -162,3 +163,139 @@ def test_search(driver):
     # log out afterwards:
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
     assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+
+
+# Tests purely for account creation/requesting approval.
+def test_account_creation(driver):
+    femr_address = os.getenv("FEMR_ADDRESS")
+
+    assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
+
+    driver.get(f"{femr_address}/")
+
+    driver.set_window_size(1362, 1157)
+    driver.find_element(By.CSS_SELECTOR, "#login > form.form-signin.bottomButton > input[type=submit]").click()
+    driver.find_element(By.ID, "email").send_keys("testguy123@gmail.com")
+    driver.find_element(By.ID, "password").send_keys("Helloworld222")
+    driver.find_element(By.ID, "passwordVerify").send_keys("Helloworld222")
+    driver.find_element(By.ID, "firstName").send_keys("TestGuy")
+    driver.find_element(By.ID, "lastName").send_keys("OrWoman")
+
+    # Standard HTML <select> used to select language
+    select_element = driver.find_element(By.ID, "language")
+    select_object = Select(select_element)
+    select_object.select_by_value("en")
+
+    # Test account is a nurse
+    driver.find_element(By.CSS_SELECTOR, "#roleWrap > label:nth-child(8) > input[type=checkbox]").click()
+
+    # Submit info
+    driver.find_element(By.ID, "addUserSubmitBtn").click()
+
+    # Make sure we're back at home page
+    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+
+
+# Tests account creation/requesting approval + admin approval
+def test_account_creation_and_admin_approval(driver):
+    femr_address = os.getenv("FEMR_ADDRESS")
+
+    assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
+
+    driver.get(f"{femr_address}/")
+
+    driver.set_window_size(1362, 1157)
+    driver.find_element(By.CSS_SELECTOR, "#login > form.form-signin.bottomButton > input[type=submit]").click()
+    driver.find_element(By.ID, "email").send_keys("testgal123@gmail.com")
+    driver.find_element(By.ID, "password").send_keys("Helloworld222")
+    driver.find_element(By.ID, "passwordVerify").send_keys("Helloworld222")
+    driver.find_element(By.ID, "firstName").send_keys("TestWoman")
+    driver.find_element(By.ID, "lastName").send_keys("OrGuy")
+
+    # Standard HTML <select> used to select language
+    select_element = driver.find_element(By.ID, "language")
+    select_object = Select(select_element)
+    select_object.select_by_value("en")
+
+    # Test account is a nurse
+    driver.find_element(By.CSS_SELECTOR, "#roleWrap > label:nth-child(8) > input[type=checkbox]").click()
+
+    # Submit info
+    driver.find_element(By.ID, "addUserSubmitBtn").click()
+
+    # Make sure we're back at home page
+    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+
+    # Log in as admin and approve request
+    email_input = driver.find_element(By.NAME, "email")
+    email_input.clear()
+    email_input.send_keys("admin")
+    driver.find_element(By.NAME, "password").send_keys("admin")
+    driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
+
+    # Wait to ensure everything loads
+    welcome_header = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "home_index_h2_Welcome"))
+    )
+    assert "Welcome to fEMR" in welcome_header.text
+
+    driver.find_element(By.ID, "langCode_admin").click()
+
+    # Verify we travelled to admin panel page
+    assert "Admin Panel" in driver.find_element(By.ID, "admin_title").text
+    driver.find_element(By.ID, "admin_users").click()
+
+    # Check for "TestWoman OrGuy" in our users list:
+    table = driver.find_element(By.ID, "userTable")
+    rows = table.find_elements(By.CSS_SELECTOR, "tbody tr")
+    found = False
+
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, "td")
+
+        if not cells:
+            continue
+
+        name_text = cells[1].text.strip()
+
+        if name_text == "TestWoman":
+            found = True
+            # Actually activate
+            activate_btn = cells[-1].find_element(By.CSS_SELECTOR, "button.btn-success.toggleBtn")
+            activate_btn.click()
+
+            # Make sure activation was successful
+            WebDriverWait(driver, 10).until(
+                EC.text_to_be_present_in_element((By.CSS_SELECTOR, "button.btn-danger.toggleBtn"), "Deactivate")
+            )
+            deactivate_btn = cells[-1].find_element(By.CSS_SELECTOR, "button.btn-danger.toggleBtn")
+            assert deactivate_btn.text.strip() == "Deactivate"
+            break
+
+    assert found
+
+    # log out afterwards:
+    driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
+    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

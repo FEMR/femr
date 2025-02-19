@@ -663,24 +663,15 @@ $(document).ready(function () {
             patientPhotoFeature.flagForDeletion();
     });
 
-    var warned = false;
-
-    $('#triageSubmitBtn').click(function (e) {
-        e.preventDefault();
-        var pass = validate();
+    $('#triageSubmitBtn').click(function () {
+        var pass = validatePatientInformation();
         var patientInfo = triageFields.patientInformation;
         var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
         var url = "/search/check/" + query;
 
-        if (!warned && pass === false){
-            alert("Alert: Some entered values exceed expected ranges. Please verify the values and resubmit if they are correct.");
-            warned = true;
-            return
-        }
-
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
-        if (pass === true || warned === true) {
+        if (pass === true) {
             //get the base64 URI string from the canvas
             patientPhotoFeature.prepareForPOST();
             //make sure the feature is turned on before JSONifying
@@ -702,11 +693,6 @@ $(document).ready(function () {
 
             pass = !isDiabeticScreeningPromptNecessary;
         }
-
-        if (pass === true) {
-            $('.triage-form').submit(); // Submit the form only if validation is successful
-        }
-
         return pass; //located in triageClientValidation.js
     });
 

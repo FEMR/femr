@@ -13,7 +13,6 @@
 @additionalScripts = {
     <script type="text/javascript" src="@assets.path("js/libraries/touchit-1.0.0.js")" xmlns="http://www.w3.org/1999/html"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/jquery.jWindowCrop.js")"></script>
-    @*<script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>*@
     <script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/exif.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/megapix-image.js")"></script>
@@ -22,8 +21,30 @@
     <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
     <script>
+            let languageData = {};
+            // MutationObserver to detect when elements are added to the DOM for warning messages
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1 && node.id?.startsWith("range-message-")) {
+                            updateWarning("@currentUser.getLanguageCode()");
+                        }
+                    });
+                });
+            });
+
+            // Start observing the body for added elements
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            function updateWarning(languageCode = "en") {
+                document.querySelectorAll("[id^='range-message-']").forEach((element) => {
+                    const min = element.getAttribute("data-min");
+                    const max = element.getAttribute("data-max");
+                    element.textContent = `${languageData[languageCode].triage_warning_min} ${min} ${languageData[languageCode].triage_warning_max} ${max}`;
+                });
+            }
+
             document.addEventListener('DOMContentLoaded', function(event) {
-                let languageData;
                 initializeGenderLabels();
                 fetch('@routes.Assets.versioned("json/languages.json")')
                         .then(response => response.json())
@@ -31,6 +52,7 @@
                             languageData = data;
                             updateLanguage("@{currentUser.getLanguageCode()}");
                         });
+
 
                 function updateTextContent(elementId, value) {
                     const element = document.getElementById(elementId);
@@ -379,8 +401,12 @@
                         <div class="vitalWrap">
                             <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
                             <div class="doubleVital">
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                                <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                                <div class="vitalWrap">
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                                </div>
+                                <div class="vitalWrap">
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                                </div>
                             </div>
                         </div>
                         <div class="vitalWrap">

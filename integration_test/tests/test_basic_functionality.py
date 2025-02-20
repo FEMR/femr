@@ -19,6 +19,7 @@ def driver():
         driver_address = os.getenv("SELENIUM_ADDRESS")
         assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
         options = webdriver.ChromeOptions()
+        options.add_argument("--disable-dev-shm-usage")
         drvr = webdriver.Remote(command_executor=driver_address, options=options)
     else:
         drvr = webdriver.Chrome()

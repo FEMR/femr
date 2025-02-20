@@ -181,7 +181,7 @@ def test_medical(driver):
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
     
-        assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
+    assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
 
     #Submitting a patient before we look it up on medical
     driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()

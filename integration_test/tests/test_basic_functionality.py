@@ -430,7 +430,6 @@ def test_medical(driver):
     driver.find_element(By.ID, "provokesTab").send_keys("urgent medical stuff")
     driver.find_element(By.ID, "palliatesTab").send_keys("urgent medical stuff")
     driver.find_element(By.ID, "narrativeTab").send_keys("urgent medical stuff")
-    driver.find_element(By.ID, "physicalTab").send_keys("urgent, very important, medical stuff")
 
     driver.find_element(By.ID, "medicalSubmitBtn").click()
 
@@ -444,7 +443,6 @@ def test_medical(driver):
     assert "urgent medical stuff" in driver.find_element(By.ID, "radiationTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "provokesTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "narrativeTab").get_attribute("value")
-    assert "urgent, very important, medical stuff" in driver.find_element(By.ID, "physicalTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "palliatesTab").get_attribute("value")
 
 

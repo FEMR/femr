@@ -168,19 +168,19 @@ def test_search(driver):
     assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
 
 def test_medical(driver):
+
     femr_address = os.getenv("FEMR_ADDRESS")
 
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
 
     driver.get(f"{femr_address}/")
-    
+
     # Test logging in as testnurse:
     driver.set_window_size(1362, 1157)
     driver.find_element(By.NAME, "email").click()
     driver.find_element(By.NAME, "email").send_keys("testnurse")
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
-    
     assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
 
     #Submitting a patient before we look it up on medical
@@ -191,15 +191,6 @@ def test_medical(driver):
     driver.find_element(By.ID, "lastName").send_keys("Tester")
     driver.find_element(By.ID, "city").send_keys("Port-au-Prince")
     driver.find_element(By.ID, "yearsInput").send_keys("22")
-
-    driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
-
-    # Enter test patient info
-    driver.find_element(By.ID, "firstName").send_keys("Pharmacy")
-    driver.find_element(By.ID, "lastName").send_keys("Testing")
-    #driver.find_element(By.ID, "").send_keys("")
-    driver.find_element(By.ID, "city").send_keys("Port-au-Prince")
-    driver.find_element(By.ID, "yearsInput").send_keys("25")
     driver.find_element(By.ID, "monthsInput").send_keys("3")
     driver.find_element(By.CSS_SELECTOR, "label.btn.btn-default.width-50").click()
     driver.find_element(By.ID, "temperature").send_keys("36")
@@ -219,7 +210,8 @@ def test_medical(driver):
     driver.find_element(By.ID, "alcohol").click()
 
     driver.find_element(By.ID, "triageSubmitBtn").click()
-    
+
+
     assert "Patient Id" in driver.find_element(By.ID, "history_patient_Patient").text
 
     patientString = str(driver.find_element(By.ID, "history_patient_Patient").text)

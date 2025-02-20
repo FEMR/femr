@@ -114,6 +114,7 @@ public class UpdatesController extends Controller {
 
         return ok(manage.render(currentUser, indexViewModel, assetsFinder, messages));
     }
+
     public Result databasePost() {
         ServiceResponse<List<? extends IDatabaseStatus>> databaseStatusesResponse = updatesService.updateDatabaseStatuses();
         this.messages = new ArrayList<>();

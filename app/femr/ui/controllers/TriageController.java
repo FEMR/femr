@@ -20,10 +20,7 @@ import play.data.FormFactory;
 import play.mvc.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -365,9 +362,71 @@ public class TriageController extends Controller {
         patient.setFirstName(viewModelPost.getFirstName());
         patient.setLastName(viewModelPost.getLastName());
         patient.setPhoneNumber(viewModelPost.getPhoneNumber());
-        if (viewModelPost.getAge() != null) {
+        System.out.println("YEARS: " + viewModelPost.getYears());
+
+        if(viewModelPost.getYears() != null && viewModelPost.getMonths() != null) {
+
+            patient.setYearsOld(viewModelPost.getYears());
+            patient.setMonthsOld(viewModelPost.getMonths());
+            Date currentDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            calendar.add(Calendar.YEAR, viewModelPost.getYears());
+            calendar.add(Calendar.MONTH, viewModelPost.getMonths());
+            patient.setBirth(calendar.getTime());
+
+        }else if (viewModelPost.getAge() != null) {
             patient.setBirth(viewModelPost.getAge());
+        }else if(viewModelPost.getAgeClassification() != null){
+
+            //patch fix, I am generalizing age to get a generalized birthdate for the database
+            switch (viewModelPost.getAgeClassification()){
+
+                case "infant":
+                    Date currentDate = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(currentDate);
+                    calendar.add(Calendar.YEAR, -1);
+                    patient.setBirth(calendar.getTime());
+                    break;
+
+                case "child":
+                    Date currentDate2 = new Date();
+                    Calendar calendar2 = Calendar.getInstance();
+                    calendar2.setTime(currentDate2);
+                    calendar2.add(Calendar.YEAR, -6);
+                    patient.setBirth(calendar2.getTime());
+                    break;
+
+                case "teenager":
+                    Date currentDate3 = new Date();
+                    Calendar calendar3 = Calendar.getInstance();
+                    calendar3.setTime(currentDate3);
+                    calendar3.add(Calendar.YEAR, -15);
+                    patient.setBirth(calendar3.getTime());
+                    break;
+
+                case "adult":
+                    Date currentDate4 = new Date();
+                    Calendar calendar4 = Calendar.getInstance();
+                    calendar4.setTime(currentDate4);
+                    calendar4.add(Calendar.YEAR, -41);
+                    patient.setBirth(calendar4.getTime());
+                    break;
+
+                case "elder":
+                    Date currentDate5 = new Date();
+                    Calendar calendar5 = Calendar.getInstance();
+                    calendar5.setTime(currentDate5);
+                    calendar5.add(Calendar.YEAR, -65);
+                    patient.setBirth(calendar5.getTime());
+                    break;
+
+            }
+
+
         }
+
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());

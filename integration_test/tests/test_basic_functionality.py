@@ -15,11 +15,14 @@ import requests
 
 @pytest.fixture
 def driver():
-    driver_address = os.getenv("SELENIUM_ADDRESS")
-    assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
-    options = webdriver.ChromeOptions()
-    options.add_argument("--disable-dev-shm-usage")
-    drvr = webdriver.Remote(command_executor=driver_address, options=options)
+    if os.getenv("USE_REMOTE"):
+        driver_address = os.getenv("SELENIUM_ADDRESS")
+        assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
+        options = webdriver.ChromeOptions()
+        options.add_argument("--disable-dev-shm-usage")
+        drvr = webdriver.Remote(command_executor=driver_address, options=options)
+    else:
+        drvr = webdriver.Chrome()
     yield drvr
     drvr.quit()
 
@@ -362,7 +365,88 @@ def test_pharmacy(driver):
 
     assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
 
+def test_medical(driver):
 
+    femr_address = os.getenv("FEMR_ADDRESS")
+
+    assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
+
+    driver.get(f"{femr_address}/")
+
+    # Test logging in as testnurse:
+    driver.set_window_size(1362, 1157)
+    driver.find_element(By.NAME, "email").click()
+    driver.find_element(By.NAME, "email").send_keys("testnurse")
+    driver.find_element(By.NAME, "password").send_keys("testnurse")
+    driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
+    assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
+
+    #Submitting a patient before we look it up on medical
+    driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
+    assert "Triage" in driver.find_element(By.ID, "triage_index_h2_Check").text
+
+    driver.find_element(By.ID, "firstName").send_keys("Medical")
+    driver.find_element(By.ID, "lastName").send_keys("Tester")
+    driver.find_element(By.ID, "city").send_keys("Port-au-Prince")
+    driver.find_element(By.ID, "yearsInput").send_keys("22")
+    driver.find_element(By.ID, "monthsInput").send_keys("3")
+    driver.find_element(By.CSS_SELECTOR, "label.btn.btn-default.width-50").click()
+    driver.find_element(By.ID, "temperature").send_keys("36")
+    driver.find_element(By.ID, "bloodPressureSystolic").send_keys("90")
+    driver.find_element(By.ID, "bloodPressureDiastolic").send_keys("90")
+    driver.find_element(By.ID, "heartRate").send_keys("80")
+    driver.find_element(By.ID, "respiratoryRate").send_keys("8")
+    driver.find_element(By.ID, "oxygenSaturation").send_keys("90")
+    driver.find_element(By.ID, "heightFeet").send_keys("1")
+    driver.find_element(By.ID, "heightInches").send_keys("77")
+    driver.find_element(By.ID, "weight").send_keys("68")
+    driver.find_element(By.ID, "glucose").send_keys("70")
+    driver.find_element(By.ID, "diabetic").click()
+    driver.find_element(By.ID, "hypertension").click()
+    driver.find_element(By.ID, "cholesterol").click()
+    driver.find_element(By.ID, "smoker").click()
+    driver.find_element(By.ID, "alcohol").click()
+
+    driver.find_element(By.ID, "triageSubmitBtn").click()
+
+
+    assert "Patient Id" in driver.find_element(By.ID, "history_patient_Patient").text
+
+    patientString = str(driver.find_element(By.ID, "history_patient_Patient").text)
+    patientId = patientString.split()[len(patientString.split()) - 1]
+
+    # Go to Medical Page and search for patient
+    driver.find_element(By.ID, "langCode_medical").click()
+    assert "Medical Search" in driver.find_element(By.ID, "search_box_title").text
+
+    driver.find_element(By.CLASS_NAME, "fButtonSearch").send_keys(patientId)
+    driver.find_element(By.CLASS_NAME, "idSearch").click()
+
+    assert f"Patient Overview - Medical - Patient ID: {patientId}" in driver.find_element(By.ID, "partials_medical_Overview_Patient").text
+
+    #Input some info and submit it
+    driver.find_element(By.ID, "onsetTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "qualityTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "radiationTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "provokesTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "palliatesTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "narrativeTab").send_keys("urgent medical stuff")
+    driver.find_element(By.ID, "physicalTab").send_keys("urgent, very important, medical stuff")
+
+    driver.find_element(By.ID, "medicalSubmitBtn").click()
+
+    # Search patient and go back to make sure it saved info
+    driver.find_element(By.CLASS_NAME, "fButtonSearch").send_keys(patientId)
+    driver.find_element(By.CLASS_NAME, "idSearch").click()
+    driver.find_element(By.CLASS_NAME, "fYesButton").click()
+
+    assert "urgent medical stuff" in driver.find_element(By.ID, "onsetTab").get_attribute("value")
+    assert "urgent medical stuff" in driver.find_element(By.ID, "qualityTab").get_attribute("value")
+    assert "urgent medical stuff" in driver.find_element(By.ID, "radiationTab").get_attribute("value")
+    assert "urgent medical stuff" in driver.find_element(By.ID, "provokesTab").get_attribute("value")
+    assert "urgent medical stuff" in driver.find_element(By.ID, "narrativeTab").get_attribute("value")
+    assert "urgent, very important, medical stuff" in driver.find_element(By.ID, "physicalTab").get_attribute("value")
+    assert "urgent medical stuff" in driver.find_element(By.ID, "palliatesTab").get_attribute("value")
 
 
 

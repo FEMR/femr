@@ -55,5 +55,5 @@ jobs:
         run: |
           docker run \
           -v /var/run/docker.sock:/var/run/docker.sock \
-          -e FEMR_IMAGE_NAME="femr" \
+          -e FEMR_IMAGE_NAME="femr" -e USE_REMOTE="yes" \
           tester

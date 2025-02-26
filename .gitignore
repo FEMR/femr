@@ -80,7 +80,7 @@ translator/marian_models
 translator/__pycache__
 
 #femr-tools
-femr-tools/internationalization/input
-femr-tools/internationalization/output
+femr-tools/internationalization/input/*
+femr-tools/internationalization/output/*
 femr-tools/internationalization/venv
 

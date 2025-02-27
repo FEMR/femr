@@ -18,9 +18,9 @@ public class MockPatient implements IPatient {
     private int userId = 0;
     private String firstName = "firstName";
     private String lastName = "lastName";
-    private String phoneNumber = "phoneNumber";
+    private String phoneNumber = "+1 (123) 123-1234";
     private Date age = new Date();
-    private String sex = "age";
+    private String sex = "female";
     private String address = "address";
     private String city = "city";
     private Photo photo = new Photo();

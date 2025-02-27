@@ -6,6 +6,7 @@
 
 <img src="./public/img/logo_color_readme.png" width="60%"/>
 <img src="./public/img/triage_example.png"/>
+
 ### Description
 
 fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.

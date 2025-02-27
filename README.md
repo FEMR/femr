@@ -1,9 +1,11 @@
 # FEMR - Fast Electronic Medical Records
 
 ![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiMVBXNWNSMnZsYkgxb05IYS9rclF4eE9QcVdZT1JBNWI1V3RucFd1cXd4ZVEzTzZ5ZWREaEJJRXRDbExyY243eG05VVV4cWVkQXlMelN1bnkxY2dHUUlZPSIsIml2UGFyYW1ldGVyU3BlYyI6IjlCTnI2U0hvU00yNjROQnQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
-
 ![Scala CI](https://github.com/FEMR/femr/actions/workflows/scala.yml/badge.svg)
 
+
+<img src="./public/img/logo_color_readme.png" width="60%"/>
+<img src="./public/img/triage_example.png"/>
 ### Description
 
 fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.
@@ -100,32 +102,34 @@ csv.path="./Upload/CSV"
 
 <details> <summary> screenshot </summary>
 
-![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij7.png?raw=true)
+![Image](./public/img/step_six_one.png)
+![Image](./public/img/step_six_two.png)
 
 </details>
 
-8. Change the language level to 8.
+7. Change the language level to 8.
 
 <details> <summary> screenshot </summary>
 
-![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij8.png?raw=true)
+![Image](./public/img/step_seven_one.png)
+![Image](./public/img/step_seven_two.png)
 
 </details>
 
-9. On the rightmost side of IntelliJ, if there is a vertical line containing sbt. Click on the sbt tab and then click the refresh symbol.
+8. On the rightmost side of IntelliJ, if there is a vertical line containing sbt. Click on the sbt tab and then click the refresh symbol.
       - If there isn’t sbt on the right, remove the .idea folder from the root directory of the project. In the command line, traverse to the root directory and do: rm -r .idea. Then redo step 2 and then continue. If still does not work try invaliadating IntelliJ's cache.
 
 <details> <summary> screenshot </summary>
 
-![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij9.png?raw=true)
+![Image](./public/img/step_eight.png)
 
 </details>
 
-10. After that runs, click on the Play button to run the configuration. If everything was set up correctly, the website should open up on another window. Select “Apply this script now”.
+9. After that runs, click on the Play button to run the configuration. If everything was set up correctly, the website should open up on another window. Select “Apply this script now”.
 
 <details> <summary> screenshot </summary>
 
-![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij10.png?raw=true)
+![Image](./public/img/step_nine.png)
 
 </details>
 

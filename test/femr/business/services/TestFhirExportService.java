@@ -1,9 +1,14 @@
 package femr.business.services;
 
 import femr.business.services.system.FhirExportService;
+import femr.data.daos.core.IEncounterRepository;
+import femr.data.daos.core.IPatientEncounterVitalRepository;
 import femr.data.daos.core.IPatientRepository;
+import mock.femr.data.daos.MockEncounterRepository;
+import mock.femr.data.daos.MockPatientEncounterVitalRepository;
 import mock.femr.data.daos.MockPatientRepository;
 import mock.femr.data.models.MockPatient;
+import mock.femr.data.models.MockPatientEncounterVital;
 import org.junit.Test;
 import org.json.*;
 
@@ -16,19 +21,24 @@ public class TestFhirExportService {
     @Test
     public void smokeTestBlankDocument() {
         IPatientRepository patientRepository = new MockPatientRepository();
-        FhirExportService export = new FhirExportService(patientRepository);
+        IEncounterRepository encounterRepository = new MockEncounterRepository();
+        IPatientEncounterVitalRepository patientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        FhirExportService export = new FhirExportService(patientRepository,encounterRepository, patientEncounterVitalRepository, "5BE2ED");
 
-        System.out.println(export.exportPatient(1));
+        System.out.println(export.exportPatient(0));
     }
 
     @Test
     public void nonStandardSex() {
         MockPatientRepository patientRepository = new MockPatientRepository();
+
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
-
-        FhirExportService export = new FhirExportService(patientRepository);
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPatientEncounterVitalRepository, "5BE2ED");
 
         String jsonString = export.exportPatient(1);
 

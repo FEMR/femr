@@ -48,7 +48,7 @@ public class FhirExportService implements IFhirExportService {
 
     private BundleBuilder buildPatientBundle(int patientId) {
 
-        String fhirPatientId = String.format("%s/Patient/%s", kitId, patientId);
+        String fhirPatientId = String.format("%s_%s",kitId, patientId);
 
         BundleBuilder bundleBuilder = new BundleBuilder(fhirContext);
 
@@ -58,9 +58,6 @@ public class FhirExportService implements IFhirExportService {
         IBase entry = bundleBuilder.addEntry();
 
         Composition composition = new Composition();
-
-        // So we see it in a blank document
-        composition.setId("1");
 
         bundleBuilder.addToEntry(entry, "resource", composition);
 
@@ -82,7 +79,7 @@ public class FhirExportService implements IFhirExportService {
                 Observation observation = new Observation();
                 bundleBuilder.addToEntry(entry, "resource", observation);
 
-                observation.setId(String.format("%s/Observation/%s", kitId, vital.getId()));
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
 
                 // From https://www.hl7.org/fhir/observation-example-respiratory-rate.json.html
                 observation.setCode(FhirCodeableConcepts.getRespiratoryRate());

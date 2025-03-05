@@ -112,6 +112,7 @@ public class FhirExportService implements IFhirExportService {
             IUser nurse = encounter.getNurse();
             IUser physician = encounter.getDoctor();
             IUser pharmacist = encounter.getPharmacist();
+            encounter.ge
 
             // If nurse is present and not yet added, add them
             if (nurse != null && !addedUserIds.contains(nurse.getId())) {
@@ -131,6 +132,7 @@ public class FhirExportService implements IFhirExportService {
                 addedUserIds.add(pharmacist.getId());
             }
         }
+
 
         // city is omitted as it is where the patient is treated and not
         // a property of the patient itself. So it will go with the encounter model.

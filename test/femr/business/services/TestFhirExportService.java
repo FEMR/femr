@@ -1,13 +1,8 @@
 package femr.business.services;
 
 import femr.business.services.system.FhirExportService;
-import femr.data.daos.core.IEncounterRepository;
 import femr.data.daos.core.IPatientRepository;
-import femr.data.daos.core.IPrescriptionRepository;
-import femr.data.daos.system.EncounterRepository;
-import mock.femr.data.daos.MockEncounterRepository;
 import mock.femr.data.daos.MockPatientRepository;
-import mock.femr.data.daos.MockPrescriptionRepository;
 import mock.femr.data.models.MockPatient;
 import org.junit.Test;
 import org.json.*;
@@ -21,9 +16,7 @@ public class TestFhirExportService {
     @Test
     public void smokeTestBlankDocument() {
         IPatientRepository patientRepository = new MockPatientRepository();
-        IEncounterRepository encounterRepository = new MockEncounterRepository();
-        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
-        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository);
+        FhirExportService export = new FhirExportService(patientRepository);
 
         System.out.println(export.exportPatient(1));
     }
@@ -31,13 +24,11 @@ public class TestFhirExportService {
     @Test
     public void nonStandardSex() {
         MockPatientRepository patientRepository = new MockPatientRepository();
-        IEncounterRepository encounterRepository = new MockEncounterRepository();
-        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
 
-        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository);
+        FhirExportService export = new FhirExportService(patientRepository);
 
         String jsonString = export.exportPatient(1);
 

@@ -115,19 +115,19 @@ public class FhirExportService implements IFhirExportService {
 
             // If nurse is present and not yet added, add them
             if (nurse != null && !addedUserIds.contains(nurse.getId())) {
-                addPractitionerData(bundleBuilder, nurse, "Nurse");
+                addPractitionerData(bundleBuilder, nurse);
                 addedUserIds.add(nurse.getId());
             }
 
             // If physician is present and not yet added, add them
             if (physician != null && !addedUserIds.contains(physician.getId())) {
-                addPractitionerData(bundleBuilder, physician, "Physician");
+                addPractitionerData(bundleBuilder, physician);
                 addedUserIds.add(physician.getId());
             }
 
             // If pharmacist is present and not yet added, add them
             if (pharmacist != null && !addedUserIds.contains(pharmacist.getId())) {
-                addPractitionerData(bundleBuilder, pharmacist, "Pharmacist");
+                addPractitionerData(bundleBuilder, pharmacist);
                 addedUserIds.add(pharmacist.getId());
             }
         }
@@ -201,19 +201,18 @@ public class FhirExportService implements IFhirExportService {
 
     /**
      * Helper method for creating Practitioner resources out of IUsers & adding them to a Bundle.
-     * @param prefix  A string which describes the Practitioner's specific role. Physician, Nurse, Pharmacist...
+     *
      */
-    private void addPractitionerData(BundleBuilder bundleBuilder, IUser user, String prefix) {
+    private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
         // Ex. User 42 (Nurse)
-        fhirPractitioner.setId("User " + user.getId() + " (" + prefix + ")");
+        fhirPractitioner.setId("User " + user.getId());
 
         // Populating name
         HumanName name = new HumanName();
         name.setFamily(user.getLastName());
         name.addGiven(user.getFirstName());
-        name.addPrefix(prefix);
         fhirPractitioner.setName(Collections.singletonList(name));
 
         // If the practitioner has an email, add it as a ContactPoint.

@@ -1,6 +1,7 @@
 package femr.business.helpers;
 
 import org.hl7.fhir.r5.model.CodeableConcept;
+import org.hl7.fhir.r5.model.DecimalType;
 import org.hl7.fhir.r5.model.Quantity;
 
 /**
@@ -8,6 +9,24 @@ import org.hl7.fhir.r5.model.Quantity;
  */
 public class FhirCodeableConcepts {
     private FhirCodeableConcepts() {}
+
+
+    public static CodeableConcept getBodyTemperature(){
+        CodeableConcept bodyTemperature = new CodeableConcept();
+        bodyTemperature.setText("Body temperature");
+        bodyTemperature.addCoding("http://loinc.org", "8310-5", "Body temperature");
+        return bodyTemperature;
+    }
+
+    public static Quantity getTemperature(Float value){
+        Quantity temperature = new Quantity();
+        temperature.setValue(value);
+        temperature.setSystem("http://unitsofmeasure.org");
+        temperature.setCode("Cel");
+        temperature.setUnit("degrees C");
+        return temperature;
+
+    }
 
     public static CodeableConcept getRespiratoryRate() {
         CodeableConcept respiratoryRate = new CodeableConcept();

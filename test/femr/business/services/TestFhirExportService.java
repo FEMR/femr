@@ -182,7 +182,7 @@ public class TestFhirExportService {
 
         assertEquals(150.0, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
         assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
-        assertEquals("[lbs_av]", observationResource.getJSONObject("valueQuantity").getString("code"));
+        assertEquals("[lb_av]", observationResource.getJSONObject("valueQuantity").getString("code"));
 
     }
 

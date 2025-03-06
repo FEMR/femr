@@ -4,18 +4,26 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
+import femr.business.helpers.FhirCodeableConcepts;
 import femr.business.services.core.IFhirExportService;
 import femr.data.daos.core.IEncounterRepository;
+import femr.data.daos.core.IPatientEncounterVitalRepository;
 import femr.data.daos.core.IPatientRepository;
+import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientEncounter;
+import femr.data.models.core.IPatientEncounterVital;
 import femr.data.daos.core.IPrescriptionRepository;
-import femr.data.daos.core.IUserRepository;
-import femr.data.daos.system.UserRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.Collections;
+import java.util.List;
 
 import java.util.*;
-
 
 /**
  * Converts between fEMR data models and FHIR models.
@@ -24,19 +32,25 @@ public class FhirExportService implements IFhirExportService {
 
     private static final FhirContext fhirContext = FhirContext.forR5();
 
+
     IPatientRepository patientRepository;
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
+    IPatientEncounterVitalRepository patientEncounterVitalRepository;
+    private String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
+        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.kitId = kitId;
     }
-
+  
     private BundleBuilder buildPatientBundle(int patientId) {
 
+        String fhirPatientId = String.format("%s_%s",kitId, patientId);
 
         BundleBuilder bundleBuilder = new BundleBuilder(fhirContext);
 
@@ -47,18 +61,56 @@ public class FhirExportService implements IFhirExportService {
 
         Composition composition = new Composition();
 
-        // So we see it in a blank document
-        composition.setId("1");
-
         bundleBuilder.addToEntry(entry, "resource", composition);
 
-        addPatientData(bundleBuilder, patientId);
+        addPatientData(bundleBuilder, patientId, fhirPatientId);
+
+        for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
+            List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
+            addRespirationRate(bundleBuilder, fhirPatientId, vitals);
+        }
 
         return bundleBuilder;
 
     }
 
-    private void addPatientData(BundleBuilder bundleBuilder, int patientId) {
+    /**
+     *
+     * Adds the respiratory rate vitals into the bundle.
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+    private void addRespirationRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+        for (IPatientEncounterVital vital : vitals) {
+            if (vital.getVital().getName().equals("respiratoryRate")) {
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+
+                // From https://www.hl7.org/fhir/observation-example-respiratory-rate.json.html
+                observation.setCode(FhirCodeableConcepts.getRespiratoryRate());
+                observation.setSubject(new Reference(fhirPatientId));
+
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+
+                observation.setValue(FhirCodeableConcepts.getBreathsPerMinute(vital.getVitalValue()));
+            }
+        }
+
+    }
+
+    /**
+     * @param bundleBuilder bundle for patient resource to be added to
+     * @param patientId Local DB ID of patient to be added
+     * @param fhirPatientId FHIR String of patient to be added
+     */
+    private void addPatientData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
 
         IPatient patient = patientRepository.retrievePatientById(patientId);
 
@@ -69,7 +121,7 @@ public class FhirExportService implements IFhirExportService {
 
         fhirPatient.setGender(getAdministrativeGender(patient.getSex()));
 
-        fhirPatient.setId(Integer.toString(patient.getId()));
+        fhirPatient.setId(fhirPatientId);
 
 
         HumanName name = new HumanName();
@@ -241,6 +293,10 @@ public class FhirExportService implements IFhirExportService {
     }
 
 
+    /**
+     * @param patientId patient ID to export
+     * @return JSON encoded string of FHIR bundle.
+     */
     @Override
     public String exportPatient(int patientId) {
         return toJson(buildPatientBundle(patientId));

@@ -2,20 +2,23 @@ package mock.femr.data.daos;
 
 import femr.data.daos.core.IEncounterRepository;
 import femr.data.models.core.IPatientEncounter;
-import femr.data.models.mysql.PatientEncounter;
 import mock.femr.data.models.MockPatientEncounter;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MockEncounterRepository implements IEncounterRepository {
     public List<IPatientEncounter> patientEncounters = new ArrayList<>();
+
+    public MockEncounterRepository() {
+        patientEncounters.add(new MockPatientEncounter());
+    }
+
+    public void setPatientEncounters(List<IPatientEncounter> patientEncounters) {
+        this.patientEncounters = patientEncounters;
+    }
 
     @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode) {

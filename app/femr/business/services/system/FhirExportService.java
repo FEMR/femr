@@ -5,7 +5,6 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
 import femr.business.helpers.FhirCodeableConcepts;
-import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IFhirExportService;
 import femr.data.daos.core.IEncounterRepository;
 import femr.data.daos.core.IPatientEncounterVitalRepository;
@@ -13,10 +12,7 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
-import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPrescriptionRepository;
-import femr.data.daos.core.IUserRepository;
-import femr.data.daos.system.UserRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
@@ -24,10 +20,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import java.util.*;
@@ -81,6 +74,13 @@ public class FhirExportService implements IFhirExportService {
 
     }
 
+    /**
+     *
+     * Adds the respiratory rate vitals into the bundle.
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
     private void addRespirationRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
         for (IPatientEncounterVital vital : vitals) {
             if (vital.getVital().getName().equals("respiratoryRate")) {
@@ -105,6 +105,11 @@ public class FhirExportService implements IFhirExportService {
 
     }
 
+    /**
+     * @param bundleBuilder bundle for patient resource to be added to
+     * @param patientId Local DB ID of patient to be added
+     * @param fhirPatientId FHIR String of patient to be added
+     */
     private void addPatientData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
 
         IPatient patient = patientRepository.retrievePatientById(patientId);
@@ -288,6 +293,10 @@ public class FhirExportService implements IFhirExportService {
     }
 
 
+    /**
+     * @param patientId patient ID to export
+     * @return JSON encoded string of FHIR bundle.
+     */
     @Override
     public String exportPatient(int patientId) {
         return toJson(buildPatientBundle(patientId));

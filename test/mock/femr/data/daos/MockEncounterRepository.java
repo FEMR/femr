@@ -18,7 +18,6 @@ public class MockEncounterRepository implements IEncounterRepository {
         patientEncounters.add(new MockPatientEncounter());
     }
 
-
     @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode) {
         return null;
@@ -32,6 +31,7 @@ public class MockEncounterRepository implements IEncounterRepository {
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncounters(DateTime from, DateTime to, Integer tripId) {
         return patientEncounters;
+        //return null;
     }
 
     @Override
@@ -42,11 +42,13 @@ public class MockEncounterRepository implements IEncounterRepository {
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdAsc(int patientId) {
         return patientEncounters.stream().filter((encounter) -> encounter.getPatient().getId() == patientId).collect(Collectors.toList());
+        //return mockEncounters;
     }
 
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdDesc(int patientId) {
-        return Collections.emptyList();
+        //return Collections.emptyList();
+        return mockEncounters;
     }
 
     @Override
@@ -64,3 +66,4 @@ public class MockEncounterRepository implements IEncounterRepository {
         return null;
     }
 }
+

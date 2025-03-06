@@ -6,6 +6,7 @@ import femr.data.daos.core.IPatientEncounterVitalRepository;
 import femr.data.daos.core.IPatientRepository;
 import mock.femr.data.daos.MockEncounterRepository;
 import mock.femr.data.daos.MockPatientEncounterVitalRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.daos.system.EncounterRepository;
 import mock.femr.data.daos.MockEncounterRepository;
@@ -27,16 +28,15 @@ public class TestFhirExportService {
 
         IPatientRepository patientRepository = new MockPatientRepository();
         IEncounterRepository encounterRepository = new MockEncounterRepository();
-        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
         IPatientEncounterVitalRepository patientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
-        FhirExportService export = new FhirExportService(patientRepository,encounterRepository, prescriptionRepository, patientEncounterVitalRepository, "5BE2ED");
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository, patientEncounterVitalRepository, "5BE2ED");
 
         System.out.println(export.exportPatient(0));
     }
 
     @Test
     public void nonStandardSex() {
-      
         MockPatientRepository patientRepository = new MockPatientRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
@@ -46,6 +46,9 @@ public class TestFhirExportService {
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
         FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
         String jsonString = export.exportPatient(1);
 

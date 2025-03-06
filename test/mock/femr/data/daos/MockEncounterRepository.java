@@ -11,12 +11,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MockEncounterRepository implements IEncounterRepository {
-    private List<IPatientEncounter> patientEncounters = new ArrayList<IPatientEncounter>();
+import java.util.ArrayList;
+import java.util.List;
 
-    public MockEncounterRepository() {
-        patientEncounters.add(new MockPatientEncounter());
-    }
+public class MockEncounterRepository implements IEncounterRepository {
+    public List<IPatientEncounter> patientEncounters = new ArrayList<>();
 
     @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode) {
@@ -31,7 +30,6 @@ public class MockEncounterRepository implements IEncounterRepository {
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncounters(DateTime from, DateTime to, Integer tripId) {
         return patientEncounters;
-        //return null;
     }
 
     @Override
@@ -42,12 +40,10 @@ public class MockEncounterRepository implements IEncounterRepository {
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdAsc(int patientId) {
         return patientEncounters.stream().filter((encounter) -> encounter.getPatient().getId() == patientId).collect(Collectors.toList());
-        //return mockEncounters;
     }
 
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdDesc(int patientId) {
-        //return Collections.emptyList();
         return patientEncounters.stream().filter((encounter) -> encounter.getPatient().getId() == patientId).collect(Collectors.toList());
     }
 
@@ -66,4 +62,3 @@ public class MockEncounterRepository implements IEncounterRepository {
         return null;
     }
 }
-

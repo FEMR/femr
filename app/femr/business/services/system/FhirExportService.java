@@ -13,6 +13,7 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.daos.system.UserRepository;
@@ -22,13 +23,14 @@ import org.hl7.fhir.r5.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import java.util.*;
-import java.time.LocalDateTime;
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.Date;
-//import java.util.List;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import java.util.*;
 
 /**
  * Converts between fEMR data models and FHIR models.
@@ -52,7 +54,7 @@ public class FhirExportService implements IFhirExportService {
         this.prescriptionRepository = prescriptionRepository;
         this.kitId = kitId;
     }
-
+  
     private BundleBuilder buildPatientBundle(int patientId) {
 
         String fhirPatientId = String.format("%s_%s",kitId, patientId);
@@ -73,91 +75,9 @@ public class FhirExportService implements IFhirExportService {
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
-            addBodyTemp(bundleBuilder, fhirPatientId, vitals);
-            addBodyWeight(bundleBuilder, fhirPatientId, vitals);
-            addBloodPressure(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
-
-    }
-
-    private void addBloodPressure(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
-
-        for(IPatientEncounterVital vital: vitals) {
-            if(vital.getVital().getName().equals("bloodPressureSystolic")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
-                observation.setCode(FhirCodeableConcepts.getBloodPressureSystolic());
-                observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-                observation.setValue(FhirCodeableConcepts.getSystolic(vital.getVitalValue()));
-            }
-            if(vital.getVital().getName().equals("bloodPressureDiastolic")){
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
-                observation.setCode(FhirCodeableConcepts.getBloodPressureDiastolic());
-                observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-                observation.setValue(FhirCodeableConcepts.getDiastolic(vital.getVitalValue()));
-
-            }
-        }
-
-    }
-
-    private void addBodyTemp(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
-
-        for(IPatientEncounterVital vital: vitals) {
-            if(vital.getVital().getName().equals("temperature")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
-                observation.setCode(FhirCodeableConcepts.getBodyTemperature());
-                observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-
-                observation.setValue(FhirCodeableConcepts.getTemperature(vital.getVitalValue()));
-
-            }
-        }
-    }
-
-    private void addBodyWeight(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
-
-        for(IPatientEncounterVital vital : vitals){
-            if(vital.getVital().getName().equals("weight")){
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
-                observation.setCode(FhirCodeableConcepts.getBodyWeight());
-                observation.setSubject(new Reference(fhirPatientId));
-
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-
-                observation.setValue(FhirCodeableConcepts.getWeight(vital.getVitalValue()));
-
-            }
-
-        }
 
     }
 

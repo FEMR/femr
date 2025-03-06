@@ -29,9 +29,8 @@ public class TestFhirExportService {
         IPatientRepository patientRepository = new MockPatientRepository();
         IEncounterRepository encounterRepository = new MockEncounterRepository();
         IPatientEncounterVitalRepository patientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
-        FhirExportService export = new FhirExportService(patientRepository,encounterRepository, patientEncounterVitalRepository, "5BE2ED");
         IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
-        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository);
+        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository, patientEncounterVitalRepository, "5BE2ED");
 
         System.out.println(export.exportPatient(0));
     }
@@ -46,15 +45,10 @@ public class TestFhirExportService {
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
-        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPatientEncounterVitalRepository, prescriptionRepository, "5BE2ED");
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
 
-      IEncounterRepository encounterRepository = new MockEncounterRepository();
-        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
-
-
-        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository);
 
         String jsonString = export.exportPatient(1);
 

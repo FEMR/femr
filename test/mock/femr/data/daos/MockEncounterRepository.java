@@ -11,13 +11,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-mport org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MockEncounterRepository implements IEncounterRepository {
-    public List<IPatientEncounter> mockEncounters = new ArrayList<>();
+    public List<IPatientEncounter> patientEncounters = new ArrayList<>();
 
     @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode) {

@@ -5,6 +5,7 @@ import femr.data.models.core.*;
 import mock.femr.data.models.*;
 import org.joda.time.DateTime;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MockPrescriptionRepository implements IPrescriptionRepository {
@@ -69,7 +70,7 @@ public class MockPrescriptionRepository implements IPrescriptionRepository {
 
     @Override
     public List<? extends IPatientPrescription> retrieveUnreplacedPrescriptionsByEncounterId(int encounterId) {
-        return null;
+        return Collections.singletonList(mockPrescription);
     }
 
     @Override

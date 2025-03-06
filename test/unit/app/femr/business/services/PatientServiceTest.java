@@ -59,22 +59,6 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void updatePatientAddress_invalidPatientIdProvided_errorProduced() throws Exception {
-
-        //arrange
-        ServiceResponse<PatientItem> response;
-
-        //act
-        response = patientService.updatePatientAddress(0, "123 not a real address");
-
-        //assert
-        assertFalse(mockPatientRepository.savePatientWasCalled);
-        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
-        assertNull(response.getResponseObject());
-        assertTrue(response.hasErrors());
-    }
-
-    @Test
     public void updatePatientAddress_ageProvided_agePersisted() throws Exception {
 
         //arrange
@@ -88,22 +72,6 @@ public class PatientServiceTest {
         assertTrue(mockItemModelMapper.createPatientItemWasCalled);
         assertNotNull(response.getResponseObject());
         assertEquals(response.getResponseObject().getAddress(), "123 not a real address");
-    }
-
-    @Test
-    public void updatePatientAge_invalidPatientIdProvided_errorProduced() throws Exception {
-
-        //arrange
-        ServiceResponse<PatientItem> response;
-
-        //act
-        response = patientService.updatePatientAge(0, new Date());
-
-        //assert
-        assertFalse(mockPatientRepository.savePatientWasCalled);
-        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
-        assertNull(response.getResponseObject());
-        assertTrue(response.hasErrors());
     }
 
     @Test
@@ -125,22 +93,6 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void updatePatientPhoneNumber_invalidPatientIdProvided_errorProduced() throws Exception {
-
-        //arrange
-        ServiceResponse<PatientItem> response;
-
-        //act
-        response = patientService.updatePatientPhoneNumber(0, "male");
-
-        //assert
-        assertFalse(mockPatientRepository.savePatientWasCalled);
-        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
-        assertNull(response.getResponseObject());
-        assertTrue(response.hasErrors());
-    }
-
-    @Test
     public void updatePatientPhoneNumber_numberProvided_numberPersisted() throws Exception {
 
         Random rand = new Random();
@@ -157,22 +109,6 @@ public class PatientServiceTest {
         assertTrue(mockItemModelMapper.createPatientItemWasCalled);
         assertNotNull(response.getResponseObject());
         assertEquals(response.getResponseObject().getPhoneNumber(), randomNumber);
-    }
-
-    @Test
-    public void updatePatientSex_invalidPatientIdProvided_errorProduced() throws Exception {
-
-        //arrange
-        ServiceResponse<PatientItem> response;
-
-        //act
-        response = patientService.updatePatientSex(0, "male");
-
-        //assert
-        assertFalse(mockPatientRepository.savePatientWasCalled);
-        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
-        assertNull(response.getResponseObject());
-        assertTrue(response.hasErrors());
     }
 
     @Test

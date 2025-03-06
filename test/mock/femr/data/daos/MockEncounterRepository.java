@@ -48,7 +48,7 @@ public class MockEncounterRepository implements IEncounterRepository {
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdDesc(int patientId) {
         //return Collections.emptyList();
-        return mockEncounters;
+        return patientEncounters.stream().filter((encounter) -> encounter.getPatient().getId() == patientId).collect(Collectors.toList());
     }
 
     @Override

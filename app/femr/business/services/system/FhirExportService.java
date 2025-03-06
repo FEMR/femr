@@ -5,7 +5,6 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
 import femr.business.helpers.FhirCodeableConcepts;
-import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IFhirExportService;
 import femr.data.daos.core.IEncounterRepository;
 import femr.data.daos.core.IPatientEncounterVitalRepository;
@@ -13,22 +12,13 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
-import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPrescriptionRepository;
-import femr.data.daos.core.IUserRepository;
-import femr.data.daos.system.UserRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 import java.util.*;
 

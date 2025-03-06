@@ -10,6 +10,11 @@ import org.hl7.fhir.r5.model.Quantity;
 public class FhirCodeableConcepts {
     private FhirCodeableConcepts() {}
 
+    /**
+     * Adds FHIR coding for diastolic blood pressure
+     * @return bloodPressureDiastolic
+     */
+
     public static CodeableConcept getBloodPressureDiastolic(){
         CodeableConcept bloodPressureDiastolic = new CodeableConcept();
         bloodPressureDiastolic.setText("Diastolic blood pressure");
@@ -17,6 +22,12 @@ public class FhirCodeableConcepts {
         return bloodPressureDiastolic;
 
     }
+
+    /**
+     * Gets and sets value for diastolic reading
+     * @param value
+     * @return diastolic
+     */
 
     public static Quantity getDiastolic(Float value){
         Quantity diastolic = new Quantity();
@@ -28,6 +39,11 @@ public class FhirCodeableConcepts {
 
     }
 
+    /**
+     * Adds FHIR coding for systolic blood pressure
+     * @return bloodPressureSystolic
+     */
+
     public static CodeableConcept getBloodPressureSystolic() {
         CodeableConcept bloodPressureSystolic = new CodeableConcept();
         bloodPressureSystolic.setText("Systolic blood pressure");
@@ -35,6 +51,12 @@ public class FhirCodeableConcepts {
         return bloodPressureSystolic;
 
     }
+
+    /**
+     * Gets and sets value for systolic reading
+     * @param value
+     * @return systolic
+     */
 
     public static Quantity getSystolic(Float value){
         Quantity systolic = new Quantity();
@@ -46,12 +68,22 @@ public class FhirCodeableConcepts {
 
     }
 
+    /**
+     * Adds FHIR coding for body temperature
+     * @return bodyTemperature
+     */
+
     public static CodeableConcept getBodyTemperature(){
         CodeableConcept bodyTemperature = new CodeableConcept();
         bodyTemperature.setText("Body temperature");
         bodyTemperature.addCoding("http://loinc.org", "8310-5", "Body temperature");
         return bodyTemperature;
     }
+
+    /**
+     * Adds FHIR coding for bodyweight
+     * @return bodyWeight
+     */
 
     public static CodeableConcept getBodyWeight(){
         CodeableConcept bodyWeight = new CodeableConcept();
@@ -61,7 +93,13 @@ public class FhirCodeableConcepts {
 
     }
 
-    public static Quantity getWeight(Float value){
+    /**
+     * Gets and sets weight in pounds
+     * @param value
+     * @return weight
+     */
+
+    public static Quantity getWeightPounds(Float value){
         Quantity weight = new Quantity();
         weight.setValue(value);
         weight.setSystem("http://unitsofmeasure.org");
@@ -70,7 +108,12 @@ public class FhirCodeableConcepts {
         return weight;
     }
 
-    public static Quantity getTemperature(Float value){
+    /**
+     * Gets and sets body temperature in Celsius
+     * @param value
+     * @return temperature
+     */
+    public static Quantity getCelsius(Float value){
         Quantity temperature = new Quantity();
         temperature.setValue(value);
         temperature.setSystem("http://unitsofmeasure.org");

@@ -6,7 +6,6 @@ import femr.data.models.mysql.PatientEncounter;
 import femr.data.models.mysql.Photo;
 import org.joda.time.DateTime;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,13 +15,13 @@ public class MockPatient implements IPatient {
 
     private int id = 0;
     private int userId = 0;
-    private String firstName = "firstName";
-    private String lastName = "lastName";
+    private String firstName = "Bob";
+    private String lastName = "Smith";
     private String phoneNumber = "+1 (123) 123-1234";
     private Date age = new Date();
-    private String sex = "female";
-    private String address = "address";
-    private String city = "city";
+    private String sex = "male";
+    private String address = "123 Main Street";
+    private String city = "San Luis Obispo";
     private Photo photo = new Photo();
     private List<PatientEncounter> patientEncounters = new ArrayList<>();
     private DateTime isDeleted = new DateTime();

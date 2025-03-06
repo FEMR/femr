@@ -1,12 +1,10 @@
 package mock.femr.data.daos;
 
 import femr.data.daos.core.IPatientEncounterVitalRepository;
-import femr.data.daos.system.PatientEncounterVitalRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import mock.femr.data.models.MockPatientEncounterVital;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 

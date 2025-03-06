@@ -3,10 +3,10 @@ name: Docker Image CI/CD
 on:
   push:
     branches:
-      - master
+      - karan
   pull_request:
     branches:
-      - master
+      - karan
 
 jobs:
   build_image_pr_test:
@@ -110,7 +110,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64, linux/arm64 #Platforms to build image for.
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true

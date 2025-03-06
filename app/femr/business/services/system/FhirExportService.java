@@ -13,6 +13,11 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.IPrescriptionRepository;
+import femr.data.daos.core.IUserRepository;
+import femr.data.daos.system.UserRepository;
+import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
 import org.joda.time.DateTime;
@@ -25,6 +30,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import java.util.*;
+
 /**
  * Converts between fEMR data models and FHIR models.
  */
@@ -35,17 +42,19 @@ public class FhirExportService implements IFhirExportService {
 
     IPatientRepository patientRepository;
     IEncounterRepository encounterRepository;
+    IPrescriptionRepository prescriptionRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
     private String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.kitId = kitId;
     }
-
+  
     private BundleBuilder buildPatientBundle(int patientId) {
 
         String fhirPatientId = String.format("%s_%s",kitId, patientId);
@@ -131,11 +140,92 @@ public class FhirExportService implements IFhirExportService {
             fhirPatient.setAddress(Collections.singletonList(address));
         }
 
+        // Gather all encounters
+        List<? extends IPatientEncounter> encounters = encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId);
+
+        // To ensure we don't add duplicate practitioners
+        Set<Integer> addedUserIds = new HashSet<>();
+
+        // Similarly, but for medication IDs
+        Set<Integer> addedMedIds = new HashSet<>();
+
+        for (IPatientEncounter encounter : encounters) {
+            List<? extends IPatientPrescription> prescriptions = prescriptionRepository.retrieveUnreplacedPrescriptionsByEncounterId(encounter.getId());
+
+            for (IPatientPrescription prescription : prescriptions) {
+                addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+            }
+
+            IUser nurse = encounter.getNurse();
+            IUser physician = encounter.getDoctor();
+            IUser pharmacist = encounter.getPharmacist();
+
+            // If nurse is present and not yet added, add them
+            if (nurse != null && !addedUserIds.contains(nurse.getId())) {
+                addPractitionerData(bundleBuilder, nurse);
+                addedUserIds.add(nurse.getId());
+            }
+
+            // If physician is present and not yet added, add them
+            if (physician != null && !addedUserIds.contains(physician.getId())) {
+                addPractitionerData(bundleBuilder, physician);
+                addedUserIds.add(physician.getId());
+            }
+
+            // If pharmacist is present and not yet added, add them
+            if (pharmacist != null && !addedUserIds.contains(pharmacist.getId())) {
+                addPractitionerData(bundleBuilder, pharmacist);
+                addedUserIds.add(pharmacist.getId());
+            }
+        }
+
+
         // city is omitted as it is where the patient is treated and not
         // a property of the patient itself. So it will go with the encounter model.
 
         // TODO: add photo
 
+    }
+
+    private void addMedicationRequestForPrescription(BundleBuilder bundleBuilder, IPatientPrescription prescription, int patientId, Set<Integer> addedMedIds) {
+        IMedication domainMedication = prescription.getMedication();
+
+        if (domainMedication == null) {
+            // If there's no medication info, we can't build the FHIR resources
+            return;
+        }
+
+        // Only add Medication resource if we haven't already.
+        int medId = domainMedication.getId();
+        if (!addedMedIds.contains(medId)) {
+            // Create a Medication resource
+            Medication fhirMedication = new Medication();
+            // Ex. "Medication-123"
+            fhirMedication.setId("Medication-" + medId);
+            fhirMedication.setCode(new CodeableConcept().setText(domainMedication.getName()));
+
+            // Add to bundle
+            IBase medEntry = bundleBuilder.addEntry();
+            bundleBuilder.addToEntry(medEntry, "resource", fhirMedication);
+
+            // Mark this medId as added
+            addedMedIds.add(medId);
+        }
+
+        // Now we create a MedicationRequest referencing that Medication
+        MedicationRequest fhirMedRequest = new MedicationRequest();
+        // Ex. "MedicationRequest-13"
+        fhirMedRequest.setId("MedicationRequest-" + prescription.getId());
+        // Assign references
+        CodeableReference medCodeableRef = new CodeableReference();
+        medCodeableRef.setReference(new Reference("Medication-" + medId));
+        fhirMedRequest.setMedication(medCodeableRef);
+
+        // Linking to patient
+        fhirMedRequest.setSubject(new Reference("Patient/" + patientId));
+
+        IBase requestEntry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(requestEntry, "resource", fhirMedRequest);
     }
 
     /**
@@ -155,6 +245,35 @@ public class FhirExportService implements IFhirExportService {
         } else {
             return Enumerations.AdministrativeGender.OTHER;
         }
+    }
+
+    /**
+     * Helper method for creating Practitioner resources out of IUsers & adding them to a Bundle.
+     *
+     */
+    private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
+        // Creating Practitioner resource and assigning it a unique ID:
+        Practitioner fhirPractitioner = new Practitioner();
+        // Ex. User 42 (Nurse)
+        fhirPractitioner.setId("User " + user.getId());
+
+        // Populating name
+        HumanName name = new HumanName();
+        name.setFamily(user.getLastName());
+        name.addGiven(user.getFirstName());
+        fhirPractitioner.setName(Collections.singletonList(name));
+
+        // If the practitioner has an email, add it as a ContactPoint.
+        if (user.getEmail() != null) {
+            ContactPoint emailContact = new ContactPoint();
+            emailContact.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+            emailContact.setValue(user.getEmail());
+            fhirPractitioner.setTelecom(Collections.singletonList(emailContact));
+        }
+
+        // Add to bundle
+        IBase entry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(entry, "resource", fhirPractitioner);
     }
 
     private String toJson(BundleBuilder bundleBuilder) {

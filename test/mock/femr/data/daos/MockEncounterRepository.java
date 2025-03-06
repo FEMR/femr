@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+mport org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MockEncounterRepository implements IEncounterRepository {
-    private List<IPatientEncounter> patientEncounters = new ArrayList<IPatientEncounter>();
-
-    public MockEncounterRepository() {
-        patientEncounters.add(new MockPatientEncounter());
-    }
-
+    public List<IPatientEncounter> mockEncounters = new ArrayList<>();
 
     @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId, String languageCode) {
@@ -46,7 +46,7 @@ public class MockEncounterRepository implements IEncounterRepository {
 
     @Override
     public List<? extends IPatientEncounter> retrievePatientEncountersByPatientIdDesc(int patientId) {
-        return Collections.emptyList();
+        return patientEncounters.stream().filter((encounter) -> encounter.getPatient().getId() == patientId).collect(Collectors.toList());
     }
 
     @Override

@@ -67,9 +67,45 @@ public class FhirExportService implements IFhirExportService {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
+            addBodyWeight(bundleBuilder, fhirPatientId, vitals);
+            addBloodPressure(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
+
+    }
+
+    private void addBloodPressure(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("bloodPressureSystolic")) {
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBloodPressureSystolic());
+                observation.setSubject(new Reference(fhirPatientId));
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+                observation.setValue(FhirCodeableConcepts.getSystolic(vital.getVitalValue()));
+            }
+            if(vital.getVital().getName().equals("bloodPressureDiastolic")){
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBloodPressureDiastolic());
+                observation.setSubject(new Reference(fhirPatientId));
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+                observation.setValue(FhirCodeableConcepts.getDiastolic(vital.getVitalValue()));
+
+            }
+        }
 
     }
 
@@ -96,11 +132,25 @@ public class FhirExportService implements IFhirExportService {
 
     private void addBodyWeight(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
 
-//        for(IPatientEncounterVital vital : vitals){
-//            if(vital.getVital().getName().equals(""));
-//
-//
-//        }
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("weight")){
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBodyWeight());
+                observation.setSubject(new Reference(fhirPatientId));
+
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+
+                observation.setValue(FhirCodeableConcepts.getWeight(vital.getVitalValue()));
+
+            }
+
+        }
 
     }
 

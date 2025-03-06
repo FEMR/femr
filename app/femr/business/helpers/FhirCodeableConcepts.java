@@ -10,12 +10,64 @@ import org.hl7.fhir.r5.model.Quantity;
 public class FhirCodeableConcepts {
     private FhirCodeableConcepts() {}
 
+    public static CodeableConcept getBloodPressureDiastolic(){
+        CodeableConcept bloodPressureDiastolic = new CodeableConcept();
+        bloodPressureDiastolic.setText("Diastolic blood pressure");
+        bloodPressureDiastolic.addCoding("http://loinc.org", "8462-4", "Diastolic blood pressure");
+        return bloodPressureDiastolic;
+
+    }
+
+    public static Quantity getDiastolic(Float value){
+        Quantity diastolic = new Quantity();
+        diastolic.setValue(value);
+        diastolic.setSystem("http://unitsofmeasure.org");
+        diastolic.setCode("mm[Hg]");
+        diastolic.setUnit("mmHg");
+        return diastolic;
+
+    }
+
+    public static CodeableConcept getBloodPressureSystolic() {
+        CodeableConcept bloodPressureSystolic = new CodeableConcept();
+        bloodPressureSystolic.setText("Systolic blood pressure");
+        bloodPressureSystolic.addCoding("http://loinc.org", "8480-6", "Systolic blood pressure");
+        return bloodPressureSystolic;
+
+    }
+
+    public static Quantity getSystolic(Float value){
+        Quantity systolic = new Quantity();
+        systolic.setValue(value);
+        systolic.setSystem("http://unitsofmeasure.org");
+        systolic.setCode("mm[Hg]");
+        systolic.setUnit("mmHg");
+        return systolic;
+
+    }
 
     public static CodeableConcept getBodyTemperature(){
         CodeableConcept bodyTemperature = new CodeableConcept();
         bodyTemperature.setText("Body temperature");
         bodyTemperature.addCoding("http://loinc.org", "8310-5", "Body temperature");
         return bodyTemperature;
+    }
+
+    public static CodeableConcept getBodyWeight(){
+        CodeableConcept bodyWeight = new CodeableConcept();
+        bodyWeight.setText("Body Weight");
+        bodyWeight.addCoding("http://loinc.org", "29463-7", "Body Weight");
+        return bodyWeight;
+
+    }
+
+    public static Quantity getWeight(Float value){
+        Quantity weight = new Quantity();
+        weight.setValue(value);
+        weight.setSystem("http://unitsofmeasure.org");
+        weight.setCode("[lb_av]");
+        weight.setUnit("lbs");
+        return weight;
     }
 
     public static Quantity getTemperature(Float value){

@@ -68,6 +68,9 @@ public class FhirExportService implements IFhirExportService {
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
+            addBodyTemp(bundleBuilder, fhirPatientId, vitals);
+            addBodyWeight(bundleBuilder, fhirPatientId, vitals);
+            addBloodPressure(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
@@ -81,6 +84,105 @@ public class FhirExportService implements IFhirExportService {
      * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
      * @param vitals list of all the patient's vitals
      */
+
+     * Adds blood pressure to bundle
+     * @param bundleBuilder
+     * @param fhirPatientId
+     * @param vitals
+     */
+
+    private void addBloodPressure(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("bloodPressureSystolic")) {
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBloodPressureSystolic());
+                observation.setSubject(new Reference(fhirPatientId));
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+                observation.setValue(FhirCodeableConcepts.getSystolic(vital.getVitalValue()));
+            }
+            if(vital.getVital().getName().equals("bloodPressureDiastolic")){
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBloodPressureDiastolic());
+                observation.setSubject(new Reference(fhirPatientId));
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+                observation.setValue(FhirCodeableConcepts.getDiastolic(vital.getVitalValue()));
+
+            }
+        }
+
+    }
+
+    /**
+     * Adds body temperature to bundle
+     * @param bundleBuilder
+     * @param fhirPatientId
+     * @param vitals
+     */
+
+    private void addBodyTemp(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("temperature")) {
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBodyTemperature());
+                observation.setSubject(new Reference(fhirPatientId));
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+
+                observation.setValue(FhirCodeableConcepts.getCelsius(vital.getVitalValue()));
+
+            }
+        }
+    }
+
+    /**
+     * Adds body weight to bundle
+     * @param bundleBuilder
+     * @param fhirPatientId
+     * @param vitals
+     */
+    private void addBodyWeight(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("weight")){
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getBodyWeight());
+                observation.setSubject(new Reference(fhirPatientId));
+
+                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                observation.setEffective(effectiveDateTime);
+
+                observation.setValue(FhirCodeableConcepts.getWeightPounds(vital.getVitalValue()));
+
+            }
+
+        }
+
+    }
+
     private void addRespirationRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
         for (IPatientEncounterVital vital : vitals) {
             if (vital.getVital().getName().equals("respiratoryRate")) {

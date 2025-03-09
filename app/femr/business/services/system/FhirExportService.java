@@ -20,6 +20,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.Collections;
+import java.util.List;
+
 import java.util.*;
 
 /**
@@ -75,6 +78,13 @@ public class FhirExportService implements IFhirExportService {
     }
 
     /**
+     *
+     * Adds the respiratory rate vitals into the bundle.
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+
      * Adds blood pressure to bundle
      * @param bundleBuilder
      * @param fhirPatientId
@@ -197,6 +207,11 @@ public class FhirExportService implements IFhirExportService {
 
     }
 
+    /**
+     * @param bundleBuilder bundle for patient resource to be added to
+     * @param patientId Local DB ID of patient to be added
+     * @param fhirPatientId FHIR String of patient to be added
+     */
     private void addPatientData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
 
         IPatient patient = patientRepository.retrievePatientById(patientId);
@@ -380,6 +395,10 @@ public class FhirExportService implements IFhirExportService {
     }
 
 
+    /**
+     * @param patientId patient ID to export
+     * @return JSON encoded string of FHIR bundle.
+     */
     @Override
     public String exportPatient(int patientId) {
         return toJson(buildPatientBundle(patientId));

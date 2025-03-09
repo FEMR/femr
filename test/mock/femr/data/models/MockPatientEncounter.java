@@ -7,9 +7,10 @@ import java.util.List;
 
 public class MockPatientEncounter implements IPatientEncounter {
 
-    private int id = -1;
+    private int id = 0;
 
-    private String languageCode = "";
+    private String languageCode = "en";
+    IPatient patient = new MockPatient();
 
     @Override
     public int getId() {
@@ -21,12 +22,12 @@ public class MockPatientEncounter implements IPatientEncounter {
     }
     @Override
     public IPatient getPatient() {
-        return null;
+        return patient;
     }
 
     @Override
     public void setPatient(IPatient patient) {
-
+        this.patient = patient;
     }
 
     @Override

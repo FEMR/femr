@@ -79,16 +79,10 @@ public class FhirExportService implements IFhirExportService {
 
     /**
      *
-     * Adds the respiratory rate vitals into the bundle.
+     * Adds blood pressure to bundle
      * @param bundleBuilder the bundle builder for observation to be added to
      * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
-     * @param vitals list of all the patient's vitals
-     */
-
-     * Adds blood pressure to bundle
-     * @param bundleBuilder
-     * @param fhirPatientId
-     * @param vitals
+     * @param vitals list of all the patient's vital
      */
 
     private void addBloodPressure(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {

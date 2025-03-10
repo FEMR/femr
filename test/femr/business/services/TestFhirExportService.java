@@ -39,10 +39,6 @@ public class TestFhirExportService {
         FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository, patientEncounterVitalRepository, "5BE2ED");
 
         System.out.println(export.exportPatient(0));
-        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
-        FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository, patientEncounterVitalRepository, "5BE2ED");
-
-        System.out.println(export.exportPatient(0));
     }
 
     @Test

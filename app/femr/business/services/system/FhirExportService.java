@@ -47,6 +47,15 @@ public class FhirExportService implements IFhirExportService {
         this.prescriptionRepository = prescriptionRepository;
         this.kitId = kitId;
     }
+
+    /**
+     * @param patientId patient ID to export
+     * @return JSON encoded string of FHIR bundle.
+     */
+    @Override
+    public String exportPatient(int patientId) {
+        return toJson(buildPatientBundle(patientId));
+    }
   
     private BundleBuilder buildPatientBundle(int patientId) {
 
@@ -71,10 +80,33 @@ public class FhirExportService implements IFhirExportService {
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
             addBloodPressure(bundleBuilder, fhirPatientId, vitals);
+            addHeartRate(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
 
+    }
+
+    /**
+     *
+     * Adds heart rate to bundle
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+    private void addHeartRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("heartRate")) {
+                IBase entry = bundleBuilder.addEntry();
+                Observation observation = new Observation();
+                bundleBuilder.addToEntry(entry, "resource", observation);
+                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                observation.setCode(FhirCodeableConcepts.getHeartRate());
+                observation.setSubject(new Reference(fhirPatientId));
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
+                observation.setValue(FhirCodeableConcepts.getBPMQuantity(vital.getVitalValue()));
+            }
+        }
     }
 
     /**
@@ -94,10 +126,7 @@ public class FhirExportService implements IFhirExportService {
                 observation.setId(String.format("%s_%s", kitId, vital.getId()));
                 observation.setCode(FhirCodeableConcepts.getBloodPressureSystolic());
                 observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
             }
             if(vital.getVital().getName().equals("bloodPressureDiastolic")){
@@ -107,15 +136,11 @@ public class FhirExportService implements IFhirExportService {
                 observation.setId(String.format("%s_%s", kitId, vital.getId()));
                 observation.setCode(FhirCodeableConcepts.getBloodPressureDiastolic());
                 observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
 
             }
         }
-
     }
 
     /**
@@ -375,6 +400,14 @@ public class FhirExportService implements IFhirExportService {
         bundleBuilder.addToEntry(entry, "resource", fhirPractitioner);
     }
 
+    private static DateTimeType convertFEMRDateTime(String datetime) {
+        DateTimeType effectiveDateTime;
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime localDateTime = DateTime.parse(datetime, dateFormat);
+        effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+        return effectiveDateTime;
+    }
+
     private String toJson(BundleBuilder bundleBuilder) {
         // Create a parser
         IParser parser = fhirContext.newJsonParser();
@@ -384,15 +417,5 @@ public class FhirExportService implements IFhirExportService {
 
         // Serialize it
         return parser.encodeResourceToString(bundleBuilder.getBundle());
-    }
-
-
-    /**
-     * @param patientId patient ID to export
-     * @return JSON encoded string of FHIR bundle.
-     */
-    @Override
-    public String exportPatient(int patientId) {
-        return toJson(buildPatientBundle(patientId));
     }
 }

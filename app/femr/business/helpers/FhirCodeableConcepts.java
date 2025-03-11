@@ -26,6 +26,20 @@ public class FhirCodeableConcepts {
     }
 
     /**
+     * Creates a Quantity of unit mmHg
+     * @param value the value of the quantity
+     * @return diastolic
+     */
+    public static Quantity getBPMQuantity(Float value){
+        Quantity quantity = new Quantity();
+        quantity.setValue(value);
+        quantity.setSystem(UNITS_OF_MEASURE);
+        quantity.setCode("/min");
+        quantity.setUnit("bpm");
+        return quantity;
+    }
+
+    /**
      * Adds FHIR coding for systolic blood pressure
      * @return bloodPressureSystolic
      */
@@ -61,7 +75,6 @@ public class FhirCodeableConcepts {
         quantity.setCode("mm[Hg]");
         quantity.setUnit("mmHg");
         return quantity;
-
     }
 
     /**

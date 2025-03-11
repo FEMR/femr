@@ -83,10 +83,27 @@ public class FhirExportService implements IFhirExportService {
             addHeartRate(bundleBuilder, fhirPatientId, vitals);
             addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
             addBodyHeight(bundleBuilder, fhirPatientId, vitals);
+            addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
+    }
 
+    /**
+     * Adds Weeks Pregnant to FHIR bundle
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+    private void addWeeksPregnant(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("weeksPregnant")) {
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
+                observation.setCode(FhirCodeableConcepts.getGestationalAge());
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
+                observation.setValue(FhirCodeableConcepts.getTimeWeeksQuantity(vital.getVitalValue()));
+            }
+        }
     }
 
     /**

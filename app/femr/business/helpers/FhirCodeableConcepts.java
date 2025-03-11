@@ -12,9 +12,34 @@ public class FhirCodeableConcepts {
     private static final String LOINC = "http://loinc.org";
     private static final String UNITS_OF_MEASURE = "http://unitsofmeasure.org";
 
+
     /**
-     * Adds FHIR coding for oxygen saturation
-     * @return oxygen saturation concept
+     * get FHIR coding for Weeks Pregnant
+     * @return weeks pregnant concept
+     */
+    public static CodeableConcept getGestationalAge(){
+        CodeableConcept weeksPregnant = new CodeableConcept();
+        weeksPregnant.setText("Weeks Pregnant");
+        weeksPregnant.addCoding(LOINC, "18185-9", "Gestational age");
+        return weeksPregnant;
+    }
+
+    /**
+     * get FHIR coding for Weeks Pregnant
+     * @return weeks pregnant concept
+     */
+    public static Quantity getTimeWeeksQuantity(Float value){
+        Quantity quantity = new Quantity();
+        quantity.setValue(value);
+        quantity.setSystem(UNITS_OF_MEASURE);
+        quantity.setCode("wk");
+        quantity.setUnit("week");
+        return quantity;
+    }
+
+    /**
+     * Adds FHIR coding for body height
+     * @return body height concept
      */
     public static CodeableConcept getBodyHeight(){
         CodeableConcept o2Sat = new CodeableConcept();
@@ -24,8 +49,8 @@ public class FhirCodeableConcepts {
     }
 
     /**
-     * Adds FHIR coding for oxygen saturation
-     * @return oxygen saturation concept
+     * Adds FHIR coding for inches
+     * @return quantity of unit inches
      */
     public static Quantity getQuantityInches(Float value){
         Quantity quantity = new Quantity();

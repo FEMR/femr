@@ -97,12 +97,8 @@ public class FhirExportService implements IFhirExportService {
     private void addHeartRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
         for(IPatientEncounterVital vital: vitals) {
             if(vital.getVital().getName().equals("heartRate")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
                 observation.setCode(FhirCodeableConcepts.getHeartRate());
-                observation.setSubject(new Reference(fhirPatientId));
                 observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getBPMQuantity(vital.getVitalValue()));
             }
@@ -120,22 +116,14 @@ public class FhirExportService implements IFhirExportService {
 
         for(IPatientEncounterVital vital: vitals) {
             if(vital.getVital().getName().equals("bloodPressureSystolic")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
                 observation.setCode(FhirCodeableConcepts.getBloodPressureSystolic());
-                observation.setSubject(new Reference(fhirPatientId));
                 observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
             }
             if(vital.getVital().getName().equals("bloodPressureDiastolic")){
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
                 observation.setCode(FhirCodeableConcepts.getBloodPressureDiastolic());
-                observation.setSubject(new Reference(fhirPatientId));
                 observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
 
@@ -153,17 +141,9 @@ public class FhirExportService implements IFhirExportService {
 
         for(IPatientEncounterVital vital: vitals) {
             if(vital.getVital().getName().equals("temperature")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
                 observation.setCode(FhirCodeableConcepts.getBodyTemperature());
-                observation.setSubject(new Reference(fhirPatientId));
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getCelsius(vital.getVitalValue()));
 
             }
@@ -180,18 +160,9 @@ public class FhirExportService implements IFhirExportService {
 
         for(IPatientEncounterVital vital : vitals){
             if(vital.getVital().getName().equals("weight")){
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
                 observation.setCode(FhirCodeableConcepts.getBodyWeight());
-                observation.setSubject(new Reference(fhirPatientId));
-
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getWeightPounds(vital.getVitalValue()));
 
             }
@@ -203,21 +174,12 @@ public class FhirExportService implements IFhirExportService {
     private void addRespirationRate(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
         for (IPatientEncounterVital vital : vitals) {
             if (vital.getVital().getName().equals("respiratoryRate")) {
-                IBase entry = bundleBuilder.addEntry();
-                Observation observation = new Observation();
-                bundleBuilder.addToEntry(entry, "resource", observation);
-
-                observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
 
                 // From https://www.hl7.org/fhir/observation-example-respiratory-rate.json.html
                 observation.setCode(FhirCodeableConcepts.getRespiratoryRate());
                 observation.setSubject(new Reference(fhirPatientId));
-
-                DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
-                DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
-                observation.setEffective(effectiveDateTime);
-
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getBreathsPerMinute(vital.getVitalValue()));
             }
         }
@@ -406,6 +368,23 @@ public class FhirExportService implements IFhirExportService {
         DateTime localDateTime = DateTime.parse(datetime, dateFormat);
         effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
         return effectiveDateTime;
+    }
+
+    /**
+     * Adds and returns an observation to the bundle.
+     * @param bundleBuilder the bundle for the observation to be added to
+     * @param fhirPatientId the FHIR patient id that we have taken this observation for
+     * @param observationFEMRId the fEMR id of the observation (PatientEncounterVital) we are referring to
+     * @return the newly created observation
+     */
+    private Observation addObservationForPatient(BundleBuilder bundleBuilder, String fhirPatientId, int observationFEMRId) {
+
+        IBase entry = bundleBuilder.addEntry();
+        Observation observation = new Observation();
+        bundleBuilder.addToEntry(entry, "resource", observation);
+        observation.setId(String.format("%s_%s", kitId, observationFEMRId));
+        observation.setSubject(new Reference(fhirPatientId));
+        return observation;
     }
 
     private String toJson(BundleBuilder bundleBuilder) {

@@ -11,7 +11,7 @@ public class FhirCodeableConcepts {
     private FhirCodeableConcepts() {}
 
     private static final String LOINC = "http://loinc.org";
-    private static final String UNITS_OF_MEASURE = "http://loinc.org";
+    private static final String UNITS_OF_MEASURE = "http://unitsofmeasure.org";
 
     /**
      * Adds FHIR coding for diastolic blood pressure
@@ -22,7 +22,6 @@ public class FhirCodeableConcepts {
         bloodPressureDiastolic.setText("Heart Rate");
         bloodPressureDiastolic.addCoding(LOINC, "8867-4", "Heart Rate");
         return bloodPressureDiastolic;
-
     }
 
     /**

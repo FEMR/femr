@@ -16,6 +16,31 @@ public class FhirCodeableConcepts {
      * Adds FHIR coding for oxygen saturation
      * @return oxygen saturation concept
      */
+    public static CodeableConcept getBodyHeight(){
+        CodeableConcept o2Sat = new CodeableConcept();
+        o2Sat.setText("Body height");
+        o2Sat.addCoding(LOINC, "8302-2", "Body height");
+        return o2Sat;
+    }
+
+    /**
+     * Adds FHIR coding for oxygen saturation
+     * @return oxygen saturation concept
+     */
+    public static Quantity getQuantityInches(Float value){
+        Quantity quantity = new Quantity();
+        quantity.setValue(value);
+        quantity.setSystem(UNITS_OF_MEASURE);
+        quantity.setCode("[in_i]");
+        quantity.setUnit("in");
+        return quantity;
+    }
+
+
+    /**
+     * Adds FHIR coding for oxygen saturation
+     * @return oxygen saturation concept
+     */
     public static CodeableConcept getOxygenSaturation(){
         CodeableConcept o2Sat = new CodeableConcept();
         o2Sat.setText("Oxygen Saturation");

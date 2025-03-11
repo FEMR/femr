@@ -42,6 +42,69 @@ public class TestFhirExportService {
     }
 
     @Test
+    public void bodyHeight_success(){
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+
+        MockPatientEncounterVital heightInches = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("heightInches");
+        heightInches.setVital(vitalType);
+        heightInches.setVitalValue(7f);
+        heightInches.setId(1);
+
+        MockPatientEncounterVital heightFeet = new MockPatientEncounterVital();
+        vitalType = new MockVital();
+        vitalType.setName("heightFeet");
+        heightFeet.setVital(vitalType);
+        heightFeet.setVitalValue(5f);
+        heightFeet.setId(5);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(heightInches);
+        vitals.add(heightFeet);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        // We want to make sure that the id is from the FEET part and not from inches
+        assertEquals("5BE2ED_5", observationResource.getString("id"));
+
+        // Body height
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("8302-2", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(67f, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+        assertEquals("[in_i]", observationResource.getJSONObject("valueQuantity").getString("code"));
+        assertEquals("in", observationResource.getJSONObject("valueQuantity").getString("unit"));
+    }
+
+
+    @Test
     public void oxygenSaturation_success(){
         MockPatientRepository patientRepository = new MockPatientRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();

@@ -82,9 +82,52 @@ public class FhirExportService implements IFhirExportService {
             addBloodPressure(bundleBuilder, fhirPatientId, vitals);
             addHeartRate(bundleBuilder, fhirPatientId, vitals);
             addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
+            addBodyHeight(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
+
+    }
+
+    /**
+     * Adds Patient Body Height to bundle
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+    private void addBodyHeight(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        IPatientEncounterVital heightFeetVital = null;
+        IPatientEncounterVital heightInchesVital = null;
+
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("heightFeet")) {
+                heightFeetVital = vital;
+            }
+
+            if (vital.getVital().getName().equals("heightInches")) {
+                heightInchesVital = vital;
+            }
+        }
+
+        if (heightFeetVital == null) {
+            return;
+        }
+
+        // We will use the heightFeet as the primary key, since for some reason it's broken up into 2.
+        Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, heightFeetVital.getId());
+        observation.setCode(FhirCodeableConcepts.getBodyHeight());
+        observation.setEffective(convertFEMRDateTime(heightFeetVital.getDateTaken()));
+
+
+        Float heightInches = heightFeetVital.getVitalValue() * 12;
+
+        // This should basically always be the case, but we're just being careful.
+        if (heightInchesVital != null) {
+            heightInches += heightInchesVital.getVitalValue();
+        }
+
+        observation.setValue(FhirCodeableConcepts.getQuantityInches(heightInches));
 
     }
 

@@ -1,7 +1,6 @@
 package femr.business.helpers;
 
 import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.DecimalType;
 import org.hl7.fhir.r5.model.Quantity;
 
 /**

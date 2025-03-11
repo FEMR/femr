@@ -151,9 +151,9 @@ public class FhirExportService implements IFhirExportService {
 
     /**
      * Adds body temperature to bundle
-     * @param bundleBuilder
-     * @param fhirPatientId
-     * @param vitals
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vital
      */
     private void addBodyTemp(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
 
@@ -170,9 +170,9 @@ public class FhirExportService implements IFhirExportService {
 
     /**
      * Adds body weight to bundle
-     * @param bundleBuilder
-     * @param fhirPatientId
-     * @param vitals
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vital
      */
     private void addBodyWeight(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
 

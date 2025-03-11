@@ -42,6 +42,61 @@ public class TestFhirExportService {
     }
 
     @Test
+    public void oxygenSaturation_success(){
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital o2Sat = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("oxygenSaturation");
+        o2Sat.setVital(vitalType);
+        o2Sat.setVitalValue(99.5f);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(o2Sat);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        // Oxygen saturation in Arterial blood
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("2708-6", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        // Oxygen saturation in Arterial blood by Pulse oximetry
+        JSONObject coding2 = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(1);
+        assertEquals("59408-5", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+
+        assertEquals(99.5, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+        assertEquals("%", observationResource.getJSONObject("valueQuantity").getString("code"));
+        assertEquals("%O2", observationResource.getJSONObject("valueQuantity").getString("unit"));
+    }
+
+    @Test
     public void heartRate_success(){
 
         MockPatientRepository patientRepository = new MockPatientRepository();

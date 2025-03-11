@@ -37,7 +37,7 @@ public class FhirExportService implements IFhirExportService {
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
-    private String kitId;
+    private final String kitId;
 
     @Inject
     public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {

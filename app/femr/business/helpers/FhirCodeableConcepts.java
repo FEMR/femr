@@ -14,6 +14,31 @@ public class FhirCodeableConcepts {
 
 
     /**
+     * get FHIR coding for blood glucose (mass per volume units)
+     * @return blood glucose concept
+     */
+    public static CodeableConcept getBloodGlucoseConceptMassPerVolume(){
+        CodeableConcept bloodGlucose = new CodeableConcept();
+        bloodGlucose.setText("Glucose in Blood");
+        bloodGlucose.addCoding(LOINC, "2339-0", "Glucose [Mass/volume] in Blood");
+        return bloodGlucose;
+    }
+
+    /**
+     * create quantity with unit mg/dL
+     * @return mg per deciliter quantity
+     */
+    public static Quantity getmgPerdLQuantity(Float value){
+        Quantity quantity = new Quantity();
+        quantity.setValue(value);
+        quantity.setSystem(UNITS_OF_MEASURE);
+        quantity.setCode("mg/dL");
+        quantity.setUnit("mg/dL");
+        return quantity;
+    }
+
+
+    /**
      * get FHIR coding for Weeks Pregnant
      * @return weeks pregnant concept
      */

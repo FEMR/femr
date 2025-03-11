@@ -42,6 +42,54 @@ public class TestFhirExportService {
     }
 
     @Test
+    public void heartRate_success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital heartRate = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("heartRate");
+        heartRate.setVital(vitalType);
+        heartRate.setVitalValue(65.3f);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(heartRate);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("8867-4", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(65.3, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+        assertEquals("/min", observationResource.getJSONObject("valueQuantity").getString("code"));
+    }
+
+    @Test
     public void bloodPressureDiastolic_Success(){
 
         MockPatientRepository patientRepository = new MockPatientRepository();

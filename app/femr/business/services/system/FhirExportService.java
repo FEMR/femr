@@ -84,7 +84,6 @@ public class FhirExportService implements IFhirExportService {
      * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
      * @param vitals list of all the patient's vital
      */
-
     private void addBloodPressure(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
 
         for(IPatientEncounterVital vital: vitals) {
@@ -99,7 +98,7 @@ public class FhirExportService implements IFhirExportService {
                 DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
                 DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
                 observation.setEffective(effectiveDateTime);
-                observation.setValue(FhirCodeableConcepts.getSystolic(vital.getVitalValue()));
+                observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
             }
             if(vital.getVital().getName().equals("bloodPressureDiastolic")){
                 IBase entry = bundleBuilder.addEntry();
@@ -112,7 +111,7 @@ public class FhirExportService implements IFhirExportService {
                 DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
                 DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
                 observation.setEffective(effectiveDateTime);
-                observation.setValue(FhirCodeableConcepts.getDiastolic(vital.getVitalValue()));
+                observation.setValue(FhirCodeableConcepts.getQuantityMmHG(vital.getVitalValue()));
 
             }
         }
@@ -125,7 +124,6 @@ public class FhirExportService implements IFhirExportService {
      * @param fhirPatientId
      * @param vitals
      */
-
     private void addBodyTemp(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
 
         for(IPatientEncounterVital vital: vitals) {

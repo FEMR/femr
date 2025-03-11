@@ -183,7 +183,6 @@ public class TestFhirExportService {
         assertEquals(150.0, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
         assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
         assertEquals("[lb_av]", observationResource.getJSONObject("valueQuantity").getString("code"));
-
     }
 
     @Test
@@ -247,10 +246,7 @@ public class TestFhirExportService {
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
 
         FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
-
-        patientRepository.mockPatient = new MockPatient();
-        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
-
+      
         String jsonString = export.exportPatient(1);
 
         JSONObject bundle = new JSONObject(jsonString);
@@ -258,6 +254,54 @@ public class TestFhirExportService {
         JSONObject patientResource = getSingleResourceFromBundle(bundle, "Patient");
 
         assertEquals("other", patientResource.getString("gender"));
+    }
+
+    @Test
+    public void respiratoryRate_success() {
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital respiratoryRate = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("respiratoryRate");
+        respiratoryRate.setVital(vitalType);
+        respiratoryRate.setVitalValue(20.5f);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(respiratoryRate);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("9279-1", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(20.5, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+        assertEquals("/min", observationResource.getJSONObject("valueQuantity").getString("code"));
+
     }
 
     private JSONObject getSingleResourceFromBundle(JSONObject jsonBundle, String wantedResourceType) {

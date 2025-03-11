@@ -13,7 +13,7 @@ public class MockPatientEncounterVitalRepository implements IPatientEncounterVit
     HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
 
     public MockPatientEncounterVitalRepository() {
-        ArrayList<IPatientEncounterVital> vitals = new ArrayList<IPatientEncounterVital>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
         vitals.add(new MockPatientEncounterVital());
         encounterVitals.put(0, vitals);
     }

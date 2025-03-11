@@ -85,7 +85,7 @@ public class TestFhirExportService {
         assertEquals("http://loinc.org", coding.getString("system"));
 
         // Oxygen saturation in Arterial blood by Pulse oximetry
-        JSONObject coding2 = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(1);
+        coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(1);
         assertEquals("59408-5", coding.getString("code"));
         assertEquals("http://loinc.org", coding.getString("system"));
 

@@ -14,6 +14,32 @@ public class FhirCodeableConcepts {
     private static final String UNITS_OF_MEASURE = "http://unitsofmeasure.org";
 
     /**
+     * Adds FHIR coding for oxygen saturation
+     * @return oxygen saturation concept
+     */
+    public static CodeableConcept getOxygenSaturation(){
+        CodeableConcept o2Sat = new CodeableConcept();
+        o2Sat.setText("Oxygen Saturation");
+        o2Sat.addCoding(LOINC, "2708-6", "Oxygen saturation in Arterial blood");
+        o2Sat.addCoding(LOINC, "59408-5", "Oxygen saturation in Arterial blood by Pulse oximetry");
+        return o2Sat;
+    }
+
+    /**
+     * Creates a Quantity of unit %O2
+     * @param value the value of the quantity
+     * @return the %O2 Quantity
+     */
+    public static Quantity getOxygenSaturationQuantity(Float value){
+        Quantity quantity = new Quantity();
+        quantity.setValue(value);
+        quantity.setSystem(UNITS_OF_MEASURE);
+        quantity.setCode("%");
+        quantity.setUnit("%O2");
+        return quantity;
+    }
+
+    /**
      * Adds FHIR coding for diastolic blood pressure
      * @return bloodPressureDiastolic
      */

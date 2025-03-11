@@ -81,10 +81,28 @@ public class FhirExportService implements IFhirExportService {
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
             addBloodPressure(bundleBuilder, fhirPatientId, vitals);
             addHeartRate(bundleBuilder, fhirPatientId, vitals);
+            addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
         }
 
         return bundleBuilder;
 
+    }
+
+    /**
+     * Adds O2 Sat to bundle
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param vitals list of all the patient's vitals
+     */
+    private void addOxygenSaturation(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+        for(IPatientEncounterVital vital: vitals) {
+            if(vital.getVital().getName().equals("oxygenSaturation")) {
+                Observation observation = addObservationForPatient(bundleBuilder, fhirPatientId, vital.getId());
+                observation.setCode(FhirCodeableConcepts.getOxygenSaturation());
+                observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
+                observation.setValue(FhirCodeableConcepts.getOxygenSaturationQuantity(vital.getVitalValue()));
+            }
+        }
     }
 
     /**

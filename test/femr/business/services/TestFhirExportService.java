@@ -42,7 +42,7 @@ public class TestFhirExportService {
     }
 
     @Test
-    public void weeksPregnant_success(){
+    public void glucose_success(){
         MockPatientRepository patientRepository = new MockPatientRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
@@ -50,6 +50,57 @@ public class TestFhirExportService {
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+
+        MockPatientEncounterVital wksPregnant = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("glucose");
+        wksPregnant.setVital(vitalType);
+        wksPregnant.setVitalValue(80.5f);
+        wksPregnant.setId(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(wksPregnant);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        //  Gestational age (Weeks Pregnant)
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("2339-0", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(80.5f, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("code"));
+        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("unit"));
+    }
+
+    @Test
+    public void weeksPregnant_success(){
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("female");
         patientRepository.mockPatient.setId(1);
 
         HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();

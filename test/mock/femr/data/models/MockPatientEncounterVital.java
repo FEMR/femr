@@ -69,4 +69,8 @@ public class MockPatientEncounterVital implements IPatientEncounterVital {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

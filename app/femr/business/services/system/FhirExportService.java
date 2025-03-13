@@ -6,13 +6,10 @@ import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
 import femr.business.helpers.FhirCodeableConcepts;
 import femr.business.services.core.IFhirExportService;
-import femr.data.daos.core.IEncounterRepository;
-import femr.data.daos.core.IPatientEncounterVitalRepository;
-import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.*;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
-import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
@@ -36,15 +33,17 @@ public class FhirExportService implements IFhirExportService {
     IPatientRepository patientRepository;
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
+    IPhotoRepository photoRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
     private final String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, IPhotoRepository photoRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.photoRepository = photoRepository;
         this.kitId = kitId;
     }
 
@@ -93,6 +92,31 @@ public class FhirExportService implements IFhirExportService {
         }
 
         return bundleBuilder;
+    }
+
+    private void addPhotoData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
+        // Use retrievePhotoById to get photos by patient id.
+        List<? extends IPhoto> photos = photoRepository.retrievePhotosByPatientId(patientId);
+
+        if (photos != null && !photos.isEmpty()) {
+            for(IPhoto photo : photos){
+                DocumentReference documentReference = new DocumentReference();
+                documentReference.setId(String.format("%s_%s", kitId, photo.getId()));
+                documentReference.setSubject(new Reference(fhirPatientId));
+
+                DocumentReference.DocumentReferenceContentComponent content = new DocumentReference.DocumentReferenceContentComponent();
+                Attachment attachment = new Attachment();
+                attachment.setContentType(photo.getContentType());
+                attachment.setData(photo.getPhotoData()); // Use getPhotoData()
+
+                content.setAttachment(attachment);
+
+                documentReference.setContent(Collections.singletonList(content));
+
+                IBase entry = bundleBuilder.addEntry();
+                bundleBuilder.addToEntry(entry, "resource", documentReference);
+            }
+        }
     }
 
     /**

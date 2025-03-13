@@ -502,6 +502,236 @@ public class TestFhirExportService {
 
     }
 
+    @Test
+    public void diabetes_History_Success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital diabetes = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("diabetic");
+        diabetes.setVital(vitalType);
+        diabetes.setVitalValue(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(diabetes);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject conditionResource = getSingleResourceFromBundle(bundle, "Condition");
+
+        JSONObject coding = (JSONObject) conditionResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("45636-8", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+    }
+    @Test
+    public void hypertension_History_Success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital hypertension = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("hypertension");
+        hypertension.setVital(vitalType);
+        hypertension.setVitalValue(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(hypertension);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject conditionResource = getSingleResourceFromBundle(bundle, "Condition");
+
+        JSONObject coding = (JSONObject) conditionResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("45643-4", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+    }
+
+    @Test
+    public void alcohol_History_Success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital alcohol_history = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("alcohol");
+        alcohol_history.setVital(vitalType);
+        alcohol_history.setVitalValue(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(alcohol_history);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("74013-4", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(true, observationResource.getBoolean("valueBoolean"));
+
+    }
+
+    @Test
+    public void tobacco_History_Success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital tobacco_history = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("smoker");
+        tobacco_history.setVital(vitalType);
+        tobacco_history.setVitalValue(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(tobacco_history);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("72166-2", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(true, observationResource.getBoolean("valueBoolean"));
+
+    }
+
+    @Test
+    public void high_Cholesterol_Success(){
+
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+        MockPatientEncounterVital cholesterol = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("alcohol");
+        cholesterol.setVital(vitalType);
+        cholesterol.setVitalValue(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        vitals.add(cholesterol);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+        assertEquals("74013-4", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        assertEquals(true, observationResource.getBoolean("valueBoolean"));
+
+    }
+
 
     @Test
     public void nonStandardSex() {

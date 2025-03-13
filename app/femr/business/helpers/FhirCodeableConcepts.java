@@ -1,5 +1,6 @@
 package femr.business.helpers;
 
+import org.hl7.fhir.r5.model.BooleanType;
 import org.hl7.fhir.r5.model.CodeableConcept;
 import org.hl7.fhir.r5.model.Quantity;
 
@@ -253,4 +254,71 @@ public class FhirCodeableConcepts {
         return breathsPerMinute;
 
     }
+
+    public static CodeableConcept getTobaccoCoding(){
+        CodeableConcept tobaccoHistory = new CodeableConcept();
+        tobaccoHistory.setText("Tobacco Use");
+        tobaccoHistory.addCoding("http://loinc.org", "72166-2", "Tobacco Use");
+
+        return tobaccoHistory;
+    }
+
+    public static CodeableConcept getAlcoholCoding(){
+        CodeableConcept alcHistory = new CodeableConcept();
+        alcHistory.setText("Alcohol Use");
+        alcHistory.addCoding("http://loinc.org", "74013-4", "Alcohol Use");
+
+        return alcHistory;
+    }
+
+    public static CodeableConcept getDiabetesCoding(){
+        CodeableConcept alcHistory = new CodeableConcept();
+        alcHistory.setText("Diabetes Mellitus");
+        alcHistory.addCoding("http://loinc.org", "45636-8", "Diabetes Mellitus");
+
+        return alcHistory;
+    }
+
+    public static CodeableConcept getHypertensionCoding(){
+        CodeableConcept hypertensionHistory = new CodeableConcept();
+        hypertensionHistory.setText("Hypertension");
+        hypertensionHistory.addCoding("http://loinc.org", "45643-4", "Hypertension");
+
+        return hypertensionHistory;
+    }
+
+    public static CodeableConcept getHighCholesterolCoding(){
+        CodeableConcept cholesterolHistory = new CodeableConcept();
+        cholesterolHistory.setText("High Cholesterol");
+        cholesterolHistory.addCoding("http://loinc.org", "LA10526-4", "High Cholesterol");
+
+        return cholesterolHistory;
+    }
+
+    public static BooleanType getTobaccoHistory(boolean value){
+        BooleanType tobaccoUse = new BooleanType();
+        tobaccoUse.setValue(value);
+
+        return tobaccoUse;
+    }
+
+    public static BooleanType getAlcoholHistory(boolean value){
+        BooleanType alcoholUse = new BooleanType();
+        alcoholUse.setValue(value);
+
+        return alcoholUse;
+    }
+
+    public static BooleanType getHighCholesterolHistory(boolean value){
+        BooleanType highCholesterol = new BooleanType();
+        highCholesterol.setValue(value);
+
+        return highCholesterol;
+    }
+
+
+
+
+
+
 }

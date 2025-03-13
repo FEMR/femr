@@ -80,6 +80,11 @@ public class FhirExportService implements IFhirExportService {
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
             addBloodPressure(bundleBuilder, fhirPatientId, vitals);
+            addAlcoholHistory(bundleBuilder, fhirPatientId, vitals);
+            addTobaccoHistory(bundleBuilder, fhirPatientId, vitals);
+            addHighCholesterolHistory(bundleBuilder, fhirPatientId, vitals);
+            addHypertensionHistory(bundleBuilder, fhirPatientId, vitals);
+            addDiabetesHistory(bundleBuilder, fhirPatientId, vitals);
             addHeartRate(bundleBuilder, fhirPatientId, vitals);
             addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
             addBodyHeight(bundleBuilder, fhirPatientId, vitals);
@@ -262,6 +267,127 @@ public class FhirExportService implements IFhirExportService {
                 observation.setEffective(convertFEMRDateTime(vital.getDateTaken()));
                 observation.setValue(FhirCodeableConcepts.getWeightPounds(vital.getVitalValue()));
 
+            }
+        }
+    }
+
+    private void addAlcoholHistory(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("alcohol")) {
+                if (vital.getVitalValue() != null) {
+                    IBase entry = bundleBuilder.addEntry();
+                    Observation observation = new Observation();
+                    bundleBuilder.addToEntry(entry, "resource", observation);
+                    observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                    observation.setCode(FhirCodeableConcepts.getAlcoholCoding());
+                    observation.setSubject(new Reference(fhirPatientId));
+
+                    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                    DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                    observation.setEffective(effectiveDateTime);
+
+                    observation.setValue(FhirCodeableConcepts.getAlcoholHistory(true));
+
+                }
+            }
+
+        }
+
+    }
+
+    private void addTobaccoHistory(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("smoker")){
+                if (vital.getVitalValue() != null) {
+                    IBase entry = bundleBuilder.addEntry();
+                    Observation observation = new Observation();
+                    bundleBuilder.addToEntry(entry, "resource", observation);
+                    observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                    observation.setCode(FhirCodeableConcepts.getTobaccoCoding());
+                    observation.setSubject(new Reference(fhirPatientId));
+
+                    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                    DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                    observation.setEffective(effectiveDateTime);
+
+                    observation.setValue(FhirCodeableConcepts.getTobaccoHistory(true));
+                }
+            }
+
+        }
+
+    }
+
+    private void addHighCholesterolHistory(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("cholesterol")){
+                if (vital.getVitalValue() != null) {
+                    IBase entry = bundleBuilder.addEntry();
+                    Observation observation = new Observation();
+                    bundleBuilder.addToEntry(entry, "resource", observation);
+                    observation.setId(String.format("%s_%s", kitId, vital.getId()));
+                    observation.setCode(FhirCodeableConcepts.getHighCholesterolCoding());
+                    observation.setSubject(new Reference(fhirPatientId));
+
+                    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                    DateTimeType effectiveDateTime = new DateTimeType(localDateTime.toDateTimeISO().toString());
+                    observation.setEffective(effectiveDateTime);
+
+                    observation.setValue(FhirCodeableConcepts.getHighCholesterolHistory(true));
+                }
+            }
+
+        }
+
+    }
+
+    private void addHypertensionHistory(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("hypertension")){
+                if (vital.getVitalValue() != null) {
+                    IBase entry = bundleBuilder.addEntry();
+                    Condition condition = new Condition();
+                    bundleBuilder.addToEntry(entry, "resource", condition);
+                    condition.setId(String.format("%s_%s", kitId, vital.getId()));
+                    condition.setCode(FhirCodeableConcepts.getHypertensionCoding());
+                    condition.setSubject(new Reference(fhirPatientId));
+
+                    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                    condition.setRecordedDate(localDateTime.toDateTimeISO().toDate());
+
+                }
+            }
+
+        }
+
+    }
+
+
+    private void addDiabetesHistory(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterVital> vitals) {
+
+        for(IPatientEncounterVital vital : vitals){
+            if(vital.getVital().getName().equals("diabetic")){
+                if (vital.getVitalValue() != null) {
+                    IBase entry = bundleBuilder.addEntry();
+                    Condition condition = new Condition();
+                    bundleBuilder.addToEntry(entry, "resource", condition);
+                    condition.setId(String.format("%s_%s", kitId, vital.getId()));
+                    condition.setCode(FhirCodeableConcepts.getDiabetesCoding());
+                    condition.setSubject(new Reference(fhirPatientId));
+
+                    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime localDateTime = DateTime.parse(vital.getDateTaken(), dateFormat);
+                    condition.setRecordedDate(localDateTime.toDateTimeISO().toDate());
+
+                }
             }
 
         }

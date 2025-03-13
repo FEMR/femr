@@ -1,0 +1,20 @@
+name: Dispatch On Release
+
+on:
+  release:
+    types: [published]
+
+# This job sends a repository dispatch event to the installer repository to generate an installer
+# and upload it to s3 when a release is published.
+jobs:
+  send_dispatch:
+    name: Send Dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: FEMR/installer-femr
+          event-type: generate-installer
+          client-payload: '{"release": "${{ github.event.release.tag_name }}"}' # For versioning the installer

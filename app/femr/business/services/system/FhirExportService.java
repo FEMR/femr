@@ -72,6 +72,7 @@ public class FhirExportService implements IFhirExportService {
         bundleBuilder.addToEntry(entry, "resource", composition);
 
         addPatientData(bundleBuilder, patientId, fhirPatientId);
+        addPhotoData(bundleBuilder, patientId, fhirPatientId);
 
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());

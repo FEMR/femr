@@ -98,7 +98,6 @@ public class FhirExportService implements IFhirExportService {
     private void addPhotoData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
         List<? extends IPhoto> photos = photoRepository.retrievePhotosByPatientId(patientId);
 
-        if (photos != null && !photos.isEmpty()) {
             for (IPhoto photo : photos) {
                 DocumentReference documentReference = new DocumentReference();
                 documentReference.setId(String.format("%s_%s", kitId, photo.getId()));
@@ -116,7 +115,6 @@ public class FhirExportService implements IFhirExportService {
                 IBase entry = bundleBuilder.addEntry();
                 bundleBuilder.addToEntry(entry, "resource", documentReference);
             }
-        }
     }
 
     /**

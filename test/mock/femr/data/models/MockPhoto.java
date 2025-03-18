@@ -69,12 +69,12 @@ public class MockPhoto implements IPhoto {
 
     @Override
     public String getContentType() {
-        return "";
+        return contentType;
     }
 
     @Override
     public byte[] getPhotoData() {
-        return new byte[0];
+        return photoData;
     }
 
     public void setContentType(String contentType) {

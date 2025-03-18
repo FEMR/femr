@@ -44,4 +44,7 @@ public interface IPhoto {
     String getLanguageCode();
     void setLanguageCode(String languageCode);
 
+    String getContentType();
+
+    byte[] getPhotoData();
 }

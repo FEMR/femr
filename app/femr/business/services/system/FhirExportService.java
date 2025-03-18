@@ -462,8 +462,12 @@ public class FhirExportService implements IFhirExportService {
             List<? extends IPatientPrescription> prescriptions = prescriptionRepository.retrieveUnreplacedPrescriptionsByEncounterId(encounter.getId());
 
             for (IPatientPrescription prescription : prescriptions) {
-                addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
-                addMedicationDispenseForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                if (prescription != null) {
+                    addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                    addMedicationDispenseForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                } else {
+                    System.out.println("Encountered a null prescription.");
+                }
             }
 
             IUser nurse = encounter.getNurse();

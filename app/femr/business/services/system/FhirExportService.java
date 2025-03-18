@@ -6,13 +6,10 @@ import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
 import femr.business.helpers.FhirCodeableConcepts;
 import femr.business.services.core.IFhirExportService;
-import femr.data.daos.core.IEncounterRepository;
-import femr.data.daos.core.IPatientEncounterVitalRepository;
-import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.*;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
-import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
@@ -37,14 +34,18 @@ public class FhirExportService implements IFhirExportService {
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
+    IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository;
     private final String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository,
+                             IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository,
+                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.kitId = kitId;
     }
 
@@ -76,6 +77,8 @@ public class FhirExportService implements IFhirExportService {
 
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
+            List<? extends IPatientEncounterTabField> tabFields = patientEncounterTabFieldRepository.getAllByEncounter(encounter.getId());
+
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
@@ -93,6 +96,18 @@ public class FhirExportService implements IFhirExportService {
         }
 
         return bundleBuilder;
+    }
+
+    /**
+     * Adds Weeks Pregnant to FHIR bundle
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param tabFields list of all the patient's tabFields
+     */
+    private void addHPIFields(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterTabField> tabFields) {
+        for(IPatientEncounterTabField vital: tabFields) {
+
+        }
     }
 
     /**

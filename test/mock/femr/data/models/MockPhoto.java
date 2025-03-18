@@ -6,14 +6,16 @@ public class MockPhoto implements IPhoto {
 
     private String contentType;
     private byte[] photoData;
+    private int id;
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override
     public void setId(int id){
+        this.id = id;
 
     }
 
@@ -69,12 +71,12 @@ public class MockPhoto implements IPhoto {
 
     @Override
     public String getContentType() {
-        return "";
+        return contentType;
     }
 
     @Override
     public byte[] getPhotoData() {
-        return new byte[0];
+        return photoData;
     }
 
     public void setContentType(String contentType) {

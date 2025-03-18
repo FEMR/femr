@@ -86,7 +86,7 @@ public class MockPhotoRepository implements IPhotoRepository {
 
     @Override
     public List<? extends IPhoto> retrievePhotosByPatientId(int patientId) {
-        return Collections.emptyList();
+        return mockPhotos;
     }
 
     @Override

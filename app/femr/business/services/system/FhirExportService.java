@@ -96,11 +96,10 @@ public class FhirExportService implements IFhirExportService {
     }
 
     private void addPhotoData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
-        // Use retrievePhotoById to get photos by patient id.
         List<? extends IPhoto> photos = photoRepository.retrievePhotosByPatientId(patientId);
 
         if (photos != null && !photos.isEmpty()) {
-            for(IPhoto photo : photos){
+            for (IPhoto photo : photos) {
                 DocumentReference documentReference = new DocumentReference();
                 documentReference.setId(String.format("%s_%s", kitId, photo.getId()));
                 documentReference.setSubject(new Reference(fhirPatientId));
@@ -108,7 +107,7 @@ public class FhirExportService implements IFhirExportService {
                 DocumentReference.DocumentReferenceContentComponent content = new DocumentReference.DocumentReferenceContentComponent();
                 Attachment attachment = new Attachment();
                 attachment.setContentType(photo.getContentType());
-                attachment.setData(photo.getPhotoData()); // Use getPhotoData()
+                attachment.setData(photo.getPhotoData());
 
                 content.setAttachment(attachment);
 

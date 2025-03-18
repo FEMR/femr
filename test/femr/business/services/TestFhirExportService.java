@@ -5,18 +5,13 @@ import femr.data.daos.core.*;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.IVital;
-import mock.femr.data.daos.MockEncounterRepository;
-import mock.femr.data.daos.MockPatientEncounterVitalRepository;
-import mock.femr.data.daos.MockPatientRepository;
-import mock.femr.data.daos.MockPrescriptionRepository;
-import mock.femr.data.models.MockPatient;
-import mock.femr.data.models.MockPatientEncounter;
-import mock.femr.data.models.MockPatientEncounterVital;
-import mock.femr.data.models.MockVital;
+import mock.femr.data.daos.*;
+import mock.femr.data.models.*;
 import org.junit.Test;
 import org.json.*;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +20,41 @@ import static org.junit.Assert.assertEquals;
 
 public class TestFhirExportService {
 
+    @Test
+    public void photo_Success() {
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+        MockPhotoRepository photoRepository = new MockPhotoRepository(); // Use MockPhotoRepository
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
+        patientRepository.mockPatient.setId(1);
+
+        // Mock Photo data
+        List<MockPhoto> mockPhotos = new ArrayList<>();
+        MockPhoto mockPhoto = new MockPhoto();
+        mockPhoto.setId(1);
+        mockPhoto.setContentType("image/jpeg");
+        mockPhoto.setPhotoData(new byte[]{1, 2, 3}); // Example byte array
+        mockPhotos.add(mockPhoto);
+        photoRepository.setMockPhotos(mockPhotos);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, photoRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject documentReferenceResource = getSingleResourceFromBundle(bundle, "DocumentReference");
+
+        assertEquals("5BE2ED_1", documentReferenceResource.getString("id"));
+
+        JSONObject attachment = documentReferenceResource.getJSONArray("content").getJSONObject(0).getJSONObject("attachment");
+        assertEquals("image/jpeg", attachment.getString("contentType"));
+        assertEquals(Base64.getEncoder().encodeToString(new byte[]{1, 2, 3}), attachment.getString("data"));
+    }
 
     @Test
     public void smokeTestBlankDocument() {

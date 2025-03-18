@@ -10,7 +10,7 @@ public class MockPatientEncounterTabFieldRepository implements IPatientEncounter
 
     HashMap<Integer, List<? extends IPatientEncounterTabField>> tabFields = new HashMap<>();
 
-    public void setEncounterVitals(HashMap<Integer, List<? extends IPatientEncounterTabField>> tabFields) {
+    public void setEncounterTabFields(HashMap<Integer, List<? extends IPatientEncounterTabField>> tabFields) {
         this.tabFields = tabFields;
     }
 

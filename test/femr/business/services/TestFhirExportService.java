@@ -2,18 +2,15 @@ package femr.business.services;
 
 import femr.business.services.system.FhirExportService;
 import femr.data.daos.core.*;
-import femr.data.models.core.IPatientEncounter;
-import femr.data.models.core.IPatientEncounterVital;
-import femr.data.models.core.IVital;
+import femr.data.models.core.*;
+import femr.data.models.mysql.TabField;
 import mock.femr.data.daos.*;
-import mock.femr.data.models.MockPatient;
-import mock.femr.data.models.MockPatientEncounter;
-import mock.femr.data.models.MockPatientEncounterVital;
-import mock.femr.data.models.MockVital;
+import mock.femr.data.models.*;
 import org.junit.Test;
 import org.json.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +32,56 @@ public class TestFhirExportService {
         FhirExportService export = new FhirExportService(patientRepository, encounterRepository, prescriptionRepository, patientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
 
         System.out.println(export.exportPatient(0));
+    }
+
+    @Test
+    public void hpi_fields(){
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        MockPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
+        IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        HashMap<Integer, List<? extends IPatientEncounterTabField>> encounterTabFields = new HashMap<>();
+        IPatientEncounterTabField patientEncounterTabField = new MockPatientEncounterTabField();
+        ITabField tabField = new TabField();
+        tabField.setName("onset");
+        patientEncounterTabField.setTabField(tabField);
+        patientEncounterTabField.setTabFieldValue("The disease started at roughly 8 months\nBut maybe not");
+        encounterTabFields.put(1, Collections.singletonList(patientEncounterTabField));
+
+        tabFieldRepository.setEncounterTabFields(encounterTabFields);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        System.out.println(bundle);
+//        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
+//
+//        //  Gestational age (Weeks Pregnant)
+//        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
+//        assertEquals("2339-0", coding.getString("code"));
+//        assertEquals("http://loinc.org", coding.getString("system"));
+//
+//        assertEquals(80.5f, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
+//        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
+//        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("code"));
+//        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("unit"));
     }
 
     @Test

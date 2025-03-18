@@ -47,7 +47,7 @@ public class TestFhirExportService {
 
         JSONObject bundle = new JSONObject(jsonString);
 
-        JSONObject documentReferenceResource = getSingleResourceFromBundle(bundle, "document");
+        JSONObject documentReferenceResource = getSingleResourceFromBundle(bundle, "Bundle");
 
         assertEquals("5BE2ED_1", documentReferenceResource.getString("id"));
 

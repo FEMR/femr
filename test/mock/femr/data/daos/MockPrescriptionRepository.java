@@ -45,6 +45,8 @@ public class MockPrescriptionRepository implements IPrescriptionRepository {
         mockPrescription.setDateDispensed(null);
         mockPrescription.setCounseled(false);
 
+        this.mockPrescription = mockPrescription;
+
         return mockPrescription;
     }
 

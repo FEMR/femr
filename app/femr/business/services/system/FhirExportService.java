@@ -93,21 +93,56 @@ public class FhirExportService implements IFhirExportService {
             addBodyHeight(bundleBuilder, fhirPatientId, vitals);
             addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
             addBloodGlucose(bundleBuilder, fhirPatientId, vitals);
+            addHPIFields(bundleBuilder, fhirPatientId, tabFields);
         }
 
         return bundleBuilder;
     }
 
     /**
-     * Adds Weeks Pregnant to FHIR bundle
+     * Adds HPI clinical notes
      * @param bundleBuilder the bundle builder for observation to be added to
      * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
      * @param tabFields list of all the patient's tabFields
      */
     private void addHPIFields(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterTabField> tabFields) {
-        for(IPatientEncounterTabField vital: tabFields) {
+        StringBuilder hpiDocument = new StringBuilder();
 
+        if (tabFields.isEmpty()) {
+            return;
         }
+
+        DocumentReference hpiDocumentRef = new DocumentReference();
+        hpiDocumentRef.setType(FhirCodeableConcepts.getClinicalInformationConcept());
+
+        Reference reference = new Reference();
+        reference.setId(fhirPatientId);
+        hpiDocumentRef.setSubject(reference);
+
+        Reference author = new Reference();
+        author.setReference(String.format("%s_%s", kitId, tabFields.get(0).getUserId()));
+        hpiDocumentRef.setAuthor(Collections.singletonList(author));
+
+        for(IPatientEncounterTabField field: tabFields) {
+
+            // Note we remove the newlines and replace with "\n". Since newline means something special in our output
+            // format.
+            String removedNewLines = field.getTabFieldValue().replaceAll("\n", "\\\\n");
+
+            hpiDocument.append(String.format("%s__:%s", field.getTabField().getName(), removedNewLines));
+        }
+
+        DocumentReference.DocumentReferenceContentComponent component = new DocumentReference.DocumentReferenceContentComponent();
+        Attachment attachment = new Attachment();
+        byte[] encoded = Base64.getEncoder().encode(hpiDocument.toString().getBytes());
+        attachment.setData(encoded);
+        attachment.setContentType("text/plain");
+        component.setAttachment(attachment);
+
+        hpiDocumentRef.addContent(component);
+
+        IBase entry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(entry, "resource", hpiDocumentRef);
     }
 
     /**
@@ -579,7 +614,7 @@ public class FhirExportService implements IFhirExportService {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
         // Ex. User 42 (Nurse)
-        fhirPractitioner.setId("User " + user.getId());
+        fhirPractitioner.setId(String.format("%s_%s", kitId, user.getId()));
 
         // Populating name
         HumanName name = new HumanName();

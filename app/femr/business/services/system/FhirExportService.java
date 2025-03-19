@@ -614,7 +614,6 @@ public class FhirExportService implements IFhirExportService {
     private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
-        // Ex. User 42 (Nurse)
         fhirPractitioner.setId(String.format("%s_%s", kitId, user.getId()));
 
         // Populating name

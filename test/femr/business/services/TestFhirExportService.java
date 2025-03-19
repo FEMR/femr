@@ -9,7 +9,6 @@ import mock.femr.data.models.*;
 import org.junit.Test;
 import org.json.*;
 
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -81,7 +80,6 @@ public class TestFhirExportService {
 
         JSONObject bundle = new JSONObject(jsonString);
 
-        System.out.println(jsonString);
         JSONObject observationResource = getSingleResourceFromBundle(bundle, "DocumentReference");
 
         // Clinical Information

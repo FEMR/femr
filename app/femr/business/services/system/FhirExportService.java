@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,7 +107,7 @@ public class FhirExportService implements IFhirExportService {
      * @param tabFields list of all the patient's tabFields
      */
     private void addHPIFields(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterTabField> tabFields) {
-        StringBuilder hpiDocument = new StringBuilder();
+        ArrayList<String> hpiDocumentLines = new ArrayList<>();
 
         if (tabFields.isEmpty()) {
             return;
@@ -129,12 +130,12 @@ public class FhirExportService implements IFhirExportService {
             // format.
             String removedNewLines = field.getTabFieldValue().replaceAll("\n", "\\\\n");
 
-            hpiDocument.append(String.format("%s__:%s", field.getTabField().getName(), removedNewLines));
+            hpiDocumentLines.add(String.format("%s__:%s", field.getTabField().getName(), removedNewLines));
         }
 
         DocumentReference.DocumentReferenceContentComponent component = new DocumentReference.DocumentReferenceContentComponent();
         Attachment attachment = new Attachment();
-        byte[] encoded = Base64.getEncoder().encode(hpiDocument.toString().getBytes());
+        byte[] encoded = String.join("\n", hpiDocumentLines).getBytes(StandardCharsets.UTF_8);
         attachment.setData(encoded);
         attachment.setContentType("text/plain");
         component.setAttachment(attachment);

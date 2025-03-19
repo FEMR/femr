@@ -9,10 +9,9 @@ import mock.femr.data.models.*;
 import org.junit.Test;
 import org.json.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,12 +54,24 @@ public class TestFhirExportService {
         mockEncounterRepository.setPatientEncounters(encounters);
 
         HashMap<Integer, List<? extends IPatientEncounterTabField>> encounterTabFields = new HashMap<>();
+
         IPatientEncounterTabField patientEncounterTabField = new MockPatientEncounterTabField();
         ITabField tabField = new TabField();
         tabField.setName("onset");
         patientEncounterTabField.setTabField(tabField);
         patientEncounterTabField.setTabFieldValue("The disease started at roughly 8 months\nBut maybe not");
-        encounterTabFields.put(1, Collections.singletonList(patientEncounterTabField));
+
+        IPatientEncounterTabField patientEncounterTabField2 = new MockPatientEncounterTabField();
+        ITabField tabField2 = new TabField();
+        tabField2.setName("narrative");
+        patientEncounterTabField2.setTabField(tabField2);
+        patientEncounterTabField2.setTabFieldValue("Something else");
+
+        ArrayList<IPatientEncounterTabField> tabFields = new ArrayList<>();
+        tabFields.add(patientEncounterTabField);
+        tabFields.add(patientEncounterTabField2);
+
+        encounterTabFields.put(1,tabFields);
 
         tabFieldRepository.setEncounterTabFields(encounterTabFields);
 
@@ -70,18 +81,21 @@ public class TestFhirExportService {
 
         JSONObject bundle = new JSONObject(jsonString);
 
-        System.out.println(bundle);
-//        JSONObject observationResource = getSingleResourceFromBundle(bundle, "Observation");
-//
-//        //  Gestational age (Weeks Pregnant)
-//        JSONObject coding = (JSONObject) observationResource.getJSONObject("code").getJSONArray("coding").get(0);
-//        assertEquals("2339-0", coding.getString("code"));
-//        assertEquals("http://loinc.org", coding.getString("system"));
-//
-//        assertEquals(80.5f, observationResource.getJSONObject("valueQuantity").getFloat("value"), 0.01);
-//        assertEquals("http://unitsofmeasure.org", observationResource.getJSONObject("valueQuantity").getString("system"));
-//        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("code"));
-//        assertEquals("mg/dL", observationResource.getJSONObject("valueQuantity").getString("unit"));
+        System.out.println(jsonString);
+        JSONObject observationResource = getSingleResourceFromBundle(bundle, "DocumentReference");
+
+        // Clinical Information
+        JSONObject coding = (JSONObject) observationResource.getJSONObject("type").getJSONArray("coding").get(0);
+        assertEquals("55752-0", coding.getString("code"));
+        assertEquals("http://loinc.org", coding.getString("system"));
+
+        JSONObject attachment = ((JSONObject) observationResource.getJSONArray("content").get(0)).getJSONObject("attachment");
+
+        assertEquals("text/plain", attachment.getString("contentType"));
+        byte[] bytes = Base64.getDecoder().decode(attachment.getString("data"));
+        String decodedString = new String(bytes, StandardCharsets.UTF_8);
+
+        assertEquals("onset__:The disease started at roughly 8 months\\nBut maybe not\nnarrative__:Something else", decodedString);
     }
 
     @Test

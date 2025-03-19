@@ -3,6 +3,7 @@ package mock.femr.data.daos;
 import femr.data.daos.core.IPatientEncounterTabFieldRepository;
 import femr.data.models.core.IPatientEncounterTabField;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,6 @@ public class MockPatientEncounterTabFieldRepository implements IPatientEncounter
 
     @Override
     public List<? extends IPatientEncounterTabField> getAllByEncounter(int patientEncounterId) {
-        return tabFields.get(patientEncounterId);
+        return tabFields.getOrDefault(patientEncounterId, Collections.emptyList());
     }
 }

@@ -5,6 +5,7 @@ import femr.data.models.core.IPatientEncounterVital;
 import mock.femr.data.models.MockPatientEncounterVital;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +25,6 @@ public class MockPatientEncounterVitalRepository implements IPatientEncounterVit
 
     @Override
     public List<? extends IPatientEncounterVital> getAllByEncounter(int patientEncounterId) {
-        return encounterVitals.get(patientEncounterId);
+        return encounterVitals.getOrDefault(patientEncounterId, Collections.emptyList());
     }
 }

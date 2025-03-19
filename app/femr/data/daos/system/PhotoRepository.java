@@ -373,7 +373,6 @@ public class PhotoRepository implements IPhotoRepository {
     public String retrievePhotoContentType(int id) {
         IPhoto photo = retrievePhotoById(id);
         if (photo != null) {
-            // Assuming your Photo model has a contentType field
             return photo.getContentType();
         }
         return null;

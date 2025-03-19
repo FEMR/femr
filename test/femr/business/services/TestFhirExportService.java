@@ -26,7 +26,7 @@ public class TestFhirExportService {
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
-        MockPhotoRepository photoRepository = new MockPhotoRepository(); // Use MockPhotoRepository
+        MockPhotoRepository photoRepository = new MockPhotoRepository();
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
@@ -37,7 +37,7 @@ public class TestFhirExportService {
         MockPhoto mockPhoto = new MockPhoto();
         mockPhoto.setId(1);
         mockPhoto.setContentType("image/jpeg");
-        mockPhoto.setPhotoData(new byte[]{1, 2, 3}); // Example byte array
+        mockPhoto.setPhotoData(new byte[]{1, 2, 3});
         mockPhotos.add(mockPhoto);
         photoRepository.setMockPhotos(mockPhotos);
 

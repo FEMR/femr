@@ -42,6 +42,7 @@ public class TestFhirExportService {
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
 
         // Setup mock patient
         patientRepository.mockPatient = new MockPatient();
@@ -99,6 +100,7 @@ public class TestFhirExportService {
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("male");

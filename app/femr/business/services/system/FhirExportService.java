@@ -6,13 +6,10 @@ import ca.uhn.fhir.util.BundleBuilder;
 import com.google.inject.Inject;
 import femr.business.helpers.FhirCodeableConcepts;
 import femr.business.services.core.IFhirExportService;
-import femr.data.daos.core.IEncounterRepository;
-import femr.data.daos.core.IPatientEncounterVitalRepository;
-import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.*;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.core.IPatientEncounterVital;
-import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.models.core.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
@@ -20,6 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,14 +35,18 @@ public class FhirExportService implements IFhirExportService {
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
+    IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository;
     private final String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, String kitId) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository,
+                             IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository,
+                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.kitId = kitId;
     }
 
@@ -76,6 +78,8 @@ public class FhirExportService implements IFhirExportService {
 
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
+            List<? extends IPatientEncounterTabField> tabFields = patientEncounterTabFieldRepository.getAllByEncounter(encounter.getId());
+
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
@@ -90,9 +94,56 @@ public class FhirExportService implements IFhirExportService {
             addBodyHeight(bundleBuilder, fhirPatientId, vitals);
             addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
             addBloodGlucose(bundleBuilder, fhirPatientId, vitals);
+            addHPIFields(bundleBuilder, fhirPatientId, tabFields);
         }
 
         return bundleBuilder;
+    }
+
+    /**
+     * Adds HPI clinical notes
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param tabFields list of all the patient's tabFields
+     */
+    private void addHPIFields(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterTabField> tabFields) {
+        ArrayList<String> hpiDocumentLines = new ArrayList<>();
+
+        if (tabFields.isEmpty()) {
+            return;
+        }
+
+        DocumentReference hpiDocumentRef = new DocumentReference();
+        hpiDocumentRef.setType(FhirCodeableConcepts.getClinicalInformationConcept());
+
+        Reference reference = new Reference();
+        reference.setId(fhirPatientId);
+        hpiDocumentRef.setSubject(reference);
+
+        Reference author = new Reference();
+        author.setReference(String.format("%s_%s", kitId, tabFields.get(0).getUserId()));
+        hpiDocumentRef.setAuthor(Collections.singletonList(author));
+
+        for(IPatientEncounterTabField field: tabFields) {
+
+            // Note we remove the newlines and replace with "\n". Since newline means something special in our output
+            // format.
+            String removedNewLines = field.getTabFieldValue().replaceAll("\n", "\\\\n");
+
+            hpiDocumentLines.add(String.format("%s__:%s", field.getTabField().getName(), removedNewLines));
+        }
+
+        DocumentReference.DocumentReferenceContentComponent component = new DocumentReference.DocumentReferenceContentComponent();
+        Attachment attachment = new Attachment();
+        byte[] encoded = String.join("\n", hpiDocumentLines).getBytes(StandardCharsets.UTF_8);
+        attachment.setData(encoded);
+        attachment.setContentType("text/plain");
+        component.setAttachment(attachment);
+
+        hpiDocumentRef.addContent(component);
+
+        IBase entry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(entry, "resource", hpiDocumentRef);
     }
 
     /**
@@ -609,8 +660,8 @@ public class FhirExportService implements IFhirExportService {
     private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
-        // Ex. User 42
-        fhirPractitioner.setId("User " + user.getId());
+
+        fhirPractitioner.setId(String.format("%s_%s", kitId, user.getId()));
 
         // Populating name
         HumanName name = new HumanName();

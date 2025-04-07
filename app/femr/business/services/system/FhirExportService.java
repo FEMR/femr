@@ -513,7 +513,12 @@ public class FhirExportService implements IFhirExportService {
             List<? extends IPatientPrescription> prescriptions = prescriptionRepository.retrieveUnreplacedPrescriptionsByEncounterId(encounter.getId());
 
             for (IPatientPrescription prescription : prescriptions) {
-                addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                if (prescription != null) {
+                    addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                    addMedicationDispenseForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                } else {
+                    System.out.println("Encountered a null prescription.");
+                }
             }
 
             IUser nurse = encounter.getNurse();
@@ -588,6 +593,47 @@ public class FhirExportService implements IFhirExportService {
         bundleBuilder.addToEntry(requestEntry, "resource", fhirMedRequest);
     }
 
+    private void addMedicationDispenseForPrescription(BundleBuilder bundleBuilder, IPatientPrescription prescription, int patientId, Set<Integer> addedMedIds) {
+        IMedication domainMedication = prescription.getMedication();
+
+        if (domainMedication == null) {
+            // If there's no medication info, we can't build the FHIR resources
+            return;
+        }
+
+        // Only add Medication resource if we haven't already.
+        int medId = domainMedication.getId();
+        if (!addedMedIds.contains(medId)) {
+            // Create a Medication resource
+            Medication fhirMedication = new Medication();
+            // Ex. "Medication-123"
+            fhirMedication.setId("Medication-" + medId);
+            fhirMedication.setCode(new CodeableConcept().setText(domainMedication.getName()));
+
+            // Add to bundle
+            IBase medEntry = bundleBuilder.addEntry();
+            bundleBuilder.addToEntry(medEntry, "resource", fhirMedication);
+
+            // Mark this medId as added
+            addedMedIds.add(medId);
+        }
+
+        // Now we create a MedicationDispense referencing that Medication
+        MedicationDispense fhirMedDispense = new MedicationDispense();
+        // Ex. "MedicationDispense-13"
+        fhirMedDispense.setId("MedicationDispense-" + prescription.getId());
+        // Assign references
+        CodeableReference medCodeableRef = new CodeableReference();
+        medCodeableRef.setReference(new Reference("Medication-" + medId));
+        fhirMedDispense.setMedication(medCodeableRef);
+
+        // Linking to patient
+        fhirMedDispense.setSubject(new Reference("Patient/" + patientId));
+
+        IBase dispenseEntry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(dispenseEntry, "resource", fhirMedDispense);
+    }
+
     /**
      * @param patientSex either male or female, or some other string, or null.
      *                   Hopefully that doesn't happen.
@@ -614,6 +660,7 @@ public class FhirExportService implements IFhirExportService {
     private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
+
         fhirPractitioner.setId(String.format("%s_%s", kitId, user.getId()));
 
         // Populating name

@@ -1,10 +1,12 @@
 package femr.business.services;
 
 import femr.business.services.system.FhirExportService;
+
 import femr.data.daos.core.*;
 import femr.data.models.core.*;
 import femr.data.models.mysql.TabField;
 import mock.femr.data.daos.*;
+
 import mock.femr.data.models.*;
 import org.junit.Test;
 import org.json.*;
@@ -13,8 +15,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import static org.junit.Assert.assertNotNull;
+
+import static org.junit.Assert.assertTrue;
 
 public class TestFhirExportService {
 
@@ -32,6 +36,123 @@ public class TestFhirExportService {
         System.out.println(export.exportPatient(0));
     }
 
+    @Test
+    public void medicationRequest_success() {
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
+
+        // Setup mock patient
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        // Setup mock patient encounter
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        // Create prescription with medicationAdministrationId = 2
+        IPatientPrescription prescription = mockPrescriptionRepository.createPrescription(1, 1, 2, 1, 1);
+        System.out.println("Processing prescription named: " + prescription.getMedication());
+
+        // Adding vitals setup
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+
+        MockPatientEncounterVital respirationRate = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("respirationRate");
+        respirationRate.setVital(vitalType);
+        respirationRate.setVitalValue(16.0f);
+        respirationRate.setId(1);
+
+        vitals.add(respirationRate);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        // Verify the MedicationRequest resource in the bundle
+        JSONObject medicationRequestResource = getSingleResourceFromBundle(bundle, "MedicationRequest");
+
+        assertNotNull(medicationRequestResource);
+        assertEquals("Medication-1", medicationRequestResource
+                .getJSONObject("medication")
+                .getJSONObject("reference")
+                .getString("reference"));
+        assertEquals("Patient/1", medicationRequestResource.getJSONObject("subject").getString("reference"));
+    }
+
+    @Test
+    public void medicationDispense_success() {
+        MockPatientRepository patientRepository = new MockPatientRepository();
+        MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
+        MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
+        MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
+
+        patientRepository.mockPatient = new MockPatient();
+        patientRepository.mockPatient.setSex("male");
+        patientRepository.mockPatient.setId(1);
+
+        MockPatientEncounter patientEncounter = new MockPatientEncounter();
+        patientEncounter.setPatient(patientRepository.mockPatient);
+        patientEncounter.setId(1);
+
+        ArrayList<IPatientEncounter> encounters = new ArrayList<>();
+        encounters.add(patientEncounter);
+        mockEncounterRepository.setPatientEncounters(encounters);
+
+        // Create prescription with medicationAdministrationId = 2
+        IPatientPrescription prescription = mockPrescriptionRepository.createPrescription(1, 1, 2, 1, 1);
+        assertNotNull(prescription);
+        assertNotNull(prescription.getMedication());
+        assertNotNull(prescription.getConceptPrescriptionAdministration());
+
+
+        HashMap<Integer, List<? extends IPatientEncounterVital>> encounterVitals = new HashMap<>();
+        ArrayList<IPatientEncounterVital> vitals = new ArrayList<>();
+
+        MockPatientEncounterVital respirationRate = new MockPatientEncounterVital();
+        IVital vitalType = new MockVital();
+        vitalType.setName("respirationRate");
+        respirationRate.setVital(vitalType);
+        respirationRate.setVitalValue(16.0f);
+        respirationRate.setId(1);
+
+        vitals.add(respirationRate);
+        encounterVitals.put(1, vitals);
+        mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
+
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+
+        String jsonString = export.exportPatient(1);
+
+        JSONObject bundle = new JSONObject(jsonString);
+
+        JSONObject medicationDispenseResource = getSingleResourceFromBundle(bundle, "MedicationDispense");
+
+        assertNotNull(medicationDispenseResource);
+        assertEquals("Medication-1",
+                medicationDispenseResource
+                        .getJSONObject("medication")
+                        .getJSONObject("reference")
+                        .getString("reference"));
+        assertEquals("Patient/1",
+                medicationDispenseResource.getJSONObject("subject").getString("reference"));
+    }
+  
     @Test
     public void hpi_fields(){
         MockPatientRepository patientRepository = new MockPatientRepository();

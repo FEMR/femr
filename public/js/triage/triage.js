@@ -1,10 +1,10 @@
 //The following code disables using enter key on any form fields of input types text.
 //This code below is also found in triage.js, medical.js, and pharmacy.js
 window.addEventListener('keydown',function(e){
-    if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){
-        if(e.target.nodeName=='INPUT' && (e.target.type=='text' || e.target.type=='number'
-            || e.target.type=='checkbox'|| e.target.type=='tel' || e.target.type=='date'
-            || e.target.type=='radio'))
+    if(e.code==='Enter'){
+        if(e.target.nodeName==='INPUT' && (e.target.type==='text' || e.target.type==='number'
+            || e.target.type==='checkbox'|| e.target.type==='tel' || e.target.type==='date'
+            || e.target.type==='radio'))
         {
             e.preventDefault();
             return false;
@@ -12,7 +12,7 @@ window.addEventListener('keydown',function(e){
     }
 },true);
 
-var patientPhotoFeature = {
+const patientPhotoFeature = {
 
     config: {
         windowWidth: 250,
@@ -34,8 +34,8 @@ var patientPhotoFeature = {
 
     init: function () {
         //destroy crop window if it already exists:
-        var jwc = $(patientPhotoFeature.config.imageElement).getjWindowCrop();
-        if (jwc != undefined)
+        let jwc = $(patientPhotoFeature.config.imageElement).getjWindowCrop();
+        if (jwc !== undefined)
             jwc.destroyCrop();
 
         //Create new crop window
@@ -60,7 +60,7 @@ var patientPhotoFeature = {
         //events into touch/drag events
         patientPhotoFeature.photo.jWinCrop = $(patientPhotoFeature.config.imageElement).getjWindowCrop();
 
-        if ($(patientPhotoFeature.config.imageElement).attr('src') == "") {
+        if ($(patientPhotoFeature.config.imageElement).attr('src') === "") {
             //If picture is empty, then let's hide the jCrop window
             //  and show the upload button instead
             $('#patientPhotoDiv').hide();
@@ -85,8 +85,8 @@ var patientPhotoFeature = {
         }
     },
     resetFileUploadBox: function () {
-        var control = $("#photoInput");
-        control.replaceWith(control = control.clone(true));
+        let control = $("#photoInput");
+        control.replaceWith(control.clone(true));
     },
     flagForDeletion: function () {
         $(patientPhotoFeature.config.imageElement).attr('src', '');
@@ -103,10 +103,10 @@ var patientPhotoFeature = {
         //  may drag / crop the photo
 
         // Filelist (the files that have been selected by the user to be uploaded
-        var files = evt.target.files;
+        const files = evt.target.files;
 
         // Loop through the FileList and render image files as thumbnails.
-        for (var i = 0, f; f = files[i]; i++) {
+        for (const f of files) {
             // Only process image files.
             if (!f.type.match('image.*')) {
                 continue;
@@ -117,7 +117,7 @@ var patientPhotoFeature = {
                 $('#patientPhotoDiv').show();
                 $('#photoInputFormDiv').hide();
 
-                var reader = new FileReader();
+                const reader = new FileReader();
 
                 // Closure to capture the file information.
                 reader.onload = (function () {

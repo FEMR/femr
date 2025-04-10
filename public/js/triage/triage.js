@@ -390,7 +390,7 @@ var triageFields = {
         lastName: $('#lastName'),
         address: $('#address'),
         phoneNumber: $('#phoneNumber'),
-        age: $('#age'),//doesn't work for an existing patient
+        age: $('#birthDateInput'), // Birthdate, seemingly doesn't work for existing patients?
         years: $('#yearsInput'),
         months: $('#monthsInput'),
         ageClassification: $('[name=ageClassification]'),
@@ -424,26 +424,29 @@ var triageFields = {
 
 var ageClassificationAutoCalculateFeature = {
     classSelection: function(patientAge) {
-        switch (patientAge != null){
-            case (patientAge <= 1):
-                document.getElementById("infant").checked = true;
-                break;
-            case (patientAge <= 12):
-                document.getElementById("child").checked = true;
-                break;
-            case (patientAge <= 17):
-                document.getElementById("teen").checked = true;
-                break;
-            case (patientAge <= 64):
-                document.getElementById("adult").checked = true;
-                break;
-            case (patientAge <= 200):
-                document.getElementById("elder").checked = true;
-                break;
-            default:
-                break;
+        //Check if patient age is not null
+        if (patientAge == null) {
+            return;
         }
-        return;
+
+        //Check if element exists before attempting to change its properties
+        let infant = document.getElementById("infant");
+        let child = document.getElementById("child");
+        let teen = document.getElementById("teen");
+        let adult = document.getElementById("adult");
+        let elder = document.getElementById("elder");
+
+        if (patientAge <= 1 && infant) {
+            infant.checked = true;
+        } else if (patientAge <= 12 && child) {
+            child.checked = true;
+        } else if (patientAge <= 17 && teen) {
+            teen.checked = true;
+        } else if (patientAge <= 64 && adult) {
+            adult.checked = true;
+        } else if (patientAge <= 200 && elder) {
+            elder.checked = true;
+        }
     }
 }
 
@@ -582,11 +585,12 @@ $(document).ready(function () {
     $('#yesDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("true");
     });
-    //birthday shit
-    $('#age').change(function () {
-        var inputYear = $('#age').val().split('-')[0];
-        var inputMonth = $('#age').val().split('-')[1] - 1;
-        var inputDay = $('#age').val().split('-')[2];
+    // Was previously #age which was incorrect for various reasons...
+    // It is attempting to access the patient's date of birth, which is held in (#birthDateInput)
+    $('#birthDateInput').change(function () {
+        var inputYear = $('#birthDateInput').val().split('-')[0];
+        var inputMonth = $('#birthDateInput').val().split('-')[1] - 1;
+        var inputDay = $('#birthDateInput').val().split('-')[2];
         if ((inputMonth >= 0) && ((inputDay && inputYear) > 0)) {
             var inputDate = new Date(inputYear, inputMonth, inputDay);
             if (inputDate <= Date.now()) {
@@ -601,25 +605,22 @@ $(document).ready(function () {
                 if (diffDay < 0) {
                     ageMonths--;
                 }
-                $('#years').val(Math.floor(ageMonths / 12));
-                $('#months').val(ageMonths % 12);
+                $('#yearsInput').val(Math.floor(ageMonths / 12));
+                $('#monthsInput').val(ageMonths % 12);
                 ageClassificationAutoCalculateFeature.classSelection(Math.floor(ageMonths / 12));
-                $('#years').css('border', '');
-                $('#months').css('border', '');
-                $('#age').css('border', '');
+                $('#birthDateInput').css('border', '');
+            } else {
+                $('#birthDateInput').css('border-color', 'red');
+                $('#yearsInput').val(null);
+                $('#monthsInput').val(null);
             }
-            else {
-                $('#age').css('border-color', 'red');
-                $('#years').val(null);
-                $('#months').val(null);
-            }
-        }
-        else {
-            $('#age').css('border', '');
-            $('#years').val(null);
-            $('#months').val(null);
+        } else {
+            $('#birthDateInput').css('border', '');
+            $('#yearsInput').val(null);
+            $('#monthsInput').val(null);
         }
     });
+
     $('#years').change(function () {
         if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
             var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();

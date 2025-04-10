@@ -388,10 +388,10 @@ const triageFields = {
         lastName: $('#lastName'),
         address: $('#address'),
         phoneNumber: $('#phoneNumber'),
-        age: $('#age'),//doesn't work for an existing patient
-        years: $('#yearsInput'),
-        months: $('#monthsInput'),
+        ageYears: $('#yearsInput'),
+        ageMonths: $('#monthsInput'),
         ageClassification: $('[name=ageClassification]'),
+        birthDate: $('#birthDateInput'),
         city: $('#city'),
         maleButton: $('#maleBtn'),
         femaleButton: $('#femaleBtn'),
@@ -544,6 +544,8 @@ const birthdayAgeAutoCalculateFeature = {
 };
 
 
+//TODO: Clear age classification if age or birthdate is entered.
+
 $(function () {
     $('.newPatientBtn').click(function () {
         if (confirm("Are you sure you want to reset the fields?!")) {
@@ -574,22 +576,23 @@ $(function () {
     });
 
     //birthday shit
-    $('#age').change(function () {
-        const ageElement = $('#age')
-        var inputYear = ageElement.val().split('-')[0];
-        var inputMonth = ageElement.val().split('-')[1] - 1;
-        var inputDay = ageElement.val().split('-')[2];
+    $('#age').on('change',function () {
+        const ageElement = $(this)
+        const inputYear = ageElement.val().toString().split('-')[0];
+        const inputMonth = ageElement.val().toString().split('-')[1] - 1;
+        const inputDay = ageElement.val().toString().split('-')[2];
         if ((inputMonth >= 0) && ((inputDay && inputYear) > 0)) {
-            var inputDate = new Date(inputYear, inputMonth, inputDay);
+            var inputDate = new Date(Number(inputYear), inputMonth, Number(inputDay));
             if (inputDate <= Date.now()) {
-                var nowDate = new Date();
-                var nowMonth = nowDate.getMonth();
-                var nowDay = nowDate.getDate();
-                var nowYear = nowDate.getFullYear();
-                var diffMonth = nowMonth - inputMonth;
-                var diffDay = nowDay - inputDay;
-                var diffYear = nowYear - inputYear;
-                var ageMonths = 12 * diffYear + diffMonth;
+                const nowDate = new Date();
+                const nowMonth = nowDate.getMonth();
+                const nowDay = nowDate.getDate();
+                const nowYear = nowDate.getFullYear();
+                const diffMonth = nowMonth - inputMonth;
+                const diffDay = nowDay - inputDay;
+                const diffYear = nowYear - inputYear;
+
+                let ageMonths = 12 * diffYear + diffMonth;
                 if (diffDay < 0) {
                     ageMonths--;
                 }
@@ -874,7 +877,7 @@ $(function () {
 
 /* BMI auto- calculator */
 function calculateBMI() {
-    if ($('#heightFeet').val() && triageFields.patientVitals.weight.val()) {
+    if (triageFields.patientVitals.heightFeet.val() && triageFields.patientVitals.weight.val()) {
         const vitalsUnits = $('#vitalsUnits').val(); /* Alaa Serhan */
         const weight = parseInt(triageFields.patientVitals.weight.val());
         let height_in = parseInt(triageFields.patientVitals.heightInches.val());

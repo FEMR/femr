@@ -539,18 +539,18 @@
                 </div>
 
 
-                @*                <div class="submitResetWrap hidden">*@
-                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-                @*                        No</button>*@
-                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-                @*                        Yes</button>*@
-                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-                @*                             prompted will it receive a true/false value -->*@
-                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-                @*                </div>*@
+                <div class="submitResetWrap hidden">
+                    <h3>Did you screen this patient for Diabetes?</h3>
+                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
+                        No</button>
+                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
+                        Yes</button>
+                        <!-- Data elements for server-side logic, Diabetes Screen
+                             Initial value for isDiabetesScreenPerformed set to empty string, only if
+                             prompted will it receive a true/false value -->
+                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
+                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />
+                </div>
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>

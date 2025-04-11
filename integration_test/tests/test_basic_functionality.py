@@ -15,14 +15,23 @@ import requests
 
 @pytest.fixture
 def driver():
+    chrome_prefs = {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+        "profile.password_manager_leak_detection": False
+    }
+
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("prefs", chrome_prefs)
+    options.add_argument("--disable-dev-shm-usage")
+
     if os.getenv("USE_REMOTE"):
         driver_address = os.getenv("SELENIUM_ADDRESS")
         assert driver_address is not None, "SELENIUM_ADDRESS environment variable not set"
-        options = webdriver.ChromeOptions()
-        options.add_argument("--disable-dev-shm-usage")
         drvr = webdriver.Remote(command_executor=driver_address, options=options)
     else:
-        drvr = webdriver.Chrome()
+        drvr = webdriver.Chrome(options=options)
+
     yield drvr
     drvr.quit()
 

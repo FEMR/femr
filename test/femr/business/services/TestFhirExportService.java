@@ -29,6 +29,7 @@ public class TestFhirExportService {
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
         MockPhotoRepository photoRepository = new MockPhotoRepository();
+        IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("SOMETHING NOT M or F");
@@ -43,7 +44,7 @@ public class TestFhirExportService {
         mockPhotos.add(mockPhoto);
         photoRepository.setMockPhotos(mockPhotos);
 
-        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, photoRepository, "5BE2ED");
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, photoRepository, "5BE2ED");
 
         String jsonString = export.exportPatient(1);
 
@@ -60,6 +61,8 @@ public class TestFhirExportService {
 
     @Test
     public void smokeTestBlankDocument() {
+
+        //IPhotoRepository photoRepository = new MockPhotoRepository();
 
         IPatientRepository patientRepository = new MockPatientRepository();
         IEncounterRepository encounterRepository = new MockEncounterRepository();
@@ -78,6 +81,7 @@ public class TestFhirExportService {
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
+        IPhotoRepository photoRepository = new MockPhotoRepository();
         IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
 
         // Setup mock patient
@@ -113,7 +117,7 @@ public class TestFhirExportService {
         encounterVitals.put(1, vitals);
         mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
 
-        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, photoRepository, "5BE2ED");
 
         String jsonString = export.exportPatient(1);
 
@@ -137,6 +141,7 @@ public class TestFhirExportService {
         MockPrescriptionRepository mockPrescriptionRepository = new MockPrescriptionRepository();
         MockPatientEncounterVitalRepository mockPatientEncounterVitalRepository = new MockPatientEncounterVitalRepository();
         IPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
+        IPhotoRepository photoRepository = new MockPhotoRepository();
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("male");
@@ -171,7 +176,7 @@ public class TestFhirExportService {
         encounterVitals.put(1, vitals);
         mockPatientEncounterVitalRepository.setEncounterVitals(encounterVitals);
 
-        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, mockPrescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, photoRepository, "5BE2ED");
 
         String jsonString = export.exportPatient(1);
 
@@ -196,6 +201,7 @@ public class TestFhirExportService {
         MockEncounterRepository mockEncounterRepository = new MockEncounterRepository();
         MockPatientEncounterTabFieldRepository tabFieldRepository = new MockPatientEncounterTabFieldRepository();
         IPrescriptionRepository prescriptionRepository = new MockPrescriptionRepository();
+        IPhotoRepository photoRepository = new MockPhotoRepository();
 
         patientRepository.mockPatient = new MockPatient();
         patientRepository.mockPatient.setSex("male");
@@ -231,7 +237,7 @@ public class TestFhirExportService {
 
         tabFieldRepository.setEncounterTabFields(encounterTabFields);
 
-        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, "5BE2ED");
+        FhirExportService export = new FhirExportService(patientRepository, mockEncounterRepository, prescriptionRepository, mockPatientEncounterVitalRepository, tabFieldRepository, photoRepository,"5BE2ED");
 
         String jsonString = export.exportPatient(1);
 

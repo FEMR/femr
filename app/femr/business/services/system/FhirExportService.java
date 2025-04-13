@@ -42,7 +42,7 @@ public class FhirExportService implements IFhirExportService {
     @Inject
     public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository,
                              IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository,
-                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, String kitId) {
+                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, IPhotoRepository photoRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;

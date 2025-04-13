@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,15 +36,19 @@ public class FhirExportService implements IFhirExportService {
     IPrescriptionRepository prescriptionRepository;
     IPhotoRepository photoRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
+    IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository;
     private final String kitId;
 
     @Inject
-    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository, IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository, IPhotoRepository photoRepository, String kitId) {
+    public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository,
+                             IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository,
+                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.photoRepository = photoRepository;
+        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.kitId = kitId;
     }
 
@@ -76,6 +81,8 @@ public class FhirExportService implements IFhirExportService {
 
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
+            List<? extends IPatientEncounterTabField> tabFields = patientEncounterTabFieldRepository.getAllByEncounter(encounter.getId());
+
             addRespirationRate(bundleBuilder, fhirPatientId, vitals);
             addBodyTemp(bundleBuilder, fhirPatientId, vitals);
             addBodyWeight(bundleBuilder, fhirPatientId, vitals);
@@ -90,6 +97,7 @@ public class FhirExportService implements IFhirExportService {
             addBodyHeight(bundleBuilder, fhirPatientId, vitals);
             addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
             addBloodGlucose(bundleBuilder, fhirPatientId, vitals);
+            addHPIFields(bundleBuilder, fhirPatientId, tabFields);
         }
 
         return bundleBuilder;
@@ -115,6 +123,52 @@ public class FhirExportService implements IFhirExportService {
                 IBase entry = bundleBuilder.addEntry();
                 bundleBuilder.addToEntry(entry, "resource", documentReference);
             }
+    }
+
+    /**
+     * Adds HPI clinical notes
+     * @param bundleBuilder the bundle builder for observation to be added to
+     * @param fhirPatientId patient ID in FHIR format (<Global_Kit_ID>_<Local DB ID>)
+     * @param tabFields list of all the patient's tabFields
+     */
+    private void addHPIFields(BundleBuilder bundleBuilder, String fhirPatientId, List<? extends IPatientEncounterTabField> tabFields) {
+        ArrayList<String> hpiDocumentLines = new ArrayList<>();
+
+        if (tabFields.isEmpty()) {
+            return;
+        }
+
+        DocumentReference hpiDocumentRef = new DocumentReference();
+        hpiDocumentRef.setType(FhirCodeableConcepts.getClinicalInformationConcept());
+
+        Reference reference = new Reference();
+        reference.setId(fhirPatientId);
+        hpiDocumentRef.setSubject(reference);
+
+        Reference author = new Reference();
+        author.setReference(String.format("%s_%s", kitId, tabFields.get(0).getUserId()));
+        hpiDocumentRef.setAuthor(Collections.singletonList(author));
+
+        for(IPatientEncounterTabField field: tabFields) {
+
+            // Note we remove the newlines and replace with "\n". Since newline means something special in our output
+            // format.
+            String removedNewLines = field.getTabFieldValue().replaceAll("\n", "\\\\n");
+
+            hpiDocumentLines.add(String.format("%s__:%s", field.getTabField().getName(), removedNewLines));
+        }
+
+        DocumentReference.DocumentReferenceContentComponent component = new DocumentReference.DocumentReferenceContentComponent();
+        Attachment attachment = new Attachment();
+        byte[] encoded = String.join("\n", hpiDocumentLines).getBytes(StandardCharsets.UTF_8);
+        attachment.setData(encoded);
+        attachment.setContentType("text/plain");
+        component.setAttachment(attachment);
+
+        hpiDocumentRef.addContent(component);
+
+        IBase entry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(entry, "resource", hpiDocumentRef);
     }
 
     /**
@@ -484,7 +538,12 @@ public class FhirExportService implements IFhirExportService {
             List<? extends IPatientPrescription> prescriptions = prescriptionRepository.retrieveUnreplacedPrescriptionsByEncounterId(encounter.getId());
 
             for (IPatientPrescription prescription : prescriptions) {
-                addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                if (prescription != null) {
+                    addMedicationRequestForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                    addMedicationDispenseForPrescription(bundleBuilder, prescription, patientId, addedMedIds);
+                } else {
+                    System.out.println("Encountered a null prescription.");
+                }
             }
 
             IUser nurse = encounter.getNurse();
@@ -559,6 +618,47 @@ public class FhirExportService implements IFhirExportService {
         bundleBuilder.addToEntry(requestEntry, "resource", fhirMedRequest);
     }
 
+    private void addMedicationDispenseForPrescription(BundleBuilder bundleBuilder, IPatientPrescription prescription, int patientId, Set<Integer> addedMedIds) {
+        IMedication domainMedication = prescription.getMedication();
+
+        if (domainMedication == null) {
+            // If there's no medication info, we can't build the FHIR resources
+            return;
+        }
+
+        // Only add Medication resource if we haven't already.
+        int medId = domainMedication.getId();
+        if (!addedMedIds.contains(medId)) {
+            // Create a Medication resource
+            Medication fhirMedication = new Medication();
+            // Ex. "Medication-123"
+            fhirMedication.setId("Medication-" + medId);
+            fhirMedication.setCode(new CodeableConcept().setText(domainMedication.getName()));
+
+            // Add to bundle
+            IBase medEntry = bundleBuilder.addEntry();
+            bundleBuilder.addToEntry(medEntry, "resource", fhirMedication);
+
+            // Mark this medId as added
+            addedMedIds.add(medId);
+        }
+
+        // Now we create a MedicationDispense referencing that Medication
+        MedicationDispense fhirMedDispense = new MedicationDispense();
+        // Ex. "MedicationDispense-13"
+        fhirMedDispense.setId("MedicationDispense-" + prescription.getId());
+        // Assign references
+        CodeableReference medCodeableRef = new CodeableReference();
+        medCodeableRef.setReference(new Reference("Medication-" + medId));
+        fhirMedDispense.setMedication(medCodeableRef);
+
+        // Linking to patient
+        fhirMedDispense.setSubject(new Reference("Patient/" + patientId));
+
+        IBase dispenseEntry = bundleBuilder.addEntry();
+        bundleBuilder.addToEntry(dispenseEntry, "resource", fhirMedDispense);
+    }
+
     /**
      * @param patientSex either male or female, or some other string, or null.
      *                   Hopefully that doesn't happen.
@@ -585,8 +685,8 @@ public class FhirExportService implements IFhirExportService {
     private void addPractitionerData(BundleBuilder bundleBuilder, IUser user) {
         // Creating Practitioner resource and assigning it a unique ID:
         Practitioner fhirPractitioner = new Practitioner();
-        // Ex. User 42 (Nurse)
-        fhirPractitioner.setId("User " + user.getId());
+
+        fhirPractitioner.setId(String.format("%s_%s", kitId, user.getId()));
 
         // Populating name
         HumanName name = new HumanName();

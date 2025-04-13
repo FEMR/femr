@@ -15,10 +15,9 @@ import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import play.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PrescriptionRepository implements IPrescriptionRepository {
+public class          PrescriptionRepository implements IPrescriptionRepository {
 
     private final IDataModelMapper dataModelMapper;
     @Inject

@@ -23,6 +23,7 @@ def driver():
         drvr = webdriver.Remote(command_executor=driver_address, options=options)
     else:
         drvr = webdriver.Chrome()
+    drvr.implicitly_wait(30)
     yield drvr
     drvr.quit()
 

@@ -117,7 +117,7 @@ const patientPhotoFeature = {
                 $('#patientPhotoDiv').show();
                 $('#photoInputFormDiv').hide();
 
-                const reader = new FileReader();
+                var reader = new FileReader();
 
                 // Closure to capture the file information.
                 reader.onload = (function () {
@@ -251,13 +251,12 @@ var diabeticScreeningFeature = {
     shouldPatientBeScreened: function () {
         if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
 
-            let patientVitals = triageFields.patientVitals;
-            let bmiScore = $('#bmi').val();
+            var patientVitals = triageFields.patientVitals;
+            var bmiScore = $('#bmi').val();
             //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
             //surpass the threshold required for the diabetes prompt
             if (
-                (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135)
-                || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
+                (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135) || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
             ) {
                 //checks if the patient is 18 or older
                 return diabeticScreeningFeature.isAgeOrOlder(18);
@@ -284,11 +283,12 @@ var diabeticScreeningFeature = {
         }
         const patientInfo = triageFields.patientInformation;
         let years = patientInfo.years.val();
+
         const months = patientInfo.months.val();
         if (isNumeric(months)){
             years = years + months*12;
         }
-        let ageClassification = $('input[name=ageClassification]:checked').val();
+        const ageClassification = $('input[name=ageClassification]:checked').val();
         if (ageClassification === "adult" || ageClassification === "elder"){
             return true;
         }
@@ -296,7 +296,7 @@ var diabeticScreeningFeature = {
 
     },
     /**
-     * Sets everything to read only while the user indicates whether
+     * Sets everything to read only while the user indicates whether or not
      * the patient was screened for diabetes.
      */
     readonlyEverything: function(){
@@ -358,7 +358,7 @@ var multipleChiefComplaintFeature = {
         //clear chief complaint textarea
         triageFields.chiefComplaint.chiefComplaint.val("");
         //bind chief complaint removal
-        $('.removeChiefComplaint').off().click(function (evt) {
+        $('.removeChiefComplaint').off().on('click', function (evt) {
             multipleChiefComplaintFeature.removeChiefComplaint(evt);
         });
     },
@@ -381,17 +381,17 @@ var multipleChiefComplaintFeature = {
     }
 };
 
-const triageFields = {
+var triageFields = {
 
     patientInformation: {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
         address: $('#address'),
         phoneNumber: $('#phoneNumber'),
+        birthDate: $('#birthDateInput'), // Birthdate, seemingly doesn't work for existing patients?
         ageYears: $('#yearsInput'),
         ageMonths: $('#monthsInput'),
         ageClassification: $('[name=ageClassification]'),
-        birthDate: $('#birthDateInput'),
         city: $('#city'),
         maleButton: $('#maleBtn'),
         femaleButton: $('#femaleBtn'),
@@ -422,24 +422,28 @@ const triageFields = {
 
 var ageClassificationAutoCalculateFeature = {
     classSelection: function(patientAge) {
-        switch (patientAge != null){
-            case (patientAge <= 1):
-                document.getElementById("infant").checked = true;
-                break;
-            case (patientAge <= 12):
-                document.getElementById("child").checked = true;
-                break;
-            case (patientAge <= 17):
-                document.getElementById("teen").checked = true;
-                break;
-            case (patientAge <= 64):
-                document.getElementById("adult").checked = true;
-                break;
-            case (patientAge <= 200):
-                document.getElementById("elder").checked = true;
-                break;
-            default:
-                break;
+        //Check if patient age is not null
+        if (patientAge == null) {
+            return;
+        }
+
+        //Check if element exists before attempting to change its properties
+        let infant = document.getElementById("infant");
+        let child = document.getElementById("child");
+        let teen = document.getElementById("teen");
+        let adult = document.getElementById("adult");
+        let elder = document.getElementById("elder");
+
+        if (patientAge <= 1 && infant) {
+            infant.checked = true;
+        } else if (patientAge <= 12 && child) {
+            child.checked = true;
+        } else if (patientAge <= 17 && teen) {
+            teen.checked = true;
+        } else if (patientAge <= 64 && adult) {
+            adult.checked = true;
+        } else if (patientAge <= 200 && elder) {
+            elder.checked = true;
         }
     }
 }
@@ -544,15 +548,10 @@ const birthdayAgeAutoCalculateFeature = {
 };
 
 
-//TODO: Clear age classification if age or birthdate is entered.
-
-$(function () {
-    $('.newPatientBtn').click(function () {
+$(document).ready(function () {
+    $('.newPatientBtn').on('click', function () {
         if (confirm("Are you sure you want to reset the fields?!")) {
             window.location = "/triage";
-        }
-        else {
-
         }
     });
 
@@ -575,12 +574,13 @@ $(function () {
         $(this).parents(".generalInfoInput").removeClass("has-errors");
     });
 
-    //birthday shit
-    $('#age').on('change',function () {
+    // Was previously #age which was incorrect for various reasons...
+    // It is attempting to access the patient's date of birth, which is held in (#birthDateInput)
+    $('#birthDateInput').on('change', function () {
         const ageElement = $(this)
-        const inputYear = ageElement.val().toString().split('-')[0];
-        const inputMonth = ageElement.val().toString().split('-')[1] - 1;
-        const inputDay = ageElement.val().toString().split('-')[2];
+        var inputYear = ageElement.val().toString().split('-')[0];
+        var inputMonth = ageElement.val().toString().split('-')[1] - 1;
+        var inputDay = ageElement.val().toString().split('-')[2];
         if ((inputMonth >= 0) && ((inputDay && inputYear) > 0)) {
             var inputDate = new Date(Number(inputYear), inputMonth, Number(inputDay));
             if (inputDate <= Date.now()) {
@@ -596,36 +596,36 @@ $(function () {
                 if (diffDay < 0) {
                     ageMonths--;
                 }
-                $('#years').val(Math.floor(ageMonths / 12)).css('border', '');
-                $('#months').val(ageMonths % 12).css('border', '');
+                $('#yearsInput').val(Math.floor(ageMonths / 12)).css('border', '');
+                $('#monthsInput').val(ageMonths % 12).css('border', '');
                 ageClassificationAutoCalculateFeature.classSelection(Math.floor(ageMonths / 12));
-                $('#age').css('border', '');
+                $('#birthDateInput').css('border', '');
+            } else {
+                $('#birthDateInput').css('border-color', 'red');
+                $('#yearsInput').val(null);
+                $('#monthsInput').val(null);
             }
-            else {
-                $('#age').css('border-color', 'red');
-                $('#years').val(null);
-                $('#months').val(null);
-            }
-        }
-        else {
-            $('#age').css('border', '');
-            $('#years').val(null);
-            $('#months').val(null);
+        } else {
+            $('#birthDateInput').css('border', '');
+            $('#yearsInput').val(null);
+            $('#monthsInput').val(null);
         }
     });
+
     $('#years').on('change', function () {
         if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
             var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = isNaN(Number(birthDate));
             if (nan === false) {
-                $('#age').val(birthString).css('border', '');
+                triageFields.patientInformation.birthDate.val(birthString).css('border', '');
 
                 const yearsElement = $('#years');
 
                 ageClassificationAutoCalculateFeature.classSelection(yearsElement.val());
                 yearsElement.css('border', '');
                 $('#months').css('border', '');
+                $('#age').css('border', '');
             }
         }
     });
@@ -659,9 +659,9 @@ $(function () {
 
     $('#triageSubmitBtn').on('click',function () {
         let pass = validatePatientInformation();
-        var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
-        var url = "/search/check/" + query;
+        const patientInfo = triageFields.patientInformation;
+        const query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
+        const url = "/search/check/" + query;
 
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
@@ -673,10 +673,10 @@ $(function () {
                 multipleChiefComplaintFeature.JSONifyChiefComplaints();
             }
 
-            var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+            const isDiabeticScreeningPromptNecessary = diabeticScreeningFeature.shouldPatientBeScreened();
             if (isDiabeticScreeningPromptNecessary) {
-                var diabetesDialog = $('.submitResetWrap.hidden');
-                var submitMenu = $('.submitResetWrap').not('.hidden');
+                const diabetesDialog = $('.submitResetWrap.hidden');
+                const submitMenu = $('.submitResetWrap').not('.hidden');
                 $(submitMenu).addClass('hidden');
                 $(diabetesDialog).removeClass('hidden');
                 diabeticScreeningFeature.readonlyEverything();
@@ -758,15 +758,13 @@ $(function () {
         })
     };
 
-
-
     patientPhotoFeature.init();
 
-    $('#photoInput').change(function (evt) {
+    $('#photoInput').on('change', function (evt) {
         patientPhotoFeature.loadPhotoIntoFrame(evt);
     });
 
-    $('#addChiefComplaint').click(function () {
+    $('#addChiefComplaint').on('click', function () {
         multipleChiefComplaintFeature.addChiefComplaintInput();
     });
     //AJ Saclayan City Typeahead
@@ -811,13 +809,13 @@ $(function () {
                 highlight: true
             };
 
-            //initialize typeahead
+            //initalize typeahead
             $("#citySearchContainer").find(".citySearch").typeahead(typeahead_options, {
                 name: 'mission_cities',
                 displayKey: 'name',
                 source: mission_cities.ttAdapter(),
                 matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
                         return true;
                     }
                 },
@@ -828,7 +826,7 @@ $(function () {
                 }
             }).on('typeahead:selected', function(event, item) {
                 // triggered when an item is selected from the dropdown list in autocompleted
-                const $cityName = $(this).closest(".cityRow").find(".cityName");
+                var $cityName = $(this).closest(".cityRow").find(".cityName");
                 $cityName.val(item.id);
             }).on('typeahead:autocompleted', function(event, item, data) {
                     // triggered when an item is tabbed to completion
@@ -836,16 +834,29 @@ $(function () {
                 }
             ).on("change", function(event) {
                     // triggered when text is entered that is not part of the autocomplete
-                    const $cityName = $(this).closest(".cityRow").find(".cityID");
+                    var $cityName = $(this).closest(".cityRow").find(".cityID");
                     $cityName.val("");
             });
 
-            // Re-enable search input field
+            // Reenable search input field
             $("input.citySearch").removeClass("loading")
                 .removeAttr("disabled")
                 .attr("placeholder", "City");
+
+            //$("input.citySearch").removeClass("loading")
+            //    .removeAttr("disabled")
+            //    .attr("placeholder", "Patient ID or Name");
+
         });
     }
+   //citiesFeature.initializeCitiesTypeahead().then(function() {
+   //     citiesFeature.addCitiesTypeahead();
+   // });
+   //
+   // ///AJ Saclayan Cities Suggestion
+   // typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/cities", cityFeature.newProblems.first(),'name',true,true);
+   // //typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
+
 });
 
 function isCanvasBlank(canvas){
@@ -858,9 +869,8 @@ function isCanvasBlank(canvas){
 
 
 $(function () {
-    Date.prototype.toYMD = Date_toYMD;
-    function Date_toYMD() {
-        var year, month, day;
+    Date.prototype.toYMD = function Date_toYMD() {
+        let year, month, day;
         year = String(this.getFullYear());
         month = String(this.getMonth() + 1);
         if (month.length === 1) {
@@ -877,7 +887,7 @@ $(function () {
 
 /* BMI auto- calculator */
 function calculateBMI() {
-    if (triageFields.patientVitals.heightFeet.val() && triageFields.patientVitals.weight.val()) {
+    if ($('#heightFeet').val() && triageFields.patientVitals.weight.val()) {
         const vitalsUnits = $('#vitalsUnits').val(); /* Alaa Serhan */
         const weight = parseInt(triageFields.patientVitals.weight.val());
         let height_in = parseInt(triageFields.patientVitals.heightInches.val());
@@ -895,7 +905,7 @@ function calculateBMI() {
             bmiScore = calculateBMIScore("metric", weight, heightMeters);
         } else {
             // Get total height in inches
-            const totalInches = height_in + height_ft * 12;
+            let totalInches = height_in + height_ft * 12;
             // Calculate BMI (Imperial)
             bmiScore = calculateBMIScore("standard", weight, totalInches);
         }
@@ -911,12 +921,12 @@ function calculateBMI() {
 $('#heightFeet, #heightInches, #weight').on('input change', calculateBMI);
 
 $("#heightInches").change(function(){
-    const isMetric = ($("#vitalsUnits").val() === "metric");
+    var isMetric = ($("#vitalsUnits").val() === "metric");
 
-    let heightFeet = parseFloat(triageFields.patientVitals.heightFeet.val()) || 0;
-    let heightInches = parseFloat(triageFields.patientVitals.heightInches.val()) || 0;
+    var heightFeet = parseFloat(triageFields.patientVitals.heightFeet.val()) || 0;
+    var heightInches = parseFloat(triageFields.patientVitals.heightInches.val()) || 0;
 
-    const unitValue = isMetric ? 100 : 12;
+    var unitValue = isMetric ? 100 : 12;
 
     // if inches > 12 or 100 add to feet
     if( heightInches > unitValue ){

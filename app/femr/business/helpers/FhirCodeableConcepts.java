@@ -18,6 +18,17 @@ public class FhirCodeableConcepts {
      * get FHIR coding for blood glucose (mass per volume units)
      * @return blood glucose concept
      */
+    public static CodeableConcept getClinicalInformationConcept(){
+        CodeableConcept bloodGlucose = new CodeableConcept();
+        bloodGlucose.setText("Clinical information");
+        bloodGlucose.addCoding(LOINC, "55752-0", "Clinical information");
+        return bloodGlucose;
+    }
+
+    /**
+     * get FHIR coding for blood glucose (mass per volume units)
+     * @return blood glucose concept
+     */
     public static CodeableConcept getBloodGlucoseConceptMassPerVolume(){
         CodeableConcept bloodGlucose = new CodeableConcept();
         bloodGlucose.setText("Glucose in Blood");

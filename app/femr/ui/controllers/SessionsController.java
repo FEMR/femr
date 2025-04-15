@@ -20,6 +20,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Minutes;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -90,7 +91,7 @@ public class SessionsController extends Controller {
             DateTime stop = new DateTime(DateTime.now());
             int daysBetween = Days.daysBetween(start, stop).getDays();
 
-            if(false){
+            if(daysBetween > 90){
                 user.setPasswordReset(true);
             }
 

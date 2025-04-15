@@ -34,6 +34,7 @@ public class FhirExportService implements IFhirExportService {
     IPatientRepository patientRepository;
     IEncounterRepository encounterRepository;
     IPrescriptionRepository prescriptionRepository;
+    IPhotoRepository photoRepository;
     IPatientEncounterVitalRepository patientEncounterVitalRepository;
     IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository;
     private final String kitId;
@@ -41,11 +42,12 @@ public class FhirExportService implements IFhirExportService {
     @Inject
     public FhirExportService(IPatientRepository patientRepository, IEncounterRepository encounterRepository,
                              IPrescriptionRepository prescriptionRepository, IPatientEncounterVitalRepository patientEncounterVitalRepository,
-                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, String kitId) {
+                             IPatientEncounterTabFieldRepository patientEncounterTabFieldRepository, IPhotoRepository photoRepository, String kitId) {
         this.patientRepository = patientRepository;
         this.encounterRepository = encounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.photoRepository = photoRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.kitId = kitId;
     }
@@ -75,6 +77,7 @@ public class FhirExportService implements IFhirExportService {
         bundleBuilder.addToEntry(entry, "resource", composition);
 
         addPatientData(bundleBuilder, patientId, fhirPatientId);
+        addPhotoData(bundleBuilder, patientId, fhirPatientId);
 
         for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
             List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
@@ -98,6 +101,28 @@ public class FhirExportService implements IFhirExportService {
         }
 
         return bundleBuilder;
+    }
+
+    private void addPhotoData(BundleBuilder bundleBuilder, int patientId, String fhirPatientId) {
+        List<? extends IPhoto> photos = photoRepository.retrievePhotosByPatientId(patientId);
+
+            for (IPhoto photo : photos) {
+                DocumentReference documentReference = new DocumentReference();
+                documentReference.setId(String.format("%s_%s", kitId, photo.getId()));
+                documentReference.setSubject(new Reference(fhirPatientId));
+
+                DocumentReference.DocumentReferenceContentComponent content = new DocumentReference.DocumentReferenceContentComponent();
+                Attachment attachment = new Attachment();
+                attachment.setContentType(photo.getContentType());
+                attachment.setData(photo.getPhotoData());
+
+                content.setAttachment(attachment);
+
+                documentReference.setContent(Collections.singletonList(content));
+
+                IBase entry = bundleBuilder.addEntry();
+                bundleBuilder.addToEntry(entry, "resource", documentReference);
+            }
     }
 
     /**

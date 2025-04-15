@@ -13,7 +13,7 @@ public interface IPhotoRepository {
      * Creates a new photo entry in the database
      *
      * @param description description of the photo, not null - can use an empty string
-     *                    instead of null
+     * instead of null
      * @param filePath location to the photo on the filesystem, not null
      * @return the new photo or NULL if an error occurs
      */
@@ -76,7 +76,7 @@ public interface IPhotoRepository {
      *
      * @param id primary key of the photo to update, not null
      * @param description the new description for the photo, not null - can use an empty string
-     *                    instead of null
+     * instead of null
      * @return the current state of the Photo
      */
     IPhoto updatePhotoDescription(int id, String description);
@@ -86,7 +86,7 @@ public interface IPhotoRepository {
      *
      * @param id primary key of the photo to update, not null
      * @param filePath the new file path for the photo, not null - can use an empty string instead
-     *                    of null
+     * of null
      * @return the current state of the Photo
      */
     IPhoto updatePhotoFilePath(int id, String filePath);
@@ -124,4 +124,20 @@ public interface IPhotoRepository {
      * @return true if the photo was deleted, throws an error if something went wrong
      */
     boolean deleteEncounterPhotosByPhotoId(int id);
+
+    /**
+     * Retrieves all photos associated with a given patient ID.
+     *
+     * @param patientId The ID of the patient.
+     * @return A list of photos associated with the patient.
+     */
+    List<? extends IPhoto> retrievePhotosByPatientId(int patientId);
+
+    /**
+     * Retrieves the content type of the image.
+     *
+     * @param id The id of the photo.
+     * @return The content type of the image.
+     */
+    String retrievePhotoContentType(int id);
 }

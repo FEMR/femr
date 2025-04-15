@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.List;
 
 public class PhotoRepository implements IPhotoRepository {
@@ -344,4 +345,38 @@ public class PhotoRepository implements IPhotoRepository {
 
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IPhoto> retrievePhotosByPatientId(int patientId) {
+        List<? extends IPhoto> photos;
+        try {
+            ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
+                    .where()
+                    .eq("patient_id", patientId);
+
+            photos = query.findList();
+
+        } catch (Exception ex) {
+            Logger.error("PhotoRepository-retrievePhotosByPatientId", ex);
+            throw ex;
+        }
+        return photos;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String retrievePhotoContentType(int id) {
+        IPhoto photo = retrievePhotoById(id);
+        if (photo != null) {
+            return photo.getContentType();
+        }
+        return null;
+    }
+
+
 }

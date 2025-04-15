@@ -52,7 +52,7 @@ public class TestFhirExportService {
 
         JSONObject documentReferenceResource = getSingleResourceFromBundle(bundle, "DocumentReference");
 
-        assertEquals("5BE2ED_0", documentReferenceResource.getString("id"));
+        assertEquals("5BE2ED_1", documentReferenceResource.getString("id"));
 
         JSONObject attachment = documentReferenceResource.getJSONArray("content").getJSONObject(0).getJSONObject("attachment");
         assertEquals("image/jpeg", attachment.getString("contentType"));

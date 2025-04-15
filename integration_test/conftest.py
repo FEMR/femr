@@ -13,7 +13,6 @@ import time
 import docker
 import os
 import re
-import time
 
 client = docker.from_env()
 
@@ -48,8 +47,6 @@ def run_before_and_after_tests(request):
 
     with sql_container_spec as mysql:
         network.connect(mysql._container.id, aliases=["db"])
-
-        time.sleep(30)
 
         femr_container_spec = DockerContainer(femr_image) \
             .with_name("femr-femr")\

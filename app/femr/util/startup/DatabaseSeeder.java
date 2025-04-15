@@ -1290,6 +1290,7 @@ public class DatabaseSeeder {
             String encryptedAdminPassword = passwordEncryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
             adminUser.setLastName("");
+            adminUser.setLanguageCode("en");
             adminUser.setEmail(defaultAdminUsername);
             adminUser.setPassword(encryptedAdminPassword);
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
@@ -1308,6 +1309,7 @@ public class DatabaseSeeder {
             String encryptedSuperuserPassword = passwordEncryptor.encryptPassword(defaultSuperuserPassword);
             superUser.setFirstName("SuperUser");
             superUser.setLastName("");
+            superUser.setLanguageCode("en");
             superUser.setEmail(defaultSuperuserUsername);
             superUser.setPassword(encryptedSuperuserPassword);
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
@@ -1333,6 +1335,7 @@ public class DatabaseSeeder {
             String encryptedTestNursePassword = passwordEncryptor.encryptPassword(defaultTestNursePassword);
             testNurse.setFirstName("TestNurse");
             testNurse.setLastName("");
+            testNurse.setLanguageCode("en");
             testNurse.setEmail(defaultTestNurseUsername);
             testNurse.setPassword(encryptedTestNursePassword);
             testNurse.setLastLogin(dateUtils.getCurrentDateTime());

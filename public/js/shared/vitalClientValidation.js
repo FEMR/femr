@@ -36,17 +36,45 @@ function validateHeight (index, heightReferenceMajor, heightReferenceMinor) {
     }
 }
 
-$('#respiratoryRate').on('change', () => {validateVital("respiratoryRate", patientVitals.respiratoryRate)});
-$('#bloodPressureSystolic').on('change', () => {validateVital("bloodPressureSystolic", patientVitals.bloodPressureSystolic)})
-$('#bloodPressureDiastolic').on('change', () => {validateVital("bloodPressureDiastolic", patientVitals.bloodPressureDiastolic)});
-$('#heartRate').on('change', () => {validateVital("heartRate", patientVitals.heartRate)});
-$('#oxygenSaturation').on('change', () => {validateVital("oxygenSaturation", patientVitals.oxygenSaturation)});
-$('#temperature').on('change', () => {validateVital("temperature", patientVitals.temperature)});
-$('#weight').on('change', () => {validateVital("weight", patientVitals.weight)});
-$('#heightFeet').on('change', () => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)});
-$('#heightInches').on('change', () => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)});
-$('#glucose').on('change', () => {validateVital("glucose", patientVitals.glucose)});
-$('#weeksPregnant').on('change', () => {validateVital("weeksPregnant", patientVitals.weeksPregnant)});
+
+/**
+ * From
+ * https://stackoverflow.com/questions/27787768/debounce-function-in-jquery
+ *
+ * Creates a debounced version of a function that delays invoking the function until
+ * after the specified wait time has elapsed since the last time it was invoked.
+ *
+ * @param {Function} fn - The function to debounce.
+ * @param {number} wait - The delay in milliseconds after the last call before invoking the function.
+ * @param {boolean} [immediate=false] - If true, the function is triggered at the beginning of the delay period instead of at the end.
+ * @returns {Function} - Returns the debounced function.
+ */
+const debounce = (fn, wait, immediate = false) => {
+    let timer;
+    return function (...args) {
+        const callNow = immediate && !timer;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            timer = null;
+            if (!immediate) fn.apply(this, args);
+        }, wait);
+        if (callNow) fn.apply(this, args);
+    };
+};
+
+const debounceTime = 1000;
+
+$('#respiratoryRate').on('input', debounce(() => {validateVital("respiratoryRate", patientVitals.respiratoryRate)}, debounceTime));
+$('#bloodPressureSystolic').on('input', debounce(() => {validateVital("bloodPressureSystolic", patientVitals.bloodPressureSystolic)}, debounceTime));
+$('#bloodPressureDiastolic').on('input', debounce(() => {validateVital("bloodPressureDiastolic", patientVitals.bloodPressureDiastolic)}, debounceTime));
+$('#heartRate').on('input', debounce(() => {validateVital("heartRate", patientVitals.heartRate)}, debounceTime));
+$('#oxygenSaturation').on('input', debounce(() => {validateVital("oxygenSaturation", patientVitals.oxygenSaturation)}, debounceTime));
+$('#temperature').on('input', debounce(() => {validateVital("temperature", patientVitals.temperature)}, debounceTime));
+$('#weight').on('input', debounce(() => {validateVital("weight", patientVitals.weight)}, debounceTime));
+$('#heightFeet').on('input', debounce(() => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)}, debounceTime));
+$('#heightInches').on('input', debounce(() => {validateHeight("height", patientVitals.heightFeet, patientVitals.heightInches)}, debounceTime));
+$('#glucose').on('input', debounce(() => {validateVital("glucose", patientVitals.glucose)}, debounceTime));
+$('#weeksPregnant').on('input', debounce(() => {validateVital("weeksPregnant", patientVitals.weeksPregnant)}, debounceTime));
 
 var vitalClientValidator = function (vitalElements) {
     var isValid = true;

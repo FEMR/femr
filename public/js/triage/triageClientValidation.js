@@ -3,7 +3,7 @@ const validatePatientInformation = () => {
     var isPatientInformationValid = true;
 
     //validate First Name
-    if (!$.trim(patientInformation.firstName.val())) {
+    if (!patientInformation.firstName.val().toString().trim()) {
         patientInformation.firstName.attr("placeholder", "Required Input");
         $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
@@ -23,7 +23,7 @@ const validatePatientInformation = () => {
     }
 
     //validate City
-    if (!$.trim(patientInformation.city.val())) {
+    if (!patientInformation.city.val().toString().trim()) {
         patientInformation.city.attr("placeholder", "Required Input");
         $(patientInformation.city).parents(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
@@ -32,82 +32,21 @@ const validatePatientInformation = () => {
         $(patientInformation.city).parents(".generalInfoInput").removeClass("has-errors");
     }
 
-    //Validate Age
-    if ((patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
-        (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))
-    ){
-        $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
+
+    // Either ageClassification or birthdate or AgeYears/AgeMonths has to be filled out
+    const ageFilledOut = (patientInformation.ageMonths.val().toString().length > 0 && integerCheck(patientInformation.ageMonths.val())) ||
+        (patientInformation.ageYears.val().toString().length > 0 && integerCheck(patientInformation.ageYears.val()))
+
+    const ageClassificationFilledOut = patientInformation.ageClassification.filter(':checked').val();
+
+    const birthDateFilledOut = patientInformation.birthDate.val().toString().length > 0;
+
+
+    if (!ageFilledOut && !ageClassificationFilledOut && !birthDateFilledOut) {
+        $('#ageInputWrap').children(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
-    }
-    else if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
-        //nothing has been filled out
-        $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-        triageFieldValidator.isValid = isPatientInformationValid = false;
-
-    } else if ((patientInformation.months.val() || patientInformation.years.val()) && patientInformation.ageClassification.filter(':checked').val()) {
-        // This checks that the patients age is in the correct range (if chosen), months is irrelevant in this calculation
-        // - the UI does something kinda wonky with a revisiting patient: the #months hidden field is total months of age, not the months since the last bday,
-        //      fixing this could cause other bugs, so eliminating months instead
-        //      - see femr.common.models.PatientItem::monthsOld
-        var totalAge = 0.0;
-        if(patientInformation.years.val()){
-            totalAge = parseFloat(patientInformation.years.val());
-        }
-        var ageGroupYearMatch = true;
-
-        switch (patientInformation.ageClassification.filter(':checked').val()){
-            case 'infant':
-                if (totalAge >= 2) {
-                    ageGroupYearMatch = false;
-                }
-                break;
-            case 'child':
-                if ((totalAge < 2) || (totalAge >= 13) ){
-                    ageGroupYearMatch = false;
-                }
-                break;
-            case 'teen':
-                if ((totalAge < 13) || (totalAge >= 18)){
-                    ageGroupYearMatch = false;
-                }
-                break;
-            case 'adult':
-                if ((totalAge < 18) || (totalAge >= 65)){
-                    ageGroupYearMatch = false;
-                }
-                break;
-            case 'elder':
-                if (totalAge < 65){
-                    ageGroupYearMatch = false;
-                }
-                break;
-        }
-        if (ageGroupYearMatch){
-            $("#conflictingAgeMessage").hide();
-            $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
-        }
-        else {
-            $("#conflictingAgeMessage").show();
-            $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-            triageFieldValidator.isValid = isPatientInformationValid = false;
-        }
-    }
-    else{
-        //something has been filled out
-        $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
-    }
-
-    // check for future birthdate
-    if(patientInformation.age.val()){
-        var birthDate = new Date(patientInformation.age.val());
-        var today = new Date();
-
-        var years = patientInformation.years.val();
-
-        if(birthDate > today || years > 120){
-            $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-            triageFieldValidator.isValid = isPatientInformationValid = false;
-        }
+    } else {
+        $('#ageInputWrap').children(".generalInfoInput").removeClass("has-errors");
     }
 
     // validate gender

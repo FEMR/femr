@@ -279,16 +279,15 @@
                         }
                 </div>
                 <br>
-                <div id="ageClassificationWrap">
+                <div id="ageInputWrap">
                     <div class="generalInfoInput">
                         <label id="ageLabel">Age</label><span class="red bold">*</span>
-                        <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
                         <input class="fInput ageInput" type="text" id="yearsInput" placeholder="Years" />
                         <input class="fInput ageInput" type="text" id="monthsInput" placeholder="Months" />
                     </div>
 
                     <span class="orSpan">OR</span>
-                    <div id="birthDateWrapper">
+                    <div class="generalInfoInput" id="birthDateWrapper">
                         <div class="generalInfoInput">
                             <label id="birthDateLabel" for="birthDateInput">Birth Date</label><span class="red bold">*</span>
                             <input type="date" class="fInput" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
@@ -539,18 +538,18 @@
                 </div>
 
 
-                @*                <div class="submitResetWrap hidden">*@
-                @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
-                @*                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">*@
-                @*                        No</button>*@
-                @*                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">*@
-                @*                        Yes</button>*@
-                @*                        <!-- Data elements for server-side logic, Diabetes Screen*@
-                @*                             Initial value for isDiabetesScreenPerformed set to empty string, only if*@
-                @*                             prompted will it receive a true/false value -->*@
-                @*                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>*@
-                @*                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />*@
-                @*                </div>*@
+                <div class="submitResetWrap hidden">
+                    <h3>Did you screen this patient for Diabetes?</h3>
+                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
+                        No</button>
+                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
+                        Yes</button>
+                        <!-- Data elements for server-side logic, Diabetes Screen
+                             Initial value for isDiabetesScreenPerformed set to empty string, only if
+                             prompted will it receive a true/false value -->
+                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
+                    <input type="hidden" name="isDiabetesScreenPerformed" value="" />
+                </div>
                 <div class="submitResetWrap">
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>

@@ -163,13 +163,6 @@ function integerCheck(wonkyInt) {
 }
 
 /*
- * Checks if value of input is equal to NaN
- */
-function randomString(strVal) {
-    return isNaN(strVal);
-}
-
-/*
  * Typeahead initalizer
  */
 var typeaheadFeature = {

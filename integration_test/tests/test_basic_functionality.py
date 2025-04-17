@@ -456,19 +456,3 @@ def test_medical(driver):
     assert "urgent medical stuff" in driver.find_element(By.ID, "narrativeTab").get_attribute("value")
     assert "urgent, very important, medical stuff" in driver.find_element(By.ID, "physicalTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "palliatesTab").get_attribute("value")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

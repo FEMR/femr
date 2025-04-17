@@ -14,7 +14,7 @@
     font-weight: bold
 }
 
-#ageClassificationWrap{
+#ageInputWrap{
     padding-left: 5px;
     margin-bottom: 10px;
 }
@@ -344,7 +344,7 @@
         display: block;
     }
 
-    #ageClassificationWrap{
+    #ageInputWrap{
         margin-top: 40px;
     }
 }

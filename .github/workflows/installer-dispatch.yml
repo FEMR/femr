@@ -6,15 +6,8 @@ on:
 
 jobs:
   build_and_push_image:
-    # Only runs build on PRs.
-    # Only does linux/amd64 build do to speed. Once Github adds more ARM runners, we can add more platforms.
-
     name: Build and Push Image
     runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: true
-      matrix:
-        platform: [linux/amd64] # Add linux/arm64 when more runners are available.
 
     steps:
       - name: Checkout Repository
@@ -36,9 +29,9 @@ jobs:
           path: |
             root/.ivy2
             root/.sbt
-          key: sbt-${{ runner.os }}-${{matrix.platform}}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
+          key: sbt-${{ runner.os }}-${{ hashFiles('**/build.sbt', '**/project/*.sbt') }}
           restore-keys: |
-            sbt-${{ runner.os }}-${{matrix.platform}}
+            sbt-${{ runner.os }}
 
       # Injects the cache into the Docker build. Path is based on cache path in Dockerfile.
       - name: Inject sbt cache into Docker
@@ -51,7 +44,7 @@ jobs:
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
-      - name: Strip leading 'v' from tag
+      - name: Strip leading 'v' from tag #Github releases start with v
         id: tag
         run: |
           RAW_TAG="${{ github.event.release.tag_name }}"
@@ -62,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64, linux/arm64 #Platforms to build image for.
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

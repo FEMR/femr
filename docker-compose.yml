@@ -24,7 +24,7 @@ services:
       retries: 10
 
   femr:
-    image: myapp:3.4.5
+    build: .
     links: 
       - db:mysql
     depends_on: 

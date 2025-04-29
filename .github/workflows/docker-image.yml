@@ -3,10 +3,10 @@ name: Docker Image CI/CD
 on:
   push:
     branches:
-      - master
+      - karan_versioning
   pull_request:
     branches:
-      - master
+      - karan_versioning
 
 jobs:
   build_image_pr_test:
@@ -74,6 +74,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Replace kit version in nested Java file
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          TAG_NAME="${TAG_NAME#v}" # Remove leading 'v'
+
+          echo "Looking for file with kitStatus.setValue..."
+          FILE_PATH=$(grep -rl 'kitStatus.setValue("' . --include='*.java')
+
+          echo "Found file: $FILE_PATH"
+          sed -i 's/kitStatus\.setValue(".*");/kitStatus.setValue("'"$TAG_NAME"'");/' "$FILE_PATH"
 
       - name: Login to Docker Registry
         uses: docker/login-action@v3

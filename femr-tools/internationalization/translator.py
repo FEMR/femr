@@ -9,10 +9,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 # Define input values as a list of tuples (label, input_text)
 input_values = [
-("home_index_h2_Welcome", "Welcome to fEMR 3.0.0,"),
-("home_index_p_Please", "Please select a tab at the top to get started!"),
-("home_index_p_Search", "Search Below:"),
-("home_index_div_ID", "ID, Name, or Phone #")
+("this_is_a_test", "testing")
 ]
 
 from_code = "en"

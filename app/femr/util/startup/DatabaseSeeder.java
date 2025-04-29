@@ -62,23 +62,23 @@ public class DatabaseSeeder {
 
     @Inject
     public DatabaseSeeder(IPatientRepository patientRepository,
-                          IUserRepository userRepository,
-                          IRepository<IConceptDiagnosis> diagnosisRepository,
-                          IRepository<IMissionCountry> missionCountryRepository,
-                          IRepository<IMissionCity> missionCityRepository,
-                          IRepository<IMissionTeam> missionTeamRepository,
-                          IRepository<ISystemSetting> systemSettingRepository,
-                          IRepository<INetworkStatus> networkStatusRepository,
-                          IRepository<IKitStatus> kitStatusRepository,
-                          IRepository<IDatabaseStatus> databaseStatusRepository,
-                          IRepository<ILanguageCode> languagesRepository,
-                          IRepository<ITabField> tabFieldRepository,
-                          IRepository<ITabFieldSize> tabFieldSizeRepository,
-                          IRepository<ITabFieldType> tabFieldTypeRepository,
-                          IRepository<ITab> tabRepository,
-                          IRepository<IVital> vitalRepository,
-                          Config configuration,
-                          IPasswordEncryptor passwordEncryptor) {
+            IUserRepository userRepository,
+            IRepository<IConceptDiagnosis> diagnosisRepository,
+            IRepository<IMissionCountry> missionCountryRepository,
+            IRepository<IMissionCity> missionCityRepository,
+            IRepository<IMissionTeam> missionTeamRepository,
+            IRepository<ISystemSetting> systemSettingRepository,
+            IRepository<INetworkStatus> networkStatusRepository,
+            IRepository<IKitStatus> kitStatusRepository,
+            IRepository<IDatabaseStatus> databaseStatusRepository,
+            IRepository<ILanguageCode> languagesRepository,
+            IRepository<ITabField> tabFieldRepository,
+            IRepository<ITabFieldSize> tabFieldSizeRepository,
+            IRepository<ITabFieldType> tabFieldTypeRepository,
+            IRepository<ITab> tabRepository,
+            IRepository<IVital> vitalRepository,
+            Config configuration,
+            IPasswordEncryptor passwordEncryptor) {
 
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
@@ -122,12 +122,14 @@ public class DatabaseSeeder {
         seedUserRoles();
         seedVitals();
     }
+
     private void seedLanguages() {
         List<? extends ILanguageCode> languages = languagesRepository.findAll(LanguageCode.class);
         languagesRepository.createAll(languages);
     }
+
     private void seedDatabaseStatus() {
-        //TODO Feather to set initial values
+        // TODO Feather to set initial values
         List<? extends IDatabaseStatus> databaseStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
         DatabaseStatus databaseStatus;
         if (databaseStatuses != null && !containDatabaseStatus(databaseStatuses, "Last Backup")) {
@@ -139,7 +141,7 @@ public class DatabaseSeeder {
     }
 
     private void seedKitStatus() {
-        //TODO Lemur to set initial values
+        // TODO Lemur to set initial values
         List<? extends IKitStatus> kitStatuses = kitStatusRepository.findAll(KitStatus.class);
         KitStatus kitStatus;
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Status")) {
@@ -151,7 +153,11 @@ public class DatabaseSeeder {
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Version")) {
             kitStatus = new KitStatus();
             kitStatus.setName("Version");
-            kitStatus.setValue("1.0.0");
+            String version = System.getenv("APP_VERSION");
+            if (version == null || version.isEmpty()) {
+                version = "Test Version";
+            }
+            kitStatus.setValue(version);
             kitStatusRepository.create(kitStatus);
         }
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Last Update")) {
@@ -169,7 +175,7 @@ public class DatabaseSeeder {
     }
 
     private void seedNetworkStatus() {
-        //TODO Lemur to set initial values
+        // TODO Lemur to set initial values
         List<? extends INetworkStatus> networkStatuses = networkStatusRepository.findAll(NetworkStatus.class);
         NetworkStatus networkStatus;
         if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Status")) {
@@ -250,7 +256,7 @@ public class DatabaseSeeder {
             vitalRepository.create(vital);
         }
     }
-    
+
     private void seedDiagnosis() {
         List<? extends IConceptDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(ConceptDiagnosis.class);
         List<String> availableDiagnosis = new ArrayList<>();
@@ -376,9 +382,9 @@ public class DatabaseSeeder {
             }
         diagnosisRepository.createAll(newDiagnosis);
     }
-    
+
     private void seedMissionTripInformation() {
-        //mission countries
+        // mission countries
         List<? extends IMissionCountry> missionCountries = missionCountryRepository.findAll(MissionCountry.class);
         List<String> availableCountries = new ArrayList<>();
 
@@ -593,7 +599,7 @@ public class DatabaseSeeder {
         missionCountryRepository.createAll(newMissionCountries);
         missionCountries = missionCountryRepository.findAll(MissionCountry.class);
 
-        //mission teams
+        // mission teams
         List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
         List<MissionTeam> newMissionTeams = new ArrayList<>();
         MissionTeam missionTeam;
@@ -620,7 +626,7 @@ public class DatabaseSeeder {
         }
         missionTeamRepository.createAll(newMissionTeams);
 
-        //countries
+        // countries
         List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
         List<MissionCity> newMissionCities = new ArrayList<>();
 
@@ -642,8 +648,9 @@ public class DatabaseSeeder {
     }
 
     private void seedPatientAgeClassification() {
-        //sort order auto increments
-        List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
+        // sort order auto increments
+        List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository
+                .retrieveAllPatientAgeClassifications();
 
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")) {
 
@@ -701,7 +708,8 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical HPI Consolidate");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
+            systemSetting.setDescription(
+                    "When checked, the HPI tab on medical is consolidated into one Narrative text field");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -713,7 +721,7 @@ public class DatabaseSeeder {
             systemSettingRepository.create(systemSetting);
         }
 
-        //Filters the patient search based on which country the team is currently in
+        // Filters the patient search based on which country the team is currently in
         if (systemSettings != null && !containSetting(systemSettings, "Country Filter")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Country Filter");
@@ -727,75 +735,75 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             ExpressionList<SystemSetting> researchOnlySetting = QueryProvider.getSystemSettingQuery()
                     .where()
-                    .eq("name","Research Only");
+                    .eq("name", "Research Only");
             systemSetting = (SystemSetting) systemSettingRepository.findOne(researchOnlySetting);
             systemSettingRepository.delete(systemSetting);
         }
 
-
-
-        //Asks a physician in medical if they screened the patient for diabetes based on
-        //criteria: (Age >= 18) AND (Systolic bp >= 140 OR Diastolic bp >= 90)
-        if (systemSettings != null && !containSetting(systemSettings, "Diabetes Prompt")){
+        // Asks a physician in medical if they screened the patient for diabetes based
+        // on
+        // criteria: (Age >= 18) AND (Systolic bp >= 140 OR Diastolic bp >= 90)
+        if (systemSettings != null && !containSetting(systemSettings, "Diabetes Prompt")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Diabetes Prompt");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
+            systemSetting.setDescription(
+                    "When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
             systemSettingRepository.create(systemSetting);
         }
 
     }
-    
+
     private void seedSystemSettingsDescriptions() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
-        for (ISystemSetting ss : systemSettings)
-        {
-            if (ss.getName().equals("Multiple chief complaints")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+        for (ISystemSetting ss : systemSettings) {
+            if (ss.getName().equals("Multiple chief complaints")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
                     ss.setDescription("When checked, a user can add multiple chief complaints for a patient");
-                    systemSettingRepository.update((SystemSetting)ss);
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Medical PMH Tab")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+            if (ss.getName().equals("Medical PMH Tab")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
                     ss.setDescription("When checked, the Past Medical History tab on medical appears");
-                    systemSettingRepository.update((SystemSetting)ss);
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Medical Photo Tab")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+            if (ss.getName().equals("Medical Photo Tab")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
                     ss.setDescription("When checked, the Photo tab on medical appears");
-                    systemSettingRepository.update((SystemSetting)ss);
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Medical HPI Consolidate")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
-                    ss.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
-                    systemSettingRepository.update((SystemSetting)ss);
+            if (ss.getName().equals("Medical HPI Consolidate")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
+                    ss.setDescription(
+                            "When checked, the HPI tab on medical is consolidated into one Narrative text field");
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Metric System Option")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+            if (ss.getName().equals("Metric System Option")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
                     ss.setDescription("When checked, the entire system becomes metric");
-                    systemSettingRepository.update((SystemSetting)ss);
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Country Filter")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+            if (ss.getName().equals("Country Filter")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
                     ss.setDescription("When checked, patients from other countries will not show up in a search");
-                    systemSettingRepository.update((SystemSetting)ss);
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
-            if (ss.getName().equals("Diabetes Prompt")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
-                    ss.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
-                    systemSettingRepository.update((SystemSetting)ss);
+            if (ss.getName().equals("Diabetes Prompt")) {
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())) {
+                    ss.setDescription(
+                            "When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
+                    systemSettingRepository.update((SystemSetting) ss);
                 }
             }
         }
     }
-
 
     /**
      * Uses references to HPI, PMH, and Treatment Tabs
@@ -804,7 +812,7 @@ public class DatabaseSeeder {
     private void seedDefaultTabFields() {
         List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
 
-        //get the id references for tabs
+        // get the id references for tabs
         List<? extends ITab> tabs = tabRepository.findAll(Tab.class);
         int hpiId = -1;
         int pmhId = -1;
@@ -823,8 +831,7 @@ public class DatabaseSeeder {
             }
         }
 
-
-        //get the id references for tab field types
+        // get the id references for tab field types
         List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
         int numberId = -1;
         int textId = -1;
@@ -838,7 +845,6 @@ public class DatabaseSeeder {
                     break;
             }
         }
-
 
         List<TabField> tabFieldsToAdd = new ArrayList<>();
 
@@ -1064,7 +1070,6 @@ public class DatabaseSeeder {
         tabRepository.createAll(tabsToAdd);
     }
 
-    
     private void seedDefaultTabFieldTypes() {
 
         List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
@@ -1096,12 +1101,10 @@ public class DatabaseSeeder {
         }
     }
 
-    
     private void seedDefaultTabFieldSizes() {
 
         List<? extends ITabFieldSize> tabFieldSizes = tabFieldSizeRepository.findAll(TabFieldSize.class);
         List<TabFieldSize> tabFieldSizesToAdd = new ArrayList<>();
-
 
         if (tabFieldSizes != null) {
 
@@ -1123,7 +1126,8 @@ public class DatabaseSeeder {
         tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
     }
 
-    private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {
+    private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries,
+            String countryName) {
         for (IMissionCountry mc : missionCountries) {
             if (mc.getName().toLowerCase().equals(countryName.toLowerCase())) {
                 return mc;
@@ -1132,9 +1136,11 @@ public class DatabaseSeeder {
         return null;
     }
 
-    private static boolean containMissionCity(List<? extends IMissionCity> missionCities, String cityName, String countryName) {
+    private static boolean containMissionCity(List<? extends IMissionCity> missionCities, String cityName,
+            String countryName) {
         for (IMissionCity mc : missionCities) {
-            if (mc.getName().toLowerCase().equals(cityName.toLowerCase()) && mc.getMissionCountry().getName().toLowerCase().equals(countryName.toLowerCase())) {
+            if (mc.getName().toLowerCase().equals(cityName.toLowerCase())
+                    && mc.getMissionCountry().getName().toLowerCase().equals(countryName.toLowerCase())) {
                 return true;
             }
         }
@@ -1168,7 +1174,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containClassification(List<? extends IPatientAgeClassification> ageClassifications, String name) {
+    private static boolean containClassification(List<? extends IPatientAgeClassification> ageClassifications,
+            String name) {
         for (IPatientAgeClassification pac : ageClassifications) {
             if (pac.getName().equals(name)) {
                 return true;
@@ -1250,12 +1257,12 @@ public class DatabaseSeeder {
     }
 
     private static boolean containRole(List<? extends IRole> roles, String roleName) {
-      for (IRole role : roles) {
-        if (role.getName().equals(roleName)) {
-          return true;
+        for (IRole role : roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
         }
-      }
-      return false;
+        return false;
     }
 
     private static boolean containVital(List<? extends IVital> vitals, String vitalName) {
@@ -1266,7 +1273,6 @@ public class DatabaseSeeder {
         }
         return false;
     }
-
 
     /**
      * Seed the admin user from the configuration file
@@ -1281,11 +1287,9 @@ public class DatabaseSeeder {
             String defaultSuperuserUsername = configuration.getString("default.superuser.username");
             String defaultSuperuserPassword = configuration.getString("default.superuser.password");
 
-
-
-            //create the Admin user
-            //Admin is used for managing users, creating users, managing inventory, etc
-            //Admin information is given to the manager/group leader/whoever is in charge
+            // create the Admin user
+            // Admin is used for managing users, creating users, managing inventory, etc
+            // Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();
             String encryptedAdminPassword = passwordEncryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
@@ -1294,17 +1298,18 @@ public class DatabaseSeeder {
             adminUser.setEmail(defaultAdminUsername);
             adminUser.setPassword(encryptedAdminPassword);
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
-            adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
+            adminUser.setDateCreated(dateUtils.getCurrentDateTime());
             adminUser.setDeleted(false);
             IRole role = userRepository.retrieveRoleByName("Administrator");
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
-            adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
+            adminUser.setPasswordCreatedDate(dateUtils.getCurrentDateTime());
             userRepository.createUser(adminUser);
 
-            //SuperUser is currently only used for managing dynamic tabs on the medical page
-            //SuperUser is an account that gives access to important configuration
-            //settings
+            // SuperUser is currently only used for managing dynamic tabs on the medical
+            // page
+            // SuperUser is an account that gives access to important configuration
+            // settings
             User superUser = new User();
             String encryptedSuperuserPassword = passwordEncryptor.encryptPassword(defaultSuperuserPassword);
             superUser.setFirstName("SuperUser");
@@ -1313,19 +1318,21 @@ public class DatabaseSeeder {
             superUser.setEmail(defaultSuperuserUsername);
             superUser.setPassword(encryptedSuperuserPassword);
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
-            superUser.setDateCreated( dateUtils.getCurrentDateTime() );
+            superUser.setDateCreated(dateUtils.getCurrentDateTime());
             superUser.setDeleted(false);
             IRole role1 = userRepository.retrieveRoleByName("SuperUser");
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
-            superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
+            superUser.setPasswordCreatedDate(dateUtils.getCurrentDateTime());
             userRepository.createUser(superUser);
         }
     }
 
     private void seedUserRoles() {
-        // Create TestNurse, used for selenium E2E testing. seedUserRoles() is called after seedAdminUser(), which
-        // creates two users. Therefore, we will only create testNurse if the count is two (otherwise we might try and create twice)
+        // Create TestNurse, used for selenium E2E testing. seedUserRoles() is called
+        // after seedAdminUser(), which
+        // creates two users. Therefore, we will only create testNurse if the count is
+        // two (otherwise we might try and create twice)
         int userCount = userRepository.countUsers();
         if (userCount == 2) {
             String defaultTestNurseUsername = configuration.getString("default.testnurse.username");
@@ -1347,8 +1354,8 @@ public class DatabaseSeeder {
             testNurse.setPasswordCreatedDate(dateUtils.getCurrentDateTime());
             userRepository.createUser(testNurse);
 
-            //Retrieve other roles in the database excluding SuperUser role which is fine
-            //because we are only looking for Manager
+            // Retrieve other roles in the database excluding SuperUser role which is fine
+            // because we are only looking for Manager
             List<? extends IRole> roles = userRepository.retrieveAllRoles();
             if (!containRole(roles, "Manager")) {
                 // Manager role doesn't exist, add it

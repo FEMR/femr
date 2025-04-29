@@ -6,7 +6,7 @@ import com.typesafe.sbt.web.Import._
 
 
 val appName = "femr"
-val appVersion = "3.1.2"
+val appVersion = "3.1.1"
 val currentScalaVersion = "2.11.7"
 
 val appDependencies = Seq(

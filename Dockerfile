@@ -70,9 +70,11 @@ RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-heade
 RUN pip3 install psutil
 
 #database variables
+ARG APP_VERSION
 ENV DB_URL="jdbc:mysql://localhost:3306/femr_db?characterEncoding=UTF-8&useSSL=false"
 ENV DB_USER="username"
 ENV DB_PASS="password"
+ENV APP_VERSION=$APP_VERSION
 
 COPY --from=builder /usr/src/app/target/universal/femr-* /opt/bin/femr
 

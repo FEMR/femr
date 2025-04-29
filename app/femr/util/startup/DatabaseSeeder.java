@@ -153,7 +153,11 @@ public class DatabaseSeeder {
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Version")) {
             kitStatus = new KitStatus();
             kitStatus.setName("Version");
-            kitStatus.setValue("3.2.0");
+            String version = System.getenv("APP_VERSION");
+            if (version == null || version.isEmpty()) {
+                version = "Test Version";
+            }
+            kitStatus.setValue(version);
             kitStatusRepository.create(kitStatus);
         }
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Last Update")) {

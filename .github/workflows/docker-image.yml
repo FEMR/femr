@@ -3,10 +3,10 @@ name: Docker Image Build Test
 on:
   push:
     branches:
-      - karan_versioning
+      - master
   pull_request:
     branches:
-      - karan_versioning
+      - master
 
 jobs:
   build_image_test:

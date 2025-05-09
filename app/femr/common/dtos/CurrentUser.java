@@ -85,4 +85,12 @@ public class CurrentUser {
     public void setLanguageCode(String languageCode) {
         this.langCode = languageCode;
     }
+
+    public String getKitVersion() {
+        String version = System.getenv("APP_VERSION");
+        if (version == null || version.isEmpty()) {
+            version = "Unknown Version";
+        }
+        return version;
+    }
 }

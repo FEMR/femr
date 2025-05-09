@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+@(currentUser: femr.common.dtos.CurrentUser = null, assets: AssetsFinder)
 <script>
         document.addEventListener('DOMContentLoaded', function() {
             let languageData;
@@ -29,7 +29,9 @@
     <hr/>
     <div class="row">
         <div class="col-xs-4">
-            <p>fEMR 3.0.0</p>
+                @if(currentUser != null) {
+                    <p>@currentUser.getKitVersion</p> @* We only have access to the version when logged in since currentUser is null if not logged in.*@
+                }
         </div>
         <div class="col-xs-4">
             <div class="leaveFeedback">

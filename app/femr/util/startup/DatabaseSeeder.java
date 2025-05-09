@@ -155,7 +155,7 @@ public class DatabaseSeeder {
             kitStatus.setName("Version");
             String version = System.getenv("APP_VERSION");
             if (version == null || version.isEmpty()) {
-                version = "Test Version";
+                version = "Unknown Version";
             }
             kitStatus.setValue(version);
             kitStatusRepository.create(kitStatus);

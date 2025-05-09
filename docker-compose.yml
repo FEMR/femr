@@ -24,7 +24,7 @@ services:
       retries: 10
 
   femr:
-    build: .
+    image: femr-femr
     links: 
       - db:mysql
     depends_on: 

@@ -1,6 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+@(currentUser: femr.common.dtos.CurrentUser = null, assets: AssetsFinder)
 <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+
             let languageData;
             fetch('@routes.Assets.versioned("json/languages.json")')
                     .then(response => response.json())
@@ -9,7 +11,6 @@
                         const initialLanguage = localStorage.getItem('languageCode') || 'en';
                         updateLanguage(initialLanguage);
                     });
-
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
                 if (element) {
@@ -29,7 +30,9 @@
     <hr/>
     <div class="row">
         <div class="col-xs-4">
-            <p>fEMR 3.0.0</p>
+                @if(currentUser != null) {
+                    <p>@currentUser.getKitVersion</p> @* Only have access to version one logged in since currentUser is null if not logged in.*@
+                }
         </div>
         <div class="col-xs-4">
             <div class="leaveFeedback">

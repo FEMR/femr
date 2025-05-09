@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-xs-4">
                 @if(currentUser != null) {
-                    <p>@currentUser.getKitVersion</p> @* Only have access to version one logged in since currentUser is null if not logged in.*@
+                    <p>@currentUser.getKitVersion</p> @* We only have access to the version when logged in since currentUser is null if not logged in.*@
                 }
         </div>
         <div class="col-xs-4">

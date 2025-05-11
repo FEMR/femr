@@ -3,6 +3,12 @@ name: Generate Installer and Dispatch On Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Release version"
+        required: true
+        default: "0.0.0"
 
 jobs:
   build_and_push_image:
@@ -44,15 +50,23 @@ jobs:
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
-      - name: Strip leading 'v' from tag #Github releases start with v
+      - name: Strip leading 'v' from tag # Or uses the input from workflow dispatch if not a release
         id: tag
         run: |
           RAW_TAG="${{ github.event.release.tag_name }}"
+          if [ -z "$RAW_TAG" ]; then
+            RAW_TAG="${{ github.event.inputs.release }}"
+          fi
           STRIPPED_TAG="${RAW_TAG#v}"
           echo "stripped_tag=$STRIPPED_TAG" >> $GITHUB_OUTPUT
 
+      - name: Set current date as env var
+        run: echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+
       - name: Build Docker Image
         uses: docker/build-push-action@v6
+        env:
+          DATE: ${{ env.DATE }}
         with:
           context: .
           platforms: linux/amd64, linux/arm64 #Platforms to build image for.
@@ -60,6 +74,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             APP_VERSION=${{ steps.tag.outputs.stripped_tag}}
+            BUILD_DATE=${{ env.DATE }}
           push: true
           tags: teamfemrdev/teamfemr:latest
 

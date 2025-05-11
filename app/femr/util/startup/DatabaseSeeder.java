@@ -163,7 +163,11 @@ public class DatabaseSeeder {
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Last Update")) {
             kitStatus = new KitStatus();
             kitStatus.setName("Last Update");
-            kitStatus.setValue("2021.02.17");
+            String buildDate = System.getenv("BUILD_DATE");
+            if (buildDate == null || buildDate.isEmpty()) {
+                buildDate = "Unknown Build Date";
+            }
+            kitStatus.setValue(buildDate);
             kitStatusRepository.create(kitStatus);
         }
         if (kitStatuses != null && !containKitStatus(kitStatuses, "Type")) {

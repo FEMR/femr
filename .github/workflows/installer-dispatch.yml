@@ -85,10 +85,13 @@ jobs:
     needs: build_and_push_image
     runs-on: ubuntu-latest
     steps:
-      - name: Strip leading 'v' from tag
+      - name: Strip leading 'v' from tag # Or uses the input from workflow dispatch if not a release
         id: tag
         run: |
           RAW_TAG="${{ github.event.release.tag_name }}"
+          if [ -z "$RAW_TAG" ]; then
+            RAW_TAG="${{ github.event.inputs.release }}"
+          fi
           STRIPPED_TAG="${RAW_TAG#v}"
           echo "stripped_tag=$STRIPPED_TAG" >> $GITHUB_OUTPUT
       - name: Send Dispatch

@@ -13,6 +13,12 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 import requests
 
+# Helper for ensuring loading before checking
+def wait_for(driver, locator, timeout: int = 10):
+    return WebDriverWait(driver, timeout).until(
+        EC.visibility_of_element_located(locator)
+    )
+
 @pytest.fixture
 def driver():
     chrome_prefs = {
@@ -23,6 +29,10 @@ def driver():
 
     options = webdriver.ChromeOptions()
     options.add_experimental_option("prefs", chrome_prefs)
+
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
     options.add_argument("--disable-dev-shm-usage")
 
     if os.getenv("USE_REMOTE"):
@@ -47,41 +57,38 @@ def test_femr_is_alive():
 
 def test_can_login_and_logout_to_admin(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
 
     driver.get(f"{femr_address}/")
+    driver.set_window_size(1362, 1157)
 
     # Test Login
-    driver.set_window_size(1362, 1157)
-    driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("admin")
+    wait_for(driver, (By.NAME, "email")).send_keys("admin")
     driver.find_element(By.NAME, "password").send_keys("admin")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
-    assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
+
+    welcome = wait_for(driver, (By.ID, "home_index_h2_Welcome"))
+    assert "Welcome to fEMR" in welcome.text
 
     # Test Logout
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
 def test_triage_no_photo(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
+    driver.set_window_size(1362, 1157)
 
     # Test logging in as testnurse:
-    driver.set_window_size(1362, 1157)
-    driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("testnurse")
+    wait_for(driver, (By.NAME, "email")).send_keys("testnurse")
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
-    assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
+    assert "Welcome to fEMR" in wait_for(driver, (By.ID, "home_index_h2_Welcome")).text
 
     # Test going to Triage page:
     driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
-    assert "Triage" in driver.find_element(By.ID, "triage_index_h2_Check").text
+    assert "Triage" in wait_for(driver, (By.ID, "triage_index_h2_Check")).text
 
     # Enter test patient info
     driver.find_element(By.ID, "firstName").send_keys("NoPhotoTriageTester")
@@ -117,19 +124,16 @@ def test_triage_no_photo(driver):
 
     # log out afterwards:
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
 
 def test_search(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
-
     driver.set_window_size(1362, 1157)
-    driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("testnurse")
+
+    wait_for(driver, (By.NAME, "email")).send_keys("testnurse")
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
     driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
@@ -160,44 +164,40 @@ def test_search(driver):
 
     driver.find_element(By.ID, "triageSubmitBtn").click()
 
-    # Test searching. We use a wait here to avoid race conditions/element not loaded yet
-    wait = WebDriverWait(driver, 10)
-    search_form = wait.until(
-        EC.visibility_of_element_located((By.ID, "nameOrIdSearchForm"))
-    )
+
+    search_form = wait_for(driver, (By.ID, "nameOrIdSearchForm"))
     search_form.send_keys("Search")
     driver.find_element(By.ID, "searchBtn").click()
+
     assert driver.find_element(By.ID, "nameOrIdSearchForm").get_attribute("placeholder") != "Invalid Patient"
 
     # Test viewing patient in Medical:
-    driver.find_element(By.ID, "history_patient_Medical").click()
-    assert "Patient Overview" in driver.find_element(By.ID, "partials_medical_Overview_Patient").text
+    wait_for(driver, (By.ID, "history_patient_Medical")).click()
+    assert "Patient Overview" in wait_for(driver, (By.ID, "partials_medical_Overview_Patient")).text
 
     # log out afterwards:
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
 
 # Tests purely for account creation/requesting approval.
 def test_account_creation(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
-
     driver.set_window_size(1362, 1157)
-    driver.find_element(By.CSS_SELECTOR, "#login > form.form-signin.bottomButton > input[type=submit]").click()
-    driver.find_element(By.ID, "email").send_keys("testguy123@gmail.com")
+
+    wait_for(driver, (By.CSS_SELECTOR,"#login > form.form-signin.bottomButton > input[type=submit]")).click()
+
+    wait_for(driver, (By.ID, "email")).send_keys("testguy123@gmail.com")
     driver.find_element(By.ID, "password").send_keys("Helloworld222")
     driver.find_element(By.ID, "passwordVerify").send_keys("Helloworld222")
     driver.find_element(By.ID, "firstName").send_keys("TestGuy")
     driver.find_element(By.ID, "lastName").send_keys("OrWoman")
 
     # Standard HTML <select> used to select language
-    select_element = driver.find_element(By.ID, "language")
-    select_object = Select(select_element)
-    select_object.select_by_value("en")
+    select_element = wait_for(driver, (By.ID, "language"))
+    Select(select_element).select_by_value("en")
 
     # Test account is a nurse
     driver.find_element(By.CSS_SELECTOR, "#roleWrap > label:nth-child(8) > input[type=checkbox]").click()
@@ -206,29 +206,27 @@ def test_account_creation(driver):
     driver.find_element(By.ID, "addUserSubmitBtn").click()
 
     # Make sure we're back at home page
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
 
 # Tests account creation/requesting approval + admin approval
 def test_account_creation_and_admin_approval(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
-
     driver.set_window_size(1362, 1157)
-    driver.find_element(By.CSS_SELECTOR, "#login > form.form-signin.bottomButton > input[type=submit]").click()
-    driver.find_element(By.ID, "email").send_keys("testgal123@gmail.com")
+
+    wait_for(driver, (By.CSS_SELECTOR,"#login > form.form-signin.bottomButton > input[type=submit]")).click()
+
+    wait_for(driver, (By.ID, "email")).send_keys("testgal123@gmail.com")
     driver.find_element(By.ID, "password").send_keys("Helloworld222")
     driver.find_element(By.ID, "passwordVerify").send_keys("Helloworld222")
     driver.find_element(By.ID, "firstName").send_keys("TestWoman")
     driver.find_element(By.ID, "lastName").send_keys("OrGuy")
 
     # Standard HTML <select> used to select language
-    select_element = driver.find_element(By.ID, "language")
-    select_object = Select(select_element)
-    select_object.select_by_value("en")
+    select_element = wait_for(driver, (By.ID, "language"))
+    Select(select_element).select_by_value("en")
 
     # Test account is a nurse
     driver.find_element(By.CSS_SELECTOR, "#roleWrap > label:nth-child(8) > input[type=checkbox]").click()
@@ -237,29 +235,27 @@ def test_account_creation_and_admin_approval(driver):
     driver.find_element(By.ID, "addUserSubmitBtn").click()
 
     # Make sure we're back at home page
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
     # Log in as admin and approve request
-    email_input = driver.find_element(By.NAME, "email")
+    email_input = wait_for(driver, (By.NAME, "email"))
     email_input.clear()
     email_input.send_keys("admin")
     driver.find_element(By.NAME, "password").send_keys("admin")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
 
     # Wait to ensure everything loads
-    welcome_header = WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.ID, "home_index_h2_Welcome"))
-    )
+    welcome_header = wait_for(driver, (By.ID, "home_index_h2_Welcome"))
     assert "Welcome to fEMR" in welcome_header.text
 
     driver.find_element(By.ID, "langCode_admin").click()
 
     # Verify we travelled to admin panel page
-    assert "Admin Panel" in driver.find_element(By.ID, "admin_title").text
+    assert "Admin Panel" in wait_for(driver, (By.ID, "admin_title")).text
     driver.find_element(By.ID, "admin_users").click()
 
     # Check for "TestWoman OrGuy" in our users list:
-    table = driver.find_element(By.ID, "userTable")
+    table = wait_for(driver, (By.ID, "userTable"))
     rows = table.find_elements(By.CSS_SELECTOR, "tbody tr")
     found = False
 
@@ -289,22 +285,22 @@ def test_account_creation_and_admin_approval(driver):
 
     # log out afterwards:
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
-    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Please sign in"
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
 
 
 # Tests pharmacy flow by creating a triage for a patient, searching for them in medical, assigning them a medication, and filling them in pharmacy
 def test_pharmacy(driver):
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
-
     driver.set_window_size(1362, 1157)
-    driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("testnurse")
+
+    wait_for(driver, (By.NAME, "email")).send_keys("testnurse")
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
+    welcome_header = wait_for(driver, (By.ID, "home_index_h2_Welcome"))
+    assert "Welcome to fEMR" in welcome_header.text
+
     driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
 
     # Enter test patient info
@@ -329,8 +325,7 @@ def test_pharmacy(driver):
     driver.find_element(By.ID, "triageSubmitBtn").click()
 
     # Wait to ensure loading
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_element_located((By.ID, "langCode_medical")))
+    wait_for(driver, (By.ID, "langCode_medical"))
 
     # Save the patient's ID:
     patient_id = driver.find_element(By.ID, "history_patient_Patient").text[11:]
@@ -341,7 +336,7 @@ def test_pharmacy(driver):
 
     driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > button").click()
 
-    assert "Patient Overview" in driver.find_element(By.ID, "partials_medical_Overview_Patient").text
+    assert "Patient Overview" in wait_for(driver, (By.ID, "partials_medical_Overview_Patient")).text
 
     driver.find_element(By.CSS_SELECTOR, "#treatment").click()
 
@@ -354,45 +349,39 @@ def test_pharmacy(driver):
     driver.find_element(By.ID, "medicalSubmitBtn").click()
 
     # Wait to ensure loading
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_element_located((By.ID, "langCode_pharmacy")))
+    wait_for(driver, (By.ID, "langCode_pharmacy"))
 
     assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
 
     driver.find_element(By.ID, "langCode_pharmacy").click()
 
     # Wait to ensure loading
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_element_located((By.ID, "id")))
-    driver.find_element(By.ID, "id").send_keys(patient_id)
+    wait_for(driver, (By.ID, "id")).send_keys(patient_id)
     driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > button").click()
 
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)")))
-    driver.find_element(By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)").click()
+    wait_for(driver,(By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)")).click()
     driver.find_element(By.ID, "pharmacySubmitBtn").click()
 
     assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
 
+    driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"
+
 def test_medical(driver):
-
     femr_address = os.getenv("FEMR_ADDRESS")
-
     assert femr_address is not None, "FEMR_ADDRESS environment variable not set"
-
     driver.get(f"{femr_address}/")
+    driver.set_window_size(1362, 1157)
 
     # Test logging in as testnurse:
-    driver.set_window_size(1362, 1157)
-    driver.find_element(By.NAME, "email").click()
-    driver.find_element(By.NAME, "email").send_keys("testnurse")
+    wait_for(driver, (By.NAME, "email")).send_keys("testnurse")
     driver.find_element(By.NAME, "password").send_keys("testnurse")
     driver.find_element(By.CSS_SELECTOR, "input:nth-child(4)").click()
-    assert "Welcome to fEMR" in driver.find_element(By.ID, "home_index_h2_Welcome").text
+    assert "Welcome to fEMR" in wait_for(driver, (By.ID, "home_index_h2_Welcome")).text
 
     #Submitting a patient before we look it up on medical
     driver.find_element(By.CSS_SELECTOR, "#langCode_triage").click()
-    assert "Triage" in driver.find_element(By.ID, "triage_index_h2_Check").text
+    assert "Triage" in wait_for(driver, (By.ID, "triage_index_h2_Check")).text
 
     driver.find_element(By.ID, "firstName").send_keys("Medical")
     driver.find_element(By.ID, "lastName").send_keys("Tester")
@@ -418,20 +407,19 @@ def test_medical(driver):
 
     driver.find_element(By.ID, "triageSubmitBtn").click()
 
-
-    assert "Patient Id" in driver.find_element(By.ID, "history_patient_Patient").text
+    assert "Patient Id" in wait_for(driver, (By.ID, "history_patient_Patient")).text
 
     patientString = str(driver.find_element(By.ID, "history_patient_Patient").text)
     patientId = patientString.split()[len(patientString.split()) - 1]
 
     # Go to Medical Page and search for patient
-    driver.find_element(By.ID, "langCode_medical").click()
-    assert "Medical Search" in driver.find_element(By.ID, "search_box_title").text
+    wait_for(driver, (By.ID, "langCode_medical")).click()
+    assert "Medical Search" in wait_for(driver, (By.ID, "search_box_title")).text
 
     driver.find_element(By.CLASS_NAME, "fButtonSearch").send_keys(patientId)
     driver.find_element(By.CLASS_NAME, "idSearch").click()
 
-    assert f"Patient Overview - Medical - Patient ID: {patientId}" in driver.find_element(By.ID, "partials_medical_Overview_Patient").text
+    assert (f"Patient Overview - Medical - Patient ID: {patientId}" in wait_for(driver, (By.ID, "partials_medical_Overview_Patient")).text)
 
     #Input some info and submit it
     driver.find_element(By.ID, "onsetTab").send_keys("urgent medical stuff")
@@ -456,3 +444,6 @@ def test_medical(driver):
     assert "urgent medical stuff" in driver.find_element(By.ID, "narrativeTab").get_attribute("value")
     assert "urgent, very important, medical stuff" in driver.find_element(By.ID, "physicalTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "palliatesTab").get_attribute("value")
+
+    driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
+    assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"

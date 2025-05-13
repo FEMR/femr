@@ -435,7 +435,7 @@ def test_medical(driver):
     # Search patient and go back to make sure it saved info
     driver.find_element(By.CLASS_NAME, "fButtonSearch").send_keys(patientId)
     driver.find_element(By.CLASS_NAME, "idSearch").click()
-    driver.find_element(By.CLASS_NAME, "fYesButton").click()
+    wait_for(driver, (By.CLASS_NAME, "fYesButton")).click()
 
     assert "urgent medical stuff" in driver.find_element(By.ID, "onsetTab").get_attribute("value")
     assert "urgent medical stuff" in driver.find_element(By.ID, "qualityTab").get_attribute("value")

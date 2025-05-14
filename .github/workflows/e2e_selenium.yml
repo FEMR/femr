@@ -3,7 +3,6 @@ name: Build and Run Integration Tests
 on:
   push:
     branches:
-      - master
       - E2E_cleanup
   pull_request:
     branches:

@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - master
+      - E2E_cleanup
   pull_request:
+    branches:
+      - E2E_cleanup
 
 jobs:
   build_and_test:

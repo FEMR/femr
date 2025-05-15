@@ -120,7 +120,7 @@ def test_triage_no_photo(driver):
 
     driver.find_element(By.ID, "triageSubmitBtn").click()
 
-    assert "Patient Id" in driver.find_element(By.ID, "history_patient_Patient").text
+    assert "Patient Id" in wait_for(driver, (By.ID, "history_patient_Patient")).text
 
     # log out afterwards:
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
@@ -169,6 +169,7 @@ def test_search(driver):
     search_form.send_keys("Search")
     driver.find_element(By.ID, "searchBtn").click()
 
+    WebDriverWait(driver, 10).until( lambda d: d.find_element(By.ID, "nameOrIdSearchForm").get_attribute("placeholder") != "Invalid Patient" ) 
     assert driver.find_element(By.ID, "nameOrIdSearchForm").get_attribute("placeholder") != "Invalid Patient"
 
     # Test viewing patient in Medical:
@@ -351,7 +352,7 @@ def test_pharmacy(driver):
     # Wait to ensure loading
     wait_for(driver, (By.ID, "langCode_pharmacy"))
 
-    assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
+    assert "successfully" in wait_for(driver, (By.CSS_SELECTOR, "body > div.container > div > form > div > p")).text
 
     driver.find_element(By.ID, "langCode_pharmacy").click()
 
@@ -362,7 +363,7 @@ def test_pharmacy(driver):
     wait_for(driver,(By.CSS_SELECTOR, "#disclaimerWrap > input[type=checkbox]:nth-child(2)")).click()
     driver.find_element(By.ID, "pharmacySubmitBtn").click()
 
-    assert "successfully" in driver.find_element(By.CSS_SELECTOR, "body > div.container > div > form > div > p").text
+    assert "successfully" in wait_for(driver, (By.CSS_SELECTOR, "body > div.container > div > form > div > p")).text
 
     driver.find_element(By.CSS_SELECTOR, ".glyphicon-log-out").click()
     assert wait_for(driver, (By.CSS_SELECTOR, "h1")).text == "Please sign in"

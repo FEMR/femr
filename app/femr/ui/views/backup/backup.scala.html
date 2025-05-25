@@ -1,0 +1,62 @@
+@import femr.ui.controllers.routes.DatabaseDumpController
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, commandInstalled: Boolean, successMessage: String)
+
+@import femr.ui.views.html.layouts.main
+
+@additionalScripts = {
+    <script defer>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            try {
+                                let languageCode = "@{currentUser.getLanguageCode()}";
+                                updateLanguage(languageCode);
+                            } catch (error) {
+                                const languageCode = "en";
+                                updateLanguage(languageCode);
+                            }
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    const language = languageCode;
+                }
+            });
+    </script>
+}
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/backup.css")">
+}
+
+@main("Backup", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+    <div class="backupWrapper">
+        <h2>
+            Database Dump
+        </h2>
+        @if(!commandInstalled){
+            <p>
+                mysqldump not detected. Please have it installed.
+            </p>
+        }
+        @if(commandInstalled){
+            @helper.form(action = DatabaseDumpController.indexPost()){
+                <button class="fButton fRedButton">Backup Your Data</button>
+            }
+            <p>
+                @successMessage
+            </p>
+        }
+
+    </div>
+}

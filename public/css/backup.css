@@ -1,0 +1,7 @@
+.backupWrapper{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    margin-top: 100px;
+    height: calc(100vh - 245px);
+}

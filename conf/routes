@@ -116,3 +116,7 @@ GET         /assets/*file                                       controllers.Asse
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()
 POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()
+
+#Database Dump/Backup Data
+GET         /backup                                             @femr.ui.controllers.DatabaseDumpController.indexGet()
+POST        /backup                                             @femr.ui.controllers.DatabaseDumpController.indexPost()

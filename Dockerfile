@@ -64,9 +64,10 @@ RUN --mount=type=cache,target=/root/.ivy2 \
 WORKDIR $PROJECT_HOME/app/target/universal
 RUN unzip femr-*.zip && rm femr-*.zip
 
-FROM openjdk:jre-alpine
+FROM openjdk:8-jre-alpine
 
-RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-headers
+RUN apk update
+RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
 RUN pip3 install psutil
 
 #database variables

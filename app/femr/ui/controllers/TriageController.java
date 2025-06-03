@@ -158,6 +158,85 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         //create a new patient
         //or get current patient for new encounter
+
+        PatientEncounterCreationProcess process = new PatientEncounterCreationProcess(
+                id, viewModel, currentUser,
+                patientService, encounterService, photoService,
+                vitalService, searchService);
+
+        int patientId = process.execute();
+
+        return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientId)));
+    }
+  //  public Result deletePatientPost(int patientId, int deleteByUserID){
+    public Result deletePatientPost(int patientId){
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
+        DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
+        //Getting UserItem
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
+
+        if(patientItemResponse.hasErrors())
+            throw new RuntimeException();
+
+        return redirect(routes.TriageController.indexGet());
+    }
+
+   public Result deleteEncounterPost(int patientId,int encounterId){
+
+       CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
+        DeleteViewModelPost reasonEncounterDeleted = DeleteViewModelForm.bindFromRequest().get();
+        if(reasonEncounterDeleted.getReasonEncounterDeleted().equals("")){
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
+
+        }
+        else {
+            //Method sets encounter as deleted in the database
+            ServiceResponse<PatientEncounterItem> patientItemResponse = encounterService.deleteEncounter(currentUser.getId(), reasonEncounterDeleted.getReasonEncounterDeleted(), encounterId);
+
+            if (patientItemResponse.hasErrors())
+                throw new RuntimeException();
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
+        }
+    }
+}
+
+
+
+class PatientEncounterCreationProcess {
+    private final int id;
+    private final IndexViewModelPost viewModel;
+    private final CurrentUser currentUser;
+    private final IPatientService patientService;
+    private final IEncounterService encounterService;
+    private final IPhotoService photoService;
+    private final IVitalService vitalService;
+    private final ISearchService searchService;
+
+    public PatientEncounterCreationProcess(
+            int id,
+            IndexViewModelPost viewModel,
+            CurrentUser currentUser,
+            IPatientService patientService,
+            IEncounterService encounterService,
+            IPhotoService photoService,
+            IVitalService vitalService,
+            ISearchService searchService) {
+        this.id = id;
+        this.viewModel = viewModel;
+        this.currentUser = currentUser;
+        this.patientService = patientService;
+        this.encounterService = encounterService;
+        this.photoService = photoService;
+        this.vitalService = vitalService;
+        this.searchService = searchService;
+    }
+
+
+    public int execute() {
+
         ServiceResponse<PatientItem> patientServiceResponse;
         PatientItem patientItem;
         if (id == 0) {
@@ -271,7 +350,7 @@ public class TriageController extends Controller {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
 
-		 if (viewModel.getWeeksPregnant() != null) { /*Sam Zanni*/
+        if (viewModel.getWeeksPregnant() != null) { /*Sam Zanni*/
             newVitals.put("weeksPregnant", viewModel.getWeeksPregnant().floatValue());
         }
 
@@ -311,41 +390,9 @@ public class TriageController extends Controller {
             }
         }
 
-        return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
-    }
-  //  public Result deletePatientPost(int patientId, int deleteByUserID){
-    public Result deletePatientPost(int patientId){
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
-        DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
-        //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
-
-        if(patientItemResponse.hasErrors())
-            throw new RuntimeException();
-
-        return redirect(routes.TriageController.indexGet());
+        return patientServiceResponse.getResponseObject().getId();
     }
 
-   public Result deleteEncounterPost(int patientId,int encounterId){
-
-       CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
-        DeleteViewModelPost reasonEncounterDeleted = DeleteViewModelForm.bindFromRequest().get();
-        if(reasonEncounterDeleted.getReasonEncounterDeleted().equals("")){
-            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
-
-        }
-        else {
-            //Method sets encounter as deleted in the database
-            ServiceResponse<PatientEncounterItem> patientItemResponse = encounterService.deleteEncounter(currentUser.getId(), reasonEncounterDeleted.getReasonEncounterDeleted(), encounterId);
-
-            if (patientItemResponse.hasErrors())
-                throw new RuntimeException();
-            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
-        }
-    }
     private boolean isDiabetesPromptTurnedOn(){
 
         //get system settings to determine if diabetes prompt is turned on
@@ -355,6 +402,26 @@ public class TriageController extends Controller {
         }
 
         return settingsResponse.getResponseObject().isDiabetesPrompt();
+    }
+
+    private List<String> parseChiefComplaintsJSON(String chiefComplaint, String chiefComplaintJSON) {
+        List<String> chiefComplaints = new ArrayList<>();
+        //JSON chief complaints (multiple chief complaints - requires javascript)
+        //this won't happen if the multiple chief complaint
+        // feature is turned off (chiefComplaintJSON will be null)
+        if (StringUtils.isNotNullOrWhiteSpace(chiefComplaintJSON)) {
+
+            Gson gson = new Gson();
+            chiefComplaints = gson.fromJson(chiefComplaintJSON, new TypeToken<List<String>>() {
+            }.getType());
+
+        } else {
+            if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                chiefComplaints.add(chiefComplaint);
+            }
+        }
+
+        return chiefComplaints;
     }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
@@ -435,36 +502,4 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private List<String> parseChiefComplaintsJSON(String chiefComplaint, String chiefComplaintJSON) {
-        List<String> chiefComplaints = new ArrayList<>();
-        //JSON chief complaints (multiple chief complaints - requires javascript)
-        //this won't happen if the multiple chief complaint
-        // feature is turned off (chiefComplaintJSON will be null)
-        if (StringUtils.isNotNullOrWhiteSpace(chiefComplaintJSON)) {
-
-            Gson gson = new Gson();
-            chiefComplaints = gson.fromJson(chiefComplaintJSON, new TypeToken<List<String>>() {
-            }.getType());
-
-        } else {
-            if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
-                chiefComplaints.add(chiefComplaint);
-            }
-        }
-
-        return chiefComplaints;
-    }
-
-//    //AJ Saclayan Cities
-//    public void editPost()
-//    {
-//        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-//
-//        EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
-//
-//        List<CityItem> cityItems = viewModelPost.getCities()
-//                .stream()
-//                .filter(cityItem -> cityItem.getCityName() != null)
-//                .collect(Collectors.toList());
-//    }
 }

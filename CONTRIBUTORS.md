@@ -11,7 +11,7 @@ Thank you to everyone who has contributed to fEMR's design and implementation:
 * [David Palombo](https://github.com/DPalombo)
 * [David Weisberg](https://github.com/DavidWeisberg)
 * [Joe Brown](https://github.com/AfroJoe759)
-* [Carlo Martinez-Bernal](https://github.com/fz1958)
+* [Carlo Martinez-Bernal](https://github.com/fz1958)They
 * [Steven Carpenter](https://github.com/stevecarp)
 * [Aditya Praveen Kumar Nerella](https://github.com/adityapraveen123)
 * [Jerell Robinson](https://github.com/JerellDR)
@@ -59,3 +59,6 @@ Thank you to everyone who has contributed to fEMR's design and implementation:
 * [Tushar Rakheja](https://github.com/tusharrakheja)
 * [Osman Ghoni](https://github.com/osmanghoni1)
 * [Adam Molner](https://github.com/adammolner)
+* [Dylan Starink](https://github.com/StarDylan)
+* [Karanvir Sandhu](https://github.com/realkaranvir)
+* [Kevin Yuan](https://github.com/thekevinWHYuan)

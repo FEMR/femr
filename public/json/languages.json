@@ -2,7 +2,7 @@
     "en": {
         "home_index_h2_Welcome": "Welcome to fEMR,",
         "home_index_p_Please": "Please select a tab at the top to get started!",
-        "home_index_p_Search": "Search Below:",
+        "home_index_p_Search": "Search below for a patient:",
         "home_index_div_ID": "ID, Name, or Phone #",
         "langCode_triage": "Triage",
         "langCode_medical": "Medical",
@@ -349,7 +349,7 @@
         "research_select_lang": "Seleccione el idioma",
         "home_index_h2_Welcome": "Bienvenido a fEMR,",
         "home_index_p_Please": "¡Seleccione una pestaña en la parte superior para comenzar!",
-        "home_index_p_Search": "Busque a continuación:",
+        "home_index_p_Search": "Buscar abajo para un paciente:",
         "home_index_div_ID": "ID, nombre o número de teléfono",
         "langCode_triage": "Triaje",
         "langCode_medical": "Médico",
@@ -691,7 +691,7 @@
         "home_index_h2_Welcome": "Bienvenue dans fEMR,",
         "home_index_p_Please": "Veuillez sélectionner un onglet en haut pour commencer !",
         "home_index_p_Or": "ou",
-        "home_index_p_Search": "Rechercher ci-dessous :",
+        "home_index_p_Search": "Cherchez ci-dessous un patient:",
         "home_index_div_ID": "ID, nom ou numéro de téléphone",
         "langCode_triage": "Triage",
         "langCode_medical": "Médical",
@@ -1036,7 +1036,7 @@
         "home_index_h2_Welcome": "კეთილი იყოს თქვენი მობრძანება fEMR,",
         "home_index_p_Please": "დასაწყებად გთხოვთ, აირჩიოთ ჩანართი ზედა!",
         "home_index_p_Or": "ან",
-        "home_index_p_Search": "ძებნა ქვემოთ:",
+        "home_index_p_Search": "მოძებნეთ ქვემოთ პაციენტი:",
         "home_index_div_ID": "ID, სახელი ან ტელეფონის #",
         "langCode_triage": "ტრიაჟი",
         "langCode_medical": "სამედიცინო",
@@ -1380,7 +1380,7 @@
     "ar": {
         "home_index_h2_Welcome": "مرحباً بكم في fEMR،",
         "home_index_p_Please": "يرجى اختيار علامة تبويب من أعلى للبدء!",
-        "home_index_p_Search": "ابحث أدناه:",
+        "home_index_p_Search": "ابحثوا في الأسفل عن مريض",
         "home_index_div_ID": "الرقم التعريفي، الاسم، أو رقم الهاتف",
         "langCode_triage": "الفرز",
         "langCode_medical": "طبي",
@@ -1724,7 +1724,7 @@
     "az": {
         "home_index_h2_Welcome": "fEMR xoş gəlmisiniz,",
         "home_index_p_Please": "Başlamaq üçün yuxarıdakı nişanı seçin!",
-        "home_index_p_Search": "Aşağıda axtar:",
+        "home_index_p_Search": "Bir qadın üçün aşağıdakı axtarış:",
         "home_index_div_ID": "ID, Ad və ya Telefon #",
         "langCode_triage": "Triaj",
         "langCode_medical": "Tibbi",
@@ -2068,7 +2068,7 @@
     "bg": {
         "home_index_h2_Welcome": "Добре дошли в fEMR,",
         "home_index_p_Please": "Моля, изберете раздел в горната част, за да започнете!",
-        "home_index_p_Search": "Търсене по-долу:",
+        "home_index_p_Search": "Търси по-долу за пациент:",
         "home_index_div_ID": "ID, име или телефонен номер",
         "langCode_triage": "Триаж",
         "langCode_medical": "медицински",
@@ -2412,7 +2412,7 @@
     "bn": {
         "home_index_h2_Welcome": "fEMR স্বাগতম,",
         "home_index_p_Please": "শুরু করতে উপরে একটি ট্যাব নির্বাচন করুন!",
-        "home_index_p_Search": "নীচে অনুসন্ধান করুন:",
+        "home_index_p_Search": "এই বস্তুর জন্য নীচে অনুসন্ধান করা হবে:",
         "home_index_div_ID": "আইডি, নাম বা ফোন #",
         "langCode_triage": "ট্রায়াজ",
         "langCode_medical": "চিকিৎসা",
@@ -2756,7 +2756,7 @@
     "bs": {
         "home_index_h2_Welcome": "Dobrodošli u fEMR,",
         "home_index_p_Please": "Odaberite karticu na vrhu da započnete!",
-        "home_index_p_Search": "Traži ispod:",
+        "home_index_p_Search": "Pretražite dolje za pacijenta:",
         "home_index_div_ID": "ID, ime ili broj telefona",
         "langCode_triage": "Trijaža",
         "langCode_medical": "Medicinski",
@@ -3100,7 +3100,7 @@
     "cs": {
         "home_index_h2_Welcome": "Vítejte ve fEMR,",
         "home_index_p_Please": "Začněte výběrem karty nahoře!",
-        "home_index_p_Search": "Hledat níže:",
+        "home_index_p_Search": "Níže naleznete pacienta:",
         "home_index_div_ID": "ID, jméno nebo telefonní číslo",
         "langCode_triage": "Třídění",
         "langCode_medical": "Lékařský",
@@ -3444,7 +3444,7 @@
     "da": {
         "home_index_h2_Welcome": "Velkommen til fEMR,",
         "home_index_p_Please": "Vælg venligst en fane øverst for at komme i gang!",
-        "home_index_p_Search": "Søg nedenfor:",
+        "home_index_p_Search": "Søg nedenfor for en patient:",
         "home_index_div_ID": "ID, navn eller telefonnummer",
         "langCode_triage": "Triage",
         "langCode_medical": "Medicinsk",
@@ -3788,7 +3788,7 @@
     "de": {
         "home_index_h2_Welcome": "Willkommen bei fEMR,",
         "home_index_p_Please": "Bitte wählen Sie oben eine Registerkarte aus, um zu beginnen!",
-        "home_index_p_Search": "Suchen Sie unten:",
+        "home_index_p_Search": "Suche unten für einen Patienten:",
         "home_index_div_ID": "ID, Name oder Telefonnummer",
         "langCode_triage": "Triage",
         "langCode_medical": "Medizinisch",
@@ -4132,7 +4132,7 @@
     "el": {
         "home_index_h2_Welcome": "Καλώς ορίσατε στην fEMR,",
         "home_index_p_Please": "Επιλέξτε μια καρτέλα στην κορυφή για να ξεκινήσετε!",
-        "home_index_p_Search": "Αναζήτηση παρακάτω:",
+        "home_index_p_Search": "Αναζήτηση παρακάτω για έναν ασθενή:",
         "home_index_div_ID": "Ταυτότητα, όνομα ή τηλέφωνο #",
         "langCode_triage": "Διαλογή",
         "langCode_medical": "Ιατρικός",
@@ -4476,7 +4476,7 @@
     "et": {
         "home_index_h2_Welcome": "Tere tulemast fEMR",
         "home_index_p_Please": "Alustamiseks valige ülaosas vahekaart!",
-        "home_index_p_Search": "Otsi allpool:",
+        "home_index_p_Search": "Patsiendi otsimine allpool:",
         "home_index_div_ID": "ID, nimi või telefoninumber",
         "langCode_triage": "Triaaž",
         "langCode_medical": "Meditsiiniline",
@@ -4820,7 +4820,7 @@
     "fa": {
         "home_index_h2_Welcome": "به fEMR خوش آمدید،",
         "home_index_p_Please": "لطفاً یک برگه در بالا برای شروع انتخاب کنید!",
-        "home_index_p_Search": "جستجو در زیر:",
+        "home_index_p_Search": "جستجو در زیر برای بیمار:",
         "home_index_div_ID": "شناسه، نام یا شماره تلفن",
         "langCode_triage": "تریاژ",
         "langCode_medical": "پزشکی",
@@ -5164,7 +5164,7 @@
     "fi": {
         "home_index_h2_Welcome": "Tervetuloa fEMR,",
         "home_index_p_Please": "Aloita valitsemalla yläreunasta välilehti!",
-        "home_index_p_Search": "Hae alta:",
+        "home_index_p_Search": "Etsi alla olevasta potilaasta:",
         "home_index_div_ID": "ID, nimi tai puhelinnumero",
         "langCode_triage": "Triage",
         "langCode_medical": "Lääketieteellinen",
@@ -5508,7 +5508,7 @@
     "fil": {
         "home_index_h2_Welcome": "Maligayang pagdating sa fEMR,",
         "home_index_p_Please": "Mangyaring pumili ng tab sa itaas upang makapagsimula!",
-        "home_index_p_Search": "Maghanap sa ibaba:",
+        "home_index_p_Search": "Hanapin sa ibaba ang isang pasyente:",
         "home_index_div_ID": "ID, Pangalan, o Telepono #",
         "langCode_triage": "Triage",
         "langCode_medical": "Medikal",
@@ -5852,7 +5852,7 @@
     "he": {
         "home_index_h2_Welcome": "ברוכים הבאים fEMR",
         "home_index_p_Please": "אנא בחר כרטיסייה בחלק העליון כדי להתחיל!",
-        "home_index_p_Search": "חפש למטה:",
+        "home_index_p_Search": "חפש מתחת לחולה:",
         "home_index_div_ID": "תעודה מזהה, שם או מספר טלפון",
         "langCode_triage": "טריאז'",
         "langCode_medical": "רְפוּאִי",
@@ -6196,7 +6196,7 @@
     "hi": {
         "home_index_h2_Welcome": "fEMR में आपका स्वागत है",
         "home_index_p_Please": "आरंभ करने के लिए कृपया शीर्ष पर एक टैब चुनें!",
-        "home_index_p_Search": "नीचे खोजें:",
+        "home_index_p_Search": "रोगी के लिए नीचे खोजें:",
         "home_index_div_ID": "आईडी, नाम, या फ़ोन #",
         "langCode_triage": "ट्राइएज",
         "langCode_medical": "चिकित्सा",
@@ -6540,7 +6540,7 @@
     "hr": {
         "home_index_h2_Welcome": "Dobro došli u fEMR,",
         "home_index_p_Please": "Odaberite karticu na vrhu da biste započeli!",
-        "home_index_p_Search": "Pretraži u nastavku:",
+        "home_index_p_Search": "Potražite u nastavku pacijenta:",
         "home_index_div_ID": "ID, ime ili broj telefona",
         "langCode_triage": "Trijaža",
         "langCode_medical": "Medicinski",
@@ -6884,7 +6884,7 @@
     "hu": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
         "home_index_p_Please": "A kezdéshez válasszon felül egy lapot!",
-        "home_index_p_Search": "Keresés lent:",
+        "home_index_p_Search": "Keressen alább egy beteget:",
         "home_index_div_ID": "azonosító, név vagy telefonszám",
         "langCode_triage": "Triage",
         "langCode_medical": "Orvosi",
@@ -7228,7 +7228,7 @@
     "id": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
         "home_index_p_Please": "A kezdéshez válasszon felül egy lapot!",
-        "home_index_p_Search": "Keresés lent:",
+        "home_index_p_Search": "Cari pasien di bawah ini:",
         "home_index_div_ID": "azonosító, név vagy telefonszám",
         "langCode_triage": "Triage",
         "langCode_medical": "Orvosi",
@@ -7572,7 +7572,7 @@
     "it": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
         "home_index_p_Please": "A kezdéshez válasszon felül egy lapot!",
-        "home_index_p_Search": "Keresés lent:",
+        "home_index_p_Search": "Cerca qui sotto per un paziente:",
         "home_index_div_ID": "azonosító, név vagy telefonszám",
         "langCode_triage": "Triage",
         "langCode_medical": "Orvosi",
@@ -7916,7 +7916,7 @@
     "ja": {
         "home_index_h2_Welcome": "fEMR へようこそ",
         "home_index_p_Please": "開始するには、上部のタブを選択してください。",
-        "home_index_p_Search": "以下を検索:",
+        "home_index_p_Search": "患者様のために以下を検索:",
         "home_index_div_ID": "ID、名前、または電話番号",
         "langCode_triage": "トリアージ",
         "langCode_medical": "医学",
@@ -8260,7 +8260,7 @@
     "ko": {
         "home_index_h2_Welcome": "fEMR 오신 것을 환영합니다.",
         "home_index_p_Please": "시작하려면 상단의 탭을 선택하세요!",
-        "home_index_p_Search": "아래에서 검색하세요:",
+        "home_index_p_Search": "환자의 검색:",
         "home_index_div_ID": "ID, 이름, 전화번호",
         "langCode_triage": "분류",
         "langCode_medical": "의료",
@@ -8604,7 +8604,7 @@
     "pl": {
         "home_index_h2_Welcome": "Witamy w fEMR,",
         "home_index_p_Please": "Aby rozpocząć, wybierz zakładkę u góry!",
-        "home_index_p_Search": "Wyszukaj poniżej:",
+        "home_index_p_Search": "Poszukaj poniżej pacjenta:",
         "home_index_div_ID": "Identyfikator, imię i nazwisko lub numer telefonu",
         "langCode_triage": "Ocena stanu zdrowia rannych",
         "langCode_medical": "Medyczny",
@@ -8948,7 +8948,7 @@
     "pt": {
         "home_index_h2_Welcome": "Bem-vindo ao fEMR,",
         "home_index_p_Please": "Selecione uma guia na parte superior para começar!",
-        "home_index_p_Search": "Pesquise abaixo:",
+        "home_index_p_Search": "Procurar abaixo por um paciente:",
         "home_index_div_ID": "ID, nome ou número de telefone",
         "langCode_triage": "Triagem",
         "langCode_medical": "Médico",
@@ -9292,7 +9292,7 @@
     "ru": {
         "home_index_h2_Welcome": "Добро пожаловать в бета-версию fEMR,",
         "home_index_p_Please": "Пожалуйста, выберите вкладку вверху, чтобы начать!",
-        "home_index_p_Search": "Поиск ниже:",
+        "home_index_p_Search": "Поиск ниже для пациента:",
         "home_index_div_ID": "Идентификатор, имя или номер телефона",
         "langCode_triage": "сортировка",
         "langCode_medical": "Медицинский",
@@ -9636,7 +9636,7 @@
     "sk": {
         "home_index_h2_Welcome": "Vitajte vo fEMR,",
         "home_index_p_Please": "Začnite výberom karty v hornej časti!",
-        "home_index_p_Search": "Hľadať nižšie:",
+        "home_index_p_Search": "Hľadať nižšie pre pacienta:",
         "home_index_div_ID": "ID, meno alebo telefónne číslo",
         "langCode_triage": "Triedenie",
         "langCode_medical": "Lekárska",
@@ -9980,7 +9980,7 @@
     "sv": {
         "home_index_h2_Welcome": "Välkommen till fEMR,",
         "home_index_p_Please": "Välj en flik högst upp för att komma igång!",
-        "home_index_p_Search": "Sök nedan:",
+        "home_index_p_Search": "Sök nedan för en patient:",
         "home_index_div_ID": "ID, namn eller telefonnummer",
         "langCode_triage": "Triage",
         "langCode_medical": "Medicinsk",
@@ -10324,7 +10324,7 @@
     "tr": {
         "home_index_h2_Welcome": "fEMR hoş geldiniz,",
         "home_index_p_Please": "Başlamak için lütfen üst kısımdan bir sekme seçin!",
-        "home_index_p_Search": "Aşağıda Ara:",
+        "home_index_p_Search": "Bir hasta için aşağıda arayın:",
         "home_index_div_ID": "Kimlik, Ad veya Telefon Numarası",
         "langCode_triage": "Triyaj",
         "langCode_medical": "Tıbbi",
@@ -10668,7 +10668,7 @@
     "vi": {
         "home_index_h2_Welcome": "Chào mừng bạn đến với fEMR,",
         "home_index_p_Please": "Vui lòng chọn một tab ở trên cùng để bắt đầu!",
-        "home_index_p_Search": "Tìm kiếm bên dưới:",
+        "home_index_p_Search": "Tìm kiếm bên dưới một bệnh nhân:",
         "home_index_div_ID": "ID, Tên hoặc Số điện thoại",
         "langCode_triage": "Phân loại",
         "langCode_medical": "Thuộc về y học",
@@ -11012,7 +11012,7 @@
     "zh": {
         "home_index_h2_Welcome": "欢迎使用 fEMR，",
         "home_index_p_Please": "请选择顶部的选项卡即可开始！",
-        "home_index_p_Search": "搜索如下：",
+        "home_index_p_Search": "下面搜索一个病人:",
         "home_index_div_ID": "ID、姓名或电话号码",
         "langCode_triage": "分诊",
         "langCode_medical": "医疗的",

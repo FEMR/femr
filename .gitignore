@@ -82,5 +82,8 @@ translator/__pycache__
 #femr-tools
 femr-tools/internationalization/input/*
 femr-tools/internationalization/output/*
+!femr-tools/internationalization/output/.gitkeep
+!femr-tools/internationalization/input/.gitkeep
+
 femr-tools/internationalization/venv
 

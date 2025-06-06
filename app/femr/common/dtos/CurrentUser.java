@@ -89,7 +89,7 @@ public class CurrentUser {
     public String getKitVersion() {
         String version = System.getenv("APP_VERSION");
         if (version == null || version.isEmpty()) {
-            version = "Unknown Version";
+            version = "";
         }
         return version;
     }

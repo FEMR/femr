@@ -60,6 +60,27 @@ public class FhirExportService implements IFhirExportService {
     public String exportPatient(int patientId) {
         return toJson(buildPatientBundle(patientId));
     }
+
+    private void processEncounter(BundleBuilder bundleBuilder, String fhirPatientId, IPatientEncounter encounter) {
+        List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
+        List<? extends IPatientEncounterTabField> tabFields = patientEncounterTabFieldRepository.getAllByEncounter(encounter.getId());
+
+        addRespirationRate(bundleBuilder, fhirPatientId, vitals);
+        addBodyTemp(bundleBuilder, fhirPatientId, vitals);
+        addBodyWeight(bundleBuilder, fhirPatientId, vitals);
+        addBloodPressure(bundleBuilder, fhirPatientId, vitals);
+        addAlcoholHistory(bundleBuilder, fhirPatientId, vitals);
+        addTobaccoHistory(bundleBuilder, fhirPatientId, vitals);
+        addHighCholesterolHistory(bundleBuilder, fhirPatientId, vitals);
+        addHypertensionHistory(bundleBuilder, fhirPatientId, vitals);
+        addDiabetesHistory(bundleBuilder, fhirPatientId, vitals);
+        addHeartRate(bundleBuilder, fhirPatientId, vitals);
+        addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
+        addBodyHeight(bundleBuilder, fhirPatientId, vitals);
+        addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
+        addBloodGlucose(bundleBuilder, fhirPatientId, vitals);
+        addHPIFields(bundleBuilder, fhirPatientId, tabFields);
+    }
   
     private BundleBuilder buildPatientBundle(int patientId) {
 
@@ -79,25 +100,8 @@ public class FhirExportService implements IFhirExportService {
         addPatientData(bundleBuilder, patientId, fhirPatientId);
         addPhotoData(bundleBuilder, patientId, fhirPatientId);
 
-        for (IPatientEncounter encounter: encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
-            List<? extends IPatientEncounterVital> vitals = patientEncounterVitalRepository.getAllByEncounter(encounter.getId());
-            List<? extends IPatientEncounterTabField> tabFields = patientEncounterTabFieldRepository.getAllByEncounter(encounter.getId());
-
-            addRespirationRate(bundleBuilder, fhirPatientId, vitals);
-            addBodyTemp(bundleBuilder, fhirPatientId, vitals);
-            addBodyWeight(bundleBuilder, fhirPatientId, vitals);
-            addBloodPressure(bundleBuilder, fhirPatientId, vitals);
-            addAlcoholHistory(bundleBuilder, fhirPatientId, vitals);
-            addTobaccoHistory(bundleBuilder, fhirPatientId, vitals);
-            addHighCholesterolHistory(bundleBuilder, fhirPatientId, vitals);
-            addHypertensionHistory(bundleBuilder, fhirPatientId, vitals);
-            addDiabetesHistory(bundleBuilder, fhirPatientId, vitals);
-            addHeartRate(bundleBuilder, fhirPatientId, vitals);
-            addOxygenSaturation(bundleBuilder, fhirPatientId, vitals);
-            addBodyHeight(bundleBuilder, fhirPatientId, vitals);
-            addWeeksPregnant(bundleBuilder, fhirPatientId, vitals);
-            addBloodGlucose(bundleBuilder, fhirPatientId, vitals);
-            addHPIFields(bundleBuilder, fhirPatientId, tabFields);
+        for (IPatientEncounter encounter : encounterRepository.retrievePatientEncountersByPatientIdAsc(patientId)) {
+            processEncounter(bundleBuilder, fhirPatientId, encounter);
         }
 
         return bundleBuilder;

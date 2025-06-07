@@ -2,4 +2,4 @@
 # --- Updated the name to make it more clear for the end user in admin settings
 UPDATE `kit_status`
 SET `name`= "Backend Connection"
-WHERE `name` = "Status"
+WHERE `id` = 1

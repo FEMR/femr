@@ -68,26 +68,22 @@ public class PhotoRepository implements IPhotoRepository {
      */
     @Override
     public boolean createPhotoOnFilesystem(File image, String filePath){
-
         if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
 
             return false;
         }
-
         try {
-
             //find out where the file is being stored on the filesystem (usually in /tmp)
             Path src = FileSystems.getDefault().getPath(image.getAbsolutePath());
             //identify where fEMR wants to store the file
             Path dest = FileSystems.getDefault().getPath(filePath);
             //move the file from a temporary to a permanent location
-            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+            // Seam for testing
+            moveFile(src, dest);
         } catch (Exception ex) {
-
             Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
             return false;
         }
-
         return true;
     }
 
@@ -96,24 +92,28 @@ public class PhotoRepository implements IPhotoRepository {
      */
     @Override
     public boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath){
-
         if (bufferedImage == null || StringUtils.isNullOrWhiteSpace(filePath)){
-
             return false;
         }
-
         try {
-
             File photo = new File(filePath);
-            ImageIO.write(bufferedImage, "jpg", photo);
+            // Seam for testing
+            writeJpg(bufferedImage, photo);
         } catch (Exception ex) {
-
             Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
             return false;
         }
-
         return true;
     }
+
+    protected void moveFile(Path src, Path dest) throws java.io.IOException {
+        java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+    }
+
+    protected void writeJpg(BufferedImage img, File out) throws java.io.IOException {
+        ImageIO.write(img, "jpg", out);
+    }
+
 
     /**
      * {@inheritDoc}

@@ -1,3 +1,23 @@
+// Admin navigation active state handling
+document.addEventListener('DOMContentLoaded', function() {
+    var currentPath = window.location.pathname;
+    
+    var adminLinks = document.querySelectorAll('#admin-left-panel .userBtns');
+    
+    adminLinks.forEach(function(link) {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        }
+        
+        link.addEventListener('click', function() {
+            adminLinks.forEach(function(l) {
+                l.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+});
+
 var coll = document.getElementsByClassName("collapsible");
 var i;
 

@@ -57,8 +57,14 @@
     margin-bottom: 5px;
     float: left;
 }
-.userBtns:hover{
+.userBtns:hover,
+.userBtns.active {
     text-decoration: none;
+    background-color: rgb(198, 0, 0);
+    color: white;
+}
+.userBtns.active .glyphicon {
+    color: white;
 }
 #admin-right-panel{
     background-color: #e9e6e6;

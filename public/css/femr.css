@@ -522,10 +522,14 @@ float: right;
     padding-left: 15px;
     padding-top: 18px;
     font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: black;
 }
 
-.navigationItems a:hover {
+.navigationItems a:hover,
+.navigationItems a.active {
     color: rgb(198, 0, 0);
+    background-color: black;
 }
 
 .navigationItems li {

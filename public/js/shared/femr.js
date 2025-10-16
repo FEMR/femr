@@ -1,6 +1,27 @@
 var typeaheadData = [];
 
 $(document).ready(function () {
+    // Handle main navigation active states
+    var currentPath = window.location.pathname;
+    
+    var navLinks = $('.navigationItems a');
+    
+    navLinks.each(function() {
+        var link = $(this);
+        var href = link.attr('href');
+        
+        // Special admin case cause of interior nav bar
+        if (currentPath.startsWith('/admin/') || currentPath.startsWith('/superuser/')) {
+            // Keep admin/superuser tab highlighted when in admin pages
+            if (href === '/admin' || href === '/superuser') {
+                link.addClass('active');
+            }
+        } 
+        else if (href === currentPath) {
+            link.addClass('active');
+        }
+    });
+
     $('.hamburger').click(function () {
         var navMenu = $('.navigationItemsWrap');
         if ($(navMenu).css("display") == "none") {

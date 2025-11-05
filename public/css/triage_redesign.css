@@ -1,0 +1,782 @@
+.femr-triage {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-alert {
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 20px -12px rgba(0, 0, 0, 0.35);
+}
+
+.femr-alert--error {
+    background: rgba(220, 38, 38, 0.12);
+    color: #7f1d1d;
+    border: 1px solid rgba(220, 38, 38, 0.32);
+}
+
+.femr-alert--info {
+    background: rgba(37, 99, 235, 0.12);
+    color: #1d4ed8;
+    border: 1px solid rgba(37, 99, 235, 0.24);
+}
+
+.femr-link {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.femr-link--accent {
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-card {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 18px;
+    box-shadow: 0 30px 40px -35px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.femr-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 32px 32px 24px;
+}
+
+.femr-card__patient {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.femr-card__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.femr-card__subtitle {
+    margin: 4px 0 0;
+    color: var(--femr-color-text-muted, #6b7280);
+    font-size: 14px;
+}
+
+.femr-card__subtitle-value {
+    color: var(--femr-color-text, #1c1917);
+    font-weight: 600;
+}
+
+.femr-triage__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.femr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.femr-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.5);
+}
+
+.fButton.femr-btn {
+    background: transparent;
+}
+
+.fButton.femr-btn.femr-btn--primary {
+    background: var(--femr-color-primary, #dc2626);
+}
+
+.fButton.femr-btn.femr-btn--ghost {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(28, 25, 23, 0.14);
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-btn--primary {
+    background: var(--femr-color-primary, #dc2626);
+    color: #ffffff;
+    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.6);
+}
+
+.femr-btn--ghost {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(28, 25, 23, 0.14);
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-btn--link {
+    background: transparent;
+    color: var(--femr-color-primary, #dc2626);
+    border-color: transparent;
+}
+
+.femr-btn--secondary {
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--femr-color-primary, #dc2626);
+    border-color: rgba(220, 38, 38, 0.24);
+    box-shadow: none;
+}
+
+.femr-btn--secondary:hover {
+    background: rgba(220, 38, 38, 0.18);
+    box-shadow: 0 12px 24px -18px rgba(220, 38, 38, 0.4);
+}
+
+.femr-btn__label {
+    font-size: 14px;
+}
+
+.femr-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--femr-color-border, #e5e7eb);
+    padding: 0 32px;
+    gap: 24px;
+}
+
+.femr-tab {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 16px 4px;
+    font-weight: 600;
+    color: var(--femr-color-text-muted, #6b7280);
+    cursor: pointer;
+}
+
+.femr-tab span {
+    display: inline-block;
+}
+
+.femr-tab.is-active {
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: var(--femr-color-primary, #dc2626);
+    border-radius: 999px;
+}
+
+.femr-tabs__panels {
+    padding: 24px 32px 32px;
+}
+
+.femr-tabpanel {
+    display: none;
+}
+
+.femr-tabpanel--active {
+    display: block;
+}
+
+.femr-section__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.femr-section__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-icon-button {
+    border: none;
+    background: rgba(220, 38, 38, 0.14);
+    color: var(--femr-color-primary, #dc2626);
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.femr-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.femr-grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.femr-grid--gap-lg {
+    gap: 24px;
+}
+
+.femr-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    min-width: 0;
+}
+
+.femr-field--stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.femr-field label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--femr-color-text, #1c1917);
+    line-height: 1.4;
+}
+
+.femr-field .fInput,
+.femr-field .fSelect,
+.femr-field select,
+.femr-field textarea,
+.femr-field input[type="text"],
+.femr-field input[type="tel"],
+.femr-field input[type="number"],
+.femr-field input[type="date"],
+.femr-field input[type="email"],
+.femr-field .citySearch {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    padding: 11px 16px;
+    background: rgba(249, 250, 251, 0.92) !important;
+    color: var(--femr-color-text, #1c1917);
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.femr-field .fInput:focus,
+.femr-field select:focus,
+.femr-field textarea:focus,
+.femr-field input[type="text"]:focus,
+.femr-field input[type="tel"]:focus,
+.femr-field input[type="number"]:focus,
+.femr-field input[type="date"]:focus,
+.femr-field input[type="email"]:focus,
+.femr-field .citySearch:focus {
+    border-color: var(--femr-color-primary, #dc2626);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.femr-field--span-2 {
+    grid-column: span 2;
+}
+
+.femr-field--full {
+    grid-column: 1 / -1;
+}
+
+.femr-required {
+    color: var(--femr-color-primary, #dc2626);
+    margin-left: 4px;
+}
+
+.femr-input,
+.femr-textarea,
+.femr-photo-upload input[type="text"],
+.femr-photo-upload input[type="tel"],
+.femr-photo-upload input[type="date"],
+.femr-photo-upload input[type="number"] {
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    padding: 11px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    background: rgba(249, 250, 251, 0.92);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 44px;
+}
+
+.femr-input:focus,
+.femr-textarea:focus {
+    border-color: var(--femr-color-primary, #dc2626);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.generalInfoInput.has-errors label,
+.generalInfoInput.has-errors .femr-input {
+    color: #b91c1c;
+    border-color: rgba(220, 38, 38, 0.6);
+}
+
+/* City search field overrides */
+#citySearchContainer {
+    padding: 0 !important;
+}
+
+#citySearchContainer .citySearch {
+    background: rgba(249, 250, 251, 0.92) !important;
+}
+
+.femr-age-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 32px;
+    padding: 28px;
+    background: rgba(249, 250, 251, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.femr-age-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 32px;
+}
+
+.femr-age-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.femr-age-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--femr-color-text-muted, #6b7280);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-bottom: 8px;
+    min-width: 48px;
+}
+
+.femr-classification {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 0;
+}
+
+.femr-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 2px solid rgba(28, 25, 23, 0.12);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    min-height: 48px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.femr-chip input {
+    display: none;
+}
+
+.femr-chip input:checked + span,
+.femr-chip input:checked ~ span {
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-chip:has(input:checked) {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: rgba(220, 38, 38, 0.5);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.femr-chip:hover {
+    background: rgba(220, 38, 38, 0.04);
+    border-color: rgba(220, 38, 38, 0.25);
+}
+
+.femr-segmented {
+    display: inline-flex;
+    gap: 14px;
+    width: 100%;
+}
+
+.femr-segmented__option {
+    flex: 1;
+    border-radius: 999px;
+    border: 2px solid rgba(28, 25, 23, 0.12);
+    padding: 13px 28px;
+    background: #ffffff;
+    color: var(--femr-color-text, #1c1917);
+    font-weight: 600;
+    font-size: 14px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.femr-segmented__option:hover {
+    background: rgba(220, 38, 38, 0.04);
+    border-color: rgba(220, 38, 38, 0.25);
+}
+
+.femr-segmented__option.active,
+.femr-segmented__option.btn-primary {
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--femr-color-primary, #dc2626);
+    border-color: rgba(220, 38, 38, 0.5);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.femr-gender-section {
+    margin-top: 24px;
+}
+
+.femr-photo-section {
+    margin-top: 24px;
+}
+
+.femr-photo-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.femr-photo-upload__input {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+#chooseFileLabel {
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#fileChosenText {
+    color: var(--femr-color-text-muted, #6b7280);
+    font-size: 14px;
+}
+
+.femr-photo-upload__preview img {
+    width: 220px;
+    height: 220px;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.femr-vitals {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-top: 24px;
+}
+
+.femr-vitals__column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.femr-double-field {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.femr-history {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.femr-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.historyOfButton {
+    cursor: pointer;
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    background: rgba(17, 24, 39, 0.04);
+    padding: 10px 16px;
+    border-radius: 999px;
+    color: var(--femr-color-text, #1c1917);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.historyOfButton input {
+    display: none;
+}
+
+.historyOfButton input:checked + span,
+.historyOfButton input:checked ~ span {
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-chief {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.femr-chief__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.femr-add-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    margin-right: 10px;
+    background: rgba(220, 38, 38, 0.16);
+    color: var(--femr-color-primary, #dc2626);
+    font-weight: 600;
+}
+
+.femr-textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.femr-chief__list {
+    list-style: decimal inside;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.femr-diabetes-prompt {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(220, 38, 38, 0.08);
+    display: grid;
+    gap: 12px;
+}
+
+.femr-diabetes-prompt__actions {
+    display: flex;
+    gap: 12px;
+}
+
+.femr-card__footer {
+    padding: 0 32px 32px;
+}
+
+.triage-form .has-errors label.range-message {
+    padding-left: 10px;
+    font-size: 0.85em;
+    margin: 2px 0;
+    clear: both;
+    color: #b91c1c;
+}
+
+.triage-form .error-message {
+    display: block;
+    color: #b91c1c;
+    text-align: center;
+    border: 1px solid rgba(185, 28, 28, 0.6);
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba(254, 226, 226, 0.6);
+    margin: 0 auto 12px;
+}
+
+@media (max-width: 1280px) {
+    .femr-grid--cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .femr-age-section {
+        gap: 24px;
+    }
+    
+    .femr-age-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .femr-age-separator {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .femr-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .femr-grid--cols-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .femr-field--span-2 {
+        grid-column: span 1;
+    }
+
+    .femr-age-section {
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .femr-age-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .femr-age-separator {
+        display: none;
+    }
+
+    .femr-tabs {
+        padding: 0 24px;
+    }
+
+    .femr-tabs__panels {
+        padding: 20px 24px 28px;
+    }
+
+    .femr-card__footer {
+        padding: 0 24px 24px;
+    }
+
+    .femr-vitals {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .femr-grid--cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .femr-field--span-2 {
+        grid-column: span 1;
+    }
+
+    .femr-card__header {
+        padding: 24px 20px 16px;
+    }
+    
+    .femr-age-section {
+        padding: 20px;
+        gap: 16px;
+    }
+    
+    .femr-segmented {
+        flex-direction: column;
+    }
+    
+    .femr-segmented__option {
+        width: 100%;
+    }
+
+    .femr-tabs {
+        padding: 0 20px;
+        gap: 16px;
+    }
+
+    .femr-tabs__panels {
+        padding: 16px 20px 24px;
+    }
+
+    .femr-card__footer {
+        padding: 0 20px 20px;
+    }
+
+    .femr-triage__actions {
+        width: 100%;
+    }
+
+    .femr-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .femr-age-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .femr-age-separator {
+        display: none;
+    }
+
+    .femr-vitals {
+        gap: 20px;
+    }
+
+    .femr-vitals__column {
+        gap: 20px;
+    }
+
+    .femr-double-field {
+        grid-template-columns: 1fr;
+    }
+
+    .femr-chip,
+    .historyOfButton {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .femr-diabetes-prompt__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

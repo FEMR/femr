@@ -1,0 +1,394 @@
+:root {
+    --femr-color-primary: #dc2626;
+    --femr-color-primary-hover: #b91c1c;
+    --femr-color-bg: #f3f4f6;
+    --femr-color-bg-dark: #1c1917;
+    --femr-color-surface: #ffffff;
+    --femr-color-surface-dark: #292524;
+    --femr-color-text: #1c1917;
+    --femr-color-text-muted: #6b7280;
+    --femr-color-border: #e5e7eb;
+    --femr-color-sidebar-bg: #1f1b19;
+    --femr-color-sidebar-elevated: rgba(255, 255, 255, 0.08);
+    --femr-radius-md: 12px;
+    --femr-radius-lg: 16px;
+    --femr-shadow-md: 0 20px 25px -15px rgba(0, 0, 0, 0.35);
+}
+
+body.femr-shell {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--femr-color-bg);
+    color: var(--femr-color-text);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.femr-shell__layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: inherit;
+}
+
+.femr-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: var(--femr-color-sidebar-bg);
+    color: #f5f5f4;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 24px;
+    box-shadow: var(--femr-shadow-md);
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    min-height: 100vh;
+    z-index: 10;
+}
+
+.femr-sidebar__brand-link {
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--femr-color-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+}
+
+.femr-sidebar__section {
+    margin-top: 28px;
+}
+
+.femr-sidebar__section:first-of-type {
+    margin-top: 24px;
+}
+
+.femr-sidebar__search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.femr-sidebar__section-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+}
+
+.femr-sidebar__search form {
+    position: relative;
+}
+
+.femr-sidebar__search input[type="text"],
+.femr-sidebar__search input[type="search"],
+.femr-sidebar__search input[type="tel"],
+.femr-sidebar__search input[type="number"] {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f9fafb;
+    font-size: 14px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.femr-sidebar__search input::placeholder {
+    color: rgba(229, 231, 235, 0.7);
+}
+
+.femr-sidebar__search button,
+.femr-sidebar__search .nameOrIdSearchButton {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: rgba(229, 231, 235, 0.7);
+    padding: 0;
+    font-size: 0;
+}
+
+.femr-sidebar__search button::before,
+.femr-sidebar__search .nameOrIdSearchButton::before {
+    content: '\e8b6';
+    font-family: 'Material Symbols Outlined';
+    font-size: 22px;
+    line-height: 1;
+    color: inherit;
+}
+
+.femr-sidebar__search button:hover,
+.femr-sidebar__search .nameOrIdSearchButton:hover {
+    color: #f9fafb;
+}
+
+.femr-sidebar__nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.femr-sidebar__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--femr-radius-md);
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.78);
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.femr-sidebar__nav-link:hover,
+.femr-sidebar__nav-link:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.femr-sidebar__nav-link.is-active {
+    background-color: rgba(220, 38, 38, 0.16);
+    color: #ffffff;
+}
+
+.femr-sidebar__nav-icon {
+    font-size: 24px;
+    color: inherit;
+}
+
+.femr-sidebar__nav-text {
+    font-size: 15px;
+    flex: 1;
+}
+
+.femr-sidebar__spacer {
+    flex: 1;
+}
+
+.femr-sidebar__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: var(--femr-radius-lg);
+}
+
+.femr-sidebar__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.femr-sidebar__user-meta {
+    flex: 1;
+}
+
+.femr-sidebar__user-name {
+    margin: 0;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.femr-sidebar__user-role {
+    margin: 2px 0 0 0;
+    font-size: 13px;
+    color: rgba(229, 231, 235, 0.7);
+}
+
+.femr-sidebar__user-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.femr-sidebar__icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 10px;
+    color: rgba(229, 231, 235, 0.8);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.femr-sidebar__icon-button:hover,
+.femr-sidebar__icon-button:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.femr-sidebar__icon-button .material-symbols-outlined {
+    font-size: 22px;
+}
+
+.femr-sidebar__sr {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+.femr-sidebar__section--anonymous {
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: var(--femr-radius-lg);
+}
+
+.femr-sidebar__anonymous-title {
+    margin: 0 0 6px 0;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.femr-sidebar__anonymous-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(229, 231, 235, 0.75);
+}
+
+.femr-shell__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--femr-color-bg);
+    min-height: 100vh;
+}
+
+.femr-shell__main {
+    flex: 1;
+    padding: 40px 48px;
+}
+
+.femr-shell__main-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.femr-shell__footer {
+    padding: 0 48px 32px;
+}
+
+.femr-shell__footer footer {
+    background: transparent;
+}
+
+/* Legacy search override */
+.femr-sidebar__search #searchContainer {
+    margin: 0;
+}
+
+.femr-sidebar__search .nameOrIdSearchFormWrap {
+    position: relative;
+    margin-top: 0;
+}
+
+.femr-sidebar__search .nameOrIdSearchFormWrap input {
+    margin: 0;
+}
+
+.femr-footer {
+    padding: 32px 0 0;
+    border-top: 1px solid rgba(28, 25, 23, 0.08);
+}
+
+.femr-footer__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    color: var(--femr-color-text-muted, #6b7280);
+    font-size: 14px;
+}
+
+.femr-footer__version {
+    margin: 0;
+    font-weight: 500;
+    color: var(--femr-color-text-muted, #6b7280);
+}
+
+.femr-footer__actions {
+    display: flex;
+    align-items: center;
+}
+
+.femr-footer__note {
+    margin-left: auto;
+    color: var(--femr-color-text-muted, #6b7280);
+}
+
+.femr-footer__note p {
+    margin: 0;
+}
+
+.femr-sidebar__search .nameOrIdSearchFormWrap label {
+    display: none;
+}
+
+.femr-sidebar__search .nameOrIdSearchButton {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .femr-shell__layout {
+        flex-direction: column;
+    }
+
+    .femr-sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .femr-shell__main {
+        padding: 32px 24px;
+    }
+
+    .femr-shell__footer {
+        padding: 0 24px 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .femr-sidebar__user {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .femr-sidebar__user-actions {
+        align-self: stretch;
+    }
+}

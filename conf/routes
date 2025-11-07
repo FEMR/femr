@@ -120,3 +120,5 @@ POST        /feedback                                           @femr.ui.control
 #Database Dump/Backup Data
 GET         /backup                                             @femr.ui.controllers.DatabaseDumpController.indexGet()
 POST        /backup                                             @femr.ui.controllers.DatabaseDumpController.indexPost()
+GET         /backup/upload                                      @femr.ui.controllers.DatabaseDumpController.uploadGet()
+POST        /backup/upload                                      @femr.ui.controllers.DatabaseDumpController.uploadPost()

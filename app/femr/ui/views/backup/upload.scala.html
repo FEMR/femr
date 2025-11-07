@@ -1,0 +1,38 @@
+@import femr.ui.controllers.routes.DatabaseDumpController
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, message: String)
+
+@import femr.ui.views.html.layouts.main
+
+@additionalScripts = {
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            // placeholder for any client-side logic
+        });
+    </script>
+}
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/backup.css")">
+}
+
+@main("Upload CSV / SQL", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+    <div class="backupWrapper">
+        <h2>
+            Upload CSV or SQL File
+        </h2>
+
+        @helper.form(action = DatabaseDumpController.uploadPost(), 'enctype -> "multipart/form-data"){
+            <div>
+                <label for="sqlFile">CSV file (.csv) or SQL dump (.sql):</label>
+                <input type="file" name="sqlFile" id="sqlFile" accept=".csv,.sql,text/csv" required />
+            </div>
+            <div style="margin-top:10px;">
+                <button class="fButton fRedButton" type="submit">Upload and Import</button>
+            </div>
+        }
+
+        @if(message != null && message.length() > 0){
+            <p>@message</p>
+        }
+    </div>
+}

@@ -197,7 +197,7 @@ public class UpdatesService implements IUpdatesService {
         String workingDir = System.getProperty("user.dir");
         File dir = new File(workingDir, "app/femr/util/backup");
         try {
-            Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+            Process pr = Runtime.getRuntime().exec(cmd, null, dir);
             String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
             DatabaseStatus databaseStatus = new DatabaseStatus();
             databaseStatus.setName("Last Backup");

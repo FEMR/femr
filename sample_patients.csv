@@ -1,0 +1,4 @@
+firstName,lastName,phone,address,city,sex,birth,encounterDate
+John,Doe,555-1234,123 Main St,Springfield,M,1985-03-15,2025-11-05
+Jane,Smith,555-5678,456 Oak Ave,Shelbyville,F,1990-07-22,2025-11-05
+Robert,Johnson,555-9012,789 Pine Rd,Capital City,M,1978-11-08,2025-11-04

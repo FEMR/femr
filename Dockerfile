@@ -64,11 +64,22 @@ RUN --mount=type=cache,target=/root/.ivy2 \
 WORKDIR $PROJECT_HOME/app/target/universal
 RUN unzip femr-*.zip && rm femr-*.zip
 
-FROM openjdk:8-jre-alpine
+FROM eclipse-temurin:8-jre-jammy
 
-RUN apk update
-RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
-RUN pip3 install psutil
+# Use Debian-based slim image and install required packages via apt
+RUN apt-get update && apt-get install -y \
+    bash \
+    python3 \
+    python3-pip \
+    gcc \
+    python3-dev \
+    default-libmysqlclient-dev \
+    mariadb-client \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/bin/python3 /usr/bin/python || true
+RUN pip3 install --no-cache-dir psutil
 
 #database variables
 ARG APP_VERSION
@@ -86,4 +97,4 @@ EXPOSE 9000
 
 # run fEMR using env variables
 #ENTRYPOINT url=$DB_URL usr=$DB_USER pass=$DB_PASS sbt ~run
-ENTRYPOINT ["/bin/bash", "-c", "/opt/bin/femr/bin/femr"]
+ENTRYPOINT ["/bin/sh", "-c", "rm -f /opt/bin/femr/RUNNING_PID; exec /opt/bin/femr/bin/femr"]

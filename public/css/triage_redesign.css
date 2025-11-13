@@ -509,15 +509,9 @@
 
 .femr-vitals {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
-    margin-top: 24px;
-}
-
-.femr-vitals__column {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    margin-top: 24px;
 }
 
 .femr-double-field {
@@ -655,6 +649,12 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .femr-vitals {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 900px) {
     .femr-card__header {
         flex-direction: column;
@@ -758,10 +758,6 @@
     }
 
     .femr-vitals {
-        gap: 20px;
-    }
-
-    .femr-vitals__column {
         gap: 20px;
     }
 

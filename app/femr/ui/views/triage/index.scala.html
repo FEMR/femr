@@ -454,78 +454,73 @@
                             <h3 class="femr-section__title" id="vitalsHeading"><span data-i18n-text="true">Vitals</span></h3>
                         </div>
                         <div id="vitalContainer" class="femr-vitals">
-                            <div class="femr-vitals__column" id="leftVitalsWrap">
+                            @if(viewModel.getSettings.isMetric) {
+                                <input type="hidden" id="vitalsUnits" value="metric" />
+                            } else {
+                                <input type="hidden" id="vitalUnits" value="imp" />
+                            }
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(2).getName" id="temperatureLabel"><span data-i18n-text="true">Temperature</span></label>
                                 @if(viewModel.getSettings.isMetric) {
-                                    <input type="hidden" id="vitalsUnits" value="metric" />
+                                    <input type="number" step="any" min="0" class="fInput fVital femr-input" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;C"/>
                                 } else {
-                                    <input type="hidden" id="vitalUnits" value="imp" />
+                                    <input type="number" step="any" min="0" class="fInput fVital femr-input" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
                                 }
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(2).getName" id="temperatureLabel"><span data-i18n-text="true">Temperature</span></label>
-                                    @if(viewModel.getSettings.isMetric) {
-                                        <input type="number" step="any" min="0" class="fInput fVital femr-input" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;C"/>
-                                    } else {
-                                        <input type="number" step="any" min="0" class="fInput fVital femr-input" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
-                                    }
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(7).getName" id="bloodPressureTitle"><span data-i18n-text="true">Blood Pressure</span></label>
-                                    <div class="doubleVital femr-double-field">
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
-                                    </div>
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(1).getName" id="heartRateLabel"><span data-i18n-text="true">Heart Rate</span></label>
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(1).getName" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label id="respirationsLabel" for="@viewModel.getVitalNames.get(0).getName"><span data-i18n-text="true">Respirations</span></label>
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label id="weeksPregnantLabel" for="weeksPregnant"><span data-i18n-text="true">Weeks Pregnant</span></label>
-                                    @if(viewModel.getPatient.getSex == "Female") {
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
-                                    } else {
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                                    }
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(7).getName" id="bloodPressureTitle"><span data-i18n-text="true">Blood Pressure</span></label>
+                                <div class="doubleVital femr-double-field">
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
                                 </div>
                             </div>
-
-                            <div class="femr-vitals__column" id="rightVitalsWrap">
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(3).getName" id="oxygenLabel"><span data-i18n-text="true">Oxygen Saturation</span></label>
-                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(1).getName" id="heartRateLabel"><span data-i18n-text="true">Heart Rate</span></label>
+                                <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(1).getName" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label id="respirationsLabel" for="@viewModel.getVitalNames.get(0).getName"><span data-i18n-text="true">Respirations</span></label>
+                                <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(0).getName" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(3).getName" id="oxygenLabel"><span data-i18n-text="true">Oxygen Saturation</span></label>
+                                <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(3).getName" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(4).getName" id="heightLabel"><span data-i18n-text="true">Height</span></label>
+                                <div class="doubleVital femr-double-field">
+                                @if(viewModel.getSettings.isMetric) {
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                } else {
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                                }
                                 </div>
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(4).getName" id="heightLabel"><span data-i18n-text="true">Height</span></label>
-                                    <div class="doubleVital femr-double-field">
-                                    @if(viewModel.getSettings.isMetric) {
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
-                                    } else {
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                                        <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
-                                    }
-                                    </div>
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label for="@viewModel.getVitalNames.get(6).getName" id="weightLabel"><span data-i18n-text="true">Weight</span></label>
-                                    @if(viewModel.getSettings.isMetric) {
-                                        <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
-                                    } else {
-                                        <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
-                                    }
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label id="bmiLabel"><span data-i18n-text="true">BMI</span></label>
-                                    <input type="text" id="bmi" class="fInput femr-input" disabled/>
-                                </div>
-                                <div class="vitalWrap femr-field">
-                                    <label id="glucoseLabel"><span data-i18n-text="true">Glucose</span></label>
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
-                                </div>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label for="@viewModel.getVitalNames.get(6).getName" id="weightLabel"><span data-i18n-text="true">Weight</span></label>
+                                @if(viewModel.getSettings.isMetric) {
+                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
+                                } else {
+                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
+                                }
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label id="bmiLabel"><span data-i18n-text="true">BMI</span></label>
+                                <input type="text" id="bmi" class="fInput femr-input" disabled/>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label id="glucoseLabel"><span data-i18n-text="true">Glucose</span></label>
+                                <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
+                            </div>
+                            <div class="vitalWrap femr-field">
+                                <label id="weeksPregnantLabel" for="weeksPregnant"><span data-i18n-text="true">Weeks Pregnant</span></label>
+                                @if(viewModel.getPatient.getSex == "Female") {
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
+                                } else {
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                                }
                             </div>
                         </div>
 

@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import play.Logger;
 
 public class ResearchService implements IResearchService {
 
@@ -342,7 +343,8 @@ public class ResearchService implements IResearchService {
 
     @Override
     public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
-
+        Logger.info("ResearchService:exportPatientsByTrip called with tripId={} at 0 seconds. ", tripId);
+        long startTimeNanos = System.nanoTime();
         ServiceResponse<File> response = new ServiceResponse<>();
 
         // Build Query based on Filters
@@ -353,31 +355,62 @@ public class ResearchService implements IResearchService {
                 .fetch("patientPrescriptions")
                 .fetch("patientPrescriptions.medication");
 
+        //PERF: can optimize so that each join step doesn't have to retrieve all data in the model (table)
+        // .fetch and .where only build up the SQL query definition
+
+
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
 
         // -1 is default from form
         if ( tripId != null && tripId != -1 ) {
-
             researchEncounterExpressionList.eq("missionTrip.id",tripId);
+        } else {
+            Logger.error("ResearchService:exportPatientsByTrip passed with trip id: {} where tripId=null and tripId=-1 are invalidated"
+                    , tripId);
         }
+        // Not sure how to handle the case when no trips are selected?
+        // Maybe can retrieve an aggregate of all trips
+
 
         researchEncounterExpressionList.isNull("patient.isDeleted");
         researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
-        researchEncounterExpressionList.findList();
+        // Do we really need to order the patients?
+        // Right now in the current (old) approach, you retrieve the entire list of patientEncounters joined with patients and
+        // patientPrescriptions and ?patientPrescriptions.medications?
+
+        researchEncounterExpressionList.findList(); //executes the query and returns into researchEncounterExpressionList
 
         List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
+        // why are you using the repository again to find the patientEncounters??
 
+//        List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
+//        // removing old code above caused no significant performance benefits
+//        // new code might just be simpler though
+
+        Logger.info("ResearchService:exportPatientsByTrip executed query and populated patientEncounters at {} seconds. ",
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
         // As new patients are encountered, generate a UUID to represent them in the export file
+        // Why do we need patient_uuid as the key in the map??
+        // There is a patient_id field in the generated csv files which contains the UUID
+        // But since the UUID is random generated in the for loop below, whats the point of it
+        // tldr: it doesn't matter if no performance issues
+
         Map<Integer, UUID> patientIdMap = new HashMap<>();
 
         // Format patient data for the csv file
         List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
 
+        long duration_iteration = System.nanoTime();
+        long timestamp_sec1 = -1;
+        long timestamp_sec2 = -1;
+        long timestamp_sec3 = -1;
+
         for(IResearchEncounter patientEncounter : patientEncounters ){
 
             UUID patient_uuid;
 
+            // SECTION 1
             // If UUID already generated for patient, use that
             if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
 
@@ -389,14 +422,45 @@ public class ResearchService implements IResearchService {
                 patient_uuid = UUID.randomUUID();
                 patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
             }
+            if (timestamp_sec1 == -1) timestamp_sec1 = System.nanoTime() - duration_iteration;
+            //
 
+            // SECTION 2
+            //!!!!! MAIN BOTTLENECK !!!!!!
             ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
+            if (timestamp_sec2 == -1) timestamp_sec2 = System.nanoTime() - duration_iteration;
+            //
+
+            // SECTION 3
             researchExportItemsForCSVExport.add(item);
+            if (timestamp_sec3 == -1) timestamp_sec3 = System.nanoTime() - duration_iteration;
+            //
         }
+        duration_iteration = System.nanoTime() - duration_iteration;
+
+        Logger.info("ResearchService:exportPatientsByTrip iterations finished in {} at {} seconds with an average of {} seconds per iteration. ",
+                String.format("%.3f", (float) (duration_iteration) / 1_000_000_000),
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000),
+                String.format("%.3f", (float) (duration_iteration/patientEncounters.size()) / 1_000_000_000));
+        Logger.info("ResearchService:exportPatientsByTrip first iteration section timestamps: {} {} {} milliseconds. ",
+                String.format("%.3f", (float) (timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec2) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec3) / 1_000_000));
+        Logger.info("ResearchService:exportPatientsByTrip first iteration section durations : {} {} {} milliseconds. ",
+                String.format("%.3f", (float) (timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec2 - timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec3 - timestamp_sec2) / 1_000_000));
+        Logger.info("ResearchService:exportPatientsByTrip called createCsvFile() at {} seconds. ",
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
         File eFile = createCsvFile(researchExportItemsForCSVExport);
 
         response.setResponseObject(eFile);
+
+        long endTimeNanos = System.nanoTime();
+        float executionTimeSeconds = (float) (endTimeNanos - startTimeNanos) / 1_000_000_000;
+        Logger.info("ResearchService:exportPatientsByTrip finished {} encounters in {} seconds. ",
+                patientEncounters.size(), String.format("%.3f", executionTimeSeconds));
 
         return response;
     }
@@ -408,6 +472,9 @@ public class ResearchService implements IResearchService {
      * @return a csv formatted file of the encounters
      */
     private File createCsvFile( List<ResearchExportItem> encounters ){
+        long startTimeNanos = System.nanoTime();
+        Logger.info("ResearchService:createCsvFile called with {} encounters. ",
+                encounters.size());
 
         // Make File and get path
         String csvFilePath = LogicDoer.getCsvFilePath();
@@ -452,6 +519,9 @@ public class ResearchService implements IResearchService {
                 e.printStackTrace();
             }
         }
+
+        Logger.info("ResearchService:createCsvFile created a csv file in {} seconds. ",
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
         return eFile;
     }

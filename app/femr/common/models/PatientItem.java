@@ -19,6 +19,8 @@
 package femr.common.models;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PatientItem {
     private int Id;
@@ -53,11 +55,14 @@ public class PatientItem {
     private Integer alcohol;
     private Integer cholesterol;
     private Integer hypertension;
+    // Imported chief complaints (from CSV) - temporary holder for import flow
+    private List<String> importedChiefComplaints;
 
     public PatientItem(){
         //default empty values
         this.Id = 0;
         this.pathToPhoto = "";
+        this.importedChiefComplaints = new ArrayList<>();
     }
 
     public int getId() {
@@ -249,5 +254,8 @@ public class PatientItem {
 
     public Integer getHypertension() {return hypertension;}
     public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
+
+    public List<String> getImportedChiefComplaints() { return importedChiefComplaints; }
+    public void setImportedChiefComplaints(List<String> importedChiefComplaints) { this.importedChiefComplaints = importedChiefComplaints; }
 
 }

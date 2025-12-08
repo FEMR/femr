@@ -3,6 +3,8 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
 @import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.manager.routes.PatientImportController
+@import femr.ui.controllers.manager.routes.ManagerController
 @additionalStyles = {
 
     <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
@@ -53,10 +55,17 @@
             @if(currentUser.getTripId != null) {
                 <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
 
+                <!-- Buttons Section (Top) -->
+                <div style="margin-bottom: 15px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" id="importButton" onclick="document.getElementById('csvFile').click()" style="padding: 10px 16px; background-color: #357ebd; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.3s;">+ Import Patients</button>
+                    <input type="file" id="csvFile" name="csvFile" accept=".csv" style="display: none;" />
+                    <button type="button" id="exportButton" onclick="window.location='@ManagerController.exportDailyReport()'" style="padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.3s;">Export Daily Report</button>
+                    <button type="button" id="wipeButton" onclick="if(confirm('Are you sure you want to clear all imported patients? This action cannot be undone.')) { wipeAllPatients(); }" style="padding: 10px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.3s;">🗑 Clear All Patients</button>
+                    <div id="importStatus" style="margin-top: 10px; display: none; padding: 10px; border-radius: 4px; min-width: 300px; z-index: 1000;"></div>
+                </div>
 
-            <div id="table-container center-panel-grid" >
-                <div class="managerWrap">
-
+            <div id="table-container center-panel-grid" style="display: flex; flex-direction: column; height: auto; overflow: visible;">
+                <div class="managerWrap" style="overflow: auto; max-height: calc(100vh - 350px);">
 
                     <table id="managersTable">
                         <thead>
@@ -71,7 +80,7 @@
                                 <th> Total Time Spent </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
 
                             @for(encounterItem <- viewModelGet.getEncounter) {
 
@@ -109,6 +118,13 @@
                         </tbody>
                     </table>
                 </div>
+                
+                <!-- Pagination Controls -->
+                <div id="paginationControls" style="margin-top: 15px; display: none; text-align: center;">
+                    <button onclick="previousPage()" style="padding: 8px 12px; background-color: #357ebd; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 5px;">← Previous</button>
+                    <span id="pageInfo" style="margin: 0 15px; font-weight: bold;"></span>
+                    <button onclick="nextPage()" style="padding: 8px 12px; background-color: #357ebd; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0 5px;">Next →</button>
+                </div>
             </div>
             } else {
     @*          TODO: Add the full name of the user in the future*@
@@ -116,4 +132,223 @@
             }
         </div>
     </div>
+
+    <script>
+        // Pagination variables
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        let allRows = [];
+
+        /**
+         * Initialize pagination on page load
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const csvFile = document.getElementById('csvFile');
+            if (csvFile) {
+                csvFile.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        handleImportClick();
+                    }
+                });
+            }
+
+            // Initialize pagination
+            const tableBody = document.getElementById('tableBody');
+            if (tableBody) {
+                allRows = Array.from(tableBody.querySelectorAll('tr'));
+                if (allRows.length > rowsPerPage) {
+                    setupPagination();
+                    showPage(1);
+                }
+            }
+
+            // Add hover effects to buttons
+            addButtonHoverEffects();
+        });
+
+        /**
+         * Add hover effects to all styled buttons
+         */
+        function addButtonHoverEffects() {
+            const buttons = document.querySelectorAll('button[style*="background-color"]');
+            buttons.forEach(button => {
+                const originalColor = button.style.backgroundColor;
+                button.addEventListener('mouseenter', function() {
+                    this.style.opacity = '0.85';
+                });
+                button.addEventListener('mouseleave', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        }
+
+        /**
+         * Setup pagination controls
+         */
+        function setupPagination() {
+            const paginationControls = document.getElementById('paginationControls');
+            if (paginationControls) {
+                paginationControls.style.display = 'block';
+            }
+        }
+
+        /**
+         * Show specific page of table
+         */
+        function showPage(pageNum) {
+            const tableBody = document.getElementById('tableBody');
+            if (!tableBody) return;
+
+            const startIndex = (pageNum - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+
+            // Hide all rows
+            Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+                row.style.display = 'none';
+            });
+
+            // Show rows for current page
+            allRows.slice(startIndex, endIndex).forEach(row => {
+                row.style.display = '';
+            });
+
+            currentPage = pageNum;
+            updatePageInfo();
+        }
+
+        /**
+         * Update pagination info display
+         */
+        function updatePageInfo() {
+            const pageInfo = document.getElementById('pageInfo');
+            const totalPages = Math.ceil(allRows.length / rowsPerPage);
+            if (pageInfo) {
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${allRows.length} total records)`;
+            }
+        }
+
+        /**
+         * Navigate to next page
+         */
+        function nextPage() {
+            const totalPages = Math.ceil(allRows.length / rowsPerPage);
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        /**
+         * Navigate to previous page
+         */
+        function previousPage() {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        }
+
+        /**
+         * Wipe all patients from database
+         */
+        function wipeAllPatients() {
+            showImportStatus('Clearing all patients...', 'warning');
+
+            fetch('@ManagerController.wipeAllPatients()', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showImportStatus('All patients have been cleared successfully', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showImportStatus('Failed to clear patients: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                showImportStatus('Error clearing patients: ' + error.message, 'error');
+            });
+        }
+
+        /**
+         * Handle file selection and auto-upload
+         */
+        function handleImportClick() {
+            const csvFile = document.getElementById('csvFile');
+            const importButton = document.getElementById('importButton');
+            const importStatus = document.getElementById('importStatus');
+
+            if (!csvFile.files || csvFile.files.length === 0) {
+                showImportStatus('Please select a CSV file', 'error');
+                return;
+            }
+
+            // Disable button and show loading state
+            importButton.disabled = true;
+            importButton.textContent = 'Importing...';
+            importStatus.style.display = 'none';
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('csvFile', csvFile.files[0]);
+
+            // Send import request
+            fetch('@PatientImportController.importPatientsPost()', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showImportStatus('Successfully imported ' + data.importedCount + ' patients', 'success');
+                    csvFile.value = ''; // Clear file input
+                    
+                    // Reload page after 2 seconds
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showImportStatus('Import failed: ' + (data.message || 'Unknown error'), 'error');
+                }
+
+                // Display any errors from parsing
+                if (data.errors && data.errors.length > 0) {
+                    const errorList = data.errors.map(e => '• ' + e).join('\n');
+                    showImportStatus('Import completed with warnings:\n' + errorList, 'warning');
+                }
+            })
+            .catch(error => {
+                showImportStatus('Import error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                importButton.disabled = false;
+                importButton.textContent = '+ Import Patients';
+            });
+        }
+
+        /**
+         * Display import status message
+         */
+        function showImportStatus(message, type) {
+            const importStatus = document.getElementById('importStatus');
+            importStatus.textContent = message;
+            importStatus.style.display = 'block';
+            
+            // Set styling based on message type
+            if (type === 'success') {
+                importStatus.style.backgroundColor = '#d4edda';
+                importStatus.style.color = '#155724';
+                importStatus.style.borderLeft = '4px solid #28a745';
+            } else if (type === 'error') {
+                importStatus.style.backgroundColor = '#f8d7da';
+                importStatus.style.color = '#721c24';
+                importStatus.style.borderLeft = '4px solid #dc3545';
+            } else if (type === 'warning') {
+                importStatus.style.backgroundColor = '#fff3cd';
+                importStatus.style.color = '#856404';
+                importStatus.style.borderLeft = '4px solid #ffc107';
+            }
+        }
+    </script>
 }

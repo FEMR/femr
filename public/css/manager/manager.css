@@ -1,7 +1,8 @@
 
 .managerPanel {
     margin-top: 100px;
-    height: calc(100vh - 245px)
+    height: auto;
+    min-height: calc(100vh - 245px);
 }
 
 div.scrollable {
@@ -16,6 +17,7 @@ div.scrollable {
 #managersTable {
     border: 1px solid #1f1f1f;
     width: 95%;
+    border-collapse: collapse;
 }
 
 #managersTable ul {
@@ -26,15 +28,25 @@ div.scrollable {
     border: 1px solid #1f1f1f;
     font-size: 14px;
     text-align: center;
-    padding: 5px;
+    padding: 10px 5px;
     background-color: #357ebd;
+    color: white;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 #managersTable td {
-    padding: 5px;
+    padding: 8px 5px;
     border: 1px solid #1f1f1f;
-    font-size: 11px;
+    font-size: 12px;
     background-color: #e1edf7;
+}
+
+#managersTable tr:hover {
+    background-color: #d4e4f0;
+    transition: background-color 0.2s ease;
 }
 
 #managersTable ul {
@@ -46,6 +58,28 @@ div.scrollable {
     padding-right: 15px;
     padding-left: 20px;
     padding-bottom: 5px;
-    overflow: hidden;
+    overflow: auto;
     align-content: center;
+    background-color: white;
+    position: relative;
+    z-index: 1;
+}
+
+#paginationControls {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    margin-top: 0 !important;
+    position: relative;
+    z-index: 1;
+}
+
+#paginationControls button:hover {
+    background-color: #2d5aa1 !important;
+    transition: background-color 0.3s ease;
+}
+
+#importStatus {
+    position: relative !important;
+    z-index: 1000 !important;
 }

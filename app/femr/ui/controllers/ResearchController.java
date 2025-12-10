@@ -83,10 +83,11 @@ public class ResearchController extends Controller {
         filterViewModel.setMissionTrips(missionItemServiceResponse.getResponseObject());
 
         // Set Default Start (30 Days Ago) and End Date (Today)
+        // temporarily "-365 * 10" modified for development to default to last ten years
         Calendar today = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         filterViewModel.setEndDate(dateFormat.format(today.getTime()));
-        today.add(Calendar.DAY_OF_MONTH, -120);
+        today.add(Calendar.DAY_OF_MONTH, -365 * 10);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
 

@@ -43,9 +43,12 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -347,20 +350,58 @@ public class ResearchService implements IResearchService {
         long startTimeNanos = System.nanoTime();
         ServiceResponse<File> response = new ServiceResponse<>();
 
-        // Build Query based on Filters
-        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
+        // <editor-fold desc="Setup for file generation and tools">
 
+        String csvParentDirPath = LogicDoer.getCsvFilePath();
+        File parentDir = new File(csvParentDirPath);
+        if (!parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
+        SimpleDateFormat dateformat = new SimpleDateFormat("MMddyy-HHmmss");
+        String timestamp = dateformat.format(new Date());
+        String csvFilePath = csvParentDirPath+"export-"+timestamp+".csv";
+
+        File exportFile = new File(csvFilePath);
+
+        CSVFormat fileformat = CSVFormat.DEFAULT
+                .withHeader(
+                        "patientId",
+                        "gender",
+                        "age",
+                        "isPregnant",
+                        "weeksPregnant",
+                        "dayOfVisit",
+                        "tripId",
+                        "trip_team",
+                        "trip_country",
+                        "chiefComplaints",
+                        "prescribedMedications",
+                        "dispensedMedications",
+                        "vitals",
+                        "tabFields"
+                );
+        CSVPrinter printer;
+        try {
+             printer = new CSVPrinter(new FileWriter(exportFile), fileformat);
+        } catch (Exception e) {
+            Logger.error("ResearchService:exportPatientsByTrip CSVPrinter could not be instantiated:");
+            e.printStackTrace();
+            return null;
+        }
+        if (!exportFile.exists()){
+            Logger.error("ResearchService:exportPatientsByTrip export file could not be created.");
+            return null;
+        }
+        // </editor-fold>
+
+        // <editor-fold desc="Build Query based on Filters">
+        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
         researchEncounterQuery
                 .fetch("patient")
                 .fetch("patientPrescriptions")
                 .fetch("patientPrescriptions.medication");
-
-        //PERF: can optimize so that each join step doesn't have to retrieve all data in the model (table)
-        // .fetch and .where only build up the SQL query definition
-
-
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
-
         // -1 is default from form
         if ( tripId != null && tripId != -1 ) {
             researchEncounterExpressionList.eq("missionTrip.id",tripId);
@@ -368,38 +409,20 @@ public class ResearchService implements IResearchService {
             Logger.error("ResearchService:exportPatientsByTrip passed with trip id: {} where tripId=null and tripId=-1 are invalidated"
                     , tripId);
         }
-        // Not sure how to handle the case when no trips are selected?
-        // Maybe can retrieve an aggregate of all trips
-
+        // Need to add how to handle the case when no trips are selected instead of error?
 
         researchEncounterExpressionList.isNull("patient.isDeleted");
         researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
         // Do we really need to order the patients?
-        // Right now in the current (old) approach, you retrieve the entire list of patientEncounters joined with patients and
-        // patientPrescriptions and ?patientPrescriptions.medications?
 
         researchEncounterExpressionList.findList(); //executes the query and returns into researchEncounterExpressionList
 
         List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
-        // why are you using the repository again to find the patientEncounters??
-
-//        List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
-//        // removing old code above caused no significant performance benefits
-//        // new code might just be simpler though
 
         Logger.info("ResearchService:exportPatientsByTrip executed query and populated patientEncounters at {} seconds. ",
                 String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
-        // As new patients are encountered, generate a UUID to represent them in the export file
-        // Why do we need patient_uuid as the key in the map??
-        // There is a patient_id field in the generated csv files which contains the UUID
-        // But since the UUID is random generated in the for loop below, whats the point of it
-        // tldr: it doesn't matter if no performance issues
-
         Map<Integer, UUID> patientIdMap = new HashMap<>();
-
-        // Format patient data for the csv file
-        List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
 
         long duration_iteration = System.nanoTime();
         long timestamp_sec1 = -1;
@@ -409,35 +432,58 @@ public class ResearchService implements IResearchService {
         for(IResearchEncounter patientEncounter : patientEncounters ){
 
             UUID patient_uuid;
-
             // SECTION 1
             // If UUID already generated for patient, use that
             if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
-
                 patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
             }
             // otherwise generate and store for potential additional patient encounters
             else{
-
                 patient_uuid = UUID.randomUUID();
                 patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
             }
             if (timestamp_sec1 == -1) timestamp_sec1 = System.nanoTime() - duration_iteration;
-            //
 
             // SECTION 2
-            //!!!!! MAIN BOTTLENECK !!!!!!
             ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
             if (timestamp_sec2 == -1) timestamp_sec2 = System.nanoTime() - duration_iteration;
-            //
 
-            // SECTION 3
-            researchExportItemsForCSVExport.add(item);
+            //new SECTION 3
+            try {
+                printer.printRecord(
+                        item.getPatientId() != null ? item.getPatientId().toString() : "",
+                        item.getGender(),
+                        item.getAge(),
+                        item.getIsPregnant(),
+                        item.getWeeksPregnant(),
+                        item.getDayOfVisit(),
+                        item.getTripId(),
+                        item.getTrip_team(),
+                        item.getTrip_country(),
+                        StringUtils.joinList(item.getChiefComplaints()),
+                        StringUtils.joinList(item.getPrescribedMedications()),
+                        StringUtils.joinList(item.getDispensedMedications()),
+                        StringUtils.joinFloatMap(item.getVitalMap()),
+                        StringUtils.joinStringMap(item.getTabFieldMap())
+                );
+                printer.flush();
+            } catch (Exception e) {
+                Logger.error("ResearchService:exportPatientsByTrip section3 failed to append row.");
+                return null;
+            }
             if (timestamp_sec3 == -1) timestamp_sec3 = System.nanoTime() - duration_iteration;
-            //
-        }
-        duration_iteration = System.nanoTime() - duration_iteration;
 
+        }
+        try {
+            printer.close();
+        } catch (Exception e) {
+            Logger.error("ResearchService:exportPatientsByTrip exception occurred attempting to close printer.");
+            e.printStackTrace();
+        }
+
+        response.setResponseObject(exportFile);
+        // <editor-fold desc="Time metrics">
+        duration_iteration = System.nanoTime() - duration_iteration;
         Logger.info("ResearchService:exportPatientsByTrip iterations finished in {} at {} seconds with an average of {} seconds per iteration. ",
                 String.format("%.3f", (float) (duration_iteration) / 1_000_000_000),
                 String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000),
@@ -452,16 +498,11 @@ public class ResearchService implements IResearchService {
                 String.format("%.3f", (float) (timestamp_sec3 - timestamp_sec2) / 1_000_000));
         Logger.info("ResearchService:exportPatientsByTrip called createCsvFile() at {} seconds. ",
                 String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
-
-        File eFile = createCsvFile(researchExportItemsForCSVExport);
-
-        response.setResponseObject(eFile);
-
         long endTimeNanos = System.nanoTime();
         float executionTimeSeconds = (float) (endTimeNanos - startTimeNanos) / 1_000_000_000;
         Logger.info("ResearchService:exportPatientsByTrip finished {} encounters in {} seconds. ",
                 patientEncounters.size(), String.format("%.3f", executionTimeSeconds));
-
+        // </editor-fold>
         return response;
     }
 
@@ -472,9 +513,9 @@ public class ResearchService implements IResearchService {
      * @return a csv formatted file of the encounters
      */
     private File createCsvFile( List<ResearchExportItem> encounters ){
-        long startTimeNanos = System.nanoTime();
-        Logger.info("ResearchService:createCsvFile called with {} encounters. ",
-                encounters.size());
+//        long startTimeNanos = System.nanoTime();
+//        Logger.info("ResearchService:createCsvFile called with {} encounters. ",
+//                encounters.size());
 
         // Make File and get path
         String csvFilePath = LogicDoer.getCsvFilePath();
@@ -495,7 +536,6 @@ public class ResearchService implements IResearchService {
                 fileCreated = eFile.createNewFile();
             }
             catch( IOException e ){
-
                 e.printStackTrace();
             }
         }
@@ -503,34 +543,50 @@ public class ResearchService implements IResearchService {
         if( fileCreated ) {
 
             Gson gson = new Gson();
+            // a Gson turns a Java object into a Json
             JsonParser gsonParser = new JsonParser();
             String jsonString = gson.toJson(encounters);
+            // stores a BIG String called jsonString
+            // + the huge list of encounters in memory now
 
             GsonFlattener parser = new GsonFlattener();
             CSVWriterGson writer = new CSVWriterGson();
 
+            Logger.info("ResearchService-createCsvFile: jsonString: {} ", jsonString);
+
             try {
 
                 List<Map<String, String>> flatJson = parser.parse(gsonParser.parse(jsonString).getAsJsonArray());
+                // converts the String into Array of JsonElements
+                // !!which is temporarily stored as a BIG array of JsonElements
+
+                // parser.parse() goes and flattens each nested JsonElement in the JsonArray...
+                //  ...turning them into key, value pairs
+
+                //!!flatJson itself is BIG List of key-value pairs
                 writer.writeAsCSV(flatJson, csvFileName);
+                //writeAsCSV internally also builds a BIG list
 
             } catch (FileNotFoundException e) {
-
                 e.printStackTrace();
             }
         }
 
-        Logger.info("ResearchService:createCsvFile created a csv file in {} seconds. ",
-                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
+//        Logger.info("ResearchService:createCsvFile created a csv file in {} seconds. ",
+//                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
+        // work on a file with a
+        // rename the final file at the end
         return eFile;
     }
+
 
     /**
      * take filters and make appropriate query, get list of matching patient encounters
      * @param filters an object that contains all possible filters for the data
      * @return a list of the encounters
      */
+
     private List<? extends IResearchEncounter> queryPatientData(ResearchFilterItem filters){
 
         String datasetName = filters.getPrimaryDataset();

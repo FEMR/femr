@@ -7,7 +7,6 @@
 @additionalStyles = {
 
     <link rel="stylesheet" href="@assets.path("css/libraries/select2.min.css")">
-    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
 }
 
 @additionalScripts = {
@@ -19,60 +18,130 @@
 @admin("Trips - Manage Trips - Edit Trip", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
     @defining(viewModel.getTrip) { trip =>
-        <p>Id: @trip.getId</p>
-        <p>Team name: @trip.getTeamName</p>
-        <p>City: @trip.getTripCity</p>
-        <p>Country: @trip.getTripCountry</p>
-        <p>Start Date: @trip.getFriendlyTripStartDate</p>
-        <p>End Date: @trip.getFriendlyTripEndDate</p>
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title">Trip overview</h2>
+                    <p class="admin-section__description">Review key details for the selected trip before updating participants.</p>
+                </div>
+            </div>
+
+            <div class="admin-columns">
+                <div class="admin-card">
+                    <h3 class="admin-card__title">Trip identifiers</h3>
+                    <div class="admin-card__body">
+                        <div><strong>ID:</strong> @trip.getId</div>
+                        <div><strong>Team:</strong> @trip.getTeamName</div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <h3 class="admin-card__title">Destination</h3>
+                    <div class="admin-card__body">
+                        <div><strong>City:</strong> @trip.getTripCity</div>
+                        <div><strong>Country:</strong> @trip.getTripCountry</div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <h3 class="admin-card__title">Schedule</h3>
+                    <div class="admin-card__body">
+                        <div><strong>Start:</strong> @trip.getFriendlyTripStartDate</div>
+                        <div><strong>End:</strong> @trip.getFriendlyTripEndDate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
     }
 
 
     @helper.form(action = TripController.editPost(viewModel.getTripId)) {
-        <h4>Add users to this trip: </h4>
-        <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
-        @defining(viewModel.getAllUsers) { allUsers =>
-            @for(i <- 1 to allUsers.size) {
-                <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName</option>
-            }
-        }
-        </select>
-        <button type="submit">Add</button>
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title">Manage trip participants</h2>
+                    <p class="admin-section__description">Add new volunteers or remove existing members from this trip.</p>
+                </div>
+            </div>
 
-        <h4>Remove users from this trip:</h4>
-        <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
-            @defining(viewModel.getUsers) { users =>
-                @for(i <- 1 to users.size) {
-                    <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</option>
-                }
-            }
-        </select>
-        <button type="submit">Remove</button>
+            <div class="admin-columns">
+                <div class="admin-card">
+                    <h3 class="admin-card__title">Add users</h3>
+                    <div class="admin-card__body">
+                        <div class="admin-form admin-form--stacked">
+                            <div class="admin-form__field">
+                                <label for="addUsersSelect2">Select users to add</label>
+                                <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
+                                @defining(viewModel.getAllUsers) { allUsers =>
+                                    @for(i <- 1 to allUsers.size) {
+                                        <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName</option>
+                                    }
+                                }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-card__actions">
+                        <button type="submit" class="admin-button admin-button--primary">Add</button>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 class="admin-card__title">Remove users</h3>
+                    <div class="admin-card__body">
+                        <div class="admin-form admin-form--stacked">
+                            <div class="admin-form__field">
+                                <label for="removeUsersSelect2">Select users to remove</label>
+                                <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
+                                    @defining(viewModel.getUsers) { users =>
+                                        @for(i <- 1 to users.size) {
+                                            <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-card__actions">
+                        <button type="submit" class="admin-button">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </section>
     }
 
 
-    <table id="usersTripTable">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>About</th>
-            </tr>
-        </thead>
-        <tbody>
-        @defining(viewModel.getUsers) { users =>
-            @for(i <- 1 to users.size()) {
-                <tr>
-                    <td>@users.get(i - 1).getFirstName</td>
-                    <td>@users.get(i - 1).getLastName</td>
-                    <td>@users.get(i - 1).getEmail</td>
-                    <td>@users.get(i - 1).getNotes</td>
-                </tr>
-            }
-        }
-        </tbody>
-    </table>
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Users on this trip</h2>
+                <p class="admin-section__description">Current roster of participants assigned to the mission.</p>
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table id="usersTripTable" class="admin-table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>About</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @defining(viewModel.getUsers) { users =>
+                    @for(i <- 1 to users.size()) {
+                        <tr>
+                            <td>@users.get(i - 1).getFirstName</td>
+                            <td>@users.get(i - 1).getLastName</td>
+                            <td>@users.get(i - 1).getEmail</td>
+                            <td>@users.get(i - 1).getNotes</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
 
 
 }

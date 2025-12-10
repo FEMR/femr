@@ -12,7 +12,10 @@
     --femr-color-sidebar-elevated: rgba(255, 255, 255, 0.08);
     --femr-radius-md: 12px;
     --femr-radius-lg: 16px;
-    --femr-shadow-md: 0 20px 25px -15px rgba(0, 0, 0, 0.35);
+    --femr-shadow-md: none;
+    --femr-sidebar-width-expanded: 280px;
+    --femr-sidebar-width-collapsed: 88px;
+    --femr-transition-default: 0.25s ease;
 }
 
 body.femr-shell {
@@ -28,31 +31,189 @@ body.femr-shell {
     display: flex;
     min-height: 100vh;
     background-color: inherit;
-}
 
 .femr-sidebar {
-    width: 280px;
+    width: var(--femr-sidebar-width-collapsed);
     flex-shrink: 0;
     background-color: var(--femr-color-sidebar-bg);
     color: #f5f5f4;
     display: flex;
     flex-direction: column;
-    padding: 32px 24px;
+    padding: 32px 16px;
     box-shadow: var(--femr-shadow-md);
     position: sticky;
     top: 0;
     align-self: flex-start;
     min-height: 100vh;
     z-index: 10;
+    transition: width var(--femr-transition-default), padding var(--femr-transition-default);
+    overflow: hidden;
+}
+
+.femr-sidebar:is(:hover, :focus-within) {
+    width: var(--femr-sidebar-width-expanded);
+    padding: 32px 24px;
+}
+
+.femr-sidebar:is(:hover, :focus-within) .femr-sidebar__brand-link {
+    justify-content: flex-start;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-link {
+    gap: 0;
+}
+
+.femr-sidebar__brand {
+    margin-bottom: 24px;
+    transition: opacity var(--femr-transition-default), transform var(--femr-transition-default);
 }
 
 .femr-sidebar__brand-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     font-size: 28px;
     font-weight: 700;
     color: var(--femr-color-primary);
     text-decoration: none;
     letter-spacing: -0.02em;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.femr-sidebar__brand-icon {
+    font-size: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.femr-sidebar__brand-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    text-align: left;
+    transition: opacity var(--femr-transition-default), transform var(--femr-transition-default);
+}
+
+.femr-sidebar__brand-text--full {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.femr-sidebar__brand-text--collapsed {
+    display: none;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-transform: lowercase;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-text--full {
+    display: none;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-text--collapsed {
+    display: inline-flex;
+}
+
+.femr-sidebar__section,
+.femr-sidebar__search-container,
+.femr-sidebar__user,
+.femr-sidebar__section-label,
+.femr-sidebar__nav-text,
+.femr-sidebar__user-actions {
+    transition: opacity var(--femr-transition-default), transform var(--femr-transition-default), max-width var(--femr-transition-default);
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__section-label,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-text,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-meta,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-title,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-subtitle {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-8px);
+    pointer-events: none;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__section-label,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-text,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-meta,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-title,
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-subtitle {
+    max-width: 0;
+}
+
+.femr-sidebar__section-label,
+.femr-sidebar__nav-text,
+.femr-sidebar__user-meta,
+.femr-sidebar__anonymous-title,
+.femr-sidebar__anonymous-subtitle {
+    max-width: 240px;
+    overflow: hidden;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container {
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-placeholder {
+    display: inline-flex;
+    margin-top: 0;
+}
+
+.femr-sidebar:is(:hover, :focus-within) .femr-sidebar__search-placeholder {
+    display: none;
+}
+
+.femr-sidebar:is(:hover, :focus-within) .femr-sidebar__search-container {
+    max-height: none;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-link {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 12px;
+    overflow: hidden;
+}
+
+.femr-sidebar:is(:hover, :focus-within) .femr-sidebar__nav-link {
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+}
+
+.femr-sidebar:is(:hover, :focus-within) .femr-sidebar__user {
+    flex-direction: row;
+    align-items: center;
+    padding: 16px;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-actions {
+    width: 100%;
+    justify-content: center;
 }
 
 .femr-sidebar__section {
@@ -67,6 +228,39 @@ body.femr-shell {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow: hidden;
+    transition: max-height var(--femr-transition-default), margin var(--femr-transition-default);
+}
+
+.femr-sidebar__search-placeholder {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--femr-radius-md);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(229, 231, 235, 0.78);
+    border: 1px solid transparent;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.femr-sidebar__search-placeholder .material-symbols-outlined {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.femr-sidebar__search-placeholder:hover,
+.femr-sidebar__search-placeholder:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    outline: none;
+}
+
+.femr-sidebar__search-placeholder:focus {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.35);
 }
 
 .femr-sidebar__section-label {
@@ -174,6 +368,8 @@ body.femr-shell {
 .femr-sidebar__nav-text {
     font-size: 15px;
     flex: 1;
+    white-space: nowrap;
+    max-width: 220px;
 }
 
 .femr-sidebar__spacer {
@@ -283,7 +479,7 @@ body.femr-shell {
 
 .femr-shell__main {
     flex: 1;
-    padding: 40px 48px;
+    padding: 24px 32px;
 }
 
 .femr-shell__main-inner {
@@ -293,7 +489,7 @@ body.femr-shell {
 }
 
 .femr-shell__footer {
-    padding: 0 48px 32px;
+    padding: 0 32px 24px;
 }
 
 .femr-shell__footer footer {
@@ -315,7 +511,7 @@ body.femr-shell {
 }
 
 .femr-footer {
-    padding: 32px 0 0;
+    padding: 24px 0 0;
     border-top: 1px solid rgba(28, 25, 23, 0.08);
 }
 
@@ -371,14 +567,51 @@ body.femr-shell {
         min-height: auto;
         flex-direction: column;
         gap: 24px;
+        padding: 24px;
+        transition: none;
+    }
+
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-text,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__section-label,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-text,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-meta,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-title,
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-subtitle {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container {
+        max-height: none;
+        margin: initial;
+    }
+
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-link {
+        justify-content: flex-start;
+        gap: 12px;
+        padding-inline: 16px;
+    }
+
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user {
+        flex-direction: row;
+        align-items: center;
+        padding: 16px;
+    }
+
+    .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-actions {
+        width: auto;
+        justify-content: flex-start;
     }
 
     .femr-shell__main {
-        padding: 32px 24px;
+        padding: 20px 20px;
     }
 
     .femr-shell__footer {
-        padding: 0 24px 24px;
+        padding: 0 20px 20px;
     }
 }
 
@@ -390,5 +623,13 @@ body.femr-shell {
 
     .femr-sidebar__user-actions {
         align-self: stretch;
+    }
+
+    .femr-shell__main {
+        padding: 16px 16px;
+    }
+
+    .femr-shell__footer {
+        padding: 0 16px 16px;
     }
 }

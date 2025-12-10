@@ -150,7 +150,7 @@ var manageInventoryFeature = {
         var id = $(editCell).find('input.medication_id').val();
         var tripId = $(editCell).find('input.trip_id').val();
 
-        if ($(btn).hasClass("btn-danger")) {
+        if ($(btn).hasClass("admin-chip-button--danger")) {
             $.ajax({
                 url: '/admin/inventory/delete/' + id + "/" + tripId,
                 type: 'POST',
@@ -158,8 +158,8 @@ var manageInventoryFeature = {
                 dataType: 'text',
                 success: function () {
                     $(btn).html("Undo");
-                    $(btn).removeClass("btn-danger");
-                    $(btn).addClass("btn-success");
+                    $(btn).removeClass("admin-chip-button--danger");
+                    $(btn).addClass("admin-chip-button--success");
                 },
                 error: function () {
                     //don't change button - implies an error
@@ -174,8 +174,8 @@ var manageInventoryFeature = {
                 dataType: 'text',
                 success: function () {
                     $(btn).html("Remove");
-                    $(btn).removeClass("btn-success");
-                    $(btn).addClass("btn-danger");
+                    $(btn).removeClass("admin-chip-button--success");
+                    $(btn).addClass("admin-chip-button--danger");
                 },
                 error: function () {
                     //don't change button - implies an error

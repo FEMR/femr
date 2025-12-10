@@ -11,7 +11,13 @@
 @import femr.ui.controllers.routes.SettingsController
 @import femr.ui.controllers.manager.routes.ManagerController
 @import femr.ui.controllers.superuser.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TabController
 @import femr.ui.controllers.admin.routes.AdminController
+@import femr.ui.controllers.admin.routes.ConfigureController
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.TripController
+@import femr.ui.controllers.admin.routes.UsersController
+@import femr.ui.controllers.admin.routes.UpdatesController
 @import femr.ui.controllers.routes.DatabaseDumpController
 @import scala.collection.JavaConverters._
 
@@ -31,7 +37,12 @@
 
 <div class="femr-sidebar">
     <div class="femr-sidebar__brand">
-        <a href="@HomeController.index()" class="femr-sidebar__brand-link">femr</a>
+        <a href="@HomeController.index()" class="femr-sidebar__brand-link" aria-label="Home">
+            <span class="femr-sidebar__brand-text">
+                <span class="femr-sidebar__brand-text--full">femr</span>
+                <span class="femr-sidebar__brand-text--collapsed" aria-hidden="true">f</span>
+            </span>
+        </a>
     </div>
 
     @if(currentUser != null) {
@@ -49,6 +60,10 @@
                         const element = document.getElementById(elementId);
                         if (element) {
                             element.textContent = value;
+                            const parentLink = element.closest('a');
+                            if (parentLink) {
+                                parentLink.setAttribute('aria-label', value);
+                            }
                         }
                     }
 
@@ -60,6 +75,11 @@
                         updateTextContent('langCode_research', languageData[languageCode].langCode_research);
                         updateTextContent('langCode_manager', languageData[languageCode].langCode_manager);
                         updateTextContent('langCode_admin', languageData[languageCode].langCode_admin);
+                        updateTextContent('langCode_admin_configure', languageData[languageCode].admin_configure);
+                        updateTextContent('langCode_admin_inventory', languageData[languageCode].admin_inventory);
+                        updateTextContent('langCode_admin_trips', languageData[languageCode].admin_trips);
+                        updateTextContent('langCode_admin_users', languageData[languageCode].admin_users);
+                        updateTextContent('langCode_admin_updates', languageData[languageCode].admin_updates);
                         updateTextContent('langCode_superUser', languageData[languageCode].langCode_superUser);
                         updateTextContent('langCode_reference', languageData[languageCode].langCode_reference);
                         updateTextContent('langCode_settings', languageData[languageCode].langCode_settings);
@@ -77,19 +97,19 @@
             <ul class="femr-sidebar__nav-list">
                 @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@TriageController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@TriageController.indexGet()" aria-label="Triage">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">person_add</span>
                             <span class="femr-sidebar__nav-text" id="langCode_triage">Triage</span>
                         </a>
                     </li>
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@MedicalController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@MedicalController.indexGet()" aria-label="Medical">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">medical_services</span>
                             <span class="femr-sidebar__nav-text" id="langCode_medical">Medical</span>
                         </a>
                     </li>
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@PharmaciesController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@PharmaciesController.indexGet()" aria-label="Pharmacy">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">vaccines</span>
                             <span class="femr-sidebar__nav-text" id="langCode_pharmacy">Pharmacy</span>
                         </a>
@@ -97,7 +117,7 @@
                 }
                 @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@ResearchController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@ResearchController.indexGet()" aria-label="Research">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">science</span>
                             <span class="femr-sidebar__nav-text" id="langCode_research">Research</span>
                         </a>
@@ -105,36 +125,74 @@
                 }
                 @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@ManagerController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@ManagerController.indexGet()" aria-label="Manager">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">admin_panel_settings</span>
                             <span class="femr-sidebar__nav-text" id="langCode_manager">Manager</span>
                         </a>
                     </li>
                 }
-                @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+                @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles)) {
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@AdminController.index()">
-                            <span class="material-symbols-outlined femr-sidebar__nav-icon">shield_person</span>
+                        <a class="femr-sidebar__nav-link" href="@AdminController.index()" aria-label="Admin Panel" data-nav-root="/admin">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">grid_view</span>
                             <span class="femr-sidebar__nav-text" id="langCode_admin">Admin Panel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@ConfigureController.manageGet()" aria-label="Configure" data-nav-root="/admin/configure">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">tune</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin_configure">Configure</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@InventoryController.manageGet(0)" aria-label="Inventory" data-nav-root="/admin/inventory">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">inventory_2</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin_inventory">Inventory</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@TripController.manageGet()" aria-label="Trips" data-nav-root="/admin/trips">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">flight_takeoff</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin_trips">Trips</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@UsersController.manageGet()" aria-label="Users" data-nav-root="/admin/users">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">group</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin_users">Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@UpdatesController.manageGet()" aria-label="Updates" data-nav-root="/admin/updates">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">system_update</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin_updates">Updates</span>
                         </a>
                     </li>
                 }
                 @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
                     <li>
-                        <a class="femr-sidebar__nav-link" href="@SuperuserController.indexGet()">
+                        <a class="femr-sidebar__nav-link" href="@SuperuserController.indexGet()" aria-label="Superuser">
                             <span class="material-symbols-outlined femr-sidebar__nav-icon">shield_person</span>
-                            <span class="femr-sidebar__nav-text" id="langCode_superUser">Admin Panel</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_superUser">Superuser</span>
                         </a>
                     </li>
+                    @if(currentUser.getEmail == "superuser") {
+                        <li>
+                            <a class="femr-sidebar__nav-link" href="@TabController.manageGet()" aria-label="Tabs">
+                                <span class="material-symbols-outlined femr-sidebar__nav-icon">tab</span>
+                                <span class="femr-sidebar__nav-text">Tabs</span>
+                            </a>
+                        </li>
+                    }
                 }
                 <li>
-                    <a class="femr-sidebar__nav-link" href="@DatabaseDumpController.indexGet()">
+                    <a class="femr-sidebar__nav-link" href="@DatabaseDumpController.indexGet()" aria-label="Backup Data">
                         <span class="material-symbols-outlined femr-sidebar__nav-icon">download</span>
                         <span class="femr-sidebar__nav-text">Backup Data</span>
                     </a>
                 </li>
                 <li>
-                    <a class="femr-sidebar__nav-link" href="@ReferenceController.indexGet()" target="_blank" rel="noopener">
+                    <a class="femr-sidebar__nav-link" href="@ReferenceController.indexGet()" target="_blank" rel="noopener" aria-label="Reference">
                         <span class="material-symbols-outlined femr-sidebar__nav-icon">library_books</span>
                         <span class="femr-sidebar__nav-text" id="langCode_reference">Reference</span>
                     </a>

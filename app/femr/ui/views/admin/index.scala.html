@@ -1,6 +1,12 @@
 @(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.ConfigureController
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.TripController
+@import femr.ui.controllers.admin.routes.UsersController
+@import femr.ui.controllers.admin.routes.UpdatesController
+@import femr.ui.controllers.superuser.routes.TabController
 
 <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -22,10 +28,77 @@
             function updateLanguage(languageCode = "en") {
                 localStorage.setItem('languageCode', languageCode);
                 updateTextContent("admin_welcome", languageData[languageCode].admin_welcome);
+                updateTextContent("admin_card_configure", languageData[languageCode].admin_configure);
+                updateTextContent("admin_card_inventory", languageData[languageCode].admin_inventory);
+                updateTextContent("admin_card_trips", languageData[languageCode].admin_trips);
+                updateTextContent("admin_card_users", languageData[languageCode].admin_users);
+                updateTextContent("admin_card_updates", languageData[languageCode].admin_updates);
             }
         });
 </script>
 
 @admin("Admin", currentUser, assets = assets) {
-    <h3 id="admin_welcome">Welcome, Administrator. Choose an option to get started.</h3>
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <h2 class="admin-section__title" id="admin_welcome">Welcome, Administrator. Choose an option to get started.</h2>
+        </div>
+
+        <div class="admin-action-grid">
+            <div class="admin-action-grid__item">
+                <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">tune</span>
+                <h3 class="admin-action-grid__title" id="admin_card_configure">Configure</h3>
+                <p class="admin-action-grid__description">Control kit-wide feature toggles and system behaviour.</p>
+                <a class="admin-action-grid__cta" href="@ConfigureController.manageGet()">
+                    <span>Open Configure</span>
+                </a>
+            </div>
+
+            <div class="admin-action-grid__item">
+                <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">inventory_2</span>
+                <h3 class="admin-action-grid__title" id="admin_card_inventory">Inventory</h3>
+                <p class="admin-action-grid__description">Manage formulary items, adjust quantities, and export trip data.</p>
+                <a class="admin-action-grid__cta" href="@InventoryController.manageGet(0)">
+                    <span>Manage Inventory</span>
+                </a>
+            </div>
+
+            <div class="admin-action-grid__item">
+                <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">flight_takeoff</span>
+                <h3 class="admin-action-grid__title" id="admin_card_trips">Trips</h3>
+                <p class="admin-action-grid__description">Create teams and trips, assign members, and keep destinations up to date.</p>
+                <a class="admin-action-grid__cta" href="@TripController.manageGet()">
+                    <span>Plan Trips</span>
+                </a>
+            </div>
+
+            <div class="admin-action-grid__item">
+                <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">group</span>
+                <h3 class="admin-action-grid__title" id="admin_card_users">Users</h3>
+                <p class="admin-action-grid__description">Invite teammates, adjust roles, and maintain account access.</p>
+                <a class="admin-action-grid__cta" href="@UsersController.manageGet()">
+                    <span>Manage Users</span>
+                </a>
+            </div>
+
+            <div class="admin-action-grid__item">
+                <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">system_update</span>
+                <h3 class="admin-action-grid__title" id="admin_card_updates">Updates</h3>
+                <p class="admin-action-grid__description">Monitor kit health, trigger backups, and manage language packages.</p>
+                <a class="admin-action-grid__cta" href="@UpdatesController.manageGet()">
+                    <span>Review Updates</span>
+                </a>
+            </div>
+
+            @if(currentUser.getEmail == "superuser") {
+                <div class="admin-action-grid__item">
+                    <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">tab</span>
+                    <h3 class="admin-action-grid__title">Tabs</h3>
+                    <p class="admin-action-grid__description">Configure superuser tab visibility and advanced settings.</p>
+                    <a class="admin-action-grid__cta" href="@TabController.manageGet()">
+                        <span>Open Tabs</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
 }

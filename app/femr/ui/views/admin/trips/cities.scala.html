@@ -6,11 +6,10 @@
 
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
-    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
 }
 
 @additionalScripts = {
-    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
     <script>
             let languageData;
@@ -19,7 +18,7 @@
                     .then(response => response.json())
                     .then(data => {
                         languageData = data;
-                        updateLanguage("@{currentUser.getLanguageCode}","@{currentUser.getFirstName}");
+                        updateLanguage("@{currentUser.getLanguageCode}");
 
                     })
                     .catch(error => console.error('Error fetching language data:', error));
@@ -29,82 +28,117 @@
                 const element = document.getElementById(elementId);
                 if (element) {
                     element.textContent = value;
-                } else {
-                    console.error(`Element with ID '${elementId}' not found.`);
                 }
             }
 
+            function updateTextContentAll(selector, value) {
+                document.querySelectorAll(selector).forEach(function (element) {
+                    element.textContent = value;
+                });
+            }
+
             function updateLanguage(languageCode) {
-                localStorage.setItem('languageCode', languageCode);
-                updateTextContent("trips_cities_Add", languageData[languageCode].trips_cities_Add);
-                updateTextContent("trips_cities_City", languageData[languageCode].trips_cities_City);
-                updateTextContent("trips_cities_Country", languageData[languageCode].trips_cities_Country);
-                updateTextContent("trips_cities_Submit", languageData[languageCode].trips_cities_Submit);
-                updateTextContent("trips_cities_tCity", languageData[languageCode].trips_cities_tCity);
-                updateTextContent("trips_cities_tCountry", languageData[languageCode].trips_cities_tCountry);
+                const locale = languageData[languageCode] ? languageCode : 'en';
+                localStorage.setItem('languageCode', locale);
+                const strings = languageData[locale];
+
+                updateTextContent("trips_cities_Add", strings.trips_cities_Add);
+                updateTextContent("trips_cities_City", strings.trips_cities_City);
+                updateTextContent("trips_cities_Country", strings.trips_cities_Country);
+                updateTextContent("trips_cities_Submit", strings.trips_cities_Submit);
+
+                updateTextContentAll("[data-i18n='trips_cities_tCity']", strings.trips_cities_tCity || 'City');
+                updateTextContentAll("[data-i18n='trips_cities_tCountry']", strings.trips_cities_tCountry || 'Country');
             }
     </script>
 }
 
 @admin("Trips - Manage Cities", currentUser, scripts = additionalScripts, styles = additionalStyles, assets = assets) {
 
-    @tripsMenu()
+    @tripsMenu("cities")
 
-    @for(messageIndex <- 1 to viewModel.getMessages.size){
-        <p>@viewModel.getMessages.get(messageIndex - 1)</p>
+    @if(viewModel.getMessages.size > 0) {
+        <div class="admin-view__messages" role="status">
+            @for(messageIndex <- 1 to viewModel.getMessages.size){
+                <p class="adminMessage">@viewModel.getMessages.get(messageIndex - 1)</p>
+            }
+        </div>
     }
 
     @helper.form(action = TripController.citiesPost()) {
-        <div id="addCityWrap">
-            <h1 id="trips_cities_Add">Add City</h1>
-            <div>
-                <label><span id="trips_cities_City">City:</span>
-                    <span class="red bold">*</span>
-                    <input class="fInput" type="text" name="newCity"/>
-                </label>
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title" id="trips_cities_Add">Add City</h2>
+                    <p class="admin-section__description">Register new trip destinations and connect them with their country.</p>
+                </div>
             </div>
 
-            <div>
-                <label>
-                    <span id="trips_cities_Country">Country:</span>
-                    <span class="red bold">*</span>
-                    <select class="fSelect" name="newCityCountry">
-                        <option selected disabled value=""></option>
+            <div class="admin-form admin-form--stacked">
+                <div class="admin-form__field">
+                    <label for="newCity">
+                        <span id="trips_cities_City">City</span>
+                        <span class="admin-required" aria-hidden="true">*</span>
+                    </label>
+                    <input id="newCity" type="text" name="newCity" />
+                </div>
+
+                <div class="admin-form__field">
+                    <label for="newCityCountry">
+                        <span id="trips_cities_Country">Country</span>
+                        <span class="admin-required" aria-hidden="true">*</span>
+                    </label>
+                    <select id="newCityCountry" name="newCityCountry">
+                        <option disabled value="" selected></option>
                         @for(countryIndex <- 1 to viewModel.getAvailableCountries.size) {
                             <option>@viewModel.getAvailableCountries.get(countryIndex - 1)</option>
                         }
                     </select>
-                </label>
+                </div>
             </div>
-        </div>
-        <div id="submitWrap">
-            <button type="submit" class="fButton" id="trips_cities_Submit">Submit</button>
-        </div>
+
+            <div class="admin-section__actions">
+                <button type="submit" class="admin-button admin-button--primary" id="trips_cities_Submit">Submit</button>
+            </div>
+        </section>
     }
 
-    <div id="tableWrap">
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">City directory</h2>
+                <p class="admin-section__description">Browse the destinations available for mission trips.</p>
+            </div>
+        </div>
 
-        <table id="cityTable">
-            <thead>
-                <tr>
-                    <th id="trips_cities_tCity">City</th>
-                    <th id="trips_cities_tCountry">Country</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(i <- 1 to viewModel.getAvailableCities.size) {
-                @defining(viewModel.getAvailableCities.get(i - 1)) { city =>
-
-                    <tr>
-                        <td>@city.getCityName</td>
-                        <td>@city.getCountryName</td>
-                    </tr>
-                }
-            }
-            </tbody>
-        </table>
-
-
-    </div>
+        @if(viewModel.getAvailableCities.isEmpty) {
+            <div class="admin-empty-state">
+                <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">location_city</span>
+                <h3 class="admin-empty-state__title">No cities added</h3>
+                <p class="admin-empty-state__description">Add cities to make them available when creating new trips.</p>
+            </div>
+        } else {
+            <div class="admin-table-wrap" role="region" aria-label="City directory">
+                <table class="admin-table" id="cityTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-i18n="trips_cities_tCity">City</th>
+                            <th scope="col" data-i18n="trips_cities_tCountry">Country</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(i <- 1 to viewModel.getAvailableCities.size) {
+                        @defining(viewModel.getAvailableCities.get(i - 1)) { city =>
+                            <tr>
+                                <td>@city.getCityName</td>
+                                <td>@city.getCountryName</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
 
 }

@@ -6,12 +6,14 @@ $(document).ready(function(){
         $("[name='newTripCountry']").val($(this).find(':selected').attr('country-name'));
     });
 
-    if ($('#tripTable').length > 0)
-        $('#tripTable').DataTable();
-    if ($('#cityTable').length > 0)
-        $('#cityTable').DataTable();
-    if ($('#teamTable').length > 0)
-        $('#teamTable').DataTable();
+    if ($.fn.DataTable) {
+        if ($('#tripTable').length > 0)
+            $('#tripTable').DataTable();
+        if ($('#cityTable').length > 0)
+            $('#cityTable').DataTable();
+        if ($('#teamTable').length > 0)
+            $('#teamTable').DataTable();
+    }
     if ($('#addUsersSelect2').length > 0){
 
         $('#addUsersSelect2').select2({

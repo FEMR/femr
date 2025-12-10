@@ -5,32 +5,48 @@
 @import femr.ui.controllers.admin.routes.ConfigureController
 @import femr.ui.views.html.layouts.admin
 
-    @additionalStyles = {
-        <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
-    }
-
-@admin("Configure", currentUser, styles = additionalStyles, assets = assets) {
+@admin("Configure", currentUser, assets = assets) {
     @helper.form(action = ConfigureController.managePost()) {
-        <table id="configurationTable">
-            <tr>
-                <th>Feature</th>
-                <th>Description</th>
-                <th>Toggle</th>
-            </tr>
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title">Feature toggles</h2>
+                    <p class="admin-section__description">Adjust available modules and utilities to tailor fEMR for your clinic.</p>
+                </div>
+                <button type="submit" class="admin-button admin-button--primary">
+                    <span class="material-symbols-outlined" aria-hidden="true">save</span>
+                    <span>Save changes</span>
+                </button>
+            </div>
 
-            @for((key, valyew) <- viewModel.getSettings) {
-                <tr>
-                    <td class="name">@key</td>
-                        @defining(viewModel.getDescriptions.get(key)) { description => <td class="description">@description</td>}
-                    <td class="isActive">
-                        <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
-                    </td>
-                </tr>
-            }
-
-        </table>
-        
-        <input type="submit" class="fButton" value="Save"/>
+            <div class="admin-table-wrap">
+                <table class="admin-table" id="configurationTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Feature</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Toggle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((key, valyew) <- viewModel.getSettings) {
+                        <tr>
+                            <td class="name">@key</td>
+                            @defining(Option(viewModel.getDescriptions.get(key)).map(_.trim).filter(_.nonEmpty).getOrElse("No description provided")) { description =>
+                                <td class="description">@description</td>
+                            }
+                            <td class="isActive admin-toggle-cell">
+                                <label class="admin-toggle">
+                                    <input type="checkbox" name="settings[]" value="@key" aria-label={"Toggle " + key} @if(valyew) { checked="checked"} />
+                                    <span class="admin-toggle__indicator" aria-hidden="true"></span>
+                                    <span class="admin-toggle__label" data-label-on="Enabled" data-label-off="Disabled"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
     }
-
 }

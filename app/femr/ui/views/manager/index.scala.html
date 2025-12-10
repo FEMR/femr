@@ -3,117 +3,166 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
 @import femr.ui.controllers.routes.HistoryController
+@import scala.collection.JavaConverters._
 @additionalStyles = {
-
+    <link rel="stylesheet" href="@assets.path("css/admin/admin_redesign.css")">
     <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
 }
 
 @main("Manager", currentUser, styles = additionalStyles, assets = assets) {
     <script>
-            document.addEventListener('DOMContentLoaded', function(event) {
-                let languageData;
-                fetch('@routes.Assets.versioned("json/languages.json")')
-                        .then(response => response.json())
-                        .then(data => {
-                            languageData = data;
-                            updateLanguage("@{currentUser.getLanguageCode()}");
-                        });
+        document.addEventListener('DOMContentLoaded', function () {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    languageData = data;
+                    updateLanguage("@{currentUser.getLanguageCode()}");
+                });
 
-                function updateTextContent(elementId, value) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        element.textContent = value;
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateChildTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    const textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                    if (textNode) {
+                        textNode.textContent = value;
                     }
                 }
+            }
 
-                function updateChildTextContent(elementId, value) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-                        if (textNode) {
-                            textNode.textContent = value;
-                        }
-                    }
-                }
-
-                function updateLanguage(languageCode = "en") {
-                    localStorage.setItem('languageCode', languageCode);
-                    updateChildTextContent("manager_trip_message", languageData[languageCode].manager_trip_message);
-                    updateTextContent("manager_trip_link", languageData[languageCode].manager_trip_link);
-                    updateTextContent("manager_patients_overview", languageData[languageCode].manager_patients_overview);
-                }
-            });
+            function updateLanguage(languageCode = 'en') {
+                localStorage.setItem('languageCode', languageCode);
+                updateChildTextContent('manager_trip_message', languageData[languageCode].manager_trip_message);
+                updateTextContent('manager_trip_link', languageData[languageCode].manager_trip_link);
+                updateTextContent('manager_patients_overview', languageData[languageCode].manager_patients_overview);
+            }
+        });
     </script>
-    <div class="managerPanel">
-        <div class="backgroundForWrap">
 
-
-            <h3 id="manager_patients_overview">Overview of patients checked in today: @viewModelGet.getUserFriendlyDate </h3>
+    <div class="admin-view manager-view">
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div class="manager-section__heading">
+                    <h2 class="admin-section__title" id="manager_patients_overview">Overview of patients checked in today</h2>
+                    <p class="admin-section__description">Check-ins recorded on <span class="manager-date">@viewModelGet.getUserFriendlyDate</span>.</p>
+                </div>
+                @if(currentUser.getTripId != null) {
+                    @defining(Option(viewModelGet.getUserFriendlyTrip).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { tripName =>
+                        <div class="manager-trip-card" role="status" aria-live="polite">
+                            <span class="manager-trip-card__label">Current Trip</span>
+                            <span class="manager-trip-card__value">@tripName</span>
+                        </div>
+                    }
+                }
+            </div>
 
             @if(currentUser.getTripId != null) {
-                <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
-
-
-            <div id="table-container center-panel-grid" >
-                <div class="managerWrap">
-
-
-                    <table id="managersTable">
+                <div class="admin-table-wrap" role="region" aria-label="Patients checked in today">
+                    <table class="admin-table manager-table" id="managersTable">
                         <thead>
                             <tr>
-                                <th> Patient ID </th>
-                                <th> Name </th>
-                                <th> Patient Information </th>
-                                <th> Chief Complaint </th>
-                                <th> Triage Check-In Time </th>
-                                <th> Medical Check-In Time </th>
-                                <th> Pharmacy Check-In Time </th>
-                                <th> Total Time Spent </th>
+                                <th scope="col">Patient ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Patient Information</th>
+                                <th scope="col">Chief Complaint</th>
+                                <th scope="col">Triage Check-In</th>
+                                <th scope="col">Medical Check-In</th>
+                                <th scope="col">Pharmacy Check-In</th>
+                                <th scope="col">Total Time</th>
                             </tr>
                         </thead>
                         <tbody>
-
                             @for(encounterItem <- viewModelGet.getEncounter) {
-
-                                <tr class="form-history">
-                                    <td><a href="@HistoryController.indexEncounterGet(encounterItem.getId)">@encounterItem.getPatientItem.getId</a></td>
-                                    <td>@encounterItem.getPatientItem.getFirstName @encounterItem.getPatientItem.getLastName</td>
+                                @defining(encounterItem.getPatientItem) { patient =>
+                                <tr>
                                     <td>
-                                        @if(encounterItem.getPatientItem.getSex != null) {
-                                            <strong>Gender: </strong>
-                                            @encounterItem.getPatientItem.getSex <br>
+                                        @if(patient != null) {
+                                            <a class="manager-table__link" href="@HistoryController.indexEncounterGet(encounterItem.getId)">@patient.getId</a>
+                                        } else {
+                                            <span class="admin-table__placeholder">—</span>
                                         }
-                                        @if(encounterItem.getPatientItem.getAge() != null) {
-                                            <strong>Age: </strong>
-                                            @encounterItem.getPatientItem.getAge <br>
-                                        }
-                                        @if(encounterItem.getPatientItem.getCity() != null) {
-                                            <strong>City: </strong>
-                                            @encounterItem.getPatientItem.getCity <br>
-                                            }
                                     </td>
-                                    <td>@encounterItem.getChiefComplaints </td>
-
-                                    @if(encounterItem.getTriageDateOfVisit != null) {
-                                        <td>@encounterItem.getTriageDateOfVisit</td>
+                                    @defining(if (patient != null) {
+                                        Seq(
+                                            Option(patient.getFirstName).map(_.trim).getOrElse(""),
+                                            Option(patient.getLastName).map(_.trim).getOrElse("")
+                                        ).filter(_.nonEmpty).mkString(" ")
+                                    } else "") { patientName =>
+                                        <td>@(if(patientName.nonEmpty) patientName else "—")</td>
                                     }
-                                    @if(encounterItem.getMedicalDateOfVisit != null) {
-                                        <td>@encounterItem.getMedicalDateOfVisit</td>
+                                    <td>
+                                        <div class="manager-table__patient-info">
+                                            @if(patient != null && Option(patient.getSex).exists(_.trim.nonEmpty)) {
+                                                <div>
+                                                    <span class="manager-table__meta-label">Gender</span>
+                                                    <span class="manager-table__meta-value">@patient.getSex</span>
+                                                </div>
+                                            }
+                                            @if(patient != null && patient.getAge() != null) {
+                                                <div>
+                                                    <span class="manager-table__meta-label">Age</span>
+                                                    <span class="manager-table__meta-value">@patient.getAge</span>
+                                                </div>
+                                            }
+                                            @if(patient != null && Option(patient.getCity).exists(_.trim.nonEmpty)) {
+                                                <div>
+                                                    <span class="manager-table__meta-label">City</span>
+                                                    <span class="manager-table__meta-value">@patient.getCity</span>
+                                                </div>
+                                            }
+                                            @if(patient == null || (
+                                                !Option(patient.getSex).exists(_.trim.nonEmpty) &&
+                                                patient.getAge() == null &&
+                                                !Option(patient.getCity).exists(_.trim.nonEmpty)
+                                            )) {
+                                                <span class="admin-table__placeholder">—</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    @defining(
+                                        Option(encounterItem.getChiefComplaints)
+                                            .map(_.asScala)
+                                            .map(_.flatMap(value => Option(value).map(_.trim)).filter(_.nonEmpty).mkString(", "))
+                                            .filter(_.nonEmpty)
+                                            .getOrElse("—")
+                                    ) { chiefComplaint =>
+                                        <td>@chiefComplaint</td>
                                     }
-                                    @if(encounterItem.getPharmacyDateOfVisit != null) {
-                                        <td>@encounterItem.getPharmacyDateOfVisit</td>
+                                    @defining(Option(encounterItem.getTriageDateOfVisit).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { triageTime =>
+                                        <td>@triageTime</td>
                                     }
-                                    <td>@encounterItem.getTurnAroundTime</td>
+                                    @defining(Option(encounterItem.getMedicalDateOfVisit).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { medicalTime =>
+                                        <td>@medicalTime</td>
+                                    }
+                                    @defining(Option(encounterItem.getPharmacyDateOfVisit).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { pharmacyTime =>
+                                        <td>@pharmacyTime</td>
+                                    }
+                                    @defining(Option(encounterItem.getTurnAroundTime).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { totalTime =>
+                                        <td>@totalTime</td>
+                                    }
                                 </tr>
+                                }
                             }
                         </tbody>
                     </table>
                 </div>
-            </div>
             } else {
-    @*          TODO: Add the full name of the user in the future*@
-                <h4 id="manager_trip_message">User is not currently assigned to a trip. To manage trips please have an Admin visit the <a id="manager_trip_link" href="@TripController.manageGet()">Trip page</a></h4>
+                <div class="admin-empty-state">
+                    <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">flight</span>
+                    <h3 class="admin-empty-state__title">No active trip</h3>
+                    <p class="admin-empty-state__description" id="manager_trip_message">
+                        User is not currently assigned to a trip. To manage trips please have an Admin visit the
+                        <a id="manager_trip_link" href="@TripController.manageGet()">Trip page</a>.
+                    </p>
+                </div>
             }
-        </div>
+        </section>
     </div>
 }

@@ -2,8 +2,6 @@ $(document).ready(function () {
     var urlPieces = window.location.href.split('/');
 
     if ($.inArray("edit", urlPieces) !== -1) {
-        editUsers.bindRoleDropDownClick();
-        editUsers.bindRoleBadge();
         editUsers.bindSubmitButton();
     } else if ($.inArray("create", urlPieces) !== -1 || $.inArray("register", urlPieces) !== -1 ) {
         createUsers.bindSubmitButton();
@@ -11,22 +9,30 @@ $(document).ready(function () {
         manageUsers.bindUserToggleButtons();
     }
 
-    $("#userTable").DataTable({
-        columnDefs: [
-                    { orderable: false, targets: [4] },
-                    { orderable: false, targets: [6] },
-                    { orderable: false, targets: [7] }]
-    });
+    const $userTable = $("#userTable");
+    if ($userTable.length) {
+        $userTable.DataTable({
+            columnDefs: [
+                { orderable: false, targets: [2, 3, 6] }
+            ]
+        });
+    }
 });
 
 var manageUsers = {
-    elements: {
-        userToggleButtons: $('.toggleBtn')
-    },
     bindUserToggleButtons: function () {
-        manageUsers.elements.userToggleButtons.click(function () {
+        $(document).on('click', '.toggleBtn', function (event) {
+            event.preventDefault();
             manageUsers.toggleUser(this);
         });
+    },
+    setButtonState: function (btn, variant, label, icon) {
+        var $btn = $(btn);
+        $btn.removeClass('admin-button--success admin-button--danger');
+        if (variant) {
+            $btn.addClass('admin-button--' + variant);
+        }
+        $btn.html('<span class="material-symbols-outlined" aria-hidden="true">' + icon + '</span><span>' + label + '</span>');
     },
     toggleUser: function (btn) {
         //user ID
@@ -40,14 +46,10 @@ var manageUsers = {
             success: function (isDeleted) {
                 //on success, toggle button to reflect current state of the user
                 if (isDeleted === "false") {
-                    $(btn).html("Deactivate");
-                    $(btn).removeClass("btn-success");
-                    $(btn).addClass("btn-danger");
+                    manageUsers.setButtonState(btn, 'danger', 'Deactivate', 'block');
 
                 } else {
-                    $(btn).html("Activate");
-                    $(btn).removeClass("btn-danger");
-                    $(btn).addClass("btn-success");
+                    manageUsers.setButtonState(btn, 'success', 'Activate', 'check_circle');
                 }
             },
             error: function () {
@@ -152,7 +154,6 @@ var createUsers = {
 
 var editUsers = {
     elements: {
-        xButtonOnRoleListItem: $('.roleBadge'),
         passwordTextBox: $('#newPassword')
     },
     /**
@@ -179,44 +180,28 @@ var editUsers = {
      * Validates the roles for edit user page
      */
     validateRoles: function () {
-        var role = true;
-        //validate roles
-        if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
-            role = false;
+        var roles = document.forms["createForm"].elements["roles[]"];
+        var hasRole = false;
+
+        if (roles) {
+            if (roles.length === undefined) {
+                hasRole = roles.checked;
+            } else {
+                for (var i = 0; i < roles.length; i++) {
+                    if (roles[i].checked) {
+                        hasRole = true;
+                        break;
+                    }
+                }
+            }
         }
-        if (role === false) {
+
+        if (!hasRole) {
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");
         }
-        return role;
-    },
-    bindRoleDropDownClick: function () {
-        $('.roleListItem').click(function () {
-            var role = $(this).text();
-            if (!editUsers.doesRoleExistInList(role)) {
-                $('#currentRoles').append("<li class=list-group-item value=" + role + "><span class='badge roleBadge'>X</span>" + role + "<input type=text class=hidden name=roles[] value=" + role + "></li>");
-                editUsers.elements.xButtonOnRoleListItem = $(editUsers.elements.xButtonOnRoleListItem.selector);
-                editUsers.bindRoleBadge();
-            }
-        });
-    },
-    bindRoleBadge: function () {
-        editUsers.elements.xButtonOnRoleListItem.unbind();
-        editUsers.elements.xButtonOnRoleListItem.click(function () {
-            editUsers.elements.xButtonOnRoleListItem = $(editUsers.elements.xButtonOnRoleListItem.selector);
-            $(this).parent().remove();
-        });
-    },
-    doesRoleExistInList: function (role) {
-        var exist = false;
-        var $roles = $('#currentRoles').find('> li');
-        $($roles).each(function () {
-            if ($(this).attr('value').toLowerCase() === role.toLowerCase()) {
-                exist = true;
-            }
-        });
-        return exist;
+        return hasRole;
     },
     bindSubmitButton: function () {
         $('#editUserSubmitBtn').click(function () {

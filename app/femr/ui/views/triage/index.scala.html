@@ -44,7 +44,6 @@
 
             document.addEventListener('DOMContentLoaded', function(event) {
                 initializeGenderLabels();
-                initializeTabs();
                 fetch('@routes.Assets.versioned("json/languages.json")')
                         .then(response => response.json())
                         .then(data => {
@@ -60,32 +59,6 @@
                             const languageCode = localStorage.getItem('languageCode') || '@currentUser.getLanguageCode()';
                             fileChosenText.textContent = this.files.length ? this.files[0].name : languageData[languageCode].triage_index_No;
                         }
-                    });
-                }
-
-                function initializeTabs() {
-                    const tabButtons = document.querySelectorAll('[data-triage-target]');
-                    const tabPanels = document.querySelectorAll('.femr-tabpanel');
-                    if (tabButtons.length === 0) {
-                        return;
-                    }
-
-                    tabButtons.forEach((button) => {
-                        button.addEventListener('click', () => {
-                            const targetId = button.getAttribute('data-triage-target');
-
-                            tabButtons.forEach((btn) => {
-                                const isActive = btn === button;
-                                btn.classList.toggle('is-active', isActive);
-                                btn.setAttribute('aria-selected', isActive);
-                            });
-
-                            tabPanels.forEach((panel) => {
-                                const isTarget = panel.id === targetId;
-                                panel.classList.toggle('femr-tabpanel--active', isTarget);
-                                panel.toggleAttribute('hidden', !isTarget);
-                            });
-                        });
                     });
                 }
 
@@ -204,8 +177,6 @@
                     updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
                     updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
                     updateTextContent("triage_index_h2_Check", languageData[language].triage_index_h2_Check);
-                    updateTextContent("general-info-tab", languageData[language].triage_index_h2_General);
-                    updateTextContent("vitals-tab", languageData[language].triage_index_Vitals);
                     updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
                     updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
                     updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
@@ -301,17 +272,9 @@
                     </div>
                 </div>
 
-                <div class="femr-tabs" role="tablist">
-                    <button type="button" class="femr-tab is-active" id="general-info-tab" data-triage-target="genInfoWrap" aria-controls="genInfoWrap" aria-selected="true">
-                        <span data-i18n-text="true">General Info</span>
-                    </button>
-                    <button type="button" class="femr-tab" id="vitals-tab" data-triage-target="vitalsWrap" aria-controls="vitalsWrap" aria-selected="false">
-                        <span data-i18n-text="true">Vitals</span>
-                    </button>
-                </div>
-
-                <div class="femr-tabs__panels">
-                    <section id="genInfoWrap" class="femr-tabpanel femr-tabpanel--active" role="tabpanel" aria-labelledby="general-info-tab">
+                <div class="femr-card__body">
+                    <div class="femr-content-wrapper">
+                        <section id="genInfoWrap" class="femr-section" aria-labelledby="triage_index_h2_General">
                         <div class="femr-section__header">
                             <h3 class="femr-section__title" id="triage_index_h2_General"><span data-i18n-text="true">General Info</span></h3>
                         </div>
@@ -349,7 +312,7 @@
                                     <input type="tel" class="fInput femr-input" id="phoneNumber" name="phoneNumber" placeholder="Phone Number"/>
                                 }
                             </div>
-                            <div class="generalInfoInput femr-field femr-field--span-2">
+                            <div class="generalInfoInput femr-field">
                                 <label for="address">
                                     <span data-i18n-text="true">Address</span>
                                 </label>
@@ -370,6 +333,13 @@
                                     <input type="text" class="citySearch fInput femr-input" name="city" id="city" value="@viewModel.getPatient.getCity" readonly>
                                 }
                             </div>
+                            <div class="generalInfoInput femr-field femr-gender-field">
+                                <label>Gender <span class="femr-required">*</span></label>
+                                <div class="btn-group femr-segmented femr-segmented--inline" id="genderBtns" data-toggle="buttons">
+                                    @inputButton("Male", "sex", "maleBtn", if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true, if(viewModel != null) viewModel.getPatient.getSex == "Male" else false, "Male")
+                                    @inputButton("Female", "sex", "femaleBtn", if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true, if(viewModel != null) viewModel.getPatient.getSex == "Female" else false, "Female")
+                                </div>
+                            </div>
                         </div>
 
                         <div class="femr-age-section">
@@ -387,7 +357,6 @@
                                     <input type="date" class="fInput femr-input" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
                                 </div>
                             </div>
-                            <div class="femr-age-separator"><span class="orSpan">OR</span></div>
                             <div class="generalInfoInput femr-field femr-field--stack femr-field--full">
                                 <label><span data-i18n-text="true">Age Classification</span></label>
                                 <div id="classificationRadioWrap" class="femr-classification">
@@ -397,16 +366,6 @@
                                         <span id="@("span_" + key)">@value</span>
                                     </label>
                                 }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="femr-gender-section">
-                            <div class="generalInfoInput femr-field femr-field--stack">
-                                <label>Gender <span class="femr-required">*</span></label>
-                                <div class="btn-group femr-segmented" id="genderBtns" data-toggle="buttons">
-                                    @inputButton("Male", "sex", "maleBtn", if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true, if(viewModel != null) viewModel.getPatient.getSex == "Male" else false, "Male")
-                                    @inputButton("Female", "sex", "femaleBtn", if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true, if(viewModel != null) viewModel.getPatient.getSex == "Female" else false, "Female")
                                 </div>
                             </div>
                         </div>
@@ -447,9 +406,9 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
+                        </section>
 
-                    <section id="vitalsWrap" class="femr-tabpanel" role="tabpanel" aria-labelledby="vitals-tab" hidden>
+                        <section id="vitalsWrap" class="femr-section femr-section--divider" aria-labelledby="vitalsHeading">
                         <div class="femr-section__header">
                             <h3 class="femr-section__title" id="vitalsHeading"><span data-i18n-text="true">Vitals</span></h3>
                         </div>
@@ -565,7 +524,8 @@
                                 <ol id="chiefComplaintList" class="femr-chief__list"></ol>
                             }
                         </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
 
                 <div class="femr-card__footer">

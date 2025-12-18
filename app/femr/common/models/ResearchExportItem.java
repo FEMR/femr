@@ -32,18 +32,19 @@ public class ResearchExportItem {
     private Integer weeksPregnant;
     private String dayOfVisit;
     private Integer tripId;
+
     private List<String> chiefComplaints;
     private List<String> prescribedMedications;
     private List<String> dispensedMedications;
     private Map<String, Float> vitalMap;
     private Map<String, String> tabFieldMap;
+
     private String trip_team;
     private String trip_country;
 
     public UUID getPatientId() {
         return patientId;
     }
-
     public void setPatientId(UUID patientId) {
         this.patientId = patientId;
     }
@@ -51,7 +52,6 @@ public class ResearchExportItem {
     public String getGender() {
         return gender;
     }
-
     public void setGender(String gender) {
         this.gender = gender;
     }
@@ -59,7 +59,6 @@ public class ResearchExportItem {
     public Integer getAge() {
         return age;
     }
-
     public void setAge(Integer age) {
         this.age = age;
     }
@@ -67,7 +66,6 @@ public class ResearchExportItem {
     public Boolean getIsPregnant() {
         return isPregnant;
     }
-
     public void setIsPregnant(Boolean isPregnant) {
         this.isPregnant = isPregnant;
     }
@@ -75,7 +73,6 @@ public class ResearchExportItem {
     public Integer getWeeksPregnant() {
         return weeksPregnant;
     }
-
     public void setWeeksPregnant(Integer weeksPregnant) {
         this.weeksPregnant = weeksPregnant;
     }
@@ -83,7 +80,6 @@ public class ResearchExportItem {
     public List<String> getChiefComplaints() {
         return chiefComplaints;
     }
-
     public void setChiefComplaints(List<String> chiefComplaints) {
         this.chiefComplaints = chiefComplaints;
     }
@@ -91,7 +87,6 @@ public class ResearchExportItem {
     public List<String> getPrescribedMedications() {
         return prescribedMedications;
     }
-
     public void setPrescribedMedications(List<String> prescribedMedications) {
         this.prescribedMedications = prescribedMedications;
     }
@@ -99,7 +94,6 @@ public class ResearchExportItem {
     public List<String> getDispensedMedications() {
         return dispensedMedications;
     }
-
     public void setDispensedMedications(List<String> dispensedMedications) {
         this.dispensedMedications = dispensedMedications;
     }
@@ -107,7 +101,6 @@ public class ResearchExportItem {
     public Map<String, Float> getVitalMap() {
         return vitalMap;
     }
-
     public void setVitalMap(Map<String, Float> vitalMap) {
         this.vitalMap = vitalMap;
     }
@@ -115,7 +108,6 @@ public class ResearchExportItem {
     public Map<String, String> getTabFieldMap() {
         return tabFieldMap;
     }
-
     public void setTabFieldMap(Map<String, String> tabFieldMap) {
         this.tabFieldMap = tabFieldMap;
     }
@@ -123,7 +115,6 @@ public class ResearchExportItem {
     public String getDayOfVisit() {
         return dayOfVisit;
     }
-
     public void setDayOfVisit(String day) {
         this.dayOfVisit = day;
     }
@@ -131,7 +122,6 @@ public class ResearchExportItem {
     public Integer getTripId() {
         return tripId;
     }
-
     public void setTripId(Integer tripId) {
         this.tripId = tripId;
     }
@@ -139,7 +129,6 @@ public class ResearchExportItem {
     public String getTrip_team() {
         return trip_team;
     }
-
     public void setTrip_team(String trip_team) {
         this.trip_team = trip_team;
     }
@@ -147,7 +136,6 @@ public class ResearchExportItem {
     public String getTrip_country() {
         return trip_country;
     }
-
     public void setTrip_country(String trip_country) {
         this.trip_country = trip_country;
     }

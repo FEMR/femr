@@ -202,13 +202,12 @@ public class ResearchService implements IResearchService {
         ResearchExportItem exportitem = new ResearchExportItem();
 
         IPatient patient = encounter.getPatient();
-
-        // Patient Id
-        exportitem.setPatientId(patientId);
-
         // Age
         Integer age = (int)Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
         exportitem.setAge(age);
+
+        // Patient ID
+        exportitem.setPatientId(patientId);
 
         // Gender
         String gender = StringUtils.outputGenderOrMissing(patient.getSex());
@@ -366,21 +365,58 @@ public class ResearchService implements IResearchService {
 
         CSVFormat fileformat = CSVFormat.DEFAULT
                 .withHeader(
-                        "patientId",
-                        "gender",
                         "age",
-                        "isPregnant",
-                        "weeksPregnant",
+                        "alcohol",
+                        "assessment",
+                        "bloodPressureDiastolic",
+                        "bloodPressureSystolic",
+                        "chiefComplaints1",
+                        "currentMedication",
                         "dayOfVisit",
+                        "diabetic",
+                        "dispensedMedications1",
+                        "dispensedMedications2",
+                        "dispensedMedications3",
+                        "dispensedMedications4",
+                        "familyHistory",
+                        "gender",
+                        "glucose",
+                        "heartRate",
+                        "heightFeet",
+                        "heightInches",
+                        "isPregnant",
+                        "medicalSurgicalHistory",
+                        "narrative",
+                        "onset",
+                        "oxygenSaturation",
+                        "palliates",
+                        "patientId",
+                        "pharmacy_note",
+                        "physicalExamination",
+                        "prescribedMedications1",
+                        "prescribedMedications2",
+                        "prescribedMedications3",
+                        "prescribedMedications4",
+                        "prescribedMedications5",
+                        "prescribedMedications6",
+                        "problem",
+                        "procedure_counseling",
+                        "provokes",
+                        "quality",
+                        "radiation",
+                        "respiratoryRate",
+                        "severity",
+                        "smoker",
+                        "socialHistory",
+                        "temperature",
+                        "timeOfDay",
                         "tripId",
-                        "trip_team",
                         "trip_country",
-                        "chiefComplaints",
-                        "prescribedMedications",
-                        "dispensedMedications",
-                        "vitals",
-                        "tabFields"
+                        "trip_team",
+                        "weeksPregnant",
+                        "weight"
                 );
+
         CSVPrinter printer;
         try {
              printer = new CSVPrinter(new FileWriter(exportFile), fileformat);
@@ -406,7 +442,7 @@ public class ResearchService implements IResearchService {
         if ( tripId != null && tripId != -1 ) {
             researchEncounterExpressionList.eq("missionTrip.id",tripId);
         } else {
-            Logger.error("ResearchService:exportPatientsByTrip passed with trip id: {} where tripId=null and tripId=-1 are invalidated"
+            Logger.error("ResearchService:exportPatientsByTrip called with trip id: {} where tripId=null and tripId=-1 are invalidated"
                     , tripId);
         }
         // Need to add how to handle the case when no trips are selected instead of error?
@@ -451,21 +487,73 @@ public class ResearchService implements IResearchService {
             //new SECTION 3
             try {
                 printer.printRecord(
-                        item.getPatientId() != null ? item.getPatientId().toString() : "",
-                        item.getGender(),
-                        item.getAge(),
-                        item.getIsPregnant(),
-                        item.getWeeksPregnant(),
-                        item.getDayOfVisit(),
-                        item.getTripId(),
-                        item.getTrip_team(),
-                        item.getTrip_country(),
-                        StringUtils.joinList(item.getChiefComplaints()),
-                        StringUtils.joinList(item.getPrescribedMedications()),
-                        StringUtils.joinList(item.getDispensedMedications()),
-                        StringUtils.joinFloatMap(item.getVitalMap()),
-                        StringUtils.joinStringMap(item.getTabFieldMap())
+                        item.getAge(),                         // age
+                        item.getVitalMap().get("alcohol"),     // alcohol
+                        item.getTabFieldMap().get("assessment"), // assessment
+                        item.getVitalMap().get("bloodPressureDiastolic"), // bloodPressureDiastolic
+                        item.getVitalMap().get("bloodPressureSystolic"),  // bloodPressureSystolic
+                        item.getChiefComplaints().isEmpty()
+                                ? null
+                                : item.getChiefComplaints().get(0),       // chiefComplaints1
+                        item.getTabFieldMap().get("currentMedication"),   // currentMedication
+                        item.getDayOfVisit(),                             // dayOfVisit
+                        item.getVitalMap().get("diabetic"),               // diabetic
+                        item.getDispensedMedications().size() > 0
+                                ? item.getDispensedMedications().get(0) : null, // dispensedMedications1
+                        item.getDispensedMedications().size() > 1
+                                ? item.getDispensedMedications().get(1) : null, // dispensedMedications2
+                        item.getDispensedMedications().size() > 2
+                                ? item.getDispensedMedications().get(2) : null, // dispensedMedications3
+                        item.getDispensedMedications().size() > 3
+                                ? item.getDispensedMedications().get(3) : null, // dispensedMedications4
+
+                        item.getTabFieldMap().get("familyHistory"),       // familyHistory
+                        item.getGender(),                                 // gender
+                        item.getVitalMap().get("glucose"),                // glucose
+                        item.getVitalMap().get("heartRate"),              // heartRate
+                        item.getVitalMap().get("heightFeet"),             // heightFeet
+                        item.getVitalMap().get("heightInches"),           // heightInches
+                        item.getIsPregnant(),                             // isPregnant
+                        item.getTabFieldMap().get("medicalSurgicalHistory"), // medicalSurgicalHistory
+                        item.getTabFieldMap().get("narrative"),           // narrative
+                        item.getTabFieldMap().get("onset"),               // onset
+                        item.getVitalMap().get("oxygenSaturation"),       // oxygenSaturation
+                        item.getTabFieldMap().get("palliates"),           // palliates
+                        item.getPatientId(),                                 // patientId
+                        item.getTabFieldMap().get("pharmacy_note"),       // pharmacy_note
+                        item.getTabFieldMap().get("physicalExamination"), // physicalExamination
+
+                        item.getPrescribedMedications().size() > 0
+                                ? item.getPrescribedMedications().get(0) : null, // prescribedMedications1
+                        item.getPrescribedMedications().size() > 1
+                                ? item.getPrescribedMedications().get(1) : null, // prescribedMedications2
+                        item.getPrescribedMedications().size() > 2
+                                ? item.getPrescribedMedications().get(2) : null, // prescribedMedications3
+                        item.getPrescribedMedications().size() > 3
+                                ? item.getPrescribedMedications().get(3) : null, // prescribedMedications4
+                        item.getPrescribedMedications().size() > 4
+                                ? item.getPrescribedMedications().get(4) : null, // prescribedMedications5
+                        item.getPrescribedMedications().size() > 5
+                                ? item.getPrescribedMedications().get(5) : null, // prescribedMedications6
+
+                        item.getTabFieldMap().get("problem"),             // problem
+                        item.getTabFieldMap().get("procedure_counseling"),// procedure_counseling
+                        item.getTabFieldMap().get("provokes"),            // provokes
+                        item.getTabFieldMap().get("quality"),             // quality
+                        item.getTabFieldMap().get("radiation"),           // radiation
+                        item.getVitalMap().get("respiratoryRate"),        // respiratoryRate
+                        item.getTabFieldMap().get("severity"),            // severity
+                        item.getVitalMap().get("smoker"),                 // smoker
+                        item.getTabFieldMap().get("socialHistory"),       // socialHistory
+                        item.getVitalMap().get("temperature"),            // temperature
+                        item.getTabFieldMap().get("timeOfDay"),           // timeOfDay
+                        item.getTripId(),                                 // tripId
+                        item.getTrip_country(),                           // trip_country
+                        item.getTrip_team(),                              // trip_team
+                        item.getWeeksPregnant(),                          // weeksPregnant
+                        item.getVitalMap().get("weight")                  // weight
                 );
+
                 printer.flush();
             } catch (Exception e) {
                 Logger.error("ResearchService:exportPatientsByTrip section3 failed to append row.");
@@ -496,8 +584,6 @@ public class ResearchService implements IResearchService {
                 String.format("%.3f", (float) (timestamp_sec1) / 1_000_000),
                 String.format("%.3f", (float) (timestamp_sec2 - timestamp_sec1) / 1_000_000),
                 String.format("%.3f", (float) (timestamp_sec3 - timestamp_sec2) / 1_000_000));
-        Logger.info("ResearchService:exportPatientsByTrip called createCsvFile() at {} seconds. ",
-                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
         long endTimeNanos = System.nanoTime();
         float executionTimeSeconds = (float) (endTimeNanos - startTimeNanos) / 1_000_000_000;
         Logger.info("ResearchService:exportPatientsByTrip finished {} encounters in {} seconds. ",

@@ -1,4 +1,13 @@
-firstName,lastName,phone,address,city,sex,birth,encounterDate
-John,Doe,555-1234,123 Main St,Springfield,M,1985-03-15,2025-11-05
-Jane,Smith,555-5678,456 Oak Ave,Shelbyville,F,1990-07-22,2025-11-05
-Robert,Johnson,555-9012,789 Pine Rd,Capital City,M,1978-11-08,2025-11-04
+firstName,lastName,phone,address,city,sex,birth,encounterDate,weight,height,weeksPregnant,chiefComplaints,smoker,diabetic,alcohol,cholesterol,hypertension
+John,Doe,555-1234,123 Main St,Springfield,M,1985-03-15,2025-12-04,78,180,,Head injury; cough,1,0,1,0,0
+Jane,Smith,555-5678,456 Oak Ave,Shelbyville,F,1990-07-22,2025-12-04,62,165,28,Pregnancy checkup; fever,0,0,0,0,0
+Robert,Johnson,555-9012,789 Pine Rd,Capital City,M,1978-11-08,2025-12-04,88,175,,Chest pain; shortness of breath; fever,0,1,0,1,1
+Maria,Garcia,555-3456,321 Elm St,Metropolis,F,1992-05-30,2025-12-04,58,160,,Diarrhea; abdominal pain; dehydration,0,0,0,0,0
+Ahmed,Hassan,555-7890,654 Oak Lane,Gotham,M,1988-02-14,2025-12-04,82,182,,Limb fracture; severe pain; trauma,1,1,0,0,1
+Sofia,Rodriguez,555-2468,987 Birch Way,Shelbyville,F,2010-08-18,2025-12-04,45,145,7,Measles suspected; high fever; rash,0,0,0,0,0
+Michael,Thompson,555-1357,147 Cedar Ln,Capital City,M,1995-09-25,2025-12-04,72,178,,Severe cough; respiratory infection; fever,0,0,0,0,0
+Priya,Patel,555-2579,258 Spruce Ave,Metropolis,F,1999-11-03,2025-12-04,61,163,,Skin disease; wound; laceration,0,0,0,0,0
+David,Kim,555-3691,369 Walnut St,Gotham,M,2012-04-12,2025-12-04,52,152,,Fever; suspected malaria; chills,0,0,0,0,0
+Elena,Vasquez,555-4802,741 Hickory Dr,Springfield,F,1987-01-29,2025-12-04,68,167,0,Mental health problem; depression; anxiety,0,0,1,0,0
+Carlos,Mendez,555-5913,852 Maple Terrace,Shelbyville,M,1980-06-16,2025-12-04,85,176,,Hemorrhage; acute bleeding; trauma,1,1,1,1,1
+Amina,Okafor,555-6024,963 Oak Street,Capital City,F,2015-03-07,2025-12-04,28,110,,Malnutrition; failure to thrive; underweight,0,0,0,0,0

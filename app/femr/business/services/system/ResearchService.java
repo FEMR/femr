@@ -46,10 +46,10 @@ import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -351,77 +351,105 @@ public class ResearchService implements IResearchService {
 
         // <editor-fold desc="Setup for file generation and tools">
 
-        String csvParentDirPath = LogicDoer.getCsvFilePath();
-        File parentDir = new File(csvParentDirPath);
-        if (!parentDir.exists()) {
-            parentDir.mkdirs();
-        }
+            String csvParentDirPath = LogicDoer.getCsvFilePath();
+            File parentDir = new File(csvParentDirPath);
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+            }
 
-        SimpleDateFormat dateformat = new SimpleDateFormat("MMddyy-HHmmss");
-        String timestamp = dateformat.format(new Date());
-        String csvFilePath = csvParentDirPath+"export-"+timestamp+".csv";
+            SimpleDateFormat dateformat = new SimpleDateFormat("MMddyy-HHmmss");
+            String timestamp = dateformat.format(new Date());
 
-        File exportFile = new File(csvFilePath);
+            String exportFilePath = csvParentDirPath + "export-"+timestamp+".csv";
+            File exportFile = null;
+            try {
+                exportFile = new File(exportFilePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
 
-        CSVFormat fileformat = CSVFormat.DEFAULT
-                .withHeader(
-                        "age",
-                        "alcohol",
-                        "assessment",
-                        "bloodPressureDiastolic",
-                        "bloodPressureSystolic",
-                        "chiefComplaints1",
-                        "currentMedication",
-                        "dayOfVisit",
-                        "diabetic",
-                        "dispensedMedications1",
-                        "dispensedMedications2",
-                        "dispensedMedications3",
-                        "dispensedMedications4",
-                        "familyHistory",
-                        "gender",
-                        "glucose",
-                        "heartRate",
-                        "heightFeet",
-                        "heightInches",
-                        "isPregnant",
-                        "medicalSurgicalHistory",
-                        "narrative",
-                        "onset",
-                        "oxygenSaturation",
-                        "palliates",
-                        "patientId",
-                        "pharmacy_note",
-                        "physicalExamination",
-                        "prescribedMedications1",
-                        "prescribedMedications2",
-                        "prescribedMedications3",
-                        "prescribedMedications4",
-                        "prescribedMedications5",
-                        "prescribedMedications6",
-                        "problem",
-                        "procedure_counseling",
-                        "provokes",
-                        "quality",
-                        "radiation",
-                        "respiratoryRate",
-                        "severity",
-                        "smoker",
-                        "socialHistory",
-                        "temperature",
-                        "timeOfDay",
-                        "tripId",
-                        "trip_country",
-                        "trip_team",
-                        "weeksPregnant",
-                        "weight"
-                );
+            exportFile.getParentFile().mkdirs();  // no-op if already exists
+            CSVFormat fileformat = CSVFormat.DEFAULT
+                    .withHeader(
+                            "age",
+                            "alcohol",
+                            "assessment",
+                            "bloodPressureDiastolic",
+                            "bloodPressureSystolic",
+                            "chiefComplaints1",
+                            "currentMedication",
+                            "dayOfVisit",
+                            "diabetic",
+                            "dispensedMedications1",
+                            "dispensedMedications2",
+                            "dispensedMedications3",
+                            "dispensedMedications4",
+                            "familyHistory",
+                            "gender",
+                            "glucose",
+                            "heartRate",
+                            "heightFeet",
+                            "heightInches",
+                            "isPregnant",
+                            "medicalSurgicalHistory",
+                            "narrative",
+                            "onset",
+                            "oxygenSaturation",
+                            "palliates",
+                            "patientId",
+                            "pharmacy_note",
+                            "physicalExamination",
+                            "prescribedMedications1",
+                            "prescribedMedications2",
+                            "prescribedMedications3",
+                            "prescribedMedications4",
+                            "prescribedMedications5",
+                            "prescribedMedications6",
+                            "problem",
+                            "procedure_counseling",
+                            "provokes",
+                            "quality",
+                            "radiation",
+                            "respiratoryRate",
+                            "severity",
+                            "smoker",
+                            "socialHistory",
+                            "temperature",
+                            "timeOfDay",
+                            "tripId",
+                            "trip_country",
+                            "trip_team",
+                            "weeksPregnant",
+                            "weight"
+                    );
 
-        CSVPrinter printer;
+            CSVPrinter printer;
+
+            assert exportFile != null;
+            Path p = exportFile.toPath(); // exportFile is your current string/path
+            System.out.println("Export absolute path: " + p.toAbsolutePath());
+            System.out.println("CWD: " + System.getProperty("user.dir"));
+            System.out.println("Parent exists? " + (p.getParent() != null && Files.exists(p.getParent())));
+            System.out.println("Parent writable? " + (p.getParent() != null && Files.isWritable(p.getParent())));
+
+
+            BufferedWriter writer = null;
+            try {
+                    writer = new BufferedWriter(new FileWriter(exportFile));
+                // new FileWriter fails
+            } catch (IOException e) {
+                Logger.error("ResearchService:exportPatientsByTrip FileWriter to produce export could not be instantiated:");
+                e.printStackTrace();
+                return null;
+            }
+
         try {
-             printer = new CSVPrinter(new FileWriter(exportFile), fileformat);
+            printer = new CSVPrinter(writer, fileformat);
         } catch (Exception e) {
             Logger.error("ResearchService:exportPatientsByTrip CSVPrinter could not be instantiated:");
+            Logger.info("user.dir=" + System.getProperty("user.dir"));
+            Logger.info("exportFile=" + exportFile.getAbsolutePath());
             e.printStackTrace();
             return null;
         }
@@ -589,8 +617,77 @@ public class ResearchService implements IResearchService {
         Logger.info("ResearchService:exportPatientsByTrip finished {} encounters in {} seconds. ",
                 patientEncounters.size(), String.format("%.3f", executionTimeSeconds));
         // </editor-fold>
+
+        try {
+            writer.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return response;
+        }
         return response;
     }
+
+    // @Override
+    // public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
+
+    //     ServiceResponse<File> response = new ServiceResponse<>();
+
+    //     // Build Query based on Filters
+    //     Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
+
+    //     researchEncounterQuery
+    //             .fetch("patient")
+    //             .fetch("patientPrescriptions")
+    //             .fetch("patientPrescriptions.medication");
+
+    //     ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
+
+    //     // -1 is default from form
+    //     if ( tripId != null && tripId != -1 ) {
+
+    //         researchEncounterExpressionList.eq("missionTrip.id",tripId);
+    //     }
+
+    //     researchEncounterExpressionList.isNull("patient.isDeleted");
+    //     researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
+    //     researchEncounterExpressionList.findList();
+
+    //     List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
+
+
+    //     // As new patients are encountered, generate a UUID to represent them in the export file
+    //     Map<Integer, UUID> patientIdMap = new HashMap<>();
+
+    //     // Format patient data for the csv file
+    //     List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
+
+    //     for(IResearchEncounter patientEncounter : patientEncounters ){
+
+    //         UUID patient_uuid;
+
+    //         // If UUID already generated for patient, use that
+    //         if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
+
+    //             patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
+    //         }
+    //         // otherwise generate and store for potential additional patient encounters
+    //         else{
+
+    //             patient_uuid = UUID.randomUUID();
+    //             patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
+    //         }
+
+    //         ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
+    //         researchExportItemsForCSVExport.add(item);
+    //     }
+
+    //     File eFile = createCsvFile(researchExportItemsForCSVExport);
+
+    //     response.setResponseObject(eFile);
+//
+//        return response;
+//    }
 
     /**
      * Creates a csv file from a list of ResearchExportItems

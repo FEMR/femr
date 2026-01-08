@@ -360,16 +360,16 @@ public class ResearchService implements IResearchService {
             SimpleDateFormat dateformat = new SimpleDateFormat("MMddyy-HHmmss");
             String timestamp = dateformat.format(new Date());
 
-            String exportFilePath = csvParentDirPath + "export-"+timestamp+".csv";
             File exportFile = null;
             try {
-                exportFile = new File(exportFilePath);
+                exportFile = File.createTempFile("export" + timestamp+"-", ".csv");
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
 
-            exportFile.getParentFile().mkdirs();  // no-op if already exists
+//
+//            exportFile.getParentFile().mkdirs();  // no-op if already exists
             CSVFormat fileformat = CSVFormat.DEFAULT
                     .withHeader(
                             "age",

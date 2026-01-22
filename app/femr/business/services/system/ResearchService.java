@@ -625,6 +625,7 @@ public class ResearchService implements IResearchService {
             e.printStackTrace();
             return response;
         }
+
         return response;
     }
 

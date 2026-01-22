@@ -131,6 +131,9 @@ public class ResearchController extends Controller {
         // This does weird stuff and isn't reliable.
         //ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
         ServiceResponse<File> exportServiceResponse = researchService.exportPatientsByTrip(filterItem.getMissionTripId());
+        if (exportServiceResponse == null) {
+            return internalServerError("Export Failed");
+        }
 
         File csvFile = exportServiceResponse.getResponseObject();
 

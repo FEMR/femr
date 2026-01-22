@@ -157,10 +157,60 @@ var filterMenuModule = (function () {
         return false;
     };
 
-    var exportData = function () {
+    var exportData = async function (e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-        $(form).submit();
+      const btn = document.getElementById("export-button");
+      btn.disabled = true;
+      btn.value = "Exporting…";
 
+      // form is often a jQuery object in this codebase
+      var formEl = form && form.jquery ? form[0] : form;
+      if (!formEl) {
+        alert("Export failed (form not found).");
+        btn.disabled = false;
+        btn.value = "Export Data";
+        return false;
+      }
+
+      try {
+        const resp = await fetch(formEl.action, {
+          method: "POST",
+          body: new FormData(formEl),
+          credentials: "same-origin"
+        });
+
+        if (!resp.ok) {
+          alert("Export failed (" + resp.status + ")");
+          btn.disabled = false;
+          btn.value = "Export Data";
+          return false;
+        }
+
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+
+        const cd = resp.headers.get("content-disposition") || "";
+        const match = cd.match(/filename="?([^"]+)"?/i);
+        a.download = match ? match[1] : "research_export.csv";
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        alert("Research export completed!");
+      } catch (err) {
+        alert("Export failed.");
+      }
+
+        btn.disabled = false;
+        btn.value = "Export Data";
         return false;
     };
 

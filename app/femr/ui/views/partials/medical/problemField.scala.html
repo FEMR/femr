@@ -4,24 +4,24 @@
     @if(problemField != null) {
 
         <div class="problem">
-            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
+            <input id="problem@number" type="text" class="form-control input-sm femr-input" value="@problemField.getValue" readonly/>
         </div>
     } else {
 
         <div id="problem@number-container" class="problem">
-            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm" value=""/>
+            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm femr-input" value=""/>
         </div>
     }
 } else {
     @if(problemField != null) {
 
         <div id="problem@number-container" class="problem">
-            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
+            <input id="problem@number" type="text" class="form-control input-sm femr-input" value="@problemField.getValue" readonly/>
         </div>
     } else {
 
         <div id="problem@number-container" class="problem hidden">
-            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm" value=""/>
+            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm femr-input" value=""/>
         </div>
     }
 }

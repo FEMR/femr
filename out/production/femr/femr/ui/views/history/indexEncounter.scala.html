@@ -1,0 +1,441 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.history.IndexEncounterViewModel,
+        viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel,
+        viewModelPharmacy: femr.ui.models.history.IndexEncounterPharmacyViewModel,
+        assets: AssetsFinder)
+
+    @import femr.ui.views.html.layouts.main
+    @import femr.ui.views.html.partials.helpers.outputStringOrNA
+    @import femr.ui.views.html.partials.helpers.outputIntOrNA
+    @import femr.ui.views.html.partials.helpers.outputHeightOrNA
+    @import femr.ui.views.html.partials.helpers.outputWeightOrNA
+    @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+    @import femr.ui.views.html.partials.helpers.outputYesOrNA
+
+    @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
+
+    @import femr.ui.views.html.partials.encounter.dynamicTabSpan
+    @import femr.data.models.mysql.Roles
+
+    @import collection.JavaConversions._
+    @import femr.ui.controllers.routes.PDFController
+    @import femr.ui.controllers.routes.TriageController
+
+    @* List of currentUser roles to use with the Roles class *@
+    @roles = @{currentUser.getRoles().map(r => r.getId())}
+
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery-2.2.4.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/history/history.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@assets.path("css/history.css")">
+    }
+
+    @* editClass is nonEditable or editable depending on whether encounter is closed.  *@
+    @editClass = @{if(viewModel.getPatientEncounterItem.getIsClosed) "editable" else "nonEditable" }
+
+    @main("History", currentUser, scripts = additionalScripts, styles = additionalStyles, assets = assets) {
+        <div class="sectionBackground backgroundForWrap" id="encounterViewWrap">
+            <div id="encounterViewHeader">
+
+
+                <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
+                <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
+                    (@viewModel.getPatientItem.getId)</p>
+
+                <a href="@PDFController.index(viewModel.getPatientEncounterItem.getId)" target="_blank" id="historyButton" class="btn btn-default pull-left">Generate PDF</a>
+
+                @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                    @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientItem.getId, viewModel.getPatientEncounterItem.getId)) {
+                        <input type="hidden" name="reasonEncounterDeleted" class="reasonEncounterDeleted" />
+                        <button hidden="true" type="submit" class="deleteEcounter"></button>
+
+                        <span>
+                            <button type="submit" class="deleteEncounterbtn btn btn-danger pull-right" >
+                                Delete this Encounter</button>
+                        </span>
+                    }
+                }
+
+
+            </div>
+
+            <div class="encounterViewBodyHeader">
+                <p>Basic Information and Vitals</p>
+            </div>
+            <div class="encounterViewBody">
+                <input type="hidden" id="patientEncounterId" value="@viewModel.getPatientEncounterItem.getId" />
+                <div class="encounterViewBodyLeft">
+                    <div class="row">
+                @defining(viewModel.getPatientItem) { patient =>
+                    <div class="encounterViewBodyLeftHalf">
+                        <p><span class="infoLabel">First Name:</span> @outputStringOrNA(patient.getFirstName)</p>
+                        <p><span class="infoLabel">Last Name:</span> @outputStringOrNA(patient.getLastName)</p>
+                        <p><span class="infoLabel">Address:</span> @outputStringOrNA(patient.getAddress)</p>
+                        <p><span class="infoLabel">Phone Number:</span> @outputStringOrNA(patient.getPhoneNumber)</p>
+                        <p><span class="infoLabel">Birthday:</span> @outputStringOrNA(patient.getFriendlyDateOfBirth)</p>
+                        <p><span class="infoLabel">Age:</span> @outputStringOrNA(patient.getAge)</p>
+                        <p><span class="infoLabel">Gender:</span> @outputStringOrNA(patient.getSex)</p>
+                    </div>
+                    <div class="encounterViewBodyLeftHalf">
+                        <!-- @*Sam Zanni*@ -->
+                        @defining(viewModelMedical.getVitalList) { vitalMap =>
+                            <p>
+                                <span class="infoLabel">Weeks Pregnant:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputStringOrNA(vitalMap.get("weeksPregnant", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                            </p>
+
+                        <p><span class="infoLabel">Height:</span>
+                            @defining(viewModelMedical.getVitalList) { vitalMap =>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    @if(viewModelMedical.getSettings.isMetric) {
+                                        @outputHeightOrNA(
+                                            vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
+                                            vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),
+                                            viewModelMedical.getSettings.isMetric,
+                                            ""
+                                        )}else {
+                                        @outputHeightOrNA(
+                                            vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
+                                            vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
+                                            viewModelMedical.getSettings.isMetric,
+                                            ""
+                                        )
+                                    }
+                                }
+                        </p>
+
+                        <p><span class="infoLabel">Weight:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+
+                            @if(viewModelMedical.getSettings.isMetric) {
+                                @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+
+                            } else {
+                                @outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+
+                            }
+
+                            }
+
+                        </p>
+
+                    }
+                        @defining(viewModelMedical.getVitalList) { vitalMap =>
+
+                            <p><span class="infoLabel">Smoking:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNA(vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                                </p>
+
+                            <p><span class="infoLabel">Diabetes:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNA(vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                            </p>
+
+                            <p><span class="infoLabel">Alcohol:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
+
+                            <p><span class="infoLabel">Cholesterol:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("cholesterol", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
+
+                            <p><span class="infoLabel">Hypertension:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("hypertension", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
+                        }
+
+                        </div>
+
+                }
+                    </div>
+                </div>
+                <div class="encounterViewBodyMiddle">
+                @defining(viewModel.getPatientEncounterItem) { encounter =>
+                    @*<p><span class="infoLabel">Triage Visit:</span> @encounter.getTriageDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Nurse:</span> @encounter.getNurseEmailAddress</p>*@
+                    @*<br>*@
+                    @*<p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>*@
+                    @*<br>*@
+                    @*<p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistEmailAddress</p>*@
+
+                    <p><span class="infoLabel">Triage Visit:</span> @encounter.getTriageDateOfVisit</p>
+                    <p><span class="infoLabel">Nurse:</span> @encounter.getNurseFullName</p> @*Andrew Change*@
+                    <br>
+                    <p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>
+                    <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianFullName</p> @*Andrew Change*@
+                    <br>
+                    <p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>
+                    <p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistFullName</p> @*Andrew Change*@
+
+
+                }
+                </div>
+
+                <div class="encounterViewBodyRight">
+                @defining(viewModelMedical.getVitalList) { vitalMap =>
+                    <p><span class="infoLabel">Temperature:</span>
+                    @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                        @if(viewModelMedical.getSettings.isMetric) {
+                            @outputTemperatureOrNA(vitalMap.get("temperatureCelsius", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+                        } else {
+                            @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+
+                        }
+                    }
+                        </p>
+
+                    <p>
+                        <span class="infoLabel">Blood Pressure:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                            <span>
+                            @outputBloodPressureOrNA(vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1)), vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1)))
+                            </span>
+                        }
+                    </p>
+                    <p>
+                        <span class="infoLabel">Heart Rate:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                            <span>
+                             @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
+                            </span>
+                        }
+                    </p>
+                    <p>
+                        <span class="infoLabel">Respiration Rate:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                            <span>
+                            @outputStringOrNA(vitalMap.get("respiratoryRate", vitalMap.getDate(dateIndex - 1)))
+                            </span>
+                        }
+                    </p>
+                    <p>
+                        <span class="infoLabel">Oxygen Saturation:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                            <span>
+                            @outputStringOrNA(vitalMap.get("oxygenSaturation", vitalMap.getDate(dateIndex - 1)))
+                            </span>
+                        }
+                    </p>
+                    <p>
+                        <span class="infoLabel">Glucose:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                            <span>
+                            @outputStringOrNA(vitalMap.get("glucose", vitalMap.getDate(dateIndex - 1)))
+                            </span>
+                        }
+                    </p>
+                }
+                </div>
+            </div>
+
+
+            <div class="encounterViewBodyHeader">
+                <p>Assessment</p>
+            </div>
+            <div class="encounterViewBody">
+                <div class="encounterViewBodyLeft">
+                    @*Pmh and treatment tab fields are listed here*@
+                    @defining(viewModelMedical.getPmhFields) { pmhFieldMap =>
+                        <p><a class="infoLabel @editClass"> Medical/Surgical History:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("medicalSurgicalHistory"))
+                        </p>
+                        <p><a class="infoLabel @editClass"> Social History:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("socialHistory"))
+                        <p><a class="infoLabel @editClass">Current Medications:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("currentMedication"))
+                        <p><a class="infoLabel @editClass"> Family History: </a>
+                            @dynamicTabSpan(pmhFieldMap.get("familyHistory"))
+                    }
+                    @defining(viewModelMedical.getTreatmentFields) { treatmentFieldMap =>
+                        <p><a  class="infoLabel @editClass"> Assessment: </a>
+                            @dynamicTabSpan(treatmentFieldMap.get("assessment"))
+
+                        <p><a class="infoLabel @editClass">Procedure/Counseling:</a>
+                            @dynamicTabSpan(treatmentFieldMap.get("procedure_counseling"))
+                    }
+                    @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
+                        <p><a class="infoLabel nonEditable">Diagnosis:</a>
+                            <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
+                    }
+                    @if(!viewModelPharmacy.getPrescriptions.isEmpty()){
+                        <p> <span class="infoLabel">Dispensed Medication(s):</span> </p>
+
+                        @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
+                            @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
+                                <div class="prescription-row">
+                                  @if(prescription.getReplacementMedicationName != null) {
+                                          <p>
+                                              <span class="prescription-id">Prescription #@prescription.getId() - <span class="red">Replaced</span></span>
+                                              <del>@prescription.printFullPrescriptionName</del>
+                                          </p>
+                                      <div class="alert">This prescription was replaced by prescription #@prescription.getReplacementId</div>
+                                  } else {
+                                      <p>
+                                          <span class="prescription-id">Prescription #@prescription.getId()</span>
+                                          @prescription.printFullPrescriptionName
+                                      </p>
+                                  }
+                                </div>
+                            }
+                        }
+
+                    }
+
+
+                </div>
+                <div class="encounterViewBodyMiddle">
+                @if(viewModelMedical.isMultipleChiefComplaints) {
+                    @for((key, value) <- viewModelMedical.getHpiFieldsWithMultipleChiefComplaints) {
+                        <div>
+                        <h4 data-complaint="@key">Chief Complaint: @key</h4>
+                        <p> <a class="infoLabel @editClass">Onset:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))
+                        </p>
+                        <p> <a class="infoLabel @editClass"> Quality: </a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Radiation:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Severity:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Provokes:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Palliates:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))
+                        </p>
+
+                        <p> <a class="infoLabel @editClass">Narrative:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Time Of Day:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))
+                        </p>
+
+                        <p> <a class="infoLabel @editClass">Physical Examination:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))
+                        </p>
+
+                        </div>
+                        <br>
+                    }
+                } else {
+                    <div>
+                    @if(viewModel.getPatientEncounterItem.getChiefComplaints != null && viewModel.getPatientEncounterItem.getChiefComplaints.size > 0){
+                        <h4 data-complaint="@viewModel.getPatientEncounterItem.getChiefComplaints.get(0)">Chief Complaint: @viewModel.getPatientEncounterItem.getChiefComplaints.get(0) </h4>
+                    }
+                    <p> <a class= "infoLabel @editClass">Onset:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))
+                    </p>
+                    <p> <a class= "infoLabel @editClass">Quality:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Radiation:</a>
+                    @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Severity:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Provokes:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Palliates:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Time Of Day:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))
+                    </p>
+                    <p> <a class= "infoLabel @editClass">Narrative:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))
+                    </p>
+
+                    <p> <a class= "infoLabel @editClass">Physical Examination:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))
+                    </p>
+                    </div>
+
+                }
+
+
+                </div>
+
+                <div class="encounterViewBodyRight">
+                    @*Custom tab fields are listed here*@
+                    @for((key, value) <- viewModelMedical.getCustomFields) {
+                        <p><span class="infoLabel nonEditable">
+                            @key:
+                        </span>
+                            @outputStringOrNA(viewModelMedical.getCustomFields.get(key).getValue)
+                        </p>
+                    }
+
+                </div>
+            </div>
+
+            @if(viewModelMedical.getPhotos.size > 0) {
+                <div class="encounterViewBodyHeader">
+                    <p>Photos</p>
+                </div>
+                <div class="encounterViewBody">
+                @for(x <- 1 to viewModelMedical.getPhotos.size) {
+                    <img src="@viewModelMedical.getPhoto(x - 1).getImageUrl">
+                    <p class="imageDescription">@viewModelMedical.getPhoto(x - 1).getImageDesc</p>
+                }
+
+                </div>
+            }
+
+            <div id="edit-form" >
+
+                <p class="form-label"></p>
+                <input type="text" id="editInput" class="form-control input-sm pull-left value" name="edit-value"  value=""/>
+                <input  id = "fieldIdInput" class= "fieldId" type="hidden" name="edit-field-name" value="" />
+
+                <button type="button" id="saveEncounterBtn" class="fButton">Save</button>
+                <button type="button" id="cancelEncounterBtn" class="fButton">Cancel</button>
+
+                <div  class="form-history">
+                    <table id="tabFieldHistory" cellspacing="0">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    }
+}
+
+

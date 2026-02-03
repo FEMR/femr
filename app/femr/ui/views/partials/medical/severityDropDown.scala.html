@@ -3,7 +3,7 @@
 <label for="severity" id ="partials_medical_tabs_hpi_severity" >Severity</label>
 <input name="tabFieldItems[@severity.getIndex].name" type="text" class="hidden" value="severity"/>
 <input name="tabFieldItems[@severity.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-<select name="tabFieldItems[@severity.getIndex].value" id="severityDropDown">
+<select name="tabFieldItems[@severity.getIndex].value" id="severityDropDown" class="femr-input">
     <option></option>
     @for(x <- 1 to 10) {
         @if(severity.getValue != null && !severity.getValue.isEmpty) {

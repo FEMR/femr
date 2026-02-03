@@ -1,0 +1,63 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.ExistingViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.partials.admin.inventory.inventoryMenu
+
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@assets.path("css/libraries/select2.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+}
+@additionalScripts = {
+
+    <script type="text/javascript" src="@assets.path("js/libraries/select2.min.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
+}
+
+@existingFields() = {
+    <ul class="admin-guidelines">
+        <li>Select one or more medications from the list below.</li>
+        <li>Adjust current and initial quantities in the formulary after adding.</li>
+    </ul>
+
+    <select id="addConceptMedicineSelect2" multiple="multiple" name="newConceptMedicationsForInventory[]">
+    @defining(viewModel.getConceptMedications) { conceptMeds =>
+        @for(i <- 1 to conceptMeds.size) {
+            <option value="@conceptMeds.get(i - 1).getId">@conceptMeds.get(i - 1).getFullName</option>
+        }
+    }
+    </select>
+}
+
+@admin("Inventory - Add Existing Medication", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @inventoryMenu(viewModel.getMissionTripItem)
+
+    @helper.form(action = InventoryController.existingPost(viewModel.getMissionTripItem.getId)) {
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title">Add existing medication</h2>
+                    <p class="admin-section__description">Select medications from the concept dictionary to include in this formulary.</p>
+                </div>
+            </div>
+
+            @if(currentUser.getTripId == null) {
+                <fieldset disabled="disabled" class="admin-form admin-form--stacked newMedicationWrap">
+                    @existingFields()
+                </fieldset>
+            } else {
+                <div class="admin-form admin-form--stacked newMedicationWrap">
+                    @existingFields()
+                </div>
+            }
+
+            <div class="admin-section__actions">
+                <button class="admin-button admin-button--primary" id="submitMedicationButton" type="submit">Submit</button>
+            </div>
+        </section>
+    }
+}

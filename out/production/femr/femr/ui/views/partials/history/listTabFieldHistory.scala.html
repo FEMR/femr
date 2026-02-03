@@ -1,0 +1,20 @@
+@(tabFieldName:java.lang.String, tabFieldMap:femr.util.DataStructure.Mapping.TabFieldMultiMap)
+
+
+
+<tbody>
+    <tr class="first">r
+        <th>Date:</th>
+        <th>Value:</th>
+        <th>User:</th>
+        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
+        <tr>
+            <td>@tabFieldMap.getFormatedDateTime(dateIndex - 1)</td>
+            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getValue</td>
+            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getUserName</td>
+        </tr>
+        }
+
+
+
+</tbody>

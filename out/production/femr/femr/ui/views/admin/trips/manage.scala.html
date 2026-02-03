@@ -1,0 +1,207 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.trips.TripViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.partials.admin.trips.tripsMenu
+@import femr.ui.controllers.admin.routes.TripController
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+}
+
+@additionalScripts = {
+    <script type="text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script>
+            let languageData;
+
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}");
+
+                    })
+                    .catch(error => console.error('Error fetching language data:', error));
+
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateTextContentAll(selector, value) {
+                document.querySelectorAll(selector).forEach(function (element) {
+                    element.textContent = value;
+                });
+            }
+
+            function updateLanguage(languageCode) {
+                const locale = languageData[languageCode] ? languageCode : 'en';
+                localStorage.setItem('languageCode', locale);
+                const strings = languageData[locale];
+
+                updateTextContent("trips_manage_Add", strings.trips_manage_Add);
+                updateTextContent("trips_manage_Team", strings.trips_manage_Team);
+                updateTextContent("trips_manage_TripCity", strings.trips_manage_TripCity);
+                updateTextContent("trips_manage_TripCountry", strings.trips_manage_TripCountry);
+                updateTextContent("trips_manage_Start1", strings.trips_manage_Start1);
+                updateTextContent("trips_manage_End1", strings.trips_manage_End1);
+                updateTextContent("trips_manage_Submit", strings.trips_manage_Submit);
+
+                updateTextContentAll("[data-i18n='trips_manage_Edit']", strings.trips_manage_Edit || 'Edit');
+                updateTextContentAll("[data-i18n='trips_manage_Name']", strings.trips_manage_Name || 'Team Name');
+                updateTextContentAll("[data-i18n='trips_manage_Country']", strings.trips_manage_Country || 'Country');
+                updateTextContentAll("[data-i18n='trips_manage_City']", strings.trips_manage_City || 'City');
+                updateTextContentAll("[data-i18n='trips_manage_Start2']", strings.trips_manage_Start2 || 'Start Date');
+                updateTextContentAll("[data-i18n='trips_manage_End2']", strings.trips_manage_End2 || 'End Date');
+
+            }
+    </script>
+}
+
+@admin("Trips - Manage Trips", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @tripsMenu("manage")
+
+    @if(viewModel.getMessages.size > 0) {
+        <div class="admin-view__messages" role="status">
+            @for(messageIndex <- 1 to viewModel.getMessages.size){
+                <p class="adminMessage">@viewModel.getMessages.get(messageIndex - 1)</p>
+            }
+        </div>
+    }
+
+    @helper.form(action = TripController.managePost()) {
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title" id="trips_manage_Add">Add Trip</h2>
+                    <p class="admin-section__description">Create a new trip by assigning a team, destination, and timeline.</p>
+                </div>
+            </div>
+
+            <div class="admin-form admin-form--stacked">
+                <div class="admin-form__row">
+                    <div class="admin-form__field">
+                        <label for="newTripTeamName">
+                            <span id="trips_manage_Team">Trip Team</span>
+                            <span class="admin-required" aria-hidden="true">*</span>
+                        </label>
+                        <select id="newTripTeamName" name="newTripTeamName">
+                            <option value=""></option>
+                            @for(teamIndex <- 1 to viewModel.getMissionItems.size) {
+                                @defining(viewModel.getMissionItems.get(teamIndex - 1)) { item =>
+                                    <option>@item.getTeamName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="admin-form__field">
+                        <label for="newTripCity">
+                            <span id="trips_manage_TripCity">Trip City</span>
+                            <span class="admin-required" aria-hidden="true">*</span>
+                        </label>
+                        <select id="newTripCity" name="newTripCity">
+                            <option value=""></option>
+                            @for(tripIndex <- 1 to viewModel.getAvailableCities.size) {
+                                @defining(viewModel.getAvailableCities.get(tripIndex - 1)) { city =>
+                                    <option country-name="@city.getCountryName">@city.getCityName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="admin-form__field">
+                        <label for="newTripCountry">
+                            <span id="trips_manage_TripCountry">Trip Country</span>
+                        </label>
+                        <input id="newTripCountry" type="text" name="newTripCountry" readonly />
+                    </div>
+                </div>
+
+                <div class="admin-form__row">
+                    <div class="admin-form__field">
+                        <label for="newTripStartDate">
+                            <span id="trips_manage_Start1">Start Date</span>
+                            <span class="admin-required" aria-hidden="true">*</span>
+                        </label>
+                        <input id="newTripStartDate" type="date" name="newTripStartDate" />
+                    </div>
+
+                    <div class="admin-form__field">
+                        <label for="newTripEndDate">
+                            <span id="trips_manage_End1">End Date</span>
+                            <span class="admin-required" aria-hidden="true">*</span>
+                        </label>
+                        <input id="newTripEndDate" type="date" name="newTripEndDate" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section__actions">
+                <button type="submit" class="admin-button admin-button--primary" id="trips_manage_Submit">Submit</button>
+            </div>
+        </section>
+    }
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Upcoming trips</h2>
+                <p class="admin-section__description">Review current trip schedules and jump into editing assignments.</p>
+            </div>
+        </div>
+
+        @if(viewModel.getMissionItems.isEmpty) {
+            <div class="admin-empty-state">
+                <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">calendar_month</span>
+                <h3 class="admin-empty-state__title">No trips scheduled</h3>
+                <p class="admin-empty-state__description">Create a trip to start managing assignments and formulary access.</p>
+            </div>
+        } else {
+            <div class="admin-table-wrap" role="region" aria-label="Upcoming trips">
+                <table class="admin-table" id="tripTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-i18n="trips_manage_Name">Team Name</th>
+                            <th scope="col" data-i18n="trips_manage_Country">Country</th>
+                            <th scope="col" data-i18n="trips_manage_City">City</th>
+                            <th scope="col" data-i18n="trips_manage_Start2">Start Date</th>
+                            <th scope="col" data-i18n="trips_manage_End2">End Date</th>
+                            <th scope="col" class="admin-table__actions-heading" data-i18n="trips_manage_Edit">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(i <- 1 to viewModel.getMissionItems.size) {
+                        @defining(viewModel.getMissionItems.get(i - 1)) { missionItem =>
+                            @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                                    <tr>
+                                        <td>@missionItem.getTeamName</td>
+                                        <td>@missionTrip.getTripCountry</td>
+                                        <td>@missionTrip.getTripCity</td>
+                                        <td>@missionTrip.getFriendlyTripStartDate</td>
+                                        <td>@missionTrip.getFriendlyTripEndDate</td>
+                                        <td class="admin-table__actions">
+                                            @helper.form(action = TripController.editGet(missionTrip.getId)) {
+                                                <button type="submit" class="admin-button admin-button--ghost">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                                                    <span data-i18n="trips_manage_Edit">Edit</span>
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+}

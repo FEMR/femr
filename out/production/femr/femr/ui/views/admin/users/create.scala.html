@@ -1,0 +1,131 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.admin.users.CreateViewModel],
+        messages: java.util.List[_ <: java.lang.String],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.UsersController
+@import scala.collection.JavaConverters._
+
+    @additionalStyles = {
+    }
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+    }
+    @additionalMessages = {
+    @for(message <- messages) {
+        <p class="adminMessage">@message</p>
+    }
+    }
+
+@defining({
+    val maybeValue = form.value()
+    if (maybeValue.isPresent) maybeValue.get().getRoles else java.util.Collections.emptyList[String]()
+}) { selectedRolesJava =>
+@defining(selectedRolesJava.asScala.toSet) { selectedRoles =>
+
+@admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Create User</h2>
+                <p class="admin-section__description">Set up a new teammate with access, credentials, and roles.</p>
+            </div>
+            <div class="admin-section__actions">
+                <a href="@UsersController.manageGet()" class="admin-button">
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                    <span>Back to users</span>
+                </a>
+            </div>
+        </div>
+
+        @helper.form(action = UsersController.createPost(), 'name -> "createForm") {
+            <div class="admin-form admin-form--stacked">
+                <div class="admin-form__field">
+                    <label for="email">Email address <span class="admin-required" aria-hidden="true">*</span></label>
+                    @defining(form("email").getValue.orElse("")) { value =>
+                        <input id="email" name="email" type="email" value="@value" placeholder="name@@example.com" />
+                    }
+                    <span class="errors">
+                        @if(!form("email").errors.isEmpty) {
+                            @form("email").errors.get(0).message
+                        }
+                    </span>
+                </div>
+
+                <div class="admin-form__row">
+                    <div class="admin-form__field">
+                        <label for="password">Password <span class="admin-required" aria-hidden="true">*</span></label>
+                        <input id="password" name="password" type="password" placeholder="Set a secure password" />
+                        <span class="errors"></span>
+                    </div>
+                    <div class="admin-form__field">
+                        <label for="passwordVerify">Verify password</label>
+                        <input id="passwordVerify" name="passwordVerify" type="password" placeholder="Re-enter password" />
+                        <span class="errors"></span>
+                    </div>
+                </div>
+
+                <div class="admin-form__row">
+                    <div class="admin-form__field">
+                        <label for="firstName">First name <span class="admin-required" aria-hidden="true">*</span></label>
+                        @defining(form("firstName").getValue.orElse("")) { value =>
+                            <input id="firstName" name="firstName" type="text" value="@value" placeholder="First name" />
+                        }
+                        <span class="errors">
+                            @if(!form("firstName").errors.isEmpty) {
+                                @form("firstName").errors.get(0).message
+                            }
+                        </span>
+                    </div>
+                    <div class="admin-form__field">
+                        <label for="lastName">Last name</label>
+                        @defining(form("lastName").getValue.orElse("")) { value =>
+                            <input id="lastName" name="lastName" type="text" value="@value" placeholder="Last name" />
+                        }
+                        <span class="errors"></span>
+                    </div>
+                </div>
+
+                <div class="admin-form__field">
+                    <label for="notes">About user</label>
+                    @defining(form("notes").getValue.orElse("")) { value =>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Add a short description">@value</textarea>
+                    }
+                    <span class="errors"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <div id="roleWrap" class="admin-form__fieldset">
+                        <div class="admin-form__legend">
+                            <span>Roles</span>
+                            <span class="admin-required" aria-hidden="true">*</span>
+                        </div>
+                        <span class="errors">
+                            @if(!form("roles").errors.isEmpty) {
+                                @form("roles").errors.get(0).message
+                            }
+                        </span>
+                        <div class="admin-checkbox-grid">
+                            @for(role <- availableRoles.asScala) {
+                                <label class="admin-checkbox">
+                                    <input type="checkbox" name="roles[]" value="@role" @if(selectedRoles.contains(role)) { checked } />
+                                    <span>@role</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section__actions">
+                <button class="admin-button admin-button--primary" id="addUserSubmitBtn" type="submit">Create user</button>
+                <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()">Cancel</a>
+            </div>
+        }
+    </section>
+}
+
+}
+}

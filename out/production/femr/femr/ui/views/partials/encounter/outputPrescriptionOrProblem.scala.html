@@ -1,0 +1,13 @@
+@(number: Integer, value: String, name: String)
+
+@*This is used to show the problems and prescriptions in the encounter*@
+
+@if(number == 1) {
+    @if(value != null && !value.isEmpty) {
+        <input id = "@name@number" type="text" class="form-control input-sm @name" value="@value" readonly/>
+    }
+} else {
+    @if(value != null && !value.isEmpty) {
+        <input id = "@name@number" type="text" class="form-control input-sm @name" value="@value" readonly/>
+    }
+}

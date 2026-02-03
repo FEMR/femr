@@ -1,0 +1,110 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.CustomViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.views.html.partials.admin.inventory.inventoryMenu
+@import femr.ui.views.html.layouts.admin
+
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+}
+@additionalScripts = {
+
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
+}
+
+@formFields() = {
+    <ul class="admin-guidelines">
+        <li>Provide brand, form, and quantity details for the medication.</li>
+        <li>Add one or more generic ingredient combinations with strength and unit.</li>
+    </ul>
+
+    <div class="admin-form__row">
+        <div class="admin-form__field fieldMedication">
+            <label for="medicationName">Brand</label>
+            <input type="text" class="fInput" id="medicationName" name="medicationName" placeholder="" />
+        </div>
+
+        <div class="admin-form__field fieldMedication">
+            <label for="medicationForm">Form</label>
+            <select name="medicationForm" class="fOption">
+                @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
+                    @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
+                        <option value="@form">@form</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="admin-form__field fieldMedication">
+            <label for="medicationQuantity">Quantity</label>
+            <input type="number" class="fInput text" name="medicationQuantity" placeholder="" />
+        </div>
+    </div>
+
+    <div class="ingredientWrap">
+        <div class="ingredientFields first">
+            <div class="admin-form__row">
+                <div class="admin-form__field fieldMedication">
+                    <label for="medicationIngredient">Generic</label>
+                    <input type="text" name="medicationIngredient[]" class="fInput medicationIngredient" placeholder="" />
+                </div>
+
+                <div class="admin-form__field fieldMedication">
+                    <label for="medicationStrength">Strength</label>
+                    <input type="number" name="medicationStrength[]" class="fInput medicationsStrength" placeholder="" />
+                </div>
+
+                <div class="admin-form__field fieldMedication">
+                    <label for="medicationUnit">Unit</label>
+                    <select name="medicationUnit[]" class="fOption">
+                        @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
+                            @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
+                                <option value="@unit">@unit</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <a class="removeIngredient admin-icon-button" title="Remove ingredient">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </a>
+        </div>
+
+        <a class="admin-icon-button" id="addNewIngredient" title="Add ingredient">
+            <span class="material-symbols-outlined" aria-hidden="true">add</span>
+        </a>
+    </div>
+}
+
+@admin("Inventory - Add Custom Medication", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @inventoryMenu(viewModel.getMissionTripItem)
+
+    @helper.form(action = InventoryController.customPost(viewModel.getMissionTripItem.getId)) {
+        <section class="admin-section">
+            <div class="admin-section__header">
+                <div>
+                    <h2 class="admin-section__title">Add custom medication</h2>
+                    <p class="admin-section__description">If a medication is missing from the concept dictionary, add it to this formulary.</p>
+                </div>
+            </div>
+
+            @if(currentUser.getTripId == null) {
+                <fieldset disabled="disabled" class="admin-form admin-form--stacked newMedicationWrap">
+                    @formFields()
+                </fieldset>
+            } else {
+                <div class="admin-form admin-form--stacked newMedicationWrap">
+                    @formFields()
+                </div>
+            }
+
+            <div class="admin-section__actions">
+                <button class="admin-button admin-button--primary" id="submitMedicationButton" type="submit">Submit</button>
+            </div>
+        </section>
+    }
+}

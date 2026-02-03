@@ -1,0 +1,61 @@
+@(page: String)
+
+@import femr.ui.controllers.routes.SearchController
+
+@defining(page.toLowerCase.trim) { pageKey =>
+@defining(s"sidebar-search-field-$pageKey") { searchFieldId =>
+
+<div id="searchContainer" class="femr-sidebar__search-container">
+    <label class="femr-sidebar__section-label" for="@searchFieldId">Search Patient</label>
+    <div class="femr-sidebar__search">
+        @pageKey match {
+            case "triage" => {
+                @helper.form(action = SearchController.handleSearch("triage")) {
+                    <div class="nameOrIdSearchFormWrap">
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                    </div>
+                }
+            }
+            case "history" => {
+                @helper.form(action = SearchController.handleSearch("history")) {
+                    <div class="nameOrIdSearchFormWrap">
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                    </div>
+                }
+            }
+            case "medical" => {
+                @helper.form(action = SearchController.handleSearch("medical")) {
+                    <div class="nameOrIdSearchFormWrap">
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                    </div>
+                }
+            }
+            case "pharmacy" => {
+                @helper.form(action = SearchController.handleSearch("pharmacy")) {
+                    <div class="nameOrIdSearchFormWrap">
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                    </div>
+                }
+            }
+            case _ => {
+
+            }
+        }
+    </div>
+
+</div>
+
+<button type="button"
+        class="femr-sidebar__search-placeholder"
+        aria-label="Search patients"
+        onfocus="document.getElementById('@searchFieldId')?.focus()"
+        onclick="document.getElementById('@searchFieldId')?.focus()">
+    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+</button>
+
+}
+}

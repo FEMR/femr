@@ -147,6 +147,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .admin-section__header {
@@ -602,10 +604,15 @@
 }
 
 .admin-table-wrap {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     border-radius: var(--admin-radius-lg);
     border: 1px solid rgba(28, 25, 23, 0.08);
     background: var(--admin-surface-bg);
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .admin-table {
@@ -679,6 +686,20 @@
 
 .admin-table-wrap .dataTables_wrapper {
     padding: 16px 18px 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-table-wrap table.dataTable,
+.admin-table-wrap table.dataTable.no-footer,
+.admin-table-wrap table.dataTable thead th,
+.admin-table-wrap table.dataTable tbody td {
+    box-sizing: border-box;
+}
+
+.admin-table-wrap table.dataTable {
+    width: 100% !important;
 }
 
 .admin-table-wrap .dataTables_length label,

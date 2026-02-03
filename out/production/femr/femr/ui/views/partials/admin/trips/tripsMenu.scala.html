@@ -1,0 +1,77 @@
+@(activeTab: String)
+
+@import femr.ui.controllers.admin.routes.TripController
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(event) {
+        let languageData;
+        fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    languageData = data;
+                    const storedLanguage = localStorage.getItem('languageCode');
+                    updateLanguage(storedLanguage || 'en');
+                });
+
+        function updateTextContent(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        function updateLanguage(languageCode = "en") {
+            const locale = languageData[languageCode] ? languageCode : "en";
+            localStorage.setItem('languageCode', locale);
+            const strings = languageData[locale];
+            updateTextContent("trips_menu_title", strings.trips_menu_title || "Trip Administration");
+            updateTextContent("trips_menu_description", strings.trips_menu_description || "Manage trip schedules, teams, and destinations.");
+            updateTextContent("manage_trips_btn", strings.manage_trips || "Manage Trips");
+            updateTextContent("manage_teams_btn", strings.manage_teams || "Manage Teams");
+            updateTextContent("manage_cities_btn", strings.manage_cities || "Manage Cities");
+        }
+    });
+</script>
+
+<section class="admin-section">
+    <div class="admin-section__header">
+        <div>
+            <h2 class="admin-section__title" id="trips_menu_title">Trip Administration</h2>
+            <p class="admin-section__description" id="trips_menu_description">Manage trip schedules, teams, and destinations.</p>
+        </div>
+        <div class="admin-section__actions">
+    @defining(activeTab == "manage") { manageActive =>
+    @defining(activeTab == "teams") { teamsActive =>
+    @defining(activeTab == "cities") { citiesActive =>
+
+                <a
+                    id="manage_trips_btn"
+                    href="@TripController.manageGet()"
+                    class="admin-button@if(manageActive) { admin-button--primary}"
+                    aria-current="@if(manageActive) {"page"} else {"false"}">
+                <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                <span>Manage Trips</span>
+            </a>
+            <a
+                id="manage_teams_btn"
+                href="@TripController.teamsGet()"
+                    class="admin-button@if(teamsActive) { admin-button--primary}"
+                    aria-current="@if(teamsActive) {"page"} else {"false"}">
+                <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                <span>Manage Teams</span>
+            </a>
+            <a
+                id="manage_cities_btn"
+                href="@TripController.citiesGet()"
+                    class="admin-button@if(citiesActive) { admin-button--primary}"
+                    aria-current="@if(citiesActive) {"page"} else {"false"}">
+                <span class="material-symbols-outlined" aria-hidden="true">location_city</span>
+                <span>Manage Cities</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+    }
+    }
+    }

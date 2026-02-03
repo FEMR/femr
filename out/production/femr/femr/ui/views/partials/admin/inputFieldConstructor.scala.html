@@ -1,0 +1,16 @@
+@(elements: helper.FieldElements)
+
+
+<div class="fieldWrap @if(elements.hasErrors) {error}">
+    <label for="@elements.id">@elements.label
+        @if(elements.args.get('_isRequired).contains(true)) {
+            <span class="red bold">*</span>
+        }
+
+    </label>
+    <div class="input">
+        @elements.input
+        <span class="errors">@elements.errors.mkString(", ")</span>
+        <span class="help">@elements.infos.mkString(", ")</span>
+    </div>
+</div>

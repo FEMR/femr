@@ -9,7 +9,7 @@
     @for(i <- 1 to genericTab.getFields.get(null).size) {
 
         @if(i - 1 < genericTab.getLeftColumnSize) {
-            <div class="customFieldWrap">
+            <div class="customFieldWrap femr-field">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)
             }
@@ -23,7 +23,7 @@
 
         @if(i - 1 >= genericTab.getLeftColumnSize && i - 1 <= (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
 
-            <div class="customFieldWrap">
+            <div class="customFieldWrap femr-field">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)
             }
@@ -37,7 +37,7 @@
 
         @if(i - 1 > (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
 
-            <div class="customFieldWrap">
+            <div class="customFieldWrap femr-field">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)
             }

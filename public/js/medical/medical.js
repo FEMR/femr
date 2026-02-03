@@ -28,7 +28,7 @@ var problemFeature = {
         $('.problem')
             .parent()
             .append("<div class='problem'>" +
-            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems'/>" +
+            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems femr-input'/>" +
             "</div>");
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name']");
@@ -696,7 +696,7 @@ function addNewPortrait() {
 }
 
 function replaceFileInputControl() {
-    $('#photoInputContainer').html('<input type="file" class="form-control" onchange="imageInputChange(this)" placeholder="Choose Image" />');
+    $('#photoInputContainer').html('<input type="file" class="form-control femr-input" onchange="imageInputChange(this)" placeholder="Choose Image" />');
 }
 
 function imageInputChange(evt) {

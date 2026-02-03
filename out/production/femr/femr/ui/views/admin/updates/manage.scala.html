@@ -1,0 +1,340 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.admin.updates.IndexViewModelGet,
+        assets: AssetsFinder,
+        messages: java.util.List[_ <: java.lang.String])
+
+@import femr.ui.controllers.admin.routes.UpdatesController
+@import femr.ui.views.html.layouts.admin
+@import scala.util.Try
+@import scala.collection.JavaConverters._
+
+    @additionalMessages = {
+        @for(message <- messages) {
+            <p class="adminMessage">@message</p>
+        }
+    }
+
+@downloadSpeed = @{
+    val downloadMetric = Option(viewModel.getNetworkStatus.get("Download")).getOrElse("0")
+    val numericPortion = downloadMetric.split(" ").headOption.getOrElse("0")
+    Try(numericPortion.toFloat.toInt).getOrElse(0)
+}
+
+@admin("Updates", currentUser, assets = assets, message = additionalMessages) {
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">System Readiness</h2>
+                <p class="admin-section__description">Monitor connectivity and kit health to keep femr updates running smoothly.</p>
+            </div>
+            <div class="admin-section__actions">
+                @helper.form(action = UpdatesController.refreshInternetStatus(), 'method -> "GET", 'class -> "admin-inline-form") {
+                    <button type="submit" class="admin-button admin-button--ghost">
+                        <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+                        <span>Refresh status</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="admin-columns">
+            @defining({
+                if (downloadSpeed > 5) {
+                    ("Good connection", "admin-status--success", assets.path("networkIcons/good_connection_icon.png"))
+                } else if (downloadSpeed > 2) {
+                    ("Moderate connection", "admin-status--warning", assets.path("networkIcons/okay_connection_icon.png"))
+                } else {
+                    ("Poor connection", "admin-status--danger", assets.path("networkIcons/poor_connection_icon.png"))
+                }
+            }) { connectionMeta =>
+                <article class="admin-card admin-card--status">
+                    <div class="admin-card__header">
+                        <div>
+                            <h3 class="admin-card__title">Network Status</h3>
+                            <p class="admin-card__description">Current internet performance reported from the clinic kit.</p>
+                        </div>
+                    </div>
+
+                    @if(viewModel.getNetworkStatus.isEmpty) {
+                        <div class="admin-card__body">
+                            <div class="admin-status-overview">
+                                <div class="admin-card__media admin-card__media--status" aria-hidden="true">
+                                    <img src="@connectionMeta._3" alt="" width="64" height="64">
+                                </div>
+                                <div class="admin-status-overview__details">
+                                    <span class={"admin-status " + connectionMeta._2}>@connectionMeta._1</span>
+                                    <span class="admin-status-overview__hint">No connection details reported.</span>
+                                </div>
+                            </div>
+                            <p class="admin-card__fallback">No network metrics reported.</p>
+                        </div>
+                    } else {
+                        @defining(Option(viewModel.getNetworkStatus.get("Last Available")).filter(_.trim.nonEmpty).getOrElse("—")) { lastAvailable =>
+                        @defining(viewModel.getNetworkStatus.entrySet().asScala.toSeq.filterNot(_.getKey == "Last Available")) { networkMetrics =>
+                            <div class="admin-card__body">
+                                <div class="admin-status-overview">
+                                    <div class="admin-card__media admin-card__media--status" aria-hidden="true">
+                                        <img src="@connectionMeta._3" alt="" width="64" height="64">
+                                    </div>
+                                    <div class="admin-status-overview__details">
+                                        <span class={"admin-status " + connectionMeta._2}>@connectionMeta._1</span>
+                                        <span class="admin-status-overview__hint">Last check @lastAvailable</span>
+                                    </div>
+                                </div>
+                                @if(networkMetrics.isEmpty) {
+                                    <p class="admin-card__fallback">No additional network metrics.</p>
+                                } else {
+                                    <dl class="admin-key-value-list admin-key-value-list--metrics">
+                                        @for(metric <- networkMetrics) {
+                                            <div class="admin-key-value-list__item">
+                                                <dt class="admin-key-value-list__label">@metric.getKey</dt>
+                                                <dd class="admin-key-value-list__value">@metric.getValue</dd>
+                                            </div>
+                                        }
+                                    </dl>
+                                }
+                            </div>
+                        }
+                        }
+                    }
+                </article>
+            }
+
+            <article class="admin-card">
+                <div class="admin-card__header">
+                    <div>
+                        <h3 class="admin-card__title">fEMR Kit Status</h3>
+                        <p class="admin-card__description">Hardware and service checks reported from field equipment.</p>
+                    </div>
+                </div>
+
+                @if(viewModel.getKitStatus.isEmpty) {
+                    <div class="admin-card__body">
+                        <p class="admin-card__fallback">No kit diagnostics available.</p>
+                    </div>
+                } else {
+                    @defining(Option(viewModel.getKitStatus.get("Status")).filter(_.trim.nonEmpty).getOrElse("Status Unknown")) { kitStatusSummary =>
+                    @defining({
+                        val summaryLower = kitStatusSummary.toLowerCase
+                        if (summaryLower.contains("online") || summaryLower.contains("ready") || summaryLower.contains("up to date")) "admin-status--success"
+                        else if (summaryLower.contains("offline") || summaryLower.contains("error") || summaryLower.contains("failed")) "admin-status--danger"
+                        else "admin-status--warning"
+                    }) { kitStatusClass =>
+                    @defining(Option(viewModel.getKitStatus.get("Last Update")).filter(_.trim.nonEmpty).getOrElse("—")) { kitLastUpdate =>
+                    @defining(viewModel.getKitStatus.entrySet().asScala.toSeq.filterNot(entry => entry.getKey == "Status" || entry.getKey == "Last Update")) { kitMetrics =>
+                        <div class="admin-card__body">
+                            <div class="admin-status-overview admin-status-overview--compact">
+                                <span class={"admin-status " + kitStatusClass}>@kitStatusSummary</span>
+                                <span class="admin-status-overview__hint">Last update @kitLastUpdate</span>
+                            </div>
+                            @if(kitMetrics.isEmpty) {
+                                <p class="admin-card__fallback">No additional kit diagnostics.</p>
+                            } else {
+                                <dl class="admin-key-value-list admin-key-value-list--metrics">
+                                    @for(metric <- kitMetrics) {
+                                        <div class="admin-key-value-list__item">
+                                            <dt class="admin-key-value-list__label">@metric.getKey</dt>
+                                            <dd class="admin-key-value-list__value">@metric.getValue</dd>
+                                        </div>
+                                    }
+                                </dl>
+                            }
+                        </div>
+                    }
+                    }
+                    }
+                    }
+                }
+            </article>
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Language Updates</h2>
+                <p class="admin-section__description">Choose which languages should receive translation package updates and review queued deployments.</p>
+            </div>
+            <div class="admin-section__actions admin-section__actions--stacked">
+                <button type="button" class="admin-button admin-button--ghost" data-updates-action="init-languages">
+                    <span class="material-symbols-outlined" aria-hidden="true">auto_fix_normal</span>
+                    <span>Initialize languages (dev)</span>
+                </button>
+                <button type="button" class="admin-button admin-button--primary" data-updates-action="download-packages">
+                    <span class="material-symbols-outlined" aria-hidden="true">system_update_alt</span>
+                    <span>Update now</span>
+                </button>
+                <span class="admin-inline-loader" data-updates-loader hidden>
+                    <img src="@assets.path("img/graph-loader.gif")" alt="" role="presentation">
+                    <span>Downloading packages…</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="admin-columns">
+            <article class="admin-card">
+                <div class="admin-card__header">
+                    <div>
+                        <h3 class="admin-card__title">Optimization Schedule</h3>
+                        <p class="admin-card__description">Toggle languages to include in the next optimization cycle.</p>
+                    </div>
+                </div>
+
+                @if(viewModel.getLanguages.isEmpty) {
+                    <p class="admin-card__fallback">No languages found.</p>
+                } else {
+                    <div class="admin-table-wrap" role="region" aria-label="Language optimization schedule">
+                        <table class="admin-table" id="languageScheduleTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Language</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for(language <- viewModel.getLanguages) {
+                                @defining(language.getCode) { code =>
+                                @defining({
+                                    val status = language.getStatus
+                                    if (status == "Optimized") "admin-status--success"
+                                    else if (status == "Not Optimized") "admin-status--warning"
+                                    else "admin-status--danger"
+                                }) { statusClass =>
+                                    <tr>
+                                        <td>
+                                            @defining("language-" + code) { checkboxId =>
+                                                <label class="admin-toggle-check" for="@checkboxId">
+                                                    <input type="checkbox"
+                                                           id="@checkboxId"
+                                                           name="@code"
+                                                           class="language-checkbox"
+                                                           data-language-checkbox="true"
+                                                           @if(language.getUpdateScheduled){checked}
+                                                           @if(!language.getUpdateScheduled && language.getStatus == "Optimized"){checked disabled}>
+                                                    <span class="sr-only">Schedule update for @language.getLanguageName</span>
+                                                </label>
+                                            }
+                                        </td>
+                                        <td>@language.getLanguageName</td>
+                                        <td>
+                                            <span class={"admin-status " + statusClass}>@language.getStatus</span>
+                                        </td>
+                                    </tr>
+                                }
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </article>
+
+            <article class="admin-card">
+                <div class="admin-card__header">
+                    <div>
+                        <h3 class="admin-card__title">Queued Packages</h3>
+                        <p class="admin-card__description">Review the cross-language builds queued for deployment.</p>
+                    </div>
+                </div>
+
+                @if(viewModel.getLanguageUpdates.isEmpty) {
+                    <p class="admin-card__fallback">No languages scheduled.</p>
+                } else {
+                    <div class="admin-accordion">
+                        @for(language <- viewModel.getLanguageUpdates) {
+                            @defining("scheduled-" + language.getCode) { panelId =>
+                                <div class="admin-accordion__item">
+                                    <button type="button"
+                                            class="admin-accordion__trigger"
+                                            data-accordion-trigger
+                                            aria-expanded="false"
+                                            aria-controls="@panelId">
+                                        <span class="admin-accordion__title">@language.getLanguageName</span>
+                                        <span class="admin-accordion__meta">@viewModel.getOptimizedLanguages.size translations</span>
+                                        <span class="material-symbols-outlined admin-accordion__icon" aria-hidden="true">expand_more</span>
+                                    </button>
+                                    <div class="admin-accordion__content" id="@panelId" hidden>
+                                        @if(viewModel.getOptimizedLanguages.isEmpty) {
+                                            <p class="admin-card__fallback">No optimized languages available for pairing.</p>
+                                        } else {
+                                            <ul class="admin-list">
+                                                @for(optLang <- viewModel.getOptimizedLanguages) {
+                                                    <li class="admin-list__item">@optLang.getLanguageName → @language.getLanguageName</li>
+                                                    <li class="admin-list__item">@language.getLanguageName → @optLang.getLanguageName</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </article>
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Maintenance</h2>
+                <p class="admin-section__description">Back up the database and apply kit updates when they become available.</p>
+            </div>
+        </div>
+
+        <div class="admin-columns">
+            <article class="admin-card">
+                <div class="admin-card__header">
+                    <div>
+                        <h3 class="admin-card__title">Database Status</h3>
+                        <p class="admin-card__description">Review the latest database backup details and trigger a new backup.</p>
+                    </div>
+                </div>
+
+                @if(viewModel.getDatabaseStatus.isEmpty) {
+                    <p class="admin-card__fallback">No database status information available.</p>
+                } else {
+                    <dl class="admin-key-value-list">
+                        @for((key, value) <- viewModel.getDatabaseStatus) {
+                            <div class="admin-key-value-list__item">
+                                <dt class="admin-key-value-list__label">@key</dt>
+                                <dd class="admin-key-value-list__value">@value</dd>
+                            </div>
+                        }
+                    </dl>
+                }
+
+                @helper.form(action = UpdatesController.databasePost()) {
+                    <button type="submit" class="admin-button admin-button--ghost">
+                        <span class="material-symbols-outlined" aria-hidden="true">backup</span>
+                        <span>Back up now</span>
+                    </button>
+                }
+            </article>
+
+            <article class="admin-card">
+                <div class="admin-card__header">
+                    <div>
+                        <h3 class="admin-card__title">Kit Updates</h3>
+                        <p class="admin-card__description">Keep field kits up to date with the latest software releases.</p>
+                    </div>
+                </div>
+
+                <div class="admin-kit-status">
+                    @if(viewModel.isUpdateAvailable) {
+                        <span class="admin-status admin-status--warning">Kit update available</span>
+                        @helper.form(action = UpdatesController.kitUpdatePost()) {
+                            <button type="submit" class="admin-button admin-button--primary">
+                                <span class="material-symbols-outlined" aria-hidden="true">upgrade</span>
+                                <span>Apply update</span>
+                            </button>
+                        }
+                    } else {
+                        <span class="admin-status admin-status--success">Kit is up to date</span>
+                    }
+                </div>
+            </article>
+        </div>
+    </section>
+}

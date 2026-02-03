@@ -1,38 +1,38 @@
 @(pmhTab: femr.common.models.TabItem)
 
 <div class="controlWrap hidden" id="pmhControl">
-    <div class="form-group">
+    <div class="form-group femr-field">
         <label for="medicalSurgicalHistory" id="partials_medical_tabs_pmh_Medical">Medical/Surgical History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory")) { medicalSurgicalHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@medicalSurgicalHistory.getIndex].name" value="medicalSurgicalHistory"/>
-            <textarea name="tabFieldItems[@medicalSurgicalHistory.getIndex].value" class="form-control input-sm" id="medicalTab">@medicalSurgicalHistory.getValue</textarea>
+            <textarea name="tabFieldItems[@medicalSurgicalHistory.getIndex].value" class="form-control input-sm femr-textarea" id="medicalTab">@medicalSurgicalHistory.getValue</textarea>
             <div class="hidden" id="medicalTabStore"></div>
         }
     </div>
 
-    <div class="form-group">
+    <div class="form-group femr-field">
         <label for="socialHistory" id="partials_medical_tabs_pmh_Social">Social History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "socialHistory")) { socialHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@socialHistory.getIndex].name" value="socialHistory"/>
-            <textarea name="tabFieldItems[@socialHistory.getIndex].value" class="form-control input-sm" id="socialTab">@socialHistory.getValue</textarea>
+            <textarea name="tabFieldItems[@socialHistory.getIndex].value" class="form-control input-sm femr-textarea" id="socialTab">@socialHistory.getValue</textarea>
             <div class="hidden" id="socialTabStore"></div>
         }
     </div>
 
-    <div class="form-group">
+    <div class="form-group femr-field">
         <label for="currentMedication" id="partials_medical_tabs_pmh_Medications">Current Medications</label>
         @defining(pmhTab.getTabFieldItemByName(null, "currentMedication")) { currentMedication =>
             <input type="text" class="hidden" name="tabFieldItems[@currentMedication.getIndex].name" value="currentMedication"/>
-            <textarea name="tabFieldItems[@currentMedication.getIndex].value" class="form-control input-sm" id="currentTab">@currentMedication.getValue</textarea>
+            <textarea name="tabFieldItems[@currentMedication.getIndex].value" class="form-control input-sm femr-textarea" id="currentTab">@currentMedication.getValue</textarea>
             <div class="hidden" id="currentTabStore"></div>
         }
     </div>
 
-    <div class="form-group">
+    <div class="form-group femr-field">
         <label for="familyHistory" id="partials_medical_tabs_pmh_Family">Family History</label>
         @defining(pmhTab.getTabFieldItemByName(null, "familyHistory")) { familyHistory =>
             <input type="text" class="hidden" name="tabFieldItems[@familyHistory.getIndex].name" value="familyHistory"/>
-            <textarea name="tabFieldItems[@familyHistory.getIndex].value" class="form-control input-sm" id="familyTab">@familyHistory.getValue</textarea>
+            <textarea name="tabFieldItems[@familyHistory.getIndex].value" class="form-control input-sm femr-textarea" id="familyTab">@familyHistory.getValue</textarea>
             <div class="hidden" id="familyTabStore"></div>
         }
     </div>

@@ -1,0 +1,41 @@
+@(currentUser: femr.common.dtos.CurrentUser = null, assets: AssetsFinder)
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                        updateLanguage(initialLanguage);
+                    });
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode = "en") {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("langCode_feedbackBtn", languageData[languageCode].langCode_feedbackBtn);
+                updateTextContent("langCode_googleChrome", languageData[languageCode].langCode_googleChrome);
+            }
+        });
+</script>
+<footer class="femr-footer">
+    <div class="femr-footer__content">
+        <div>
+            @if(currentUser != null) {
+                <p class="femr-footer__version">@currentUser.getKitVersion</p>
+            }
+        </div>
+        <div class="femr-footer__actions">
+            <a href="/feedback" class="femr-btn femr-btn--secondary" id="langCode_feedbackBtn">Leave Feedback</a>
+        </div>
+        <div class="femr-footer__note">
+            <p id="langCode_googleChrome">Designed for Google Chrome</p>
+        </div>
+    </div>
+</footer>

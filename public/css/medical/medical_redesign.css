@@ -1,0 +1,633 @@
+.femr-medical {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.hidden {
+    display: none !important;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+#portraitTemplate {
+    display: none;
+}
+
+.femr-photo-card img[src=""] {
+    display: none;
+}
+
+.femr-card {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 18px;
+    box-shadow: 0 30px 40px -35px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.femr-card--nested {
+    background: #f5f5f4;
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    box-shadow: none;
+}
+
+.femr-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 24px 28px 16px;
+}
+
+.femr-card__body {
+    padding: 16px 22px 20px;
+}
+
+.femr-card__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.femr-card__subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--femr-color-text-muted, #6b7280);
+}
+
+.femr-card__subtitle-value {
+    color: var(--femr-color-text, #1c1917);
+    font-weight: 600;
+}
+
+.femr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.femr-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.4);
+}
+
+.femr-btn--primary {
+    background: var(--femr-color-primary, #dc2626);
+    color: #ffffff;
+    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
+}
+
+.femr-btn--ghost {
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--femr-color-text, #1c1917);
+    border-color: rgba(28, 25, 23, 0.14);
+}
+
+.femr-btn--secondary {
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--femr-color-primary, #dc2626);
+    border-color: rgba(220, 38, 38, 0.24);
+}
+
+.femr-btn--link {
+    background: transparent;
+    color: var(--femr-color-primary, #dc2626);
+    border-color: transparent;
+    padding-inline: 0;
+}
+
+.femr-btn__label {
+    font-size: 13px;
+}
+
+.femr-medical__layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.femr-medical__complaint {
+    font-weight: 600;
+    color: var(--femr-color-text, #1c1917);
+    background: rgba(220, 38, 38, 0.08);
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin: 0 28px 16px;
+}
+
+.femr-medical__vitals {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: transparent;
+}
+
+.femr-medical__tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.femr-medical__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.femr-medical__actions .pull-right,
+.femr-medical__actions .pull-left {
+    float: none !important;
+}
+
+.femr-tabs {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 0 12px;
+    margin: 0 0 16px;
+    border-bottom: 1px solid rgba(28, 25, 23, 0.15);
+}
+
+.femr-tabs li {
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--femr-color-text-muted, #6b7280);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.femr-tabs li.active {
+    background: rgba(220, 38, 38, 0.14);
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-tabs li:hover {
+    background: rgba(28, 25, 23, 0.08);
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-medical__tab-content {
+    background: #f9fafb;
+    border-radius: 16px;
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    padding: 10px 12px 12px;
+}
+
+#vitalsWrap,
+#inputWrap {
+    width: 100%;
+    float: none;
+    padding: 12px;
+}
+
+#vitalsPartial {
+    overflow: hidden;
+}
+
+#newVitalsBtn {
+    width: 100%;
+    justify-content: center;
+}
+
+#tabContentWrap {
+    min-height: 320px;
+}
+
+#chiefComplaintSliderWrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(28, 25, 23, 0.12);
+}
+
+#chiefComplaintLeftArrow,
+#chiefComplaintRightArrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(28, 25, 23, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#chiefComplaintLeftArrow span,
+#chiefComplaintRightArrow span {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.chiefComplaintText {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.hpiWraps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+}
+
+.leftHPI,
+.rightHPI,
+.bottomHPI {
+    width: 100%;
+    float: none;
+    padding: 0;
+}
+
+.bottomHPI {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+    .hpiWraps {
+        grid-template-columns: 1fr;
+    }
+}
+
+.customWrap {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+}
+
+.customLeft,
+.customRight {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.customBottom {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.customFieldWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.customFieldWrap label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.femr-field,
+.femr-medical .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.controlWrap {
+    margin-bottom: 6px;
+}
+
+.femr-field label,
+.femr-medical .form-group label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.femr-input,
+.femr-textarea,
+.femr-medical .form-control,
+.femr-medical .fInput,
+.femr-medical .fTextArea,
+.femr-medical select,
+.femr-medical textarea {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    padding: 11px 16px;
+    background: #ffffff;
+    color: var(--femr-color-text, #1c1917);
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.femr-textarea,
+.femr-medical textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.fNarrativeTextArea {
+    min-height: 220px;
+}
+
+.radio-responses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+}
+
+.radio-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.rInput {
+    width: auto;
+}
+
+.femr-input:focus,
+.femr-textarea:focus,
+.femr-medical .form-control:focus,
+.femr-medical .fInput:focus,
+.femr-medical .fTextArea:focus,
+.femr-medical select:focus,
+.femr-medical textarea:focus {
+    border-color: var(--femr-color-primary, #dc2626);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.femr-medical .input-group {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    background: #ffffff;
+}
+
+.femr-medical .input-group .form-control {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.femr-medical .input-group .input-group-btn .btn {
+    border-radius: 0;
+    border: none;
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--femr-color-primary, #dc2626);
+}
+
+.femr-medical__vitals #vitalTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #f7f3ee;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.femr-medical__vitals #vitalTable thead,
+.femr-medical__vitals #vitalTable tbody,
+.femr-medical__vitals #vitalTable tr {
+    background: #f7f3ee;
+}
+
+.femr-medical__vitals #vitalTable th,
+.femr-medical__vitals #vitalTable td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(28, 25, 23, 0.12);
+    text-align: left;
+    vertical-align: middle;
+    background: #f7f3ee;
+}
+
+.tablescroll_wrapper,
+.tablescroll_head,
+.tablescroll_body,
+.tablescroll_foot {
+    background: #f7f3ee;
+}
+
+.tablescroll_head table,
+.tablescroll_head th,
+.tablescroll_head td {
+    background: #f7f3ee;
+}
+
+.femr-medical__vitals #vitalTable th {
+    color: var(--femr-color-text-muted, #6b7280);
+    font-weight: 600;
+}
+
+.femr-medical__vitals #vitalTable tr:first-child td {
+    font-size: 12px;
+    color: var(--femr-color-text-muted, #6b7280);
+}
+
+.prescription-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 0.6fr 0.6fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.prescription-grid.prescriptionHeader {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: var(--femr-color-text-muted, #6b7280);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.prescription-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.problemWrap .problem {
+    margin-bottom: 6px;
+}
+
+.addSubtractBtn,
+.femr-icon-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(220, 38, 38, 0.14);
+    color: var(--femr-color-primary, #dc2626);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.femr-overview {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.femr-overview__photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    background: rgba(28, 25, 23, 0.08);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.femr-overview__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.femr-overview__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px 20px;
+}
+
+.femr-overview__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.femr-overview__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--femr-color-text-muted, #6b7280);
+    font-weight: 600;
+}
+
+.femr-overview__value {
+    font-weight: 600;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.femr-photo-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.femr-photo-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.femr-photo-card__body {
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.femr-photo-card__body p {
+    margin: 0;
+}
+
+.femr-photo-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.femr-medical__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#toggleBtn img {
+    width: 20px;
+    height: 20px;
+}
+
+#newVitalsDialog .vitalWrap {
+    margin-bottom: 12px;
+}
+
+#newVitalsDialog label.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    background: #ffffff;
+}
+
+#newVitalsDialog .fButton {
+    border: none;
+    background: transparent;
+}
+
+@media (max-width: 1100px) {
+    .femr-medical__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .customWrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    .femr-card__header {
+        padding: 20px;
+    }
+
+    .femr-card__body {
+        padding: 18px;
+    }
+
+    .femr-medical__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

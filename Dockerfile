@@ -64,13 +64,12 @@ RUN --mount=type=cache,target=/root/.ivy2 \
 WORKDIR $PROJECT_HOME/app/target/universal
 RUN unzip femr-*.zip && rm femr-*.zip
 
-#FROM openjdk:8-jre-alpine
 FROM eclipse-temurin:8-jre-alpine-3.23
+
 RUN apk update
-#RUN apk add --no-cache bash python3 py3-pip py3-psutil gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
+#RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
 #RUN pip3 install psutil
 RUN apk add --no-cache bash python3 py3-pip py3-psutil gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
-
 
 #database variables
 ARG APP_VERSION
@@ -88,4 +87,4 @@ EXPOSE 9000
 
 # run fEMR using env variables
 #ENTRYPOINT url=$DB_URL usr=$DB_USER pass=$DB_PASS sbt ~run
-ENTRYPOINT ["/bin/bash", "-c", "/opt/bin/femr/bin/femr"]
+ENTRYPOINT ["/bin/bash", "-c", "rm -f /opt/bin/femr/RUNNING_PID; exec /opt/bin/femr/bin/femr -Dpidfile.path=/dev/null"]

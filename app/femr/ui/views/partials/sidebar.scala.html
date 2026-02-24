@@ -91,6 +91,10 @@
             <div class="femr-sidebar__section">
                 @search
             </div>
+        } else if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
+            <div class="femr-sidebar__section">
+                @femr.ui.views.html.partials.search("history")
+            </div>
         }
 
         <nav class="femr-sidebar__section" aria-label="Primary">

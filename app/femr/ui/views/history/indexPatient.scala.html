@@ -55,6 +55,11 @@
                     }
                 }
 
+                function updateButtonText(elementId, value) {
+                    const trimmedValue = value ? value.replace(/:\s*$/, "") : value;
+                    updateTextContent(elementId, trimmedValue);
+                }
+
                 function updateTextContentInLineVar(elementId, value) {
                     const element = document.getElementById(elementId);
                     // console.log(elementId);
@@ -82,9 +87,9 @@
                     updateTextContent("history_patient_Chief", languageData[language].history_patient_Chief);
                     updateTextContent("encounterAlert", languageData[language].history_patient_Click);
                     updateTextContent("deletePatientBtn", languageData[language].history_patient_Delete);
-                    updateTextContent("history_patient_Pharmacy", languageData[language].history_patient_Pharmacy);
-                    updateTextContent("history_patient_Medical", languageData[language].history_patient_Medical);
-                    updateTextContent("history_patient_Triage", languageData[language].history_patient_Triage);
+                    updateButtonText("history_patient_Pharmacy", languageData[language].history_patient_Pharmacy);
+                    updateButtonText("history_patient_Medical", languageData[language].history_patient_Medical);
+                    updateButtonText("history_patient_Triage", languageData[language].history_patient_Triage);
                     updateTextContentInLineVar("history_patient_Patient", languageData[language].history_patient_Patient);
 
 
@@ -186,7 +191,7 @@
     }
     <div class="encounterInfoWrap backgroundForWrap">
 
-        <div id="viewPatientHeader">
+    <div id="viewPatientHeader">
             <div id="patientPhoto">
             @if(viewModel.getPatientItem.getPathToPhoto != null && !viewModel.getPatientItem.getPathToPhoto.isEmpty) {
 
@@ -209,7 +214,7 @@
 
                 <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right" id="history_patient_Medical">View in Medical</a>
                 <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right" id="history_patient_Pharmacy">View in Pharmacy</a>
-                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right"id="history_patient_Triage">See This Patient In Triage</a>
+                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right" id="history_patient_Triage">See This Patient In Triage</a>
 
                 <br/><br/>
             </div>
@@ -257,7 +262,7 @@
                     <div class="medicalHistoryLineDivide"></div>
                 }
                 </ol>
-                <div class="alert alert-info" id="encounterAlert">Click an encounter to view past history!</div>
+            <div class="alert alert-info" id="encounterAlert">Click an encounter to view past history!</div>
             </div>
         </div>
 

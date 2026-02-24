@@ -1,7 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser,
         form: play.data.Form[femr.ui.models.admin.users.EditViewModel],
         availableRoles: java.util.List[_ <: java.lang.String],
-        messages: java.util.List[_ <: java.lang.String],
+    messages: java.util.List[_ <: java.lang.String],
+    availableTrips: java.util.List[femr.common.models.MissionTripItem],
         assets: AssetsFinder)
 
 @import femr.common.models.MissionTripItem
@@ -28,6 +29,7 @@
 @defining(selectedRolesJava.asScala.toSet) { selectedRoles =>
 @defining(if (formValue != null && formValue.getMissionTripItems != null) formValue.getMissionTripItems else java.util.Collections.emptyList[MissionTripItem]()) { missionTripsJava =>
 @defining(missionTripsJava.asScala.toList) { missionTrips =>
+@defining(Option(availableTrips).getOrElse(java.util.Collections.emptyList[MissionTripItem]()).asScala.toList) { availableTripList =>
 
 @admin("Edit User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
     @helper.form(action = UsersController.editPost(Integer.parseInt(form("userId").getValue.get())), 'name -> "createForm") {
@@ -140,6 +142,7 @@
                 <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()">Cancel</a>
             </div>
         </section>
+    }
 
         <section class="admin-section">
             <div class="admin-section__header">
@@ -147,6 +150,34 @@
                     <h2 class="admin-section__title">Trip History</h2>
                     <p class="admin-section__description">Trips granted access to this user for inventory visibility.</p>
                 </div>
+                @if(availableTripList.nonEmpty) {
+                    <div class="admin-section__actions">
+                        @helper.form(action = UsersController.addTripPost(Integer.parseInt(form("userId").getValue.get())), 'class -> "admin-inline-form") {
+                            <div class="admin-form admin-form--inline">
+                                <div class="admin-form__row">
+                                    <div class="admin-form__field admin-form__field--compact">
+                                        <label for="addTripSelect">Add to trip</label>
+                                        <select id="addTripSelect" name="tripId">
+                                            @for(trip <- availableTripList) {
+                                                @defining(Option(trip.getFriendlyTripTitle).getOrElse(
+                                                    Option(trip.getTeamName).getOrElse("Trip") + " • " +
+                                                    Option(trip.getTripCountry).getOrElse("—") + " • " +
+                                                    Option(trip.getFriendlyTripStartDate).getOrElse("—")
+                                                )) { tripLabel =>
+                                                    <option value="@trip.getId">@tripLabel</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="admin-button admin-button--primary">
+                                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                                        <span>Add to trip</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
 
             @if(missionTrips.nonEmpty) {
@@ -178,9 +209,9 @@
                 </div>
             }
         </section>
-    }
 }
 
+}
 }
 }
 }

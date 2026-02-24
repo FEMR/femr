@@ -11,14 +11,29 @@
 
     .sidebar {
         position: fixed;
-        top: 50px;
+        top: 0;
         bottom: 0;
-        left: 0;
-        z-index: 1000;
+        left: var(--femr-sidebar-width-collapsed, 88px);
+        z-index: 5;
         display: block;
         padding: 20px;
-        background-color: #000;
+        background-color: #302d2b;
         border-right: 1px solid #6f6f6f;
+        transform: translateX(0);
+        transition: transform 0.25s ease, opacity 0.25s ease;
+        height: 100vh;
+    }
+}
+
+@media (min-width: 768px) {
+    body.femr-shell .femr-sidebar:is(:hover, :focus-within) + .femr-shell__content .sidebar {
+        transform: translateX(calc(-1 * var(--femr-sidebar-width-collapsed, 88px)));
+        pointer-events: none;
+    }
+
+    body.femr-shell .femr-sidebar:is(:hover, :focus-within) + .femr-shell__content .researchWrap {
+        margin-left: 0 !important;
+        width: 100% !important;
     }
 }
 
@@ -351,6 +366,7 @@
 
 .main {
     padding: 20px 10px;
+    transition: margin-left 0.25s ease, width 0.25s ease;
 }
 
 .main .page-header {

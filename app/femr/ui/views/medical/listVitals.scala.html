@@ -120,11 +120,8 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
                 <td data-weight="@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))">
                 @if(viewModel.getSettings.isMetric) {
                     @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
-                    /@outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
                 } else {
                     @outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
-                  /@outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
-
                 }
                 </td>
             }

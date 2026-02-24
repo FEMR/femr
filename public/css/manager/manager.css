@@ -1,3 +1,22 @@
+.femr-shell__main-inner {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+
+.femr-shell__main {
+    padding: 0;
+}
+
+.femr-shell__content,
+.manager-view,
+.manager-view .admin-section,
+.manager-view .admin-table-wrap {
+    width: 100%;
+    max-width: none;
+}
+
 .manager-view {
     display: flex;
     flex-direction: column;

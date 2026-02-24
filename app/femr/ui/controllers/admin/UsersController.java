@@ -26,6 +26,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IRoleService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
+import femr.common.models.MissionItem;
 import femr.common.models.MissionTripItem;
 import femr.common.models.UserItem;
 import femr.data.models.mysql.Roles;
@@ -42,7 +43,11 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -164,6 +169,7 @@ public class UsersController extends Controller {
         if (missionTripItemServiceResponse.hasErrors()){
             return internalServerError();
         }
+        List<MissionTripItem> availableTrips = getAvailableTrips(missionTripItemServiceResponse.getResponseObject());
 
 
         UserItem userItem = userItemServiceResponse.getResponseObject();
@@ -185,7 +191,7 @@ public class UsersController extends Controller {
             return internalServerError();
         }
 
-        return ok(edit.render(currentUser, editViewModelForm, roleServiceResponse.getResponseObject(), new ArrayList<String>(), assetsFinder));
+    return ok(edit.render(currentUser, editViewModelForm, roleServiceResponse.getResponseObject(), new ArrayList<String>(), availableTrips, assetsFinder));
     }
 
     //  edit a user dialog
@@ -206,7 +212,12 @@ public class UsersController extends Controller {
 
         if (form.hasErrors()){
 
-            return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>(), assetsFinder));
+            ServiceResponse<List<MissionTripItem>> missionTripItemServiceResponse = missionTripService.retrieveAllTripInformationByUserId(id);
+            if (missionTripItemServiceResponse.hasErrors()) {
+                return internalServerError();
+            }
+            List<MissionTripItem> availableTrips = getAvailableTrips(missionTripItemServiceResponse.getResponseObject());
+            return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>(), availableTrips, assetsFinder));
         }else{
             EditViewModel viewModel = form.bindFromRequest().get();
             ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(id);
@@ -265,6 +276,63 @@ public class UsersController extends Controller {
         } else {
             return ok(Boolean.toString(updateResponse.getResponseObject().isDeleted()));
         }
+    }
+
+    public Result addTripPost(Integer id) {
+        if (id == null) {
+            return internalServerError();
+        }
+
+        Map<String, String[]> data = request().body().asFormUrlEncoded();
+        if (data == null || !data.containsKey("tripId")) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        String tripIdValue = data.get("tripId")[0];
+        if (StringUtils.isNullOrWhiteSpace(tripIdValue)) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        Integer tripId;
+        try {
+            tripId = Integer.parseInt(tripIdValue);
+        } catch (NumberFormatException ex) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.addUsersToTrip(tripId, Collections.singletonList(id));
+        if (missionTripItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        return redirect(routes.UsersController.editGet(id));
+    }
+
+    private List<MissionTripItem> getAvailableTrips(List<MissionTripItem> assignedTrips) {
+        ServiceResponse<List<MissionItem>> allTripsResponse = missionTripService.retrieveAllTripInformation();
+        if (allTripsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        Set<Integer> assignedTripIds = new HashSet<>();
+        if (assignedTrips != null) {
+            for (MissionTripItem trip : assignedTrips) {
+                assignedTripIds.add(trip.getId());
+            }
+        }
+
+        List<MissionTripItem> availableTrips = new ArrayList<>();
+        for (MissionItem mission : allTripsResponse.getResponseObject()) {
+            if (mission.getMissionTrips() == null) {
+                continue;
+            }
+            for (MissionTripItem trip : mission.getMissionTrips()) {
+                if (!assignedTripIds.contains(trip.getId())) {
+                    availableTrips.add(trip);
+                }
+            }
+        }
+        return availableTrips;
     }
 
 

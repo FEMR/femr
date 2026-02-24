@@ -31,6 +31,7 @@ body.femr-shell {
     display: flex;
     min-height: 100vh;
     background-color: inherit;
+    gap: 24px;
 
 .femr-sidebar {
     width: var(--femr-sidebar-width-collapsed);
@@ -43,11 +44,14 @@ body.femr-shell {
     box-shadow: var(--femr-shadow-md);
     position: sticky;
     top: 0;
-    align-self: flex-start;
+    left: 0;
+    align-self: stretch;
     min-height: 100vh;
+    height: 100vh;
     z-index: 10;
     transition: width var(--femr-transition-default), padding var(--femr-transition-default);
     overflow: hidden;
+    overflow-y: auto;
 }
 
 .femr-sidebar:is(:hover, :focus-within) {
@@ -488,21 +492,173 @@ body.femr-shell {
     width: 100%;
 }
 
+.femr-card {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 18px;
+    box-shadow: 0 30px 40px -35px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.femr-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 24px 12px;
+}
+
+.femr-card__body {
+    padding: 16px 24px 20px;
+}
+
+.femr-card__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.femr-card__subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--femr-color-text-muted, #6b7280);
+}
+
+.femr-card__subtitle-value {
+    color: var(--femr-color-text, #1c1917);
+    font-weight: 600;
+}
+
+.femr-overview {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.femr-overview__photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    background: rgba(28, 25, 23, 0.08);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.femr-overview__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.femr-overview__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px 20px;
+}
+
+.femr-overview__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.femr-overview__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--femr-color-text-muted, #6b7280);
+    font-weight: 600;
+}
+
+.femr-overview__value {
+    font-weight: 600;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.femr-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.4);
+}
+
+.femr-btn--primary {
+    background: var(--femr-color-primary, #dc2626);
+    color: #ffffff;
+    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
+}
+
+.femr-btn--ghost {
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--femr-color-text, #1c1917);
+    border-color: rgba(28, 25, 23, 0.14);
+}
+
+.femr-btn--secondary {
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--femr-color-primary, #dc2626);
+    border-color: rgba(220, 38, 38, 0.24);
+}
+
+.hidden {
+    display: none !important;
+}
+
 .femr-search {
     display: flex;
     justify-content: center;
-    padding: 32px 0 48px;
+    padding: 48px 0 64px;
 }
 
-.femr-search__card {
+.femr-search {
+    flex-direction: column;
+    align-items: center;
+}
+
+.femr-search__header,
+.femr-search__body {
     width: min(520px, 100%);
     text-align: center;
+}
+
+.femr-search__title {
+    margin: 0 0 24px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.femr-search__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.femr-search__input {
+    width: 100%;
+    max-width: 360px;
 }
 
 .femr-search__input {
     text-align: center;
     font-size: 20px;
     padding: 12px 16px;
+    margin-bottom: 0;
 }
 
 .femr-search__message {
@@ -526,6 +682,7 @@ body.femr-shell {
     color: #ffffff;
     box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
     border-radius: 12px;
+    margin-top: 0;
 }
 
 .femr-search__submit:hover {
@@ -603,6 +760,7 @@ body.femr-shell {
 @media (max-width: 1024px) {
     .femr-shell__layout {
         flex-direction: column;
+        gap: 16px;
     }
 
     .femr-sidebar {

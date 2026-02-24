@@ -13,6 +13,7 @@ POST        /admin/users/create                                @femr.ui.controll
 GET         /admin/users/create                                @femr.ui.controllers.admin.UsersController.createGet()
 POST        /admin/users/edit                                  @femr.ui.controllers.admin.UsersController.editPost(id: Integer)
 GET         /admin/users/edit/:id                              @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
+POST        /admin/users/edit/:id/trips                        @femr.ui.controllers.admin.UsersController.addTripPost(id: Integer)
 POST        /admin/users/toggle/:id                            @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
 GET         /admin/users                                       @femr.ui.controllers.admin.UsersController.manageGet()
 GET         /admin/inventory/:tripId                           @femr.ui.controllers.admin.InventoryController.manageGet(tripId: Integer)

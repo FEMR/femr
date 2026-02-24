@@ -45,6 +45,24 @@
     padding: 24px 28px 16px;
 }
 
+#header {
+    position: relative;
+    justify-content: center;
+    text-align: center;
+}
+
+#header h4 {
+    float: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+#toggle {
+    float: none;
+    position: absolute;
+    right: 28px;
+}
+
 .femr-card__body {
     padding: 16px 22px 20px;
 }
@@ -126,7 +144,7 @@
     background: rgba(220, 38, 38, 0.08);
     padding: 10px 14px;
     border-radius: 12px;
-    margin: 0 28px 16px;
+    margin: 0 24px 16px;
 }
 
 .femr-medical__vitals {

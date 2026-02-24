@@ -37,11 +37,10 @@
 </script>
 
 <div class="searchWrap femr-search">
-    <div class="femr-card femr-search__card">
-        <div class="femr-card__header">
-            <h2 class="femr-card__title" id="search_box_title">@page Search</h2>
-        </div>
-        <div class="femr-card__body">
+    <div class="femr-search__header">
+        <h2 class="femr-search__title" id="search_box_title">@page Search</h2>
+    </div>
+    <div class="femr-search__body">
     @if(patientId > 0) {
 
         <label for="id" class="hidden">Patient ID</label>
@@ -65,6 +64,5 @@
         @*idSearch used to validate id via client*@
     <button type="submit" class="idSearch fLandingSearchButton femr-btn femr-btn--primary femr-search__submit">Search</button>
     }
-        </div>
     </div>
 </div>

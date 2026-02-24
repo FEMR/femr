@@ -48,14 +48,16 @@
                     </div>
                     <div class="femr-overview__item">
                         <span class="femr-overview__label">Weight</span>
-                        <span class="femr-overview__value">@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric) / @outputWeightOrNA(String.valueOf(patient.getWeightDual), !settings.isMetric)</span>
+                        <span class="femr-overview__value">@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric)</span>
                     </div>
                 }
 
-                <div class="femr-overview__item">
-                    <span id="partials_medical_Overview_Pregnant" class="femr-overview__label">Weeks Pregnant</span>
-                    <span class="femr-overview__value">@outputIntOrNA(patient.getWeeksPregnant)</span>
-                </div>
+                @if(patient.getWeeksPregnant != null) {
+                    <div class="femr-overview__item">
+                        <span id="partials_medical_Overview_Pregnant" class="femr-overview__label">Weeks Pregnant</span>
+                        <span class="femr-overview__value">@outputIntOrNA(patient.getWeeksPregnant)</span>
+                    </div>
+                }
             </div>
         </div>
     </div>

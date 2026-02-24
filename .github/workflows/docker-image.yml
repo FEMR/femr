@@ -62,5 +62,6 @@ jobs:
           platforms: ${{ matrix.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: false # Doesn't push to dockerhub on PRs.
+          # push: false # Doesn't push to dockerhub on PRs.
+          push: true #Now it does :D
           tags: teamfemrdev/teamfemr:latest

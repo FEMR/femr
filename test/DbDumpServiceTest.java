@@ -3,14 +3,13 @@ package femr.business.services.system;
 import femr.common.dtos.ServiceResponse;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.WithApplication;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests for DbDumpService S3 integration
  */
-public class DbDumpServiceTest extends WithApplication {
+public class DbDumpServiceTest {
 
     private DbDumpService dbDumpService;
 

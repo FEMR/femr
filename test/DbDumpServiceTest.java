@@ -39,7 +39,7 @@ public class DbDumpServiceTest extends WithApplication {
         ServiceResponse<Boolean> response = dbDumpService.getAllData();
         
         assertNotNull("Response should not be null", response);
-        assertTrue("Database dump should succeed", response.wasSuccessful());
+        assertTrue("Database dump should succeed", !response.hasErrors());
     }
 
     /**

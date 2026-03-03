@@ -121,11 +121,11 @@ public class UpdatesController extends Controller {
 
         if (databaseStatusesResponse.hasErrors()) {
             Logger.error("UpdatesController-databasePost()","Failed to update statuses");
-            messages.add("Failed to back up database");
+            messages.add("admin_backup_failed");
         }
         else
         {
-            messages.add("The database was successfully backed up.");
+            messages.add("admin_backup_success");
         }
 
         return manageGet();
@@ -143,7 +143,7 @@ public class UpdatesController extends Controller {
         }
 
         else {
-            messages.add("The kit was successfully backed up.");
+            messages.add("admin_kit_backup_success");
         }
 
         return manageGet();

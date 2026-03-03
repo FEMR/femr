@@ -30,6 +30,12 @@
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
                     const language = languageCode;
+                    // Translate success message
+                    const msgEl = document.getElementById("backup_message");
+                    if (msgEl) {
+                        const key = msgEl.textContent.trim();
+                        if (key) msgEl.textContent = (languageData[language] && languageData[language][key]) ? languageData[language][key] : key;
+                    }
                 }
             });
     </script>
@@ -53,7 +59,7 @@
             @helper.form(action = DatabaseDumpController.indexPost()){
                 <button class="fButton fRedButton">Backup Your Data</button>
             }
-            <p>
+            <p id="backup_message">
                 @successMessage
             </p>
         }

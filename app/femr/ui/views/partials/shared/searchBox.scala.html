@@ -32,6 +32,18 @@
                 if (patientIDSearch) {
                     patientIDSearch.placeholder = languageData[languageCode].patient_id;
                 }
+                // Translate message key(s)
+                const messageElById = document.getElementById("messageKey");
+                if (messageElById) {
+                    const key = messageElById.textContent.trim();
+                    messageElById.textContent = (languageData[languageCode] && languageData[languageCode][key]) ? languageData[languageCode][key] : key;
+                }
+                const messageEls = document.getElementsByClassName('messageKey');
+                for (let i = 0; i < messageEls.length; i++) {
+                    const el = messageEls[i];
+                    const key = el.textContent.trim();
+                    el.textContent = (languageData[languageCode] && languageData[languageCode][key]) ? languageData[languageCode][key] : key;
+                }
             }
         });
 </script>
@@ -43,8 +55,7 @@
         <label for="id" class="hidden">Patient ID</label>
         <input type="number" class="fButtonSearch" id="id" name="id" value="@patientId" readonly/>
 
-
-        <p>@message</p>
+        <p class="messageKey">@message</p>
 
             <a href="/medical/edit/@patientId" class="fButton fOtherButton fYesButton">Yes</a>
             <a href="/medical" class="fButton fOtherButton fNoButton">No</a>
@@ -55,7 +66,7 @@
         <label for="id" class="hidden">Patient ID</label>
         <input type="number" class="fButtonSearch" id="id" name="id" placeholder="Patient ID">
 
-        <p>@message</p>
+        <p class="messageKey">@message</p>
         @*idSearch used to validate id via client*@
         <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">Search</button>
     }

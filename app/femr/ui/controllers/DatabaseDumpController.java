@@ -36,12 +36,12 @@ public class DatabaseDumpController extends Controller {
     }
 
     public Result indexPost(){
-        String successMessage = "Data Backup Successful!";
+        String successMessage = "backup_data_success";
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         DbDumpService dbService = new DbDumpService();
         ServiceResponse<Boolean> response = dbService.getAllData();
         if (!response.getResponseObject()){
-            successMessage = "Data Backup Failed..";
+            successMessage = "backup_data_failed";
         }
         return ok(backup.render(currentUser, assetsFinder, getCommand(), successMessage));
     }

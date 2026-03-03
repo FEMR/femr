@@ -105,8 +105,7 @@ public class MedicalController extends Controller {
 
             //check for encounter closed
             if (patientEncounterItem.getIsClosed()) {
-
-                return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
+                return ok(index.render(currentUserSession, "error_encounterClosed", 0, assetsFinder));
             }
 
             //check if the doc has already seen the patient today
@@ -117,12 +116,11 @@ public class MedicalController extends Controller {
             } else {
 
                 if (userItemServiceResponse.getResponseObject() != null) {
-
-                    return ok(index.render(currentUserSession, "That patient has already been seen today. Would you like to edit their encounter?", patientId, assetsFinder));
+                    return ok(index.render(currentUserSession, "medical_alreadySeenToday", patientId, assetsFinder));
                 }
             }
         } catch (NullPointerException e) {
-            return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
+            return ok(index.render(currentUserSession, "medical_noRecordFound", 0, assetsFinder));
         }
         return redirect(routes.MedicalController.editGet(patientId));
     }
@@ -145,8 +143,7 @@ public class MedicalController extends Controller {
 
         //verify encounter is still open
         if (patientEncounter.getIsClosed()) {
-
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
+            return ok(index.render(currentUserSession, "error_encounterClosed", 0, assetsFinder));
         }
 
         //get patient

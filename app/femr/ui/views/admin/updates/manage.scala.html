@@ -13,7 +13,7 @@
     @additionalMessages = {
 
         @for(message <- messages) {
-            <p class="adminMessage">@message</p>
+            <p class="adminMessage messageKey">@message</p>
         }
 
     }
@@ -21,6 +21,21 @@
 @downloadSpeed = @{ viewModel.getNetworkStatus.get("Download").split(" ")(0).toFloat.toInt }
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/assets/json/languages.json')
+                .then(r => r.json())
+                .then(data => {
+                    const lang = localStorage.getItem('languageCode') || 'en';
+                    const messages = document.querySelectorAll('.messageKey');
+                    messages.forEach(msg => {
+                        const key = msg.textContent.trim();
+                        msg.textContent = (data[lang] && data[lang][key]) ? data[lang][key] : key;
+                    });
+                })
+                .catch(e => console.error('Error loading translations:', e));
+        });
+    </script>
 
         <div id="updates-content">
             <div id="left-div">

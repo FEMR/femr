@@ -86,7 +86,7 @@ public class PharmaciesController extends Controller {
 
             //check for encounter closed
             if (patientEncounterItem.getIsClosed()) {
-                return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
+                return ok(index.render(currentUserSession, "error_encounterClosed", 0, assetsFinder));
             }
 
             //ensure prescriptions exist for that patient
@@ -95,11 +95,11 @@ public class PharmaciesController extends Controller {
                 throw new RuntimeException();
 
             } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
-                return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
+                return ok(index.render(currentUserSession, "pharmacy_noPrescriptions", 0, assetsFinder));
             }
         } catch (NullPointerException e) {
             // source of NullPointerException currently unknown. Temp fix: display no prescriptions found message.
-            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
+            return ok(index.render(currentUserSession, "pharmacy_noPrescriptions", 0, assetsFinder));
         }
 
         return redirect(routes.PharmaciesController.editGet(patientId));
@@ -136,7 +136,8 @@ public class PharmaciesController extends Controller {
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
         //check for encounter closed
         if (patientEncounterItem.getIsClosed()) {
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
+            // pass translation key to view; client will resolve via languages.json
+            return ok(index.render(currentUserSession, "error_encounterClosed", 0, assetsFinder));
         }
         viewModelGet.setPatientEncounterItem(patientEncounterItem);
 
@@ -146,7 +147,7 @@ public class PharmaciesController extends Controller {
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
-            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
+            return ok(index.render(currentUserSession, "pharmacy_noPrescriptions", 0, assetsFinder));
         }
         viewModelGet.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
 

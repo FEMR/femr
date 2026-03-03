@@ -48,13 +48,28 @@
         @if(errorMsg.equals(2)){
             <div id="login">
 
-                <div class="errorMessage">
+                <div class="errorMessage" id="messagesContainer">
                     @if(messages != null) {
                         @for(message <- messages) {
-                            <h2>@message</h2>
+                            <h2 class="messageKey">@message</h2>
                         }
                     }
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        fetch('/assets/json/languages.json')
+                            .then(r => r.json())
+                            .then(data => {
+                                const lang = localStorage.getItem('languageCode') || 'en';
+                                const messages = document.querySelectorAll('.messageKey');
+                                messages.forEach(msg => {
+                                    const key = msg.textContent.trim();
+                                    msg.textContent = (data[lang] && data[lang][key]) ? data[lang][key] : key;
+                                });
+                            })
+                            .catch(e => console.error('Error loading translations:', e));
+                    });
+                </script>
 
                 <h2>Please note: Before you can log in your account must be approved by an admin.</h2>
 

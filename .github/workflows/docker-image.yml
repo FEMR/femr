@@ -2,7 +2,9 @@ name: Docker Image Build Test
 
 on:
   push:
-  pull_request:
+    branches-ignore: "master"
+  pull_request:  
+    branches-ignore: "master"
 
 jobs:
   build_image_test:
@@ -50,3 +52,13 @@ jobs:
               "root/.sbt": "/root/.sbt"
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false #Don't push to docker hub on prs and other branches
+          tags: teamfemrdev/teamfemr:latest

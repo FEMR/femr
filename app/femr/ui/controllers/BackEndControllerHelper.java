@@ -9,7 +9,7 @@ public class BackEndControllerHelper  {
 
   public static void executePythonScript(String absPath) {
     try {
-      ProcessBuilder pb = new ProcessBuilder("python", absPath);
+  ProcessBuilder pb = new ProcessBuilder("python3", absPath);
       pb.start();
     } catch (NullPointerException e) {
       System.out.println("The python script does not exist or could not be opened.");
@@ -27,7 +27,7 @@ public class BackEndControllerHelper  {
       if(absPath.equals("/usr/src/speedtest/sptest.py")){
         pb = new ProcessBuilder("python3", absPath);
       }else{
-        pb = new ProcessBuilder("python", absPath);
+  pb = new ProcessBuilder("python3", absPath);
       }
       Process p = pb.start();
       BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));

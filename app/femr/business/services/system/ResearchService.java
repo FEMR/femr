@@ -43,13 +43,17 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import play.Logger;
 
 public class ResearchService implements IResearchService {
 
@@ -198,13 +202,12 @@ public class ResearchService implements IResearchService {
         ResearchExportItem exportitem = new ResearchExportItem();
 
         IPatient patient = encounter.getPatient();
-
-        // Patient Id
-        exportitem.setPatientId(patientId);
-
         // Age
         Integer age = (int)Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
         exportitem.setAge(age);
+
+        // Patient ID
+        exportitem.setPatientId(patientId);
 
         // Gender
         String gender = StringUtils.outputGenderOrMissing(patient.getSex());
@@ -342,64 +345,350 @@ public class ResearchService implements IResearchService {
 
     @Override
     public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
-
+        Logger.info("ResearchService:exportPatientsByTrip called with tripId={} at 0 seconds. ", tripId);
+        long startTimeNanos = System.nanoTime();
         ServiceResponse<File> response = new ServiceResponse<>();
 
-        // Build Query based on Filters
-        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
+        // <editor-fold desc="Setup for file generation and tools">
 
+            String csvParentDirPath = LogicDoer.getCsvFilePath();
+            File parentDir = new File(csvParentDirPath);
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            SimpleDateFormat dateformat = new SimpleDateFormat("MMddyy-HHmmss");
+            String timestamp = dateformat.format(new Date());
+
+            File exportFile = null;
+            try {
+                exportFile = File.createTempFile("export" + timestamp+"-", ".csv");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+//
+//            exportFile.getParentFile().mkdirs();  // no-op if already exists
+            CSVFormat fileformat = CSVFormat.DEFAULT
+                    .withHeader(
+                            "age",
+                            "alcohol",
+                            "assessment",
+                            "bloodPressureDiastolic",
+                            "bloodPressureSystolic",
+                            "chiefComplaints1",
+                            "currentMedication",
+                            "dayOfVisit",
+                            "diabetic",
+                            "dispensedMedications1",
+                            "dispensedMedications2",
+                            "dispensedMedications3",
+                            "dispensedMedications4",
+                            "familyHistory",
+                            "gender",
+                            "glucose",
+                            "heartRate",
+                            "heightFeet",
+                            "heightInches",
+                            "isPregnant",
+                            "medicalSurgicalHistory",
+                            "narrative",
+                            "onset",
+                            "oxygenSaturation",
+                            "palliates",
+                            "patientId",
+                            "pharmacy_note",
+                            "physicalExamination",
+                            "prescribedMedications1",
+                            "prescribedMedications2",
+                            "prescribedMedications3",
+                            "prescribedMedications4",
+                            "prescribedMedications5",
+                            "prescribedMedications6",
+                            "problem",
+                            "procedure_counseling",
+                            "provokes",
+                            "quality",
+                            "radiation",
+                            "respiratoryRate",
+                            "severity",
+                            "smoker",
+                            "socialHistory",
+                            "temperature",
+                            "timeOfDay",
+                            "tripId",
+                            "trip_country",
+                            "trip_team",
+                            "weeksPregnant",
+                            "weight"
+                    );
+
+            CSVPrinter printer;
+
+            assert exportFile != null;
+            Path p = exportFile.toPath(); // exportFile is your current string/path
+            System.out.println("Export absolute path: " + p.toAbsolutePath());
+            System.out.println("CWD: " + System.getProperty("user.dir"));
+            System.out.println("Parent exists? " + (p.getParent() != null && Files.exists(p.getParent())));
+            System.out.println("Parent writable? " + (p.getParent() != null && Files.isWritable(p.getParent())));
+
+
+            BufferedWriter writer = null;
+            try {
+                    writer = new BufferedWriter(new FileWriter(exportFile));
+                // new FileWriter fails
+            } catch (IOException e) {
+                Logger.error("ResearchService:exportPatientsByTrip FileWriter to produce export could not be instantiated:");
+                e.printStackTrace();
+                return null;
+            }
+
+        try {
+            printer = new CSVPrinter(writer, fileformat);
+        } catch (Exception e) {
+            Logger.error("ResearchService:exportPatientsByTrip CSVPrinter could not be instantiated:");
+            Logger.info("user.dir=" + System.getProperty("user.dir"));
+            Logger.info("exportFile=" + exportFile.getAbsolutePath());
+            e.printStackTrace();
+            return null;
+        }
+        if (!exportFile.exists()){
+            Logger.error("ResearchService:exportPatientsByTrip export file could not be created.");
+            return null;
+        }
+        // </editor-fold>
+
+        // <editor-fold desc="Build Query based on Filters">
+        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
         researchEncounterQuery
                 .fetch("patient")
                 .fetch("patientPrescriptions")
                 .fetch("patientPrescriptions.medication");
-
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
-
         // -1 is default from form
         if ( tripId != null && tripId != -1 ) {
-
             researchEncounterExpressionList.eq("missionTrip.id",tripId);
+        } else {
+            Logger.error("ResearchService:exportPatientsByTrip called with trip id: {} where tripId=null and tripId=-1 are invalidated"
+                    , tripId);
         }
+        // Need to add how to handle the case when no trips are selected instead of error?
 
         researchEncounterExpressionList.isNull("patient.isDeleted");
         researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
-        researchEncounterExpressionList.findList();
+        // Do we really need to order the patients?
+
+        researchEncounterExpressionList.findList(); //executes the query and returns into researchEncounterExpressionList
 
         List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
 
+        Logger.info("ResearchService:exportPatientsByTrip executed query and populated patientEncounters at {} seconds. ",
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
 
-        // As new patients are encountered, generate a UUID to represent them in the export file
         Map<Integer, UUID> patientIdMap = new HashMap<>();
 
-        // Format patient data for the csv file
-        List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
+        long duration_iteration = System.nanoTime();
+        long timestamp_sec1 = -1;
+        long timestamp_sec2 = -1;
+        long timestamp_sec3 = -1;
 
         for(IResearchEncounter patientEncounter : patientEncounters ){
 
             UUID patient_uuid;
-
+            // SECTION 1
             // If UUID already generated for patient, use that
             if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
-
                 patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
             }
             // otherwise generate and store for potential additional patient encounters
             else{
-
                 patient_uuid = UUID.randomUUID();
                 patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
             }
+            if (timestamp_sec1 == -1) timestamp_sec1 = System.nanoTime() - duration_iteration;
 
+            // SECTION 2
             ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
-            researchExportItemsForCSVExport.add(item);
+            if (timestamp_sec2 == -1) timestamp_sec2 = System.nanoTime() - duration_iteration;
+
+            //new SECTION 3
+            try {
+                printer.printRecord(
+                        item.getAge(),                         // age
+                        item.getVitalMap().get("alcohol"),     // alcohol
+                        item.getTabFieldMap().get("assessment"), // assessment
+                        item.getVitalMap().get("bloodPressureDiastolic"), // bloodPressureDiastolic
+                        item.getVitalMap().get("bloodPressureSystolic"),  // bloodPressureSystolic
+                        item.getChiefComplaints().isEmpty()
+                                ? null
+                                : item.getChiefComplaints().get(0),       // chiefComplaints1
+                        item.getTabFieldMap().get("currentMedication"),   // currentMedication
+                        item.getDayOfVisit(),                             // dayOfVisit
+                        item.getVitalMap().get("diabetic"),               // diabetic
+                        item.getDispensedMedications().size() > 0
+                                ? item.getDispensedMedications().get(0) : null, // dispensedMedications1
+                        item.getDispensedMedications().size() > 1
+                                ? item.getDispensedMedications().get(1) : null, // dispensedMedications2
+                        item.getDispensedMedications().size() > 2
+                                ? item.getDispensedMedications().get(2) : null, // dispensedMedications3
+                        item.getDispensedMedications().size() > 3
+                                ? item.getDispensedMedications().get(3) : null, // dispensedMedications4
+
+                        item.getTabFieldMap().get("familyHistory"),       // familyHistory
+                        item.getGender(),                                 // gender
+                        item.getVitalMap().get("glucose"),                // glucose
+                        item.getVitalMap().get("heartRate"),              // heartRate
+                        item.getVitalMap().get("heightFeet"),             // heightFeet
+                        item.getVitalMap().get("heightInches"),           // heightInches
+                        item.getIsPregnant(),                             // isPregnant
+                        item.getTabFieldMap().get("medicalSurgicalHistory"), // medicalSurgicalHistory
+                        item.getTabFieldMap().get("narrative"),           // narrative
+                        item.getTabFieldMap().get("onset"),               // onset
+                        item.getVitalMap().get("oxygenSaturation"),       // oxygenSaturation
+                        item.getTabFieldMap().get("palliates"),           // palliates
+                        item.getPatientId(),                                 // patientId
+                        item.getTabFieldMap().get("pharmacy_note"),       // pharmacy_note
+                        item.getTabFieldMap().get("physicalExamination"), // physicalExamination
+
+                        item.getPrescribedMedications().size() > 0
+                                ? item.getPrescribedMedications().get(0) : null, // prescribedMedications1
+                        item.getPrescribedMedications().size() > 1
+                                ? item.getPrescribedMedications().get(1) : null, // prescribedMedications2
+                        item.getPrescribedMedications().size() > 2
+                                ? item.getPrescribedMedications().get(2) : null, // prescribedMedications3
+                        item.getPrescribedMedications().size() > 3
+                                ? item.getPrescribedMedications().get(3) : null, // prescribedMedications4
+                        item.getPrescribedMedications().size() > 4
+                                ? item.getPrescribedMedications().get(4) : null, // prescribedMedications5
+                        item.getPrescribedMedications().size() > 5
+                                ? item.getPrescribedMedications().get(5) : null, // prescribedMedications6
+
+                        item.getTabFieldMap().get("problem"),             // problem
+                        item.getTabFieldMap().get("procedure_counseling"),// procedure_counseling
+                        item.getTabFieldMap().get("provokes"),            // provokes
+                        item.getTabFieldMap().get("quality"),             // quality
+                        item.getTabFieldMap().get("radiation"),           // radiation
+                        item.getVitalMap().get("respiratoryRate"),        // respiratoryRate
+                        item.getTabFieldMap().get("severity"),            // severity
+                        item.getVitalMap().get("smoker"),                 // smoker
+                        item.getTabFieldMap().get("socialHistory"),       // socialHistory
+                        item.getVitalMap().get("temperature"),            // temperature
+                        item.getTabFieldMap().get("timeOfDay"),           // timeOfDay
+                        item.getTripId(),                                 // tripId
+                        item.getTrip_country(),                           // trip_country
+                        item.getTrip_team(),                              // trip_team
+                        item.getWeeksPregnant(),                          // weeksPregnant
+                        item.getVitalMap().get("weight")                  // weight
+                );
+
+                printer.flush();
+            } catch (Exception e) {
+                Logger.error("ResearchService:exportPatientsByTrip section3 failed to append row.");
+                return null;
+            }
+            if (timestamp_sec3 == -1) timestamp_sec3 = System.nanoTime() - duration_iteration;
+
+        }
+        try {
+            printer.close();
+        } catch (Exception e) {
+            Logger.error("ResearchService:exportPatientsByTrip exception occurred attempting to close printer.");
+            e.printStackTrace();
         }
 
-        File eFile = createCsvFile(researchExportItemsForCSVExport);
+        response.setResponseObject(exportFile);
+        // <editor-fold desc="Time metrics">
+        duration_iteration = System.nanoTime() - duration_iteration;
+        Logger.info("ResearchService:exportPatientsByTrip iterations finished in {} at {} seconds with an average of {} seconds per iteration. ",
+                String.format("%.3f", (float) (duration_iteration) / 1_000_000_000),
+                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000),
+                String.format("%.3f", (float) (duration_iteration/patientEncounters.size()) / 1_000_000_000));
+        Logger.info("ResearchService:exportPatientsByTrip first iteration section timestamps: {} {} {} milliseconds. ",
+                String.format("%.3f", (float) (timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec2) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec3) / 1_000_000));
+        Logger.info("ResearchService:exportPatientsByTrip first iteration section durations : {} {} {} milliseconds. ",
+                String.format("%.3f", (float) (timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec2 - timestamp_sec1) / 1_000_000),
+                String.format("%.3f", (float) (timestamp_sec3 - timestamp_sec2) / 1_000_000));
+        long endTimeNanos = System.nanoTime();
+        float executionTimeSeconds = (float) (endTimeNanos - startTimeNanos) / 1_000_000_000;
+        Logger.info("ResearchService:exportPatientsByTrip finished {} encounters in {} seconds. ",
+                patientEncounters.size(), String.format("%.3f", executionTimeSeconds));
+        // </editor-fold>
 
-        response.setResponseObject(eFile);
+        try {
+            writer.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return response;
+        }
 
         return response;
     }
+
+    // @Override
+    // public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
+
+    //     ServiceResponse<File> response = new ServiceResponse<>();
+
+    //     // Build Query based on Filters
+    //     Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
+
+    //     researchEncounterQuery
+    //             .fetch("patient")
+    //             .fetch("patientPrescriptions")
+    //             .fetch("patientPrescriptions.medication");
+
+    //     ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
+
+    //     // -1 is default from form
+    //     if ( tripId != null && tripId != -1 ) {
+
+    //         researchEncounterExpressionList.eq("missionTrip.id",tripId);
+    //     }
+
+    //     researchEncounterExpressionList.isNull("patient.isDeleted");
+    //     researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
+    //     researchEncounterExpressionList.findList();
+
+    //     List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
+
+
+    //     // As new patients are encountered, generate a UUID to represent them in the export file
+    //     Map<Integer, UUID> patientIdMap = new HashMap<>();
+
+    //     // Format patient data for the csv file
+    //     List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
+
+    //     for(IResearchEncounter patientEncounter : patientEncounters ){
+
+    //         UUID patient_uuid;
+
+    //         // If UUID already generated for patient, use that
+    //         if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
+
+    //             patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
+    //         }
+    //         // otherwise generate and store for potential additional patient encounters
+    //         else{
+
+    //             patient_uuid = UUID.randomUUID();
+    //             patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
+    //         }
+
+    //         ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
+    //         researchExportItemsForCSVExport.add(item);
+    //     }
+
+    //     File eFile = createCsvFile(researchExportItemsForCSVExport);
+
+    //     response.setResponseObject(eFile);
+//
+//        return response;
+//    }
 
     /**
      * Creates a csv file from a list of ResearchExportItems
@@ -408,6 +697,9 @@ public class ResearchService implements IResearchService {
      * @return a csv formatted file of the encounters
      */
     private File createCsvFile( List<ResearchExportItem> encounters ){
+//        long startTimeNanos = System.nanoTime();
+//        Logger.info("ResearchService:createCsvFile called with {} encounters. ",
+//                encounters.size());
 
         // Make File and get path
         String csvFilePath = LogicDoer.getCsvFilePath();
@@ -428,7 +720,6 @@ public class ResearchService implements IResearchService {
                 fileCreated = eFile.createNewFile();
             }
             catch( IOException e ){
-
                 e.printStackTrace();
             }
         }
@@ -436,31 +727,50 @@ public class ResearchService implements IResearchService {
         if( fileCreated ) {
 
             Gson gson = new Gson();
+            // a Gson turns a Java object into a Json
             JsonParser gsonParser = new JsonParser();
             String jsonString = gson.toJson(encounters);
+            // stores a BIG String called jsonString
+            // + the huge list of encounters in memory now
 
             GsonFlattener parser = new GsonFlattener();
             CSVWriterGson writer = new CSVWriterGson();
 
+            Logger.info("ResearchService-createCsvFile: jsonString: {} ", jsonString);
+
             try {
 
                 List<Map<String, String>> flatJson = parser.parse(gsonParser.parse(jsonString).getAsJsonArray());
+                // converts the String into Array of JsonElements
+                // !!which is temporarily stored as a BIG array of JsonElements
+
+                // parser.parse() goes and flattens each nested JsonElement in the JsonArray...
+                //  ...turning them into key, value pairs
+
+                //!!flatJson itself is BIG List of key-value pairs
                 writer.writeAsCSV(flatJson, csvFileName);
+                //writeAsCSV internally also builds a BIG list
 
             } catch (FileNotFoundException e) {
-
                 e.printStackTrace();
             }
         }
 
+//        Logger.info("ResearchService:createCsvFile created a csv file in {} seconds. ",
+//                String.format("%.3f", (float) (System.nanoTime() - startTimeNanos) / 1_000_000_000));
+
+        // work on a file with a
+        // rename the final file at the end
         return eFile;
     }
+
 
     /**
      * take filters and make appropriate query, get list of matching patient encounters
      * @param filters an object that contains all possible filters for the data
      * @return a list of the encounters
      */
+
     private List<? extends IResearchEncounter> queryPatientData(ResearchFilterItem filters){
 
         String datasetName = filters.getPrimaryDataset();

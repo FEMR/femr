@@ -93,9 +93,9 @@ public class LogicDoer {
                 path += File.separator;
             return path;
         } catch (Exception ex) {
-            //If config doesn't exist, default to "photos"
-            path = "../Upload/Csv";
-            return path;
+            //If config doesn't exist, default to "../Upload/CSV"
+            return ".." + File.separator + "Upload" + File.separator + "CSV" + File.separator;
+
         }
 
     }

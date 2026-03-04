@@ -23,6 +23,8 @@ import femr.util.calculations.dateUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class contains utilities for manipulating strings. If you add something here, please clearly document the
@@ -240,14 +242,67 @@ public class StringUtils {
      * @return The user friendly trip title or null if parameters were null
      */
     public static String generateMissionTripTitle(String teamName, String country, Date startDate, Date endDate){
-
         if (StringUtils.isNullOrWhiteSpace(teamName) || StringUtils.isNullOrWhiteSpace(country) || startDate == null || endDate == null){
-
             return null;
         }
-
         String tripTitle = teamName + "-" + country + "-(" + dateUtils.getFriendlyInternationalDate(startDate) + "-" + dateUtils.getFriendlyInternationalDate(endDate) + ")";
         return tripTitle;
     }
 
+    /**
+     * Converts a list of strings into a single semicolon-separated value.
+     * Example:
+     * ["headache", "nausea"] → "headache; nausea"
+     * @param list the list of strings to join; may be null or empty
+     * @return a semicolon-separated string, or an empty string if the list is null or empty
+     */
+    public static String joinList(List<String> list) {
+        if (list == null || list.isEmpty()) return "";
+        return String.join("; ", list);
+    }
+
+    /**
+     * Converts a map of string keys to float values into a flattened
+     * semicolon-separated representation suitable for a single CSV column.
+     * Format:
+     * { "bp": 120.0, "hr": 80.0 }
+     * → "bp=120.0; hr=80.0"
+     * @param map the map of string keys to float values; may be null or empty
+     * @return a semicolon-delimited {@code key=value} string, or empty string for null/empty input
+     */
+    public static String joinFloatMap(Map<String, Float> map) {
+        if (map == null || map.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, Float> e : map.entrySet()) {
+            if (!first) sb.append("; ");
+            sb.append(e.getKey()).append("=").append(e.getValue());
+            first = false;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Converts a map of string keys to string values into a flattened
+     * semicolon-separated representation for a single CSV cell.
+     * Format:
+     * { "field1": "value1", "field2": "value2" }
+     * → "field1=value1; field2=value2"
+     * @param map the map of string keys to string values; may be null or empty
+     * @return a semicolon-delimited {@code key=value} string, or empty string for null/empty input
+     */
+    public static String joinStringMap(Map<String, String> map) {
+        if (map == null || map.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            if (!first) sb.append("; ");
+            sb.append(e.getKey()).append("=").append(e.getValue());
+            first = false;
+        }
+        return sb.toString();
+    }
+
 }
+
+

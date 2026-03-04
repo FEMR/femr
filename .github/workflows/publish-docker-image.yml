@@ -1,11 +1,8 @@
-name: Docker Image Build Test w/ Publish
-# specifically intended for pushes to main branch to public docker image as well
+name: Docker Image Build Test w/ DockerHub push
+# specifically intended for pushes to main branch 
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
     branches:
       - master
 

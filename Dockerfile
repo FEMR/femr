@@ -67,7 +67,7 @@ RUN unzip femr-*.zip && rm femr-*.zip
 FROM eclipse-temurin:8-jre-alpine-3.23
 
 RUN apk update
-#RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
+#RUN apk add --no-cache bash python3 py3-pip gcc python3-dev musl       -dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
 #RUN pip3 install psutil
 RUN apk add --no-cache bash python3 py3-pip py3-psutil gcc python3-dev musl-dev linux-headers mariadb-client mariadb-connector-c mariadb-connector-c-dev
 

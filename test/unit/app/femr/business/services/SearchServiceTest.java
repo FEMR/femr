@@ -8,6 +8,11 @@ import femr.data.daos.IRepository;
 import femr.data.daos.core.IEncounterRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPrescriptionRepository;
+import femr.data.models.core.IConceptDiagnosis;
+import femr.data.models.core.IMissionCity;
+import femr.data.models.core.IMissionTrip;
+import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.core.ISystemSetting;
 import femr.data.models.mysql.Patient;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,28 +23,29 @@ import static org.mockito.Mockito.mock;
 public class SearchServiceTest {
 
     ISearchService searchService;
-    IRepository diagnosisRepository;
-    IRepository missionRepository;
+    IRepository<IConceptDiagnosis> diagnosisRepository;
+    IRepository<IMissionTrip> missionRepository;
     IPatientRepository patientRepository;
     IEncounterRepository encounterRepository;
-    IRepository vitalRepository;
+    IRepository<IPatientEncounterVital> vitalRepository;
     IPrescriptionRepository prescriptionRepository;
-    IRepository systemRepository;
+    IRepository<ISystemSetting> systemRepository;
     IInventoryService inventoryService;
-    IRepository cityRepository;
+    IRepository<IMissionCity> cityRepository;
     IItemModelMapper itemModelMapper;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
-        diagnosisRepository = mock(IRepository.class);
-        missionRepository = mock(IRepository.class);
+        diagnosisRepository = (IRepository<IConceptDiagnosis>) mock(IRepository.class);
+        missionRepository = (IRepository<IMissionTrip>) mock(IRepository.class);
         patientRepository = mock(IPatientRepository.class);
         encounterRepository = mock(IEncounterRepository.class);
-        vitalRepository = mock(IRepository.class);
+        vitalRepository = (IRepository<IPatientEncounterVital>) mock(IRepository.class);
         prescriptionRepository = mock(IPrescriptionRepository.class);
-        systemRepository = mock(IRepository.class);
+        systemRepository = (IRepository<ISystemSetting>) mock(IRepository.class);
         inventoryService = mock(IInventoryService.class);
-        cityRepository = mock(IRepository.class);
+        cityRepository = (IRepository<IMissionCity>) mock(IRepository.class);
         itemModelMapper = mock(IItemModelMapper.class);
         searchService = new SearchService(diagnosisRepository, missionRepository, patientRepository, encounterRepository, vitalRepository, prescriptionRepository, systemRepository, inventoryService, cityRepository, itemModelMapper);
     }

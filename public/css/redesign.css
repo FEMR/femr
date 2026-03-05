@@ -165,10 +165,28 @@ body.femr-shell {
 .femr-sidebar__section-label,
 .femr-sidebar__nav-text,
 .femr-sidebar__user-meta,
+.femr-sidebar__user-actions,
 .femr-sidebar__anonymous-title,
 .femr-sidebar__anonymous-subtitle {
     max-width: 240px;
     overflow: hidden;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user {
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+    background-color: transparent;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-actions {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+.femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-meta {
+    display: none;
 }
 
 .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container {
@@ -403,18 +421,25 @@ body.femr-shell {
 
 .femr-sidebar__user-meta {
     flex: 1;
+    min-width: 0;
 }
 
 .femr-sidebar__user-name {
     margin: 0;
     font-weight: 600;
     color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .femr-sidebar__user-role {
     margin: 2px 0 0 0;
     font-size: 13px;
     color: rgba(229, 231, 235, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .femr-sidebar__user-actions {

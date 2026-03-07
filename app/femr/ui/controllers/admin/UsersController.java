@@ -114,8 +114,7 @@ public class UsersController extends Controller {
 
         if (form.field("email").getValue().isPresent() &&
                 !form.field("email").getValue().get().matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
-            messages.add("Invalid Email");
-            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+            messages.add("sessions_invalidEmail");
         }
 
         if (form.hasErrors()) {
@@ -137,9 +136,9 @@ public class UsersController extends Controller {
                 //added user's last name to be displayed[FEMR-161]
                 //Contributed by Harsha Peswani during the CEN5035 course at FSU
                 if (StringUtils.isNullOrWhiteSpace(viewModel.getLastName()))
-                    messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
+                    messages.add("sessions_accountCreated");
                 else
-                    messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
+                    messages.add("sessions_accountCreatedWithLastName");
 
 
             return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject(), assetsFinder));

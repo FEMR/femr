@@ -139,8 +139,7 @@ public class SessionsController extends Controller {
 
         if (form.field("email").getValue().isPresent() &&
                 !form.field("email").getValue().get().matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
-            messages.add("Invalid Email");
-            return badRequest(create.render(form, 2, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
+            messages.add("sessions_invalidEmail");
         }
 
         if (form.hasErrors()) {
@@ -162,9 +161,9 @@ public class SessionsController extends Controller {
                 //added user's last name to be displayed[FEMR-161]
                 //Contributed by Harsha Peswani during the CEN5035 course at FSU
                 if (StringUtils.isNullOrWhiteSpace(viewModel.getLastName()))
-                    messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
+                    messages.add("sessions_accountCreated");
                 else
-                    messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
+                    messages.add("sessions_accountCreatedWithLastName");
 
 
             return ok(create.render(form, 0, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
@@ -193,24 +192,24 @@ public class SessionsController extends Controller {
         Pattern hasNumber = Pattern.compile("\\d");
         ArrayList<String> messages = new ArrayList<>();
         if (StringUtils.isNullOrWhiteSpace(viewModel.getNewPassword()))
-            messages.add("password is a required field");
+            messages.add("sessions_password_required");
         else
         {
             if(viewModel.getNewPassword().length() < 8)        //AJ Saclayan Password Constraints
-                messages.add("password is less than 8 characters");
+                messages.add("sessions_password_short");
             if(!hasLowercase.matcher(viewModel.getNewPassword()).find())
-                messages.add("password must have a lowercase character");
+                messages.add("sessions_password_lowercase");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have an uppercase character");
+                    messages.add("sessions_password_uppercase");
 
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have a number");
+                    messages.add("sessions_password_number");
 
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
-                messages.add("passwords do not match");
+                messages.add("sessions_passwords_not_match");
             //check if new password is equal to the old password
             if(userService.checkOldPassword(viewModel.getNewPassword(),userService.retrieveById(currentUser.getId()).getPassword()))
-                messages.add("password must not be the same one used before reset");
+                messages.add("sessions_password_no_repeat");
 
 
         }

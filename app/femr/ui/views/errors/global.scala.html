@@ -1,13 +1,29 @@
-@(assets: AssetsFinder)
+@(oopsKey: String, loggedKey: String, goHomeKey: String, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.error
     @content = {
         <div id="errorMessage" style="text-align : center ;">
-            <p>Oops! This was not supposed to happen.</p>
-            <p>Whatever caused this has been logged and will be looked at by a nerd as soon as possible.</p>
-            <p>Please click <a href="/">here</a> to return home.</p>
+            <p id="error_oops">@oopsKey</p>
+            <p id="error_logged">@loggedKey</p>
+            <p id="error_go_home"><a href="/">@goHomeKey</a></p>
         </div>
-
-
     }
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('/assets/json/languages.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        const langCode = localStorage.getItem('languageCode') || 'en';
+                        if (languageData[langCode]) {
+                            document.getElementById('error_oops').textContent = languageData[langCode]['error_oops'];
+                            document.getElementById('error_logged').textContent = languageData[langCode]['error_logged'];
+                            const linkElem = document.getElementById('error_go_home').querySelector('a');
+                            if (linkElem) linkElem.textContent = languageData[langCode]['error_go_home'];
+                        }
+                    })
+                    .catch(error => console.error('Error loading languages:', error));
+        });
+    </script>
 @error(errorContent = content, assets = assets)

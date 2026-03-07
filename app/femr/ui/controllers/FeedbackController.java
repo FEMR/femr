@@ -61,11 +61,11 @@ public class FeedbackController extends Controller {
         if(!viewModel.getFeedbackMsg().equals("")){
             ServiceResponse<Boolean> success = userService.createFeedback(viewModel.getFeedbackMsg());
             if (success.getResponseObject()){
-                SuccessMessage = "Successfully sent feedback!";
+                SuccessMessage = "feedback_sent_success";
                 return ok(feedback.render(currentUser, assetsFinder, SuccessMessage));
             }
         }
-        SuccessMessage = "Failed to send feedback. Please try again or contact a nerd!";
+        SuccessMessage = "feedback_sent_failed";
         return ok(feedback.render(currentUser, assetsFinder, SuccessMessage));
     }
 

@@ -35,6 +35,12 @@
                     updateTextContent("feedback_welcome_message", languageData[language].feedback_welcome_message);
                     updateTextContent("feedback_disclaimer", languageData[language].feedback_disclaimer);
                     updateTextContent("feedback_submit", languageData[language].feedback_submit);
+                    // Translate success message
+                    const msgEl = document.getElementById("feedback_success_message");
+                    if (msgEl) {
+                        const key = msgEl.textContent.trim();
+                        msgEl.textContent = (languageData[language] && languageData[language][key]) ? languageData[language][key] : key;
+                    }
                 }
             });
     </script>

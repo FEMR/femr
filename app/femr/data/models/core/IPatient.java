@@ -60,6 +60,10 @@ public interface IPatient {
 
     void setCity(String city);
 
+    String getCountry();
+
+    void setCountry(String country);
+
     void setId(int id);
 
     IPhoto getPhoto();

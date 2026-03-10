@@ -166,6 +166,7 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 String lastName,
                                                 String phoneNumber,
                                                 String city,
+                                                String country,
                                                 String address,
                                                 int userId,
                                                 Date age,
@@ -200,6 +201,8 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setYearsOld(dateUtils.getYearsInteger(age));
         patientItem.setMonthsOld(dateUtils.getMonthsInteger(age));
         patientItem.setCity(city);
+        if (StringUtils.isNotNullOrWhiteSpace(country))
+            patientItem.setCountry(country);
         patientItem.setUserId(userId);
         //optional fields
         if (StringUtils.isNotNullOrWhiteSpace(phoneNumber))
@@ -283,6 +286,7 @@ public class ItemModelMapper implements IItemModelMapper {
                 patientEncounter.getPatient().getLastName(),
                 patientEncounter.getPatient().getPhoneNumber(),
                 patientEncounter.getPatient().getCity(),
+        patientEncounter.getPatient().getCountry(),
                 patientEncounter.getPatient().getAddress(),
                 patientEncounter.getPatient().getUserId(),
                 patientEncounter.getPatient().getAge(),

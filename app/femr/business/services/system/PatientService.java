@@ -108,6 +108,7 @@ public class PatientService implements IPatientService {
                         savedPatient.getLastName(),
                         savedPatient.getPhoneNumber(),
                         savedPatient.getCity(),
+            savedPatient.getCountry(),
                         savedPatient.getAddress(),
                         savedPatient.getUserId(),
                         savedPatient.getAge(),
@@ -169,6 +170,7 @@ public class PatientService implements IPatientService {
                         savedPatient.getLastName(),
                         savedPatient.getPhoneNumber(),
                         savedPatient.getCity(),
+            savedPatient.getCountry(),
                         savedPatient.getAddress(),
                         savedPatient.getUserId(),
                         savedPatient.getAge(),
@@ -227,6 +229,7 @@ public class PatientService implements IPatientService {
                         savedPatient.getLastName(),
                         savedPatient.getPhoneNumber(),
                         savedPatient.getCity(),
+            savedPatient.getCountry(),
                         savedPatient.getAddress(),
                         savedPatient.getUserId(),
                         savedPatient.getAge(),
@@ -290,6 +293,7 @@ public class PatientService implements IPatientService {
                         savedPatient.getLastName(),
                         savedPatient.getPhoneNumber(),
                         savedPatient.getCity(),
+            savedPatient.getCountry(),
                         savedPatient.getAddress(),
                         savedPatient.getUserId(),
                         savedPatient.getAge(),
@@ -324,6 +328,71 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
+    public ServiceResponse<PatientItem> updatePatientCountry(int id, String country) {
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        try {
+
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
+
+            if (savedPatient == null) {
+
+                response.addError("exception", "Patient Not Found");
+            } else {
+
+                if (StringUtils.isNotNullOrWhiteSpace(country)) {
+
+                    savedPatient.setCountry(country);
+                    savedPatient = patientRepository.savePatient(savedPatient);
+                }
+
+                String photoPath = null;
+                Integer photoId = null;
+                if (savedPatient.getPhoto() != null) {
+                    photoPath = savedPatient.getPhoto().getFilePath();
+                    photoId = savedPatient.getPhoto().getId();
+                }
+                PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                        savedPatient.getFirstName(),
+                        savedPatient.getLastName(),
+                        savedPatient.getPhoneNumber(),
+                        savedPatient.getCity(),
+                        savedPatient.getCountry(),
+                        savedPatient.getAddress(),
+                        savedPatient.getUserId(),
+                        savedPatient.getAge(),
+                        savedPatient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        photoPath,
+                        photoId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                response.setResponseObject(patientItem);
+            }
+
+        } catch (Exception ex) {
+
+            Logger.error("PatientService-updateCountry", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ServiceResponse<PatientItem> createPatient(PatientItem patient) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (patient == null) {
@@ -332,8 +401,8 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getPhoneNumber(),
-                    patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
+        IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getPhoneNumber(),
+            patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getCountry(), patient.getPhotoId());
             newPatient = patientRepository.savePatient(newPatient);
 
             Integer photoId = getPatientPhotoIdOrNull(newPatient);
@@ -345,6 +414,7 @@ public class PatientService implements IPatientService {
                             newPatient.getLastName(),
                             newPatient.getPhoneNumber(),
                             newPatient.getCity(),
+                newPatient.getCountry(),
                             newPatient.getAddress(),
                             newPatient.getUserId(),
                             newPatient.getAge(),

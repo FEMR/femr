@@ -46,6 +46,8 @@ public interface IPatientService {
      */
     ServiceResponse<PatientItem> updatePatientAddress(int id, String address);
 
+    ServiceResponse<PatientItem> updatePatientCountry(int id, String country);
+
     /**
      * Updates a patient's age with the age value. If age is null then no action is taken.
      * This method will not remove a patient's age

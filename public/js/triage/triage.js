@@ -313,6 +313,7 @@ var diabeticScreeningFeature = {
         triageFields.patientInformation.ageYears.prop('readonly', true);
         triageFields.patientInformation.ageMonths.prop('readonly', true);
         triageFields.patientInformation.city.prop('readonly', true);
+    triageFields.patientInformation.country.prop('readonly', true);
         //disable all vitals
         triageFields.patientVitals.respiratoryRate.prop('readonly', true);
         triageFields.patientVitals.bloodPressureSystolic.prop('readonly', true);
@@ -388,6 +389,7 @@ var triageFields = {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
         address: $('#address'),
+    country: $('#country'),
         phoneNumber: $('#phoneNumber'),
         birthDate: $('#birthDateInput'), // Birthdate, seemingly doesn't work for existing patients?
         ageYears: $('#yearsInput'),

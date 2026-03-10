@@ -190,6 +190,9 @@
                     updateInputField("phoneNumber", languageData[language].triage_index_phoneNumber);
                     updateInputField("address", languageData[language].triage_index_address);
                     updateInputField("city", languageData[language].triage_index_City);
+                    if (languageData[language].triage_index_Country) {
+                        updateInputField("country", languageData[language].triage_index_Country);
+                    }
                     updateTextContent("ageLabel", languageData[language].triage_index_Age);
                     document.querySelectorAll('.orSpan').forEach(orText => {
                         orText.textContent = languageData[language].triage_index_OR;
@@ -331,6 +334,16 @@
                                     <input type="text" class="citySearch fInput femr-input" name="city" id="city" required>
                                 } else {
                                     <input type="text" class="citySearch fInput femr-input" name="city" id="city" value="@viewModel.getPatient.getCity" readonly>
+                                }
+                            </div>
+                            <div class="generalInfoInput femr-field">
+                                <label for="country">
+                                    <span data-i18n-text="true">Country</span>
+                                </label>
+                                @if(viewModel != null && viewModel.getPatient.getCountry != null) {
+                                    <input type="text" class="fInput femr-input" id="country" name="country" value="@viewModel.getPatient.getCountry" readonly/>
+                                } else {
+                                    <input type="text" class="fInput femr-input" id="country" name="country" placeholder="Country"/>
                                 }
                             </div>
                             <div class="generalInfoInput femr-field femr-gender-field">

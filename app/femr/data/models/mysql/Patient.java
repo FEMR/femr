@@ -48,6 +48,8 @@ public class Patient implements IPatient {
     private String address;
     @Column(name = "city", nullable = false)
     private String city;
+    @Column(name = "country", nullable = true)
+    private String country;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "photo_id", nullable = true)
     private Photo photo;
@@ -144,6 +146,16 @@ public class Patient implements IPatient {
     @Override
     public void setCity(String city) {
         this.city = city;
+    }
+
+    @Override
+    public String getCountry() {
+        return country;
+    }
+
+    @Override
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Override

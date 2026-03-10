@@ -22,6 +22,7 @@ public class MockPatient implements IPatient {
     private String sex = "male";
     private String address = "123 Main Street";
     private String city = "San Luis Obispo";
+    private String country = "United States";
     private Photo photo = new Photo();
     private List<PatientEncounter> patientEncounters = new ArrayList<>();
     private DateTime isDeleted = new DateTime();
@@ -126,6 +127,17 @@ public class MockPatient implements IPatient {
     public void setCity(String city) {
 
         this.city = city;
+    }
+
+    @Override
+    public String getCountry() {
+        return country;
+    }
+
+    @Override
+    public void setCountry(String country) {
+
+        this.country = country;
     }
 
     @Override

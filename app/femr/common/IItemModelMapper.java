@@ -103,27 +103,28 @@ public interface IItemModelMapper {
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
-                                  String firstName,
-                                  String lastName,
-                                  String phoneNumber,
-                                  String city,
-                                  String address,
-                                  int userId,
-                                  Date age,
-                                  String sex,
-                                  Integer weeksPregnant,
-                                  Integer heightFeet,
-                                  Integer heightInches,
-                                  Float weight,
-                                  String pathToPatientPhoto,
-                                  Integer photoId,
-                                  String ageClassification,
-                                  Integer smoker,
-                                  Integer diabetic,
-                                  Integer alcohol,
-                                  Integer cholesterol,
-                                  Integer hypertension);
-
+                                String firstName,
+                                String lastName,
+                                String phoneNumber,
+                                String city,
+                                String country,
+                                String address,
+                                int userId,
+                                Date age,
+                                String sex,
+                                Integer weeksPregnant,
+                                Integer heightFeet,
+                                Integer heightInches,
+                                Float weight,
+                                String pathToPatientPhoto,
+                                Integer photoId,
+                                String ageClassification,
+                                Integer smoker,
+                                Integer diabetic,
+                                Integer alcohol,
+                                Integer cholesterol,
+                                Integer hypertension
+                                );
     /**
      * Generate and provide an instance of PatientEncounterItem
      *

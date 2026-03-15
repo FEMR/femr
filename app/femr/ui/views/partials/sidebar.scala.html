@@ -1,0 +1,180 @@
+@(currentUser: femr.common.dtos.CurrentUser = null, search: Html = Html(""), assets: AssetsFinder)
+
+@import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
+@import femr.ui.controllers.routes.HomeController
+@import femr.ui.controllers.routes.SessionsController
+@import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.controllers.routes.ResearchController
+@import femr.ui.controllers.routes.ReferenceController
+@import femr.ui.controllers.routes.SettingsController
+@import femr.ui.controllers.manager.routes.ManagerController
+@import femr.ui.controllers.superuser.routes.SuperuserController
+@import femr.ui.controllers.admin.routes.AdminController
+@import femr.ui.controllers.routes.DatabaseDumpController
+@import scala.collection.JavaConverters._
+
+@defining(Option(currentUser).flatMap(u => Option(u.getFirstName)).getOrElse("").trim) { firstName =>
+@defining(Option(currentUser).flatMap(u => Option(u.getLastName)).getOrElse("").trim) { lastName =>
+@defining({
+    val initials = (firstName.headOption.toSeq ++ lastName.headOption.toSeq).map(_.toUpper).mkString
+    if (initials.nonEmpty) initials else "FE"
+}) { initials =>
+@defining(Option(currentUser)
+        .flatMap(u => Option(u.getRoles))
+        .map(_.asScala.toList)
+        .getOrElse(Nil)
+        .headOption
+        .map(_.getName)
+        .getOrElse("").trim) { primaryRole =>
+
+<div class="femr-sidebar">
+    <div class="femr-sidebar__brand">
+        <a href="@HomeController.index()" class="femr-sidebar__brand-link">femr</a>
+    </div>
+
+    @if(currentUser != null) {
+        <script>
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    let languageData;
+                    fetch('@routes.Assets.versioned("json/languages.json")')
+                            .then(response => response.json())
+                            .then(data => {
+                                languageData = data;
+                                updateLanguage("@{currentUser.getLanguageCode}");
+                            });
+
+                    function updateTextContent(elementId, value) {
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = value;
+                        }
+                    }
+
+                    function updateLanguage(languageCode) {
+                        localStorage.setItem('languageCode', languageCode);
+                        updateTextContent('langCode_triage', languageData[languageCode].langCode_triage);
+                        updateTextContent('langCode_medical', languageData[languageCode].langCode_medical);
+                        updateTextContent('langCode_pharmacy', languageData[languageCode].langCode_pharmacy);
+                        updateTextContent('langCode_research', languageData[languageCode].langCode_research);
+                        updateTextContent('langCode_manager', languageData[languageCode].langCode_manager);
+                        updateTextContent('langCode_admin', languageData[languageCode].langCode_admin);
+                        updateTextContent('langCode_superUser', languageData[languageCode].langCode_superUser);
+                        updateTextContent('langCode_reference', languageData[languageCode].langCode_reference);
+                        updateTextContent('langCode_settings', languageData[languageCode].langCode_settings);
+                    }
+                });
+        </script>
+
+        @if(search.body.trim.nonEmpty) {
+            <div class="femr-sidebar__section">
+                @search
+            </div>
+        }
+
+        <nav class="femr-sidebar__section" aria-label="Primary">
+            <ul class="femr-sidebar__nav-list">
+                @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@TriageController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">person_add</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_triage">Triage</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@MedicalController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">medical_services</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_medical">Medical</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@PharmaciesController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">vaccines</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_pharmacy">Pharmacy</span>
+                        </a>
+                    </li>
+                }
+                @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@ResearchController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">science</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_research">Research</span>
+                        </a>
+                    </li>
+                }
+                @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@ManagerController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">admin_panel_settings</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_manager">Manager</span>
+                        </a>
+                    </li>
+                }
+                @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@AdminController.index()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">shield_person</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_admin">Admin Panel</span>
+                        </a>
+                    </li>
+                }
+                @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+                    <li>
+                        <a class="femr-sidebar__nav-link" href="@SuperuserController.indexGet()">
+                            <span class="material-symbols-outlined femr-sidebar__nav-icon">shield_person</span>
+                            <span class="femr-sidebar__nav-text" id="langCode_superUser">Admin Panel</span>
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a class="femr-sidebar__nav-link" href="@DatabaseDumpController.indexGet()">
+                        <span class="material-symbols-outlined femr-sidebar__nav-icon">download</span>
+                        <span class="femr-sidebar__nav-text">Backup Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="femr-sidebar__nav-link" href="@ReferenceController.indexGet()" target="_blank" rel="noopener">
+                        <span class="material-symbols-outlined femr-sidebar__nav-icon">library_books</span>
+                        <span class="femr-sidebar__nav-text" id="langCode_reference">Reference</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="femr-sidebar__spacer"></div>
+
+        <div class="femr-sidebar__user">
+            <div class="femr-sidebar__avatar" aria-hidden="true">@initials</div>
+            <div class="femr-sidebar__user-meta">
+                <p class="femr-sidebar__user-name">@firstName @lastName</p>
+                @if(primaryRole.nonEmpty) {
+                    <p class="femr-sidebar__user-role">@primaryRole</p>
+                }
+            </div>
+            <div class="femr-sidebar__user-actions">
+                <a href="@SettingsController.index()" class="femr-sidebar__icon-button" title="Settings">
+                    <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+                    <span class="femr-sidebar__sr" id="langCode_settings">Settings</span>
+                </a>
+                <a href="@SessionsController.delete()" class="femr-sidebar__icon-button" title="Sign out">
+                    <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+                    <span class="femr-sidebar__sr">Sign out</span>
+                </a>
+            </div>
+        </div>
+    } else {
+        <div class="femr-sidebar__section femr-sidebar__section--anonymous">
+            <p class="femr-sidebar__anonymous-title">Welcome to femr</p>
+            <p class="femr-sidebar__anonymous-subtitle">Please sign in to continue.</p>
+        </div>
+    }
+
+    @if(currentUser != null) {
+        <input type="hidden" value="@currentUser.getTimeout2()" id='h_v' class='h_v'>
+    }
+</div>
+}
+}
+}
+}

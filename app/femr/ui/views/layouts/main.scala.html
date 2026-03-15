@@ -5,33 +5,44 @@
         search: Html = Html(""),
         assets: AssetsFinder)(content: Html)
 @import femr.ui.views.html.partials.footer
-@import femr.ui.views.html.partials.header
+@import femr.ui.views.html.partials.sidebar
 
 <!DOCTYPE html>
-<html class="no-js" xmlns="http://www.w3.org/1999/html">
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/html">
     <head>
         <title>@title | fEMR</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <link rel="shortcut icon" type="image/png" href="@assets.path("img/logo_color_wordless.png")">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
         <link rel="stylesheet" href="@assets.path("css/libraries/bootstrap.min.css")">
         <link rel="stylesheet" href="@assets.path("css/femr.css")"/>
+        <link rel="stylesheet" href="@assets.path("css/redesign.css")"/>
         @styles
         <script type="text/javascript" src="@assets.path("js/libraries/modernizr-2.6.2.min.js")"></script>
     </head>
-    <body>
-        @header(currentUser, assets)
+    <body class="femr-shell">
+        <div class="femr-shell__layout">
+            @sidebar(currentUser, search, assets)
 
-        @outsideContainerTop
+            <div class="femr-shell__content">
+                @outsideContainerTop
 
-        <div class="container">
-            @search
+                <main class="femr-shell__main">
+                    <div class="femr-shell__main-inner">
+                        @content
+                    </div>
+                </main>
 
-            @content
-
-            @footer(currentUser, assets)
+                <div class="femr-shell__footer">
+                    @footer(currentUser, assets)
+                </div>
+            </div>
         </div>
 
         @outsideContainerBottom

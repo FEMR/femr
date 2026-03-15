@@ -24,46 +24,18 @@
             }
         });
 </script>
-<footer>
-    <div class="footerSpacer"></div>
-    <hr/>
-    <div class="row">
-        <div class="col-xs-4">
-                @if(currentUser != null) {
-                    <p>@currentUser.getKitVersion</p> @* We only have access to the version when logged in since currentUser is null if not logged in.*@
-                }
+<footer class="femr-footer">
+    <div class="femr-footer__content">
+        <div>
+            @if(currentUser != null) {
+                <p class="femr-footer__version">@currentUser.getKitVersion</p>
+            }
         </div>
-        <div class="col-xs-4">
-            <div class="leaveFeedback">
-               <a href="/feedback"> <button type="button" class="fButton fRedButton fOtherButton " id="langCode_feedbackBtn"> Leave Feedback </button></a>
-            </div>
+        <div class="femr-footer__actions">
+            <a href="/feedback" class="femr-btn femr-btn--secondary" id="langCode_feedbackBtn">Leave Feedback</a>
         </div>
-        <div class="col-xs-4">
-            <p class="text-right footerTextRight" id="langCode_googleChrome">Designed for Google Chrome</p>
+        <div class="femr-footer__note">
+            <p id="langCode_googleChrome">Designed for Google Chrome</p>
         </div>
     </div>
-    <br/>
 </footer>
-@*<script>*@
-@*        document.addEventListener('DOMContentLoaded', function(event) {*@
-@*            let languageData;*@
-@*            function translateTextNodes(node) {*@
-@*                const targetLang = "es";*@
-@*                if (node.nodeType === Node.TEXT_NODE) {*@
-@*                    const trimmedText = node.nodeValue.trim();*@
-@*                    if (trimmedText !== '' && languageData[targetLang][trimmedText]) {*@
-@*                        node.nodeValue = languageData[targetLang][trimmedText];*@
-@*                    }*@
-@*                } else {*@
-@*                    node.childNodes.forEach(child => translateTextNodes(child, targetLang));*@
-@*                }*@
-@*            }*@
-
-@*            fetch('@routes.Assets.versioned("json/languages.json")')*@
-@*                    .then(response => response.json())*@
-@*                    .then(data => {*@
-@*                        languageData = data;*@
-@*                        translateTextNodes(document.body);*@
-@*                    });*@
-@*        });*@
-@*</script>*@

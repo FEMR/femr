@@ -272,7 +272,7 @@ public class UpdatesService implements IUpdatesService {
             List<LanguageCode> optimizedLanguages = getOptimizedLanguages();
             for (ILanguageCode optLang : optimizedLanguages) {
                 System.out.println("Updating " + optLang.getCode() + " and " + langCode);
-                ProcessBuilder pb = new ProcessBuilder("python",
+                ProcessBuilder pb = new ProcessBuilder("python3",
                         "translator/optimizeLanguage.py", langCode, optLang.getCode());
                 Process p = pb.start();
                 BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
@@ -291,7 +291,7 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends ILanguageCode>> response = new ServiceResponse<>();
         try {
             languagesRepository.delete(languagesRepository.findAll(LanguageCode.class));
-            ProcessBuilder pb = new ProcessBuilder("python", "translator/libargos.py");
+            ProcessBuilder pb = new ProcessBuilder("python3", "translator/libargos.py");
             Process p = pb.start();
             BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
             String line;

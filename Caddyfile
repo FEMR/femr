@@ -1,4 +1,4 @@
-terrabrain.local {
+femr.local {
     tls internal #creates self signed certificate
     reverse_proxy femr:9000
 }

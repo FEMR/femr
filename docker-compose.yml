@@ -32,8 +32,8 @@ services:
         condition: service_healthy
     tty: true
     restart: on-failure:10
-    ports:
-      - '9000:9000'
+    expose:
+      - "9000"
 
     environment:
       DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true'
@@ -44,6 +44,21 @@ services:
     volumes:
       - ./speedtest:/usr/src/speedtest
 
+  caddy:
+    depends_on:
+      - femr
+    image: caddy:latest
+    container_name: caddy-https
+
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
 
 volumes:
   db-data:
+  caddy_data:
+  caddy_config:

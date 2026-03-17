@@ -18,17 +18,32 @@
 */
 package femr.common.models;
 
-public class ProblemItem {
+public class WhoHealthEventItem {
+    private int id;
     private String name;
-    private String whoHealthEvent;
+    private String category;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getWhoHealthEvent() { return whoHealthEvent; }
+    public String getCategory() {
+        return category;
+    }
 
-    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

@@ -25,6 +25,8 @@ import java.util.List;
 public class IndexEncounterPharmacyViewModel {
 
     private List<String> problems;
+    private List<String> whoHealthEvents;
+    private String whoProcedure;
 
     private List<PrescriptionItem> prescriptions;
     //AJ Saclayan Display Original Medications
@@ -35,6 +37,22 @@ public class IndexEncounterPharmacyViewModel {
 
     public void setProblems(List<String> problems) {
         this.problems = problems;
+    }
+
+    public List<String> getWhoHealthEvents() {
+        return whoHealthEvents;
+    }
+
+    public void setWhoHealthEvents(List<String> whoHealthEvents) {
+        this.whoHealthEvents = whoHealthEvents;
+    }
+
+    public String getWhoProcedure() {
+        return whoProcedure;
+    }
+
+    public void setWhoProcedure(String whoProcedure) {
+        this.whoProcedure = whoProcedure;
     }
 
     public List<PrescriptionItem> getPrescriptions() {

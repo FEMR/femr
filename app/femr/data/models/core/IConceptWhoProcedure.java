@@ -16,19 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.common.models;
+package femr.data.models.core;
 
-public class ProblemItem {
-    private String name;
-    private String whoHealthEvent;
+public interface IConceptWhoProcedure {
 
-    public String getName() {
-        return name;
-    }
+    int getId();
 
-    public void setName(String name) { this.name = name; }
+    void setId(int id);
 
-    public String getWhoHealthEvent() { return whoHealthEvent; }
+    String getName();
 
-    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+    void setName(String name);
 }

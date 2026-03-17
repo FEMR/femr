@@ -16,19 +16,24 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.common.models;
+package femr.business.services.core;
 
-public class ProblemItem {
-    private String name;
-    private String whoHealthEvent;
+import femr.common.dtos.ServiceResponse;
+import femr.common.models.DailyReportItem;
+import org.joda.time.DateTime;
 
-    public String getName() {
-        return name;
-    }
+/**
+ * Service interface for generating MDS Daily Reports.
+ */
+public interface IDailyReportService {
 
-    public void setName(String name) { this.name = name; }
-
-    public String getWhoHealthEvent() { return whoHealthEvent; }
-
-    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+    /**
+     * Generate a complete daily report for a specific trip and date.
+     *
+     * @param tripId the mission trip ID, not null
+     * @param date   the date to generate the report for, not null
+     * @return a ServiceResponse containing the DailyReportItem with all aggregated data,
+     *         or errors if the operation failed
+     */
+    ServiceResponse<DailyReportItem> generateDailyReport(int tripId, DateTime date);
 }

@@ -189,7 +189,7 @@ public interface IItemModelMapper {
      * @param name the name of the problem, not null
      * @return a new ProblemItem or null if processing fails
      */
-    ProblemItem createProblemItem(String name);
+    ProblemItem createProblemItem(String name, String whoHealthEvent);
 
     /**
      * Generate and provide an instance of NoteItem
@@ -306,4 +306,23 @@ public interface IItemModelMapper {
     VitalItem createVitalItem(String name, Float value);
 
     InternetStatusItem createInternetStatusItem(IInternetStatus status);
+
+    /**
+     * Generate and provide an instance of WhoHealthEventItem.
+     *
+     * @param id       the id of the health event
+     * @param name     the name of the health event
+     * @param category the category of the health event
+     * @return a new WhoHealthEventItem or null if processing fails
+     */
+    WhoHealthEventItem createWhoHealthEventItem(int id, String name, String category);
+
+    /**
+     * Generate and provide an instance of WhoProcedureItem.
+     *
+     * @param id   the id of the procedure
+     * @param name the name of the procedure
+     * @return a new WhoProcedureItem or null if processing fails
+     */
+    WhoProcedureItem createWhoProcedureItem(int id, String name);
 }

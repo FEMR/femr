@@ -16,19 +16,41 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.common.models;
+package femr.data.models.mysql.concepts;
 
-public class ProblemItem {
+import femr.data.models.core.IConceptWhoProcedure;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "concept_who_procedures")
+public class ConceptWhoProcedure implements IConceptWhoProcedure {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+
+    @Column(name = "name", nullable = false)
     private String name;
-    private String whoHealthEvent;
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
-    public void setName(String name) { this.name = name; }
-
-    public String getWhoHealthEvent() { return whoHealthEvent; }
-
-    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

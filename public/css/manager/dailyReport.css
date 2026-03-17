@@ -1,0 +1,461 @@
+/* EMT-MDS Daily Report Form Styles */
+
+/* Remove number input spinners — numeric keypad appears natively on tablet/mobile */
+.mds-report-container input[type="number"]::-webkit-inner-spin-button,
+.mds-report-container input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.mds-report-container input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.mds-report-container {
+    margin-top: 80px;
+    margin-bottom: 40px;
+    font-size: 13px;
+}
+
+.mds-report-header {
+    text-align: center;
+    background-color: #1a5276;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+}
+
+.mds-report-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #fff;
+}
+
+.mds-version {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #ccc;
+}
+
+/* Two-column row layout */
+.mds-section-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.mds-section-row-bottom {
+    align-items: flex-start;
+}
+
+.mds-panel {
+    border: 1px solid #aaa;
+    padding: 8px;
+    background: #fff;
+}
+
+.mds-panel-team {
+    flex: 3;
+}
+
+.mds-panel-location {
+    flex: 2;
+}
+
+.mds-panel-events {
+    flex: 3;
+}
+
+.mds-panel-risks {
+    flex: 2;
+}
+
+.mds-panel-title {
+    font-weight: bold;
+    font-size: 12px;
+    background-color: #d5e8f5;
+    padding: 3px 6px;
+    margin-bottom: 6px;
+    border-left: 4px solid #1a5276;
+}
+
+.mds-location-title {
+    background-color: #d5f0e8;
+    border-left-color: #1a7a4a;
+}
+
+/* Field rows */
+.mds-field-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: 4px;
+}
+
+.mds-label {
+    width: 18px;
+    font-size: 11px;
+    color: #555;
+    font-weight: bold;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.mds-field-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 6px;
+}
+
+.mds-field-name {
+    font-size: 12px;
+    white-space: nowrap;
+    color: #333;
+}
+
+.mds-input {
+    flex: 1;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    padding: 2px 4px;
+    font-size: 12px;
+    min-width: 0;
+}
+
+.mds-input-sm {
+    width: 55px;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    padding: 2px 4px;
+    font-size: 12px;
+}
+
+.mds-input-full {
+    width: 100%;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    padding: 2px 4px;
+    font-size: 12px;
+}
+
+.mds-sublabel {
+    font-size: 11px;
+    color: #555;
+    white-space: nowrap;
+}
+
+.mds-geotag-row {
+    gap: 4px;
+}
+
+/* Team types table */
+.mds-type-table {
+    border-collapse: collapse;
+    font-size: 11px;
+    width: 100%;
+}
+
+.mds-type-table th, .mds-type-table td {
+    border: 1px solid #bbb;
+    padding: 2px 4px;
+    text-align: center;
+}
+
+.mds-type-table th {
+    background-color: #e8f4fb;
+    font-weight: normal;
+}
+
+/* Section headers */
+.mds-section {
+    border: 1px solid #aaa;
+    margin-top: 8px;
+    background: #fff;
+}
+
+.mds-section-header {
+    font-weight: bold;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: #fff;
+}
+
+.mds-header-daily {
+    background-color: #2874a6;
+}
+
+.mds-header-demo {
+    background-color: #2874a6;
+}
+
+.mds-header-events {
+    background-color: #1e8449;
+}
+
+.mds-header-risks {
+    background-color: #c0392b;
+    color: #fff;
+    padding: 4px 8px;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 0 -8px 8px -8px;
+}
+
+/* Daily summary grid */
+.mds-daily-summary-grid {
+    display: flex;
+    gap: 0;
+    padding: 6px;
+}
+
+.mds-daily-left, .mds-daily-middle, .mds-daily-right {
+    flex: 1;
+    padding: 0 6px;
+    border-right: 1px solid #ddd;
+}
+
+.mds-daily-right {
+    border-right: none;
+}
+
+.mds-subsection-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.mds-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.mds-summary-table td {
+    padding: 2px 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.mds-subheader-row td {
+    background-color: #eaf2fb;
+    font-size: 11px;
+    padding: 2px 4px;
+    border-top: 1px solid #ccc;
+}
+
+.mds-num-col {
+    width: 22px;
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+}
+
+.mds-num-input {
+    width: 52px;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    padding: 1px 3px;
+    font-size: 12px;
+    text-align: right;
+}
+
+/* Demographics table */
+.mds-demo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 0;
+}
+
+.mds-demo-table th {
+    background-color: #2874a6;
+    color: #fff;
+    padding: 4px 6px;
+    text-align: center;
+    border: 1px solid #aaa;
+}
+
+.mds-demo-table td {
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    text-align: center;
+}
+
+.mds-total-cell {
+    background-color: #eaf2fb;
+    font-weight: bold;
+    text-align: center;
+}
+
+.mds-cell-grey {
+    background-color: #999;
+}
+
+/* Health events table */
+.mds-events-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.mds-events-table th {
+    background-color: #1e8449;
+    color: #fff;
+    padding: 3px 5px;
+    text-align: center;
+    border: 1px solid #aaa;
+}
+
+.mds-events-table td {
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+}
+
+.mds-category-row td {
+    border-top: 2px solid #555;
+}
+
+.mds-events-table .mds-category-label {
+    border-top: 2px solid #555;
+}
+
+.mds-category-label {
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #eaf7ef;
+    vertical-align: middle;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    width: 18px;
+    padding: 4px 2px;
+}
+
+/* Needs and Risks panel */
+.mds-risks-subtitle {
+    font-size: 11px;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.mds-risks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.mds-risks-table td {
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    vertical-align: middle;
+}
+
+.mds-risks-table .mds-category-row td {
+    border-top: 2px solid #555;
+}
+
+.mds-risk-num-cell {
+    width: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.mds-risk-label {
+    font-size: 12px;
+}
+
+.mds-risk-check {
+    width: 24px;
+    text-align: center;
+}
+
+.mds-category-label-risk {
+    background-color: #fde8e8;
+}
+
+.mds-comment-box {
+    margin: 4px 0 8px 0;
+}
+
+.mds-comment-box label {
+    font-size: 11px;
+    color: #555;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.mds-comment-no-input {
+    width: 36px;
+    border: none;
+    border-bottom: 1px solid #888;
+    padding: 0 2px;
+    font-size: 11px;
+    text-align: center;
+    display: inline;
+    vertical-align: baseline;
+}
+
+.mds-textarea {
+    width: 100%;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    padding: 3px 5px;
+    font-size: 12px;
+    resize: vertical;
+}
+
+/* Footnotes */
+.mds-footnotes {
+    margin-top: 10px;
+    font-size: 10px;
+    color: #555;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+}
+
+.mds-footnotes p {
+    margin: 1px 0;
+}
+
+/* Action buttons */
+.mds-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+}
+
+/* Print styles */
+@media print {
+    .mds-actions,
+    .navbar,
+    header,
+    footer {
+        display: none !important;
+    }
+
+    .mds-report-container {
+        margin-top: 0;
+    }
+
+    .mds-num-input,
+    .mds-input,
+    .mds-input-sm,
+    .mds-input-full,
+    .mds-textarea {
+        border: 1px solid #999;
+    }
+
+    body {
+        font-size: 10px;
+    }
+}

@@ -282,6 +282,14 @@
                     @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
                         <p><a class="infoLabel nonEditable">Diagnosis:</a>
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
+                        @if(viewModelPharmacy.getWhoHealthEvents != null && viewModelPharmacy.getWhoHealthEvents.size >= problemIterator && viewModelPharmacy.getWhoHealthEvents.get(problemIterator - 1).nonEmpty){
+                            <p><a class="infoLabel nonEditable">WHO Health Event:</a>
+                                <span class="value">@viewModelPharmacy.getWhoHealthEvents.get(problemIterator - 1)</span></p>
+                        }
+                    }
+                    @if(viewModelPharmacy.getWhoProcedure != null && viewModelPharmacy.getWhoProcedure.nonEmpty){
+                        <p><a class="infoLabel nonEditable">WHO Procedure:</a>
+                            <span class="value">@viewModelPharmacy.getWhoProcedure</span></p>
                     }
                     @if(!viewModelPharmacy.getPrescriptions.isEmpty()){
                         <p> <span class="infoLabel">Dispensed Medication(s):</span> </p>

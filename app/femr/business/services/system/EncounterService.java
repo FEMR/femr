@@ -210,7 +210,7 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId) {
+    public ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, List<String> whoHealthEvents, List<Integer> whoHealthEventIds, int encounterId, int userId) {
 
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
 
@@ -224,9 +224,15 @@ public class EncounterService implements IEncounterService {
             ITabField tabField = tabFieldRepository.findOne(query);
             List<IPatientEncounterTabField> patientEncounterTabFields = new ArrayList<>();
             DateTime dateTaken = dateUtils.getCurrentDateTime();
-            for (String problemval : problemValues) {
+            for (int i = 0; i < problemValues.size(); i++) {
 
-                IPatientEncounterTabField patientEncounterTabField = dataModelMapper.createPatientEncounterTabField(tabField.getId(), userId, problemval, encounterId, dateTaken, null);
+                IPatientEncounterTabField patientEncounterTabField = dataModelMapper.createPatientEncounterTabField(tabField.getId(), userId, problemValues.get(i), encounterId, dateTaken, null);
+                if (whoHealthEvents != null && i < whoHealthEvents.size() && !whoHealthEvents.get(i).isEmpty()) {
+                    patientEncounterTabField.setWhoHealthEvent(whoHealthEvents.get(i));
+                }
+                if (whoHealthEventIds != null && i < whoHealthEventIds.size() && whoHealthEventIds.get(i) != null) {
+                    patientEncounterTabField.setWhoHealthEventId(whoHealthEventIds.get(i));
+                }
                 patientEncounterTabFields.add(patientEncounterTabField);
             }
             patientEncounterTabFieldRepository.createAll(patientEncounterTabFields);
@@ -237,6 +243,25 @@ public class EncounterService implements IEncounterService {
 
 
         return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setWhoProcedureId(int encounterId, Integer whoProcedureId) {
+        if (whoProcedureId == null) return;
+        try {
+            io.ebean.Ebean.createSqlUpdate(
+                "UPDATE patient_encounter_tab_fields petf " +
+                "JOIN tab_fields tf ON petf.tab_field_id = tf.id " +
+                "SET petf.who_procedure_id = :pid " +
+                "WHERE petf.patient_encounter_id = :eid AND tf.name = 'whoProcedure' " +
+                "ORDER BY petf.date_taken DESC LIMIT 1"
+            ).setParameter("pid", whoProcedureId).setParameter("eid", encounterId).execute();
+        } catch (Exception ex) {
+            play.Logger.error("EncounterService-setWhoProcedureId", ex);
+        }
     }
 
     /**
@@ -439,7 +464,7 @@ public class EncounterService implements IEncounterService {
             } else {
                 for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
                     if (petf.getTabField() != null)
-                        problemItems.add(itemModelMapper.createProblemItem(petf.getTabFieldValue()));
+                        problemItems.add(itemModelMapper.createProblemItem(petf.getTabFieldValue(), petf.getWhoHealthEvent()));
                 }
                 response.setResponseObject(problemItems);
             }

@@ -1,0 +1,813 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.manager.DailyReportViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.manager.routes.{ManagerController => ManagerRoutes}
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
+    <link rel="stylesheet" href="@assets.path("css/manager/dailyReport.css")">
+}
+
+@main("EMT-MDS Daily Report", currentUser, styles = additionalStyles, assets = assets) {
+
+<div class="mds-report-container">
+
+    <div class="mds-report-header">
+        <p class="mds-version">World Health Organization</p>
+        <h2>MDS Daily Reporting Form</h2>
+    </div>
+
+    <form id="dailyReportForm" method="post">
+
+        <!-- ===== SECTION 1: TEAM INFORMATION + LOCATION ===== -->
+        <div class="mds-section-row">
+
+            <!-- Team Information (left) -->
+            <div class="mds-panel mds-panel-team">
+                <div class="mds-panel-title">Team Information</div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">a</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Organization name:</span>
+                        <input type="text" class="mds-input" name="organizationName" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">b</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Team name:</span>
+                        <input type="text" class="mds-input" name="teamName"
+                               value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getTeamName != null) viewModel.getReportItem.getTeamName else ""}" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">c</label>
+                    <div class="mds-field-group mds-team-types">
+                        <table class="mds-type-table">
+                            <tr>
+                                <th>Type 1 mobile</th>
+                                <th>Type 1 fixed</th>
+                                <th>Type 2</th>
+                                <th>Type 3</th>
+                                <th>Specialized cell</th>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" name="type1mobile" /></td>
+                                <td><input type="checkbox" name="type1fixed" /></td>
+                                <td><input type="checkbox" name="type2" /></td>
+                                <td><input type="checkbox" name="type3" /></td>
+                                <td><input type="checkbox" name="specializedCell" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">d</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Contact Person(s) name(s):</span>
+                        <input type="text" class="mds-input" name="contactPersons" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">e</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Phone No.:</span>
+                        <input type="text" class="mds-input" name="phoneNo" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">f</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Email:</span>
+                        <input type="email" class="mds-input" name="email" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">g</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Estimated date of departure <small>(dd/mm/yyyy)</small>:</span>
+                        <input type="text" class="mds-input" name="departureDate"
+                               value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getDepartureDate != null) viewModel.getReportItem.getDepartureDate else ""}" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location & Date (right) -->
+            <div class="mds-panel mds-panel-location">
+                <div class="mds-panel-title mds-location-title">Location &dagger;</div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">h</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Date of activity <small>(dd/mm/yyyy)</small>:</span>
+                        <input type="text" class="mds-input" name="dateOfActivity"
+                               value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getReportDate != null) viewModel.getReportItem.getReportDate else ""}" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label"></label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Time of reporting <small>(hh:mm 24h)</small>:</span>
+                        <input type="text" class="mds-input" id="timeOfReporting" name="timeOfReporting" placeholder="00:00" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">i</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">State etc. <small>(admin1)</small>:</span>
+                        <input type="text" class="mds-input" name="stateAdmin1" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">j</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">City etc. <small>(admin2)</small>:</span>
+                        <input type="text" class="mds-input" name="cityAdmin2"
+                               value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getTripCity != null) viewModel.getReportItem.getTripCity else ""}" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">k</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Village etc. <small>(admin3)</small>:</span>
+                        <input type="text" class="mds-input" name="villageAdmin3" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">l</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Facility name:</span>
+                        <input type="text" class="mds-input" name="facilityName" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">m</label>
+                    <div class="mds-field-group mds-geotag-row">
+                        <span class="mds-field-name">Geo-tag:</span>
+                        <span class="mds-sublabel">Lat</span>
+                        <input type="text" class="mds-input-sm" name="geoLat" />
+                        <span class="mds-sublabel">Long</span>
+                        <input type="text" class="mds-input-sm" name="geoLong" />
+                    </div>
+                </div>
+            </div>
+        </div><!-- end team/location row -->
+
+        <!-- ===== SECTION 2: DAILY SUMMARY ===== -->
+        <div class="mds-section">
+            <div class="mds-section-header mds-header-daily">Daily Summary</div>
+
+            <div class="mds-daily-summary-grid">
+
+                <!-- Left: Patient & Bed counts -->
+                <div class="mds-daily-left">
+                    <div class="mds-subsection-label">Number of Patient / Bed Count</div>
+                    <table class="mds-summary-table">
+                        <tr class="mds-subheader-row"><td colspan="3"><strong>Patients</strong></td></tr>
+                        <tr>
+                            <td class="mds-num-col">0</td>
+                            <td>Total Number of new consultations *</td>
+                            <td><input type="number" class="mds-num-input" name="totalNewConsultations"
+                                       value="@{if(viewModel.getReportItem != null) viewModel.getReportItem.getTotalEncounters else 0}" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">1</td>
+                            <td>New admission (=MDS540)</td>
+                            <td><input type="number" class="mds-num-input" name="newAdmissions" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">2</td>
+                            <td>Live Birth</td>
+                            <td><input type="number" class="mds-num-input" name="liveBirths" /></td>
+                        </tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong>Bed</strong></td></tr>
+                        <tr>
+                            <td class="mds-num-col">3</td>
+                            <td>Total bed capacity</td>
+                            <td><input type="number" class="mds-num-input" name="totalBedCapacity" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">4</td>
+                            <td>Empty inpatient bed (Non-ICU)</td>
+                            <td><input type="number" class="mds-num-input" name="emptyInpatientBed" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">5</td>
+                            <td>Empty Intensive Care Unit Bed (ICU)</td>
+                            <td><input type="number" class="mds-num-input" name="emptyICUBed" /></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Middle: MDS Statistics / Outcome -->
+                <div class="mds-daily-middle">
+                    <div class="mds-subsection-label">MDS statistics</div>
+                    <table class="mds-summary-table">
+                        <tr class="mds-subheader-row"><td colspan="3"><strong>Outcome</strong></td></tr>
+                        <tr>
+                            <td class="mds-num-col">36</td>
+                            <td>Discharge without medical follow-up</td>
+                            <td><input type="number" class="mds-num-input" name="dischargeNoFollowup" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">37</td>
+                            <td>Discharge with medical follow-up</td>
+                            <td><input type="number" class="mds-num-input" name="dischargeWithFollowup" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">38</td>
+                            <td>Discharge against medical advice</td>
+                            <td><input type="number" class="mds-num-input" name="dischargeAgainstAdvice" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">39</td>
+                            <td>Referral</td>
+                            <td><input type="number" class="mds-num-input" name="referral" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">40</td>
+                            <td>Dead on arrival</td>
+                            <td><input type="number" class="mds-num-input" name="deadOnArrival" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">41</td>
+                            <td>Death within facility *</td>
+                            <td><input type="number" class="mds-num-input" name="deathWithinFacility" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">42</td>
+                            <td>Requiring long term rehabilitation *</td>
+                            <td><input type="number" class="mds-num-input" name="longTermRehab" /></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Right: Relation & Protection -->
+                <div class="mds-daily-right">
+                    <table class="mds-summary-table">
+                        <tr class="mds-subheader-row"><td colspan="3"><strong>Relation</strong></td></tr>
+                        <tr>
+                            <td class="mds-num-col">44</td>
+                            <td>Directly related to event</td>
+                            <td><input type="number" class="mds-num-input" name="directlyRelated" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">45</td>
+                            <td>Indirectly related to event</td>
+                            <td><input type="number" class="mds-num-input" name="indirectlyRelated" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">46</td>
+                            <td>Not related to event</td>
+                            <td><input type="number" class="mds-num-input" name="notRelated" /></td>
+                        </tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong>Protection</strong></td></tr>
+                        <tr>
+                            <td class="mds-num-col">47</td>
+                            <td>Vulnerable child *</td>
+                            <td><input type="number" class="mds-num-input" name="vulnerableChild" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">48</td>
+                            <td>Vulnerable adult *</td>
+                            <td><input type="number" class="mds-num-input" name="vulnerableAdult" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">49</td>
+                            <td>Sexual Gender Based Violence (SGBV) *</td>
+                            <td><input type="number" class="mds-num-input" name="sgbv" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-num-col">50</td>
+                            <td>Violence (non-SGBV) *</td>
+                            <td><input type="number" class="mds-num-input" name="violenceNonSgbv" /></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div><!-- end daily summary grid -->
+        </div>
+
+        <!-- ===== SECTION 3: DEMOGRAPHICS ===== -->
+        <div class="mds-section">
+            <div class="mds-section-header mds-header-demo">Demographic — MDS statistics</div>
+            <table class="mds-demo-table" id="demoTable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Age Categories</th>
+                        <th>&lt;1</th>
+                        <th>1–4</th>
+                        <th>5–17</th>
+                        <th>18–64</th>
+                        <th>65+</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @defining(if(viewModel.getReportItem != null) viewModel.getReportItem else new femr.common.models.DailyReportItem()) { r =>
+                    <tr>
+                        <td>1</td>
+                        <td>Male</td>
+                        <td><input type="number" class="mds-num-input" name="maleUnder1" @if(r.getMaleUnder1 > 0){value="@r.getMaleUnder1"} /></td>
+                        <td><input type="number" class="mds-num-input" name="male1to4" @if(r.getMale1To4 > 0){value="@r.getMale1To4"} /></td>
+                        <td><input type="number" class="mds-num-input" name="male5to17" @if(r.getMale5To17 > 0){value="@r.getMale5To17"} /></td>
+                        <td><input type="number" class="mds-num-input" name="male18to64" @if(r.getMale18To64 > 0){value="@r.getMale18To64"} /></td>
+                        <td><input type="number" class="mds-num-input" name="male65plus" @if(r.getMale65Plus > 0){value="@r.getMale65Plus"} /></td>
+                        <td class="mds-total-cell"></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Female non-preg.</td>
+                        <td><input type="number" class="mds-num-input" name="femaleNpUnder1" @if(r.getFemaleNonPregnantUnder1 > 0){value="@r.getFemaleNonPregnantUnder1"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femaleNp1to4" @if(r.getFemaleNonPregnant1To4 > 0){value="@r.getFemaleNonPregnant1To4"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femaleNp5to17" @if(r.getFemaleNonPregnant5To17 > 0){value="@r.getFemaleNonPregnant5To17"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femaleNp18to64" @if(r.getFemaleNonPregnant18To64 > 0){value="@r.getFemaleNonPregnant18To64"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femaleNp65plus" @if(r.getFemaleNonPregnant65Plus > 0){value="@r.getFemaleNonPregnant65Plus"} /></td>
+                        <td class="mds-total-cell"></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Female pregnant</td>
+                        <td class="mds-cell-grey"></td>
+                        <td class="mds-cell-grey"></td>
+                        <td><input type="number" class="mds-num-input" name="femalePreg5to17" @if(r.getFemalePregnant5To17 > 0){value="@r.getFemalePregnant5To17"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femalePreg18to64" @if(r.getFemalePregnant18To64 > 0){value="@r.getFemalePregnant18To64"} /></td>
+                        <td><input type="number" class="mds-num-input" name="femalePreg65plus" @if(r.getFemalePregnant65Plus > 0){value="@r.getFemalePregnant65Plus"} /></td>
+                        <td class="mds-total-cell"></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SECTION 4: HEALTH EVENTS & PROCEDURES + NEEDS/RISKS ===== -->
+        <div class="mds-section-row mds-section-row-bottom">
+
+            <!-- Health Events & Procedures (left) -->
+            <div class="mds-panel mds-panel-events">
+                <div class="mds-section-header mds-header-events">Health Events and Procedure — MDS statistics</div>
+
+                <!-- Health Events table -->
+                <table class="mds-events-table" id="healthEventsTable">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th colspan="2">Health Events</th>
+                            <th>&lt;5</th>
+                            <th>&ge;5</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @defining(if(viewModel.getReportItem != null && viewModel.getReportItem.getWhoHealthEventCounts != null) viewModel.getReportItem.getWhoHealthEventCounts else new java.util.HashMap[String, java.util.Map[String, Integer]]()) { eventCounts =>
+                        @defining((name: String) => { val m = eventCounts.get(name); if(m != null) m else new java.util.HashMap[String, Integer]() }) { agFor =>
+                        <!-- Trauma -->
+                        <tr class="mds-category-row"><td></td><td class="mds-category-label" rowspan="5">Trauma</td>
+                            <td>Major head/spine injury</td>
+                            @defining(agFor("Major head/spine injury")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_majorHeadSpine_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_majorHeadSpine_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>5</td><td>Major torso injury</td>
+                            @defining(agFor("Major torso injury")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_majorTorso_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_majorTorso_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>6</td><td>Major extremity injury</td>
+                            @defining(agFor("Major extremity injury")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_majorExtremity_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_majorExtremity_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>7</td><td>Moderate injury</td>
+                            @defining(agFor("Moderate injury")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_moderateInjury_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_moderateInjury_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>8</td><td>Minor injury</td>
+                            @defining(agFor("Minor injury")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_minorInjury_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_minorInjury_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+
+                        <!-- Infectious Disease -->
+                        <tr class="mds-category-row"><td>9</td><td class="mds-category-label" rowspan="10">Infectious disease</td>
+                            <td>Acute respiratory infection</td>
+                            @defining(agFor("Acute respiratory infection")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_acuteRespiratory_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_acuteRespiratory_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>10</td><td>Acute watery diarrhea</td>
+                            @defining(agFor("Acute watery diarrhea")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_wateryDiarrhea_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_wateryDiarrhea_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>11</td><td>Acute bloody diarrhea</td>
+                            @defining(agFor("Acute bloody diarrhea")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_bloodyDiarrhea_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_bloodyDiarrhea_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>12</td><td>Acute jaundice syndrome</td>
+                            @defining(agFor("Acute jaundice syndrome")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_jaundice_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_jaundice_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>13</td><td>Suspected measles</td>
+                            @defining(agFor("Suspected measles")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_measles_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_measles_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>14</td><td>Suspected meningitis</td>
+                            @defining(agFor("Suspected meningitis")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_meningitis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_meningitis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>15</td><td>Suspected tetanus</td>
+                            @defining(agFor("Suspected tetanus")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_tetanus_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_tetanus_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>16</td><td>Acute flaccid paralysis</td>
+                            @defining(agFor("Acute flaccid paralysis")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_flaccidParalysis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_flaccidParalysis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>17</td><td>Acute haemorrhagic fever</td>
+                            @defining(agFor("Acute haemorrhagic fever")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_haemorrhagicFever_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_haemorrhagicFever_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>18</td><td>Fever of unknown origin</td>
+                            @defining(agFor("Fever of unknown origin")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_feverUnknown_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_feverUnknown_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+
+                        <!-- Additional § -->
+                        <tr class="mds-category-row"><td>19</td><td class="mds-category-label" rowspan="4">Additional §</td>
+                            <td><input type="text" class="mds-input-full" name="ev_additional1_name" placeholder="Additional event..." /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional1_lt5" /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional1_gte5" /></td>
+                            <td class="mds-total-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td>20</td><td><input type="text" class="mds-input-full" name="ev_additional2_name" placeholder="Additional event..." /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional2_lt5" /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional2_gte5" /></td>
+                            <td class="mds-total-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td>21</td><td><input type="text" class="mds-input-full" name="ev_additional3_name" placeholder="Additional event..." /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional3_lt5" /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional3_gte5" /></td>
+                            <td class="mds-total-cell">0</td>
+                        </tr>
+                        <tr>
+                            <td>22</td><td><input type="text" class="mds-input-full" name="ev_additional4_name" placeholder="Additional event..." /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional4_lt5" /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_additional4_gte5" /></td>
+                            <td class="mds-total-cell">0</td>
+                        </tr>
+
+                        <!-- Emergency -->
+                        <tr class="mds-category-row"><td>23</td><td class="mds-category-label" rowspan="2">Emrg.</td>
+                            <td>Surgical emergency (Non-trauma)</td>
+                            @defining(agFor("Surgical emergency (Non-trauma)")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_surgicalEmergency_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_surgicalEmergency_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>24</td><td>Medical emergency (Non-infectious)</td>
+                            @defining(agFor("Medical emergency (Non-infectious)")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_medicalEmergency_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_medicalEmergency_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+
+                        <!-- Other key diseases -->
+                        <tr class="mds-category-row"><td>25</td><td class="mds-category-label" rowspan="5">Other key diseases</td>
+                            <td>Skin disease</td>
+                            @defining(agFor("Skin disease")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_skinDisease_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_skinDisease_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr><td>26</td>
+                            <td>Acute mental health problem</td>
+                            @defining(agFor("Acute mental health problem")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_mentalHealth_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_mentalHealth_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>27</td><td>Obstetric complications</td>
+                            @defining(agFor("Obstetric complications")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_obstetric_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_obstetric_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>28</td><td>Severe Acute Malnutrition (SAM) *</td>
+                            @defining(agFor("Severe Acute Malnutrition (SAM)")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_sam_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_sam_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>29</td><td>Other diagnosis, not specified above</td>
+                            @defining(agFor("Other diagnosis not specified above")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="ev_otherDiagnosis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="ev_otherDiagnosis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        }
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Procedures table -->
+                <table class="mds-events-table" id="proceduresTable" style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th colspan="2">Procedure</th>
+                            <th>&lt;5</th>
+                            <th>&ge;5</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @defining(if(viewModel.getReportItem != null && viewModel.getReportItem.getWhoProcedureCounts != null) viewModel.getReportItem.getWhoProcedureCounts else new java.util.HashMap[String, java.util.Map[String, Integer]]()) { procCounts =>
+                        @defining((name: String) => { val m = procCounts.get(name); if(m != null) m else new java.util.HashMap[String, Integer]() }) { paFor =>
+                        <tr>
+                            <td>30</td><td colspan="2">Major procedure (excluding MDS31)</td>
+                            @defining(paFor("Major procedure")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_major_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_major_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>31</td><td colspan="2">Limb amputation excluding digits *</td>
+                            @defining(paFor("Limb amputation excluding digits")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_amputation_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_amputation_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>32</td><td colspan="2">Minor surgical procedure</td>
+                            @defining(paFor("Minor surgical procedure")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_minor_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_minor_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>33</td><td colspan="2">Normal Vaginal Delivery (NVD)</td>
+                            @defining(paFor("Normal Vaginal Delivery (NVD)")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_nvd_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_nvd_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>34</td><td colspan="2">Caesarean section</td>
+                            @defining(paFor("Caesarean section")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_csection_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_csection_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>35</td><td colspan="2">Obstetrics others</td>
+                            @defining(paFor("Obstetrics others")) { ag =>
+                            <td><input type="number" class="mds-num-input" name="proc_obsOther_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
+                            <td><input type="number" class="mds-num-input" name="proc_obsOther_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
+                            <td class="mds-total-cell">@{val lt5 = ag.get("lt5"); val gte5 = ag.get("gte5"); (if(lt5 != null) lt5.intValue else 0) + (if(gte5 != null) gte5.intValue else 0)}</td>
+                            }
+                        </tr>
+                        }
+                        }
+                    </tbody>
+                </table>
+            </div><!-- end events panel -->
+
+            <!-- Needs and Risks (right) -->
+            <div class="mds-panel mds-panel-risks">
+                <div class="mds-section-header mds-header-risks">Needs and Risks</div>
+                <p class="mds-risks-subtitle">Free text reporting to EMTCC / MOH on the following issues.</p>
+
+                <!-- Immediate report / Community Risks / Operational Constraints -->
+                <table class="mds-risks-table">
+                    <tbody>
+                        <tr class="mds-category-row">
+                            <td class="mds-risk-num-cell">51</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Immediate report</td>
+                            <td class="mds-risk-label">Unexpected death *</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_51" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">52</td>
+                            <td class="mds-risk-label">Notifiable disease *</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_52" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">53</td>
+                            <td class="mds-risk-label">Protection issues #</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_53" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">54</td>
+                            <td class="mds-risk-label">Critical incident to EMT and/or community</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_54" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">55</td>
+                            <td class="mds-risk-label">Any other issue requiring immediate reporting</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_55" /></td>
+                        </tr>
+                        <tr class="mds-category-row">
+                            <td class="mds-risk-num-cell">56</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Community Risks</td>
+                            <td class="mds-risk-label">WASH</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_56" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">57</td>
+                            <td class="mds-risk-label">Community / suspected over infectious disease</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_57" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">58</td>
+                            <td class="mds-risk-label">Environmental risk / exposure</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_58" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">59</td>
+                            <td class="mds-risk-label">Shelter / Non food items</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_59" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">60</td>
+                            <td class="mds-risk-label">Food insecurity</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_60" /></td>
+                        </tr>
+                        <tr class="mds-category-row">
+                            <td class="mds-risk-num-cell">61</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Operational constraints</td>
+                            <td class="mds-risk-label">Logistics / operational support</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_61" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">62</td>
+                            <td class="mds-risk-label">Supply</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_62" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">63</td>
+                            <td class="mds-risk-label">Human resources</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_63" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">64</td>
+                            <td class="mds-risk-label">Finance</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_64" /></td>
+                        </tr>
+                        <tr>
+                            <td class="mds-risk-num-cell">65</td>
+                            <td class="mds-risk-label">Others</td>
+                            <td class="mds-risk-check"><input type="checkbox" name="risk_65" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mds-comment-box">
+                    <label>Detailed comment for (No. <input type="text" name="comment_immediate_no" class="mds-comment-no-input" /> ):</label>
+                    <textarea name="comment_immediate" class="mds-textarea" rows="2"></textarea>
+                </div>
+                <div class="mds-comment-box">
+                    <label>Detailed comment for (No. <input type="text" name="comment_community_no" class="mds-comment-no-input" /> ):</label>
+                    <textarea name="comment_community" class="mds-textarea" rows="2"></textarea>
+                </div>
+                <div class="mds-comment-box">
+                    <label>Detailed comment for (No. <input type="text" name="comment_operational_no" class="mds-comment-no-input" /> ):</label>
+                    <textarea name="comment_operational" class="mds-textarea" rows="2"></textarea>
+                </div>
+
+            </div><!-- end risks panel -->
+
+        </div><!-- end bottom section row -->
+
+        <!-- ===== FOOTER NOTES ===== -->
+        <div class="mds-footnotes">
+            <p>* Line list (including detailed information) should be submitted with this MDS form to relevant authorities.</p>
+            <p>§ Additionals are used for context specific reporting items indicated by the relevant authorities e.g. Malaria / Dengue / TB / Leptospirosis / Rabies / Hazmat etc.</p>
+            <p># Protection issues to be reported confidentially to appropriate authority or protection cluster in locally agreed manner.</p>
+            <p>&dagger; Submit one form per one activity day and location.</p>
+        </div>
+
+        <!-- ===== ACTIONS ===== -->
+        <div class="mds-actions">
+            <button type="button" class="btn btn-primary" onclick="window.print()">Print Form</button>
+            <button type="button" class="btn btn-success">Export</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    // Populate row totals from inputs live
+    document.getElementById('dailyReportForm').addEventListener('input', function(e) {
+        if (e.target.type !== 'number') return;
+        var row = e.target.closest('tr');
+        if (!row) return;
+        var total = 0;
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            total += parseInt(inp.value) || 0;
+        });
+        var cell = row.querySelector('.mds-total-cell');
+        if (cell) cell.textContent = total;
+    });
+
+    // Pre-populate totals for demo rows that already have DB values on load
+    document.querySelectorAll('#demoTable tbody tr').forEach(function(row) {
+        var total = 0;
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            total += parseInt(inp.value) || 0;
+        });
+        var cell = row.querySelector('.mds-total-cell');
+        if (cell) cell.textContent = total;
+    });
+
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('timeOfReporting').value = hh + ':' + mm;
+</script>
+
+}

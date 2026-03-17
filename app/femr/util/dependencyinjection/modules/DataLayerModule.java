@@ -84,6 +84,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
 
         bind(IInternetStatusRepository.class).to(InternetStatusRepository.class);
+        bind(IDailyReportRepository.class).to(DailyReportRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
@@ -91,6 +92,8 @@ public class DataLayerModule extends AbstractModule {
         //Generic repositories (being phased out in place of non generic)
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<IConceptWhoHealthEvent>>() {}).to(new TypeLiteral<Repository<IConceptWhoHealthEvent>>() {});
+        bind(new TypeLiteral<IRepository<IConceptWhoProcedure>>() {}).to(new TypeLiteral<Repository<IConceptWhoProcedure>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});

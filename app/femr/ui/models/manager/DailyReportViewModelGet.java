@@ -16,19 +16,28 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.common.models;
+package femr.ui.models.manager;
 
-public class ProblemItem {
-    private String name;
-    private String whoHealthEvent;
+import femr.common.models.DailyReportItem;
 
-    public String getName() {
-        return name;
+public class DailyReportViewModelGet {
+
+    private DailyReportItem reportItem;
+    private String userFriendlyTrip;
+
+    public DailyReportItem getReportItem() {
+        return reportItem;
     }
 
-    public void setName(String name) { this.name = name; }
+    public void setReportItem(DailyReportItem reportItem) {
+        this.reportItem = reportItem;
+    }
 
-    public String getWhoHealthEvent() { return whoHealthEvent; }
+    public String getUserFriendlyTrip() {
+        return userFriendlyTrip;
+    }
 
-    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+    public void setUserFriendlyTrip(String userFriendlyTrip) {
+        this.userFriendlyTrip = userFriendlyTrip;
+    }
 }

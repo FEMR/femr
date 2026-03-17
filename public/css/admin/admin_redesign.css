@@ -1,7 +1,7 @@
 :root {
     --admin-surface-bg: var(--femr-color-surface, #ffffff);
     --admin-border-color: rgba(28, 25, 23, 0.12);
-    --admin-border-accent: rgba(220, 38, 38, 0.32);
+    --admin-border-accent: rgba(51, 94, 200, 0.32);
     --admin-text-muted: var(--femr-color-text-muted, #6b7280);
     --admin-radius-md: var(--femr-radius-md, 12px);
     --admin-radius-lg: var(--femr-radius-lg, 16px);
@@ -41,8 +41,8 @@
     width: 52px;
     height: 52px;
     border-radius: 14px;
-    background: rgba(220, 38, 38, 0.12);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.12);
+    color: var(--femr-color-primary, #335ec8);
     font-size: 30px;
 }
 
@@ -122,8 +122,8 @@
     padding: 18px 24px;
     border-radius: var(--admin-radius-md);
     border: 1px solid var(--admin-border-accent);
-    background: rgba(220, 38, 38, 0.08);
-    color: #7f1d1d;
+    background: rgba(51, 94, 200, 0.08);
+    color: #1f3f8f;
     font-weight: 500;
     box-shadow: var(--admin-shadow);
 }
@@ -383,24 +383,47 @@
     font-size: 20px;
 }
 
+.admin-button,
+.admin-button:hover,
+.admin-button:focus,
+.admin-button:active,
+.admin-button .material-symbols-outlined,
+.admin-button:hover .material-symbols-outlined,
+.admin-button:focus .material-symbols-outlined,
+.admin-button:active .material-symbols-outlined,
+.admin-action-grid__cta,
+.admin-action-grid__cta:hover,
+.admin-action-grid__cta:focus,
+.admin-action-grid__cta:active,
+.admin-chip-button,
+.admin-chip-button:hover,
+.admin-chip-button:focus,
+.admin-chip-button:active,
+.admin-chip-button .material-symbols-outlined,
+.admin-chip-button:hover .material-symbols-outlined,
+.admin-chip-button:focus .material-symbols-outlined,
+.admin-chip-button:active .material-symbols-outlined {
+    text-decoration: none;
+}
+
 .admin-button--primary {
-    background: var(--femr-color-primary, #dc2626);
-    border-color: rgba(220, 38, 38, 0.4);
+    background: var(--femr-color-primary, #335ec8);
+    border-color: rgba(51, 94, 200, 0.4);
     color: #ffffff;
 }
 
 .admin-button--primary:hover,
 .admin-button--primary:focus {
-    background: var(--femr-color-primary-hover, #b91c1c);
-    border-color: rgba(185, 28, 28, 0.6);
+    background: var(--femr-color-primary-hover, #294ba0);
+    border-color: rgba(41, 75, 160, 0.6);
     transform: translateY(-1px);
-    box-shadow: 0 16px 32px -22px rgba(220, 38, 38, 0.65);
+    box-shadow: 0 16px 32px -22px rgba(51, 94, 200, 0.65);
     color: #ffffff;
 }
 
 .admin-button--primary:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.35);
 }
 
 .admin-button--ghost {
@@ -415,30 +438,45 @@
     border-color: rgba(28, 25, 23, 0.25);
 }
 
+.admin-button--secondary {
+    background: rgba(51, 94, 200, 0.08);
+    border-color: rgba(51, 94, 200, 0.32);
+    color: var(--femr-color-primary, #335ec8);
+    box-shadow: none;
+}
+
+.admin-button--secondary:hover,
+.admin-button--secondary:focus {
+    background: rgba(51, 94, 200, 0.14);
+    border-color: rgba(51, 94, 200, 0.48);
+    color: var(--femr-color-primary-hover, #294ba0);
+    box-shadow: 0 10px 24px -20px rgba(51, 94, 200, 0.28);
+}
+
 .admin-button--success {
-    background: rgba(22, 163, 74, 0.12);
-    border-color: rgba(22, 163, 74, 0.4);
-    color: #166534;
+    background: rgba(51, 94, 200, 0.12);
+    border-color: rgba(51, 94, 200, 0.4);
+    color: #1f3f8f;
 }
 
 .admin-button--success:hover,
 .admin-button--success:focus {
-    background: rgba(22, 163, 74, 0.2);
-    border-color: rgba(22, 163, 74, 0.5);
-    color: #14532d;
+    background: rgba(51, 94, 200, 0.2);
+    border-color: rgba(51, 94, 200, 0.5);
+    color: #18316f;
 }
 
 .admin-button--danger {
     background: rgba(220, 38, 38, 0.12);
     border-color: rgba(220, 38, 38, 0.4);
-    color: var(--femr-color-primary, #dc2626);
+    color: #dc2626;
 }
 
 .admin-button--danger:hover,
 .admin-button--danger:focus {
     background: rgba(220, 38, 38, 0.18);
     border-color: rgba(220, 38, 38, 0.5);
-    color: var(--femr-color-primary-hover, #b91c1c);
+    color: #b91c1c;
 }
 
 .admin-inline-form {
@@ -483,8 +521,8 @@
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: rgba(220, 38, 38, 0.16);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.16);
+    color: var(--femr-color-primary, #335ec8);
     font-size: 26px;
 }
 
@@ -510,7 +548,7 @@
     border-radius: 14px;
     padding: 10px 18px;
     border: none;
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
     color: #ffffff;
     font-weight: 600;
     text-decoration: none;
@@ -520,16 +558,16 @@
 
 .admin-action-grid__cta:hover,
 .admin-action-grid__cta:focus {
-    background: var(--femr-color-primary-hover, #b91c1c);
+    background: var(--femr-color-primary-hover, #294ba0);
     transform: translateY(-1px);
-    box-shadow: 0 16px 32px -24px rgba(220, 38, 38, 0.85);
+    box-shadow: 0 16px 32px -24px rgba(51, 94, 200, 0.85);
     color: #ffffff;
     text-decoration: none;
 }
 
 .admin-action-grid__cta:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.35);
 }
 
 .admin-toggle-cell {
@@ -576,7 +614,7 @@
 }
 
 .admin-toggle input:checked + .admin-toggle__indicator {
-    background: rgba(220, 38, 38, 0.6);
+    background: rgba(51, 94, 200, 0.6);
 }
 
 .admin-toggle input:checked + .admin-toggle__indicator::after {
@@ -584,7 +622,7 @@
 }
 
 .admin-toggle input:focus + .admin-toggle__indicator {
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.25);
 }
 
 .admin-toggle__label {
@@ -600,7 +638,7 @@
 
 .admin-toggle input:checked ~ .admin-toggle__label::after {
     content: attr(data-label-on);
-    color: var(--femr-color-primary, #dc2626);
+    color: var(--femr-color-primary, #335ec8);
 }
 
 .admin-table-wrap {
@@ -642,7 +680,7 @@
 }
 
 .admin-table tbody tr:hover {
-    background: rgba(220, 38, 38, 0.06);
+    background: rgba(51, 94, 200, 0.06);
 }
 
 .admin-table tbody tr:last-child td {
@@ -776,21 +814,21 @@
 }
 
 .admin-status--active {
-    background: rgba(22, 163, 74, 0.12);
-    border-color: rgba(22, 163, 74, 0.4);
-    color: #15803d;
+    background: rgba(51, 94, 200, 0.12);
+    border-color: rgba(51, 94, 200, 0.4);
+    color: #1f3f8f;
 }
 
 .admin-status--inactive {
-    background: rgba(220, 38, 38, 0.08);
-    border-color: rgba(220, 38, 38, 0.3);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.08);
+    border-color: rgba(51, 94, 200, 0.3);
+    color: var(--femr-color-primary, #335ec8);
 }
 
 .admin-status--success {
-    background: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34, 197, 94, 0.4);
-    color: #15803d;
+    background: rgba(51, 94, 200, 0.12);
+    border-color: rgba(51, 94, 200, 0.4);
+    color: #1f3f8f;
 }
 
 .admin-status--warning {
@@ -802,7 +840,7 @@
 .admin-status--danger {
     background: rgba(220, 38, 38, 0.12);
     border-color: rgba(220, 38, 38, 0.45);
-    color: var(--femr-color-primary, #dc2626);
+    color: #dc2626;
 }
 
 .admin-form {
@@ -837,7 +875,7 @@
 }
 
 .admin-form__hint--error {
-    color: var(--femr-color-primary, #dc2626);
+    color: #dc2626;
 }
 
 .admin-checkbox-grid {
@@ -861,7 +899,7 @@
 }
 
 .admin-checkbox input {
-    accent-color: var(--femr-color-primary, #dc2626);
+    accent-color: var(--femr-color-primary, #335ec8);
 }
 
 .admin-checkbox:hover,
@@ -940,7 +978,7 @@
 }
 
 .admin-accordion__trigger:focus {
-    outline: 2px solid rgba(220, 38, 38, 0.45);
+    outline: 2px solid rgba(51, 94, 200, 0.45);
     outline-offset: 2px;
 }
 
@@ -1078,7 +1116,7 @@
 }
 
 .admin-required {
-    color: var(--femr-color-primary, #dc2626);
+    color: var(--femr-color-primary, #335ec8);
     margin-left: 4px;
     font-weight: 700;
 }
@@ -1204,15 +1242,15 @@
 
 .admin-icon-button:hover,
 .admin-icon-button:focus {
-    background: rgba(220, 38, 38, 0.12);
-    border-color: rgba(220, 38, 38, 0.35);
-    box-shadow: 0 10px 24px -20px rgba(220, 38, 38, 0.8);
+    background: rgba(51, 94, 200, 0.12);
+    border-color: rgba(51, 94, 200, 0.35);
+    box-shadow: 0 10px 24px -20px rgba(51, 94, 200, 0.8);
     outline: none;
 }
 
 .admin-icon-button:hover .material-symbols-outlined,
 .admin-icon-button:focus .material-symbols-outlined {
-    color: var(--femr-color-primary, #dc2626);
+    color: var(--femr-color-primary, #335ec8);
 }
 
 .admin-chip-button {
@@ -1237,7 +1275,7 @@
 }
 
 .admin-chip-button--danger {
-    color: var(--femr-color-primary, #dc2626);
+    color: #dc2626;
     border-color: rgba(220, 38, 38, 0.35);
     background: rgba(220, 38, 38, 0.08);
 }
@@ -1249,15 +1287,15 @@
 }
 
 .admin-chip-button--success {
-    color: #166534;
-    border-color: rgba(34, 197, 94, 0.4);
-    background: rgba(34, 197, 94, 0.12);
+    color: #1f3f8f;
+    border-color: rgba(51, 94, 200, 0.4);
+    background: rgba(51, 94, 200, 0.12);
 }
 
 .admin-chip-button--success:hover,
 .admin-chip-button--success:focus {
-    background: rgba(34, 197, 94, 0.18);
-    border-color: rgba(34, 197, 94, 0.5);
+    background: rgba(51, 94, 200, 0.18);
+    border-color: rgba(51, 94, 200, 0.5);
 }
 
 .admin-quantity-editor .editCurrentQuantity,
@@ -1271,8 +1309,8 @@
 .admin-form input:focus,
 .admin-form select:focus,
 .admin-form textarea:focus {
-    border-color: rgba(220, 38, 38, 0.6);
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+    border-color: rgba(51, 94, 200, 0.6);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.18);
     outline: none;
 }
 

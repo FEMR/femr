@@ -1,6 +1,6 @@
 :root {
-    --femr-color-primary: #dc2626;
-    --femr-color-primary-hover: #b91c1c;
+    --femr-color-primary: #335ec8;
+    --femr-color-primary-hover: #294ba0;
     --femr-color-bg: #dcdcdb;
     --femr-color-bg-dark: #1c1917;
     --femr-color-surface: #e9e9e9;
@@ -32,6 +32,7 @@ body.femr-shell {
     min-height: 100vh;
     background-color: inherit;
     gap: 24px;
+}
 
 .femr-sidebar {
     width: var(--femr-sidebar-width-collapsed);
@@ -79,11 +80,23 @@ body.femr-shell {
     gap: 12px;
     font-size: 28px;
     font-weight: 700;
-    color: var(--femr-color-primary);
+    color: #dc2626;
     text-decoration: none;
     letter-spacing: -0.02em;
     white-space: nowrap;
     transition: color 0.2s ease;
+}
+
+.femr-sidebar__brand-link:hover,
+.femr-sidebar__brand-link:focus,
+.femr-sidebar__brand-link:active,
+.femr-sidebar__nav-link:hover,
+.femr-sidebar__nav-link:focus,
+.femr-sidebar__nav-link:active,
+.femr-sidebar__icon-button:hover,
+.femr-sidebar__icon-button:focus,
+.femr-sidebar__icon-button:active {
+    text-decoration: none;
 }
 
 .femr-sidebar__brand-icon {
@@ -282,7 +295,7 @@ body.femr-shell {
 }
 
 .femr-sidebar__search-placeholder:focus {
-    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 0 2px rgba(51, 94, 200, 0.35);
 }
 
 .femr-sidebar__section-label {
@@ -378,7 +391,7 @@ body.femr-shell {
 }
 
 .femr-sidebar__nav-link.is-active {
-    background-color: rgba(220, 38, 38, 0.16);
+    background-color: rgba(51, 94, 200, 0.16);
     color: #ffffff;
 }
 
@@ -619,13 +632,34 @@ body.femr-shell {
 
 .femr-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 22px -18px rgba(28, 25, 23, 0.18);
+    text-decoration: none;
+}
+
+.femr-btn:focus,
+.femr-btn:active {
+    text-decoration: none;
+}
+
+.femr-btn,
+.femr-btn:hover,
+.femr-btn:focus,
+.femr-btn:active,
+.femr-btn .femr-btn__label,
+.femr-btn:hover .femr-btn__label,
+.femr-btn:focus .femr-btn__label,
+.femr-btn:active .femr-btn__label,
+.femr-btn .material-symbols-outlined,
+.femr-btn:hover .material-symbols-outlined,
+.femr-btn:focus .material-symbols-outlined,
+.femr-btn:active .material-symbols-outlined {
+    text-decoration: none;
 }
 
 .femr-btn--primary {
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
     color: #ffffff;
-    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
+    box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.5);
 }
 
 .femr-btn--ghost {
@@ -635,9 +669,18 @@ body.femr-shell {
 }
 
 .femr-btn--secondary {
-    background: rgba(220, 38, 38, 0.12);
-    color: var(--femr-color-primary, #dc2626);
-    border-color: rgba(220, 38, 38, 0.24);
+    background: rgba(51, 94, 200, 0.08);
+    color: var(--femr-color-primary, #335ec8);
+    border-color: rgba(51, 94, 200, 0.32);
+    box-shadow: none;
+}
+
+.femr-btn--secondary:hover,
+.femr-btn--secondary:focus {
+    background: rgba(51, 94, 200, 0.14);
+    border-color: rgba(51, 94, 200, 0.48);
+    color: var(--femr-color-primary-hover, #294ba0);
+    box-shadow: 0 10px 24px -20px rgba(51, 94, 200, 0.28);
 }
 
 .hidden {
@@ -703,15 +746,15 @@ body.femr-shell {
     justify-content: center;
     font-size: 16px;
     border: none;
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
     color: #ffffff;
-    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
+    box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.5);
     border-radius: 12px;
     margin-top: 0;
 }
 
 .femr-search__submit:hover {
-    background: var(--femr-color-primary-hover, #b91c1c);
+    background: var(--femr-color-primary-hover, #294ba0);
 }
 
 .femr-shell__footer {

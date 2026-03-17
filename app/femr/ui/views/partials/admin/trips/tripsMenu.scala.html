@@ -47,7 +47,7 @@
                 <a
                     id="manage_trips_btn"
                     href="@TripController.manageGet()"
-                    class="admin-button@if(manageActive) { admin-button--primary}"
+                    class="admin-button @if(manageActive) {admin-button--primary} else {admin-button--secondary}"
                     aria-current="@if(manageActive) {"page"} else {"false"}">
                 <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
                 <span>Manage Trips</span>
@@ -55,7 +55,7 @@
             <a
                 id="manage_teams_btn"
                 href="@TripController.teamsGet()"
-                    class="admin-button@if(teamsActive) { admin-button--primary}"
+                    class="admin-button @if(teamsActive) {admin-button--primary} else {admin-button--secondary}"
                     aria-current="@if(teamsActive) {"page"} else {"false"}">
                 <span class="material-symbols-outlined" aria-hidden="true">groups</span>
                 <span>Manage Teams</span>
@@ -63,7 +63,7 @@
             <a
                 id="manage_cities_btn"
                 href="@TripController.citiesGet()"
-                    class="admin-button@if(citiesActive) { admin-button--primary}"
+                    class="admin-button @if(citiesActive) {admin-button--primary} else {admin-button--secondary}"
                     aria-current="@if(citiesActive) {"page"} else {"false"}">
                 <span class="material-symbols-outlined" aria-hidden="true">location_city</span>
                 <span>Manage Cities</span>

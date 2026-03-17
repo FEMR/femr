@@ -13,6 +13,27 @@
     align-items: center;
     gap: 12px;
     box-shadow: 0 8px 20px -12px rgba(0, 0, 0, 0.35);
+    text-decoration: none;
+}
+
+.femr-btn:focus,
+.femr-btn:active {
+    text-decoration: none;
+}
+
+.femr-btn,
+.femr-btn:hover,
+.femr-btn:focus,
+.femr-btn:active,
+.femr-btn .femr-btn__label,
+.femr-btn:hover .femr-btn__label,
+.femr-btn:focus .femr-btn__label,
+.femr-btn:active .femr-btn__label,
+.femr-btn .material-symbols-outlined,
+.femr-btn:hover .material-symbols-outlined,
+.femr-btn:focus .material-symbols-outlined,
+.femr-btn:active .material-symbols-outlined {
+    text-decoration: none;
 }
 
 .femr-alert--error {
@@ -104,7 +125,7 @@
 
 .femr-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 22px -18px rgba(28, 25, 23, 0.18);
 }
 
 .fButton.femr-btn {
@@ -112,7 +133,7 @@
 }
 
 .fButton.femr-btn.femr-btn--primary {
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
 }
 
 .fButton.femr-btn.femr-btn--ghost {
@@ -122,9 +143,9 @@
 }
 
 .femr-btn--primary {
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
     color: #ffffff;
-    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.6);
+    box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.6);
 }
 
 .femr-btn--ghost {
@@ -135,20 +156,23 @@
 
 .femr-btn--link {
     background: transparent;
-    color: var(--femr-color-primary, #dc2626);
+    color: var(--femr-color-primary, #335ec8);
     border-color: transparent;
 }
 
 .femr-btn--secondary {
-    background: rgba(220, 38, 38, 0.12);
-    color: var(--femr-color-primary, #dc2626);
-    border-color: rgba(220, 38, 38, 0.24);
+    background: rgba(51, 94, 200, 0.08);
+    color: var(--femr-color-primary, #335ec8);
+    border-color: rgba(51, 94, 200, 0.32);
     box-shadow: none;
 }
 
-.femr-btn--secondary:hover {
-    background: rgba(220, 38, 38, 0.18);
-    box-shadow: 0 12px 24px -18px rgba(220, 38, 38, 0.4);
+.femr-btn--secondary:hover,
+.femr-btn--secondary:focus {
+    background: rgba(51, 94, 200, 0.14);
+    border-color: rgba(51, 94, 200, 0.48);
+    color: var(--femr-color-primary-hover, #294ba0);
+    box-shadow: 0 12px 24px -18px rgba(51, 94, 200, 0.28);
 }
 
 .femr-btn__label {

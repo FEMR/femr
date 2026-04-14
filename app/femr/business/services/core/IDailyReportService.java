@@ -20,6 +20,7 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.DailyReportItem;
+import femr.common.models.WhoReportConfigItem;
 import org.joda.time.DateTime;
 
 /**
@@ -36,4 +37,14 @@ public interface IDailyReportService {
      *         or errors if the operation failed
      */
     ServiceResponse<DailyReportItem> generateDailyReport(int tripId, DateTime date);
+
+    /**
+     * Retrieve the saved WHO report configuration for a specific trip.
+     */
+    ServiceResponse<WhoReportConfigItem> getWhoReportConfig(int tripId);
+
+    /**
+     * Save the WHO report configuration for a specific trip.
+     */
+    ServiceResponse<Void> saveWhoReportConfig(int tripId, WhoReportConfigItem config);
 }

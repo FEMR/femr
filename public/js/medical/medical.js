@@ -880,6 +880,17 @@ var whoDropdown = {
     }
 };
 
+// Restore saved WHO procedure ID by matching the saved name against the list items
+$('.who-searchable-dropdown[data-saved-procedure]').each(function() {
+    var saved = $(this).data('saved-procedure');
+    $(this).find('.who-item').each(function() {
+        if ($(this).data('value') === saved) {
+            $(this).closest('.who-searchable-dropdown').find('.who-selected-id').val($(this).data('id'));
+            return false;
+        }
+    });
+});
+
 // Inject a WHO Health Event dropdown (or read-only display if already saved) into each problem row on page load
 if ($('#whoReportingEnabled').length) {
     $('.problemWrap .input-group').each(function() {

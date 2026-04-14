@@ -30,7 +30,8 @@
                     <label class="mds-label">a</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">Organization name:</span>
-                        <input type="text" class="mds-input" name="organizationName" />
+                        <input type="text" class="mds-input" name="organizationName"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getOrgName != null) viewModel.getWhoConfig.getOrgName else ""}" />
                     </div>
                 </div>
 
@@ -55,11 +56,11 @@
                                 <th>Specialized cell</th>
                             </tr>
                             <tr>
-                                <td><input type="checkbox" name="type1mobile" /></td>
-                                <td><input type="checkbox" name="type1fixed" /></td>
-                                <td><input type="checkbox" name="type2" /></td>
-                                <td><input type="checkbox" name="type3" /></td>
-                                <td><input type="checkbox" name="specializedCell" /></td>
+                                <td><input type="checkbox" name="type1mobile" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isType1Mobile) "checked"} /></td>
+                                <td><input type="checkbox" name="type1fixed" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isType1Fixed) "checked"} /></td>
+                                <td><input type="checkbox" name="type2" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isType2) "checked"} /></td>
+                                <td><input type="checkbox" name="type3" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isType3) "checked"} /></td>
+                                <td><input type="checkbox" name="specializedCell" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isSpecializedCell) "checked"} /></td>
                             </tr>
                         </table>
                     </div>
@@ -69,7 +70,8 @@
                     <label class="mds-label">d</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">Contact Person(s) name(s):</span>
-                        <input type="text" class="mds-input" name="contactPersons" />
+                        <input type="text" class="mds-input" name="contactPersons"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getContactPersons != null) viewModel.getWhoConfig.getContactPersons else ""}" />
                     </div>
                 </div>
 
@@ -77,7 +79,8 @@
                     <label class="mds-label">e</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">Phone No.:</span>
-                        <input type="text" class="mds-input" name="phoneNo" />
+                        <input type="text" class="mds-input" name="phoneNo"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getPhoneNo != null) viewModel.getWhoConfig.getPhoneNo else ""}" />
                     </div>
                 </div>
 
@@ -85,7 +88,8 @@
                     <label class="mds-label">f</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">Email:</span>
-                        <input type="email" class="mds-input" name="email" />
+                        <input type="email" class="mds-input" name="email"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getEmail != null) viewModel.getWhoConfig.getEmail else ""}" />
                     </div>
                 </div>
 
@@ -113,7 +117,7 @@
                 </div>
 
                 <div class="mds-field-row">
-                    <label class="mds-label"></label>
+                    <label class="mds-label">i</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">Time of reporting <small>(hh:mm 24h)</small>:</span>
                         <input type="text" class="mds-input" id="timeOfReporting" name="timeOfReporting" placeholder="00:00" />
@@ -121,15 +125,16 @@
                 </div>
 
                 <div class="mds-field-row">
-                    <label class="mds-label">i</label>
+                    <label class="mds-label">j</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">State etc. <small>(admin1)</small>:</span>
-                        <input type="text" class="mds-input" name="stateAdmin1" />
+                        <input type="text" class="mds-input" name="stateAdmin1"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getStateAdmin1 != null) viewModel.getWhoConfig.getStateAdmin1 else ""}" />
                     </div>
                 </div>
 
                 <div class="mds-field-row">
-                    <label class="mds-label">j</label>
+                    <label class="mds-label">k</label>
                     <div class="mds-field-group">
                         <span class="mds-field-name">City etc. <small>(admin2)</small>:</span>
                         <input type="text" class="mds-input" name="cityAdmin2"
@@ -138,29 +143,33 @@
                 </div>
 
                 <div class="mds-field-row">
-                    <label class="mds-label">k</label>
-                    <div class="mds-field-group">
-                        <span class="mds-field-name">Village etc. <small>(admin3)</small>:</span>
-                        <input type="text" class="mds-input" name="villageAdmin3" />
-                    </div>
-                </div>
-
-                <div class="mds-field-row">
                     <label class="mds-label">l</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Facility name:</span>
-                        <input type="text" class="mds-input" name="facilityName" />
+                        <span class="mds-field-name">Village etc. <small>(admin3)</small>:</span>
+                        <input type="text" class="mds-input" name="villageAdmin3"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getVillageAdmin3 != null) viewModel.getWhoConfig.getVillageAdmin3 else ""}" />
                     </div>
                 </div>
 
                 <div class="mds-field-row">
                     <label class="mds-label">m</label>
+                    <div class="mds-field-group">
+                        <span class="mds-field-name">Facility name:</span>
+                        <input type="text" class="mds-input" name="facilityName"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getFacilityName != null) viewModel.getWhoConfig.getFacilityName else ""}" />
+                    </div>
+                </div>
+
+                <div class="mds-field-row">
+                    <label class="mds-label">n</label>
                     <div class="mds-field-group mds-geotag-row">
                         <span class="mds-field-name">Geo-tag:</span>
                         <span class="mds-sublabel">Lat</span>
-                        <input type="text" class="mds-input-sm" name="geoLat" />
+                        <input type="text" class="mds-input-sm" name="geoLat"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getGeoLat != null) viewModel.getWhoConfig.getGeoLat else ""}" />
                         <span class="mds-sublabel">Long</span>
-                        <input type="text" class="mds-input-sm" name="geoLong" />
+                        <input type="text" class="mds-input-sm" name="geoLong"
+                               value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getGeoLong != null) viewModel.getWhoConfig.getGeoLong else ""}" />
                     </div>
                 </div>
             </div>
@@ -178,34 +187,34 @@
                     <table class="mds-summary-table">
                         <tr class="mds-subheader-row"><td colspan="3"><strong>Patients</strong></td></tr>
                         <tr>
-                            <td class="mds-num-col">0</td>
+                            <td class="mds-num-col">o</td>
                             <td>Total Number of new consultations *</td>
                             <td><input type="number" class="mds-num-input" name="totalNewConsultations"
                                        value="@{if(viewModel.getReportItem != null) viewModel.getReportItem.getTotalEncounters else 0}" /></td>
                         </tr>
                         <tr>
-                            <td class="mds-num-col">1</td>
+                            <td class="mds-num-col">p</td>
                             <td>New admission (=MDS540)</td>
                             <td><input type="number" class="mds-num-input" name="newAdmissions" /></td>
                         </tr>
                         <tr>
-                            <td class="mds-num-col">2</td>
+                            <td class="mds-num-col">q</td>
                             <td>Live Birth</td>
                             <td><input type="number" class="mds-num-input" name="liveBirths" /></td>
                         </tr>
                         <tr class="mds-subheader-row"><td colspan="3"><strong>Bed</strong></td></tr>
                         <tr>
-                            <td class="mds-num-col">3</td>
+                            <td class="mds-num-col">r</td>
                             <td>Total bed capacity</td>
                             <td><input type="number" class="mds-num-input" name="totalBedCapacity" /></td>
                         </tr>
                         <tr>
-                            <td class="mds-num-col">4</td>
+                            <td class="mds-num-col">s</td>
                             <td>Empty inpatient bed (Non-ICU)</td>
                             <td><input type="number" class="mds-num-input" name="emptyInpatientBed" /></td>
                         </tr>
                         <tr>
-                            <td class="mds-num-col">5</td>
+                            <td class="mds-num-col">t</td>
                             <td>Empty Intensive Care Unit Bed (ICU)</td>
                             <td><input type="number" class="mds-num-input" name="emptyICUBed" /></td>
                         </tr>
@@ -376,7 +385,7 @@
                         @defining(if(viewModel.getReportItem != null && viewModel.getReportItem.getWhoHealthEventCounts != null) viewModel.getReportItem.getWhoHealthEventCounts else new java.util.HashMap[String, java.util.Map[String, Integer]]()) { eventCounts =>
                         @defining((name: String) => { val m = eventCounts.get(name); if(m != null) m else new java.util.HashMap[String, Integer]() }) { agFor =>
                         <!-- Trauma -->
-                        <tr class="mds-category-row"><td></td><td class="mds-category-label" rowspan="5">Trauma</td>
+                        <tr class="mds-category-row"><td>4</td><td class="mds-category-label" rowspan="5">Trauma</td>
                             <td>Major head/spine injury</td>
                             @defining(agFor("Major head/spine injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_majorHeadSpine_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>

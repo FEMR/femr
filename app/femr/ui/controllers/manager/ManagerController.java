@@ -7,6 +7,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.DailyReportItem;
 import femr.common.models.MissionTripItem;
+import femr.common.models.WhoReportConfigItem;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.SettingItem;
 import femr.data.models.mysql.Roles;
@@ -127,6 +128,9 @@ public class ManagerController extends Controller {
         } else {
             viewModel.setReportItem(new DailyReportItem());
         }
+
+        ServiceResponse<WhoReportConfigItem> whoConfigResponse = dailyReportService.getWhoReportConfig(currentUser.getTripId());
+        viewModel.setWhoConfig(whoConfigResponse.hasErrors() ? new WhoReportConfigItem() : whoConfigResponse.getResponseObject());
 
         return ok(dailyReport.render(currentUser, viewModel, assetsFinder));
     }

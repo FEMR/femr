@@ -49,4 +49,5 @@ public interface IDailyReportRepository {
      * where ageGroup is "lt5" (under 5) or "gte5" (5 and over).
      */
     Map<String, Map<String, Integer>> getProcedureCounts(int tripId, DateTime date);
+
 }

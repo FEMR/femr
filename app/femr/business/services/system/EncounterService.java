@@ -252,13 +252,15 @@ public class EncounterService implements IEncounterService {
     public void setWhoProcedureId(int encounterId, Integer whoProcedureId) {
         if (whoProcedureId == null) return;
         try {
-            io.ebean.Ebean.createSqlUpdate(
-                "UPDATE patient_encounter_tab_fields petf " +
-                "JOIN tab_fields tf ON petf.tab_field_id = tf.id " +
-                "SET petf.who_procedure_id = :pid " +
-                "WHERE petf.patient_encounter_id = :eid AND tf.name = 'whoProcedure' " +
-                "ORDER BY petf.date_taken DESC LIMIT 1"
-            ).setParameter("pid", whoProcedureId).setParameter("eid", encounterId).execute();
+            ExpressionList<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId)
+                    .eq("tabField.name", "whoProcedure");
+            List<? extends IPatientEncounterTabField> records = patientEncounterTabFieldRepository.find(query);
+            for (IPatientEncounterTabField record : records) {
+                record.setWhoProcedureId(whoProcedureId);
+                patientEncounterTabFieldRepository.update(record);
+            }
         } catch (Exception ex) {
             play.Logger.error("EncounterService-setWhoProcedureId", ex);
         }

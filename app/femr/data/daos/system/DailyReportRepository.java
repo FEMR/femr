@@ -215,4 +215,5 @@ public class DailyReportRepository implements IDailyReportRepository {
             throw ex;
         }
     }
+
 }

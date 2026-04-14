@@ -83,9 +83,11 @@
         }
         @if(whoReporting) {
         <div id="whoReportingEnabled" class="hidden"></div>
-        <div class="who-searchable-dropdown">
+        @defining(treatmentTab.getTabFieldItemByName(null, "whoProcedure")) { savedProc =>
+        @defining(if(savedProc != null && savedProc.getValue != null) savedProc.getValue else "") { savedProcValue =>
+        <div class="who-searchable-dropdown" @if(!savedProcValue.isEmpty){data-saved-procedure="@savedProcValue"}>
             <div class="who-dropdown-toggle">
-                <span class="who-dropdown-label">- WHO Procedure -</span>
+                <span class="who-dropdown-label">@if(!savedProcValue.isEmpty){@savedProcValue}else{- WHO Procedure -}</span>
                 <span class="caret"></span>
             </div>
             <div class="who-dropdown-menu">
@@ -99,9 +101,10 @@
                     <li class="who-item" data-value="Obstetrics others" data-id="6">Obstetrics others</li>
                 </ul>
             </div>
-            <input type="hidden" name="whoProcedure" class="who-selected-value"/>
+            <input type="hidden" name="whoProcedure" class="who-selected-value" value="@savedProcValue"/>
             <input type="hidden" name="whoProcedureId" class="who-selected-id"/>
         </div>
+        }}
         }
     </div>
     <div class="form-group">

@@ -19,11 +19,13 @@
 package femr.ui.models.manager;
 
 import femr.common.models.DailyReportItem;
+import femr.common.models.WhoReportConfigItem;
 
 public class DailyReportViewModelGet {
 
     private DailyReportItem reportItem;
     private String userFriendlyTrip;
+    private WhoReportConfigItem whoConfig;
 
     public DailyReportItem getReportItem() {
         return reportItem;
@@ -39,5 +41,13 @@ public class DailyReportViewModelGet {
 
     public void setUserFriendlyTrip(String userFriendlyTrip) {
         this.userFriendlyTrip = userFriendlyTrip;
+    }
+
+    public WhoReportConfigItem getWhoConfig() {
+        return whoConfig;
+    }
+
+    public void setWhoConfig(WhoReportConfigItem whoConfig) {
+        this.whoConfig = whoConfig;
     }
 }

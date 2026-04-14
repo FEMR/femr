@@ -60,6 +60,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPhoto.class).toProvider(PhotoProvider.class);
         bind(IRole.class).toProvider(RoleProvider.class);
         bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
+        bind(IWhoReportConfig.class).toProvider(WhoReportConfigProvider.class);
         bind(INetworkStatus.class).toProvider(NetworkStatusProvider.class);
         bind(IKitStatus.class).toProvider(KitStatusProvider.class);
         bind(IDatabaseStatus.class).toProvider(DatabaseStatusProvider.class);
@@ -102,6 +103,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
+        bind(new TypeLiteral<IRepository<IWhoReportConfig>>() {}).to(new TypeLiteral<Repository<IWhoReportConfig>>() {});
         bind(new TypeLiteral<IRepository<INetworkStatus>>() {}).to(new TypeLiteral<Repository<INetworkStatus>>(){});
         bind(new TypeLiteral<IRepository<IKitStatus>>() {}).to(new TypeLiteral<Repository<IKitStatus>>(){});
         bind(new TypeLiteral<IRepository<IDatabaseStatus>>() {}).to(new TypeLiteral<Repository<IDatabaseStatus>>(){});

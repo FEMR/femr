@@ -573,9 +573,9 @@ $(function () {
         $(this).val(numbers.replace(/\D/g, ''));
     });
 
-    //gen info and vitals shit
-    $('#femaleBtn').on('input', function () {
-        $('#weeksPregnant').attr('disabled', 'false');
+    //gen info and vitals
+    $('#femaleBtn').on('change', function () {
+        $('#weeksPregnant').removeAttr('disabled');
 
         // remove any errors
         $(this).parents(".generalInfoInput").removeClass("has-errors");

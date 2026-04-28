@@ -224,30 +224,6 @@
                 showPage(currentPage - 1);
             }
         }
-
-        /**
-         * Wipe all patients from database
-         */
-        function wipeAllPatients() {
-            showImportStatus('Clearing all patients...', 'warning');
-
-            fetch('@ManagerController.wipeAllPatients()', {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showImportStatus('All patients have been cleared successfully', 'success');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                } else {
-                    showImportStatus('Failed to clear patients: ' + (data.message || 'Unknown error'), 'error');
-                }
-            })
-            .catch(error => {
-                showImportStatus('Error clearing patients: ' + error.message, 'error');
-            });
-        }
+        
     </script>
 }

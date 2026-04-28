@@ -32,18 +32,21 @@ public class DatabaseDumpController extends Controller {
     }
     public Result indexGet(){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(backup.render(currentUser, assetsFinder, getCommand(), ""));
+        return ok(backup.render(currentUser, assetsFinder, getCommand(), "", false));
     }
 
     public Result indexPost(){
-        String successMessage = "Data Backup Successful!";
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         DbDumpService dbService = new DbDumpService();
         ServiceResponse<Boolean> response = dbService.getAllData();
-        if (!response.getResponseObject()){
-            successMessage = "Data Backup Failed..";
+        if (response.hasErrors() || Boolean.FALSE.equals(response.getResponseObject())) {
+            String errorMsg = "Data Backup Failed";
+            if (response.hasErrors()) {
+                errorMsg += ": " + String.join("; ", response.getErrors().values());
+            }
+            return ok(backup.render(currentUser, assetsFinder, getCommand(), errorMsg, true));
         }
-        return ok(backup.render(currentUser, assetsFinder, getCommand(), successMessage));
+        return ok(backup.render(currentUser, assetsFinder, getCommand(), "Data Backup Successful!", false));
     }
 
     private boolean getCommand(){

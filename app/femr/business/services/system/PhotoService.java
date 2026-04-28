@@ -134,8 +134,16 @@ public class PhotoService implements IPhotoService {
                     patient.setPhoto(pPhoto);
                     patientRepository.savePatient(patient);
                 } else {
-                    //Record already exists:
-                    //photoId = patient.getPhoto().getId();
+                    //Record already exists - update the existing photo
+                    int photoId = patient.getPhoto().getId();
+                    photoRepository.updatePhotoFilePath(photoId, imageFileName);
+                    if (_bUseDbPhotoStorage) {
+                        photoRepository.updatePhotoData(photoId, convertBufferedImageToByteArray(bufferedImage));
+                    } else {
+                        //Update image on disk
+                        String filePathTarget = _profilePhotoPath + imageFileName;
+                        photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                    }
                 }
 
 

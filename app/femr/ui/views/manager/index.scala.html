@@ -53,6 +53,10 @@
             @if(currentUser.getTripId != null) {
                 <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
 
+                <!-- Buttons Section (Top) -->
+                <div style="margin-bottom: 15px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" id="exportButton" onclick="window.location='@ManagerController.exportDailyReport()'" style="padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.3s;">Export Daily Report</button>
+                </div>
 
             <div id="table-container center-panel-grid" >
                 <div class="managerWrap">
@@ -116,4 +120,134 @@
             }
         </div>
     </div>
+
+    <script>
+        // Pagination variables
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        let allRows = [];
+
+        /**
+         * Initialize pagination on page load
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize pagination
+            const tableBody = document.getElementById('tableBody');
+            if (tableBody) {
+                allRows = Array.from(tableBody.querySelectorAll('tr'));
+                if (allRows.length > rowsPerPage) {
+                    setupPagination();
+                    showPage(1);
+                }
+            }
+
+            // Add hover effects to buttons
+            addButtonHoverEffects();
+        });
+
+        /**
+         * Add hover effects to all styled buttons
+         */
+        function addButtonHoverEffects() {
+            const buttons = document.querySelectorAll('button[style*="background-color"]');
+            buttons.forEach(button => {
+                const originalColor = button.style.backgroundColor;
+                button.addEventListener('mouseenter', function() {
+                    this.style.opacity = '0.85';
+                });
+                button.addEventListener('mouseleave', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        }
+
+        /**
+         * Setup pagination controls
+         */
+        function setupPagination() {
+            const paginationControls = document.getElementById('paginationControls');
+            if (paginationControls) {
+                paginationControls.style.display = 'block';
+            }
+        }
+
+        /**
+         * Show specific page of table
+         */
+        function showPage(pageNum) {
+            const tableBody = document.getElementById('tableBody');
+            if (!tableBody) return;
+
+            const startIndex = (pageNum - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+
+            // Hide all rows
+            Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+                row.style.display = 'none';
+            });
+
+            // Show rows for current page
+            allRows.slice(startIndex, endIndex).forEach(row => {
+                row.style.display = '';
+            });
+
+            currentPage = pageNum;
+            updatePageInfo();
+        }
+
+        /**
+         * Update pagination info display
+         */
+        function updatePageInfo() {
+            const pageInfo = document.getElementById('pageInfo');
+            const totalPages = Math.ceil(allRows.length / rowsPerPage);
+            if (pageInfo) {
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${allRows.length} total records)`;
+            }
+        }
+
+        /**
+         * Navigate to next page
+         */
+        function nextPage() {
+            const totalPages = Math.ceil(allRows.length / rowsPerPage);
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        /**
+         * Navigate to previous page
+         */
+        function previousPage() {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        }
+
+        /**
+         * Wipe all patients from database
+         */
+        function wipeAllPatients() {
+            showImportStatus('Clearing all patients...', 'warning');
+
+            fetch('@ManagerController.wipeAllPatients()', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showImportStatus('All patients have been cleared successfully', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showImportStatus('Failed to clear patients: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                showImportStatus('Error clearing patients: ' + error.message, 'error');
+            });
+        }
+    </script>
 }

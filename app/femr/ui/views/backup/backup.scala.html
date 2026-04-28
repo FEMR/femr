@@ -1,5 +1,5 @@
 @import femr.ui.controllers.routes.DatabaseDumpController
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, commandInstalled: Boolean, successMessage: String)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, commandInstalled: Boolean, statusMessage: String, isError: Boolean)
 
 @import femr.ui.views.html.layouts.main
 
@@ -53,9 +53,17 @@
             @helper.form(action = DatabaseDumpController.indexPost()){
                 <button class="fButton fRedButton">Backup Your Data</button>
             }
-            <p>
-                @successMessage
-            </p>
+            @if(statusMessage.nonEmpty){
+                @if(isError){
+                    <div class="backupStatus backupError">
+                        <span class="backupStatusIcon">&#x2716;</span> @statusMessage
+                    </div>
+                } else {
+                    <div class="backupStatus backupSuccess">
+                        <span class="backupStatusIcon">&#x2714;</span> @statusMessage
+                    </div>
+                }
+            }
         }
 
     </div>

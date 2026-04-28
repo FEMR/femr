@@ -1,5 +1,15 @@
 package femr.business.services.system;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.kms.AWSKMS;
+import com.amazonaws.services.kms.AWSKMSClientBuilder;
+import com.amazonaws.services.kms.model.GenerateDataKeyRequest;
+import com.amazonaws.services.kms.model.GenerateDataKeyResult;
 import femr.business.services.core.IDbDumpService;
 import femr.common.dtos.ServiceResponse;
 import play.Logger;
@@ -10,6 +20,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.zip.GZIPOutputStream;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 
@@ -30,44 +46,57 @@ public class DbDumpService implements IDbDumpService {
     public ServiceResponse<Boolean> getAllData() {
 
         ServiceResponse<Boolean> serviceResponse = new ServiceResponse<>();
-        // Use absolute path in /tmp to ensure file is created in a known location
-        String dumpFilePath = "/tmp/db_dump.sql.gz";
+        String rawDumpPath  = "/tmp/db_dump.sql";
+        String gzipDumpPath = "/tmp/db_dump.sql.gz";
         
         try {
-            // Step 1: Create the database dump using mysqldump
+            // Step 1: Run mysqldump to a raw .sql file
             String db_user = System.getenv("DB_USER");
             String db_password = System.getenv("DB_PASS");
-            ProcessBuilder pb = new ProcessBuilder
-                    ("mysqldump", "--host=db", String.format("--user=%s", db_user), 
-                     String.format("--password=%s", db_password), "--all-databases");
-            
-            File outputFile = new File(dumpFilePath);
-            pb.redirectOutput(ProcessBuilder.Redirect.to(outputFile));
+            ProcessBuilder pb = new ProcessBuilder(
+                    "mysqldump", "--host=db",
+                    String.format("--user=%s", db_user),
+                    String.format("--password=%s", db_password),
+                    "--complete-insert",
+                    "--all-databases");
+            pb.redirectOutput(ProcessBuilder.Redirect.to(new File(rawDumpPath)));
             pb.redirectErrorStream(true);
             Process process = pb.start();
-            process.waitFor();
-            
-            Logger.info("DbDumpService", "Database dump created: " + dumpFilePath);
-            
-            // Step 2: Upload to S3 if endpoint is configured
-            String s3Endpoint = System.getenv("S3_BACKUP_ENDPOINT");  // Read dynamically
-            if (s3Endpoint != null && !s3Endpoint.isEmpty()) {
-                boolean uploadSuccess = uploadToS3Endpoint(dumpFilePath);
-                if (uploadSuccess) {
-                    Logger.info("DbDumpService", "Successfully uploaded dump to S3");
-                    serviceResponse.setResponseObject(true);
-                    // Clean up local copy after successful S3 upload
-                    Files.deleteIfExists(Paths.get(dumpFilePath));
-                    return serviceResponse;
-                } else {
-                    Logger.warn("DbDumpService", "S3 upload failed, keeping local copy");
-                    // Fall through to return local dump success
-                }
-            } else {
-                Logger.info("DbDumpService", "S3_BACKUP_ENDPOINT not configured, using local storage");
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                serviceResponse.addError("mysqldump", "mysqldump exited with code " + exitCode);
+                serviceResponse.setResponseObject(false);
+                return serviceResponse;
             }
-            
-            serviceResponse.setResponseObject(true);
+            Logger.info("DbDumpService", "Raw dump created: " + rawDumpPath);
+
+            // Step 2: Compress the raw SQL to a real gzip file
+            compressToGzip(rawDumpPath, gzipDumpPath);
+            Files.deleteIfExists(Paths.get(rawDumpPath));
+            Logger.info("DbDumpService", "Compressed dump: " + gzipDumpPath);
+
+            // Step 3: Upload to S3 (prefer direct bucket upload; fallback to API endpoint)
+            String bucketName = System.getenv("S3_BUCKET_NAME");
+            String s3Endpoint = System.getenv("S3_BACKUP_ENDPOINT");
+            String uploadError;
+
+            if (bucketName != null && !bucketName.isEmpty()) {
+                uploadError = uploadDirectToS3(bucketName, gzipDumpPath);
+            } else if (s3Endpoint != null && !s3Endpoint.isEmpty()) {
+                uploadError = uploadToS3Endpoint(gzipDumpPath);
+            } else {
+                uploadError = "No backup target configured. Set S3_BUCKET_NAME for direct S3 upload or S3_BACKUP_ENDPOINT for API upload.";
+            }
+
+            Files.deleteIfExists(Paths.get(gzipDumpPath));
+            if (uploadError != null) {
+                Logger.error("DbDumpService", "S3 upload failed: " + uploadError);
+                serviceResponse.addError("S3 Upload", uploadError);
+                serviceResponse.setResponseObject(false);
+            } else {
+                Logger.info("DbDumpService", "Successfully uploaded dump to S3");
+                serviceResponse.setResponseObject(true);
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             Logger.error("DbDumpService", "Database Dump Failed: " + e.getMessage());
@@ -78,23 +107,36 @@ public class DbDumpService implements IDbDumpService {
     }
 
     /**
-     * Uploads the compressed database dump to the S3 Lambda endpoint.
-     * 
-     * The endpoint expects:
-     * - POST to: {S3_BACKUP_ENDPOINT}/upload_dump/{kit_id}
-     * - Body: Binary gzip file data
-     * - Header: Content-Type: application/octet-stream
-     * 
-     * @param filePath Path to the .sql.gz file to upload
-     * @return true if upload succeeded, false otherwise
+     * Compresses a file using gzip.
+     *
+     * @param inputPath  path to the uncompressed source file
+     * @param outputPath path to write the gzip-compressed output
      */
-    private boolean uploadToS3Endpoint(String filePath) {
+    private void compressToGzip(String inputPath, String outputPath) throws IOException {
+        try (FileInputStream  fis  = new FileInputStream(inputPath);
+             FileOutputStream fos  = new FileOutputStream(outputPath);
+             GZIPOutputStream gzos = new GZIPOutputStream(fos)) {
+            byte[] buffer = new byte[8192];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                gzos.write(buffer, 0, len);
+            }
+        }
+    }
+
+    /**
+     * Uploads the compressed database dump to the S3 Lambda endpoint.
+     *
+     * @param filePath Path to the .sql.gz file to upload
+     * @return null on success, or an error message string on failure
+     */
+    private String uploadToS3Endpoint(String filePath) {
         try {
             // Read endpoint dynamically from environment
             String s3Endpoint = System.getenv("S3_BACKUP_ENDPOINT");
             if (s3Endpoint == null || s3Endpoint.isEmpty()) {
                 Logger.warn("DbDumpService", "S3_BACKUP_ENDPOINT environment variable not set");
-                return false;
+                return "S3_BACKUP_ENDPOINT not configured";
             }
             
             // Get kit ID from environment or use default
@@ -108,15 +150,11 @@ public class DbDumpService implements IDbDumpService {
             Path dumpPath = Paths.get(filePath);
             if (!Files.exists(dumpPath)) {
                 Logger.warn("DbDumpService.uploadToS3Endpoint", "File not found: " + filePath);
-                return false;
+                return "Dump file not found: " + filePath;
             }
             
             byte[] fileBytes = Files.readAllBytes(dumpPath);
             Logger.info("DbDumpService.uploadToS3Endpoint", "File size: " + fileBytes.length + " bytes");
-            
-            // Base64 encode the file
-            String base64Payload = Base64.getEncoder().encodeToString(fileBytes);
-            Logger.info("DbDumpService.uploadToS3Endpoint", "Base64 payload size: " + base64Payload.length() + " bytes");
             
             // Create HTTP request
             URL url = new URL(uploadUrl);
@@ -124,6 +162,15 @@ public class DbDumpService implements IDbDumpService {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/octet-stream");
             conn.setRequestProperty("User-Agent", "fEMR-DbDumpService/1.0");
+
+            // Set API key required by the Lambda upload endpoint
+            String apiKey = System.getenv("BACKUP_API_KEY");
+            if (apiKey != null && !apiKey.isEmpty()) {
+                conn.setRequestProperty("X-API-Key", apiKey);
+            } else {
+                Logger.warn("DbDumpService.uploadToS3Endpoint", "BACKUP_API_KEY not set — upload will be rejected by Lambda");
+            }
+
             conn.setConnectTimeout(S3_UPLOAD_TIMEOUT);
             conn.setReadTimeout(S3_UPLOAD_TIMEOUT);
             conn.setDoOutput(true);
@@ -139,24 +186,140 @@ public class DbDumpService implements IDbDumpService {
             Logger.info("DbDumpService.uploadToS3Endpoint", "Response code: " + responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                // Read response body for logging
                 String responseBody = readResponseBody(conn);
                 Logger.info("DbDumpService.uploadToS3Endpoint", "Upload successful. Response: " + responseBody);
                 conn.disconnect();
-                return true;
+                return null;  // null = success
             } else {
                 String errorBody = readErrorBody(conn);
-                Logger.error("DbDumpService.uploadToS3Endpoint", 
-                    "Upload failed with code " + responseCode + ". Error: " + errorBody);
+                String msg = "HTTP " + responseCode + ": " + errorBody;
+                Logger.error("DbDumpService.uploadToS3Endpoint", "Upload failed — " + msg);
                 conn.disconnect();
-                return false;
+                return msg;
             }
             
         } catch (Exception e) {
-            Logger.error("DbDumpService.uploadToS3Endpoint", 
-                "Exception during upload: " + e.getMessage());
+            Logger.error("DbDumpService.uploadToS3Endpoint", "Exception during upload: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * Uploads the compressed database dump directly to S3 with client-side encryption using AWS KMS.
+     *
+     * Implements envelope encryption:
+     * 1. KMS generates a 256-bit data key
+     * 2. File is encrypted locally with the data key (AES-256)
+     * 3. Encrypted data key is stored as S3 object metadata
+     * 4. Processor Lambda can decrypt using KMS key permissions
+     *
+     * Required env vars:
+     * - S3_BUCKET_NAME
+     * - AWS_REGION (optional, defaults to us-west-2)
+    * - KMS_KEY_ID (optional, defaults to ae684528-8865-4c91-86c0-fbfb57d48378)
+     * - AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY (if no instance role is available)
+     *
+     * @param bucketName target S3 bucket
+     * @param filePath path to dump file
+     * @return null on success, otherwise an error string
+     */
+    private String uploadDirectToS3(String bucketName, String filePath) {
+        try {
+            Path dumpPath = Paths.get(filePath);
+            if (!Files.exists(dumpPath)) {
+                return "Dump file not found: " + filePath;
+            }
+
+            String region = System.getenv("AWS_REGION");
+            if (region == null || region.isEmpty()) {
+                region = "us-west-2";
+            }
+
+            String kmsKeyId = System.getenv("KMS_KEY_ID");
+            if (kmsKeyId == null || kmsKeyId.isEmpty()) {
+                kmsKeyId = "ae684528-8865-4c91-86c0-fbfb57d48378"; // Default key for patient data
+            }
+
+            String kitId = getKitId();
+            LocalDate uploadDate = LocalDate.now();
+            LocalDateTime uploadDateTime = LocalDateTime.now();
+            String datePrefix = uploadDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            String timestamp = uploadDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmssSSS"));
+            String objectKey = kitId + "/" + datePrefix + "/" + timestamp + ".sql.gz.encrypted";
+
+            // Initialize AWS clients
+            String accessKey = System.getenv("AWS_ACCESS_KEY_ID");
+            String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+            
+            AWSKMSClientBuilder kmsBuilder = AWSKMSClientBuilder.standard().withRegion(region);
+            AmazonS3 s3Client;
+            
+            if (accessKey != null && !accessKey.isEmpty() && secretKey != null && !secretKey.isEmpty()) {
+                BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+                AWSStaticCredentialsProvider credProvider = new AWSStaticCredentialsProvider(credentials);
+                kmsBuilder.withCredentials(credProvider);
+                s3Client = AmazonS3ClientBuilder.standard()
+                        .withRegion(region)
+                        .withCredentials(credProvider)
+                        .build();
+            } else {
+                s3Client = AmazonS3ClientBuilder.standard()
+                        .withRegion(region)
+                        .build();
+            }
+            
+            AWSKMS kmsClient = kmsBuilder.build();
+
+            // Step 1: Generate a data key from KMS (256-bit for AES-256)
+            Logger.info("DbDumpService.uploadDirectToS3", "Requesting data key from KMS for key: " + kmsKeyId);
+            GenerateDataKeyRequest dataKeyRequest = new GenerateDataKeyRequest()
+                    .withKeyId(kmsKeyId)
+                    .withKeySpec("AES_256");
+            GenerateDataKeyResult dataKeyResult = kmsClient.generateDataKey(dataKeyRequest);
+            
+            byte[] plaintextDataKey = dataKeyResult.getPlaintext().array();
+            byte[] encryptedDataKey = dataKeyResult.getCiphertextBlob().array();
+            Logger.info("DbDumpService.uploadDirectToS3", "Generated data key; encrypted key size: " + encryptedDataKey.length + " bytes");
+
+            // Step 2: Read the gzipped file
+            byte[] plaintext = Files.readAllBytes(dumpPath);
+            
+            // Step 3: Encrypt file data using AES-256 (ECB mode for simplicity; patient data at rest)
+            Cipher cipher = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(plaintextDataKey, 0, plaintextDataKey.length, "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            byte[] encryptedData = cipher.doFinal(plaintext);
+            
+            Logger.info("DbDumpService.uploadDirectToS3", "Encrypted " + plaintext.length + " bytes to " + encryptedData.length + " bytes");
+
+            // Step 4: Prepare S3 object metadata
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("application/octet-stream"); // Now binary encrypted data
+            metadata.setContentLength(encryptedData.length);
+            // Store the encrypted data key as base64-encoded metadata so processor can decrypt
+            metadata.addUserMetadata("x-amz-encrypted-data-key", Base64.getEncoder().encodeToString(encryptedDataKey));
+            metadata.addUserMetadata("x-amz-key-id", kmsKeyId);
+            metadata.setSSEAlgorithm(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION); // S3-level encryption too
+
+            // Step 5: Upload encrypted data to S3
+            ByteArrayInputStream encryptedInputStream = new ByteArrayInputStream(encryptedData);
+            PutObjectRequest request = new PutObjectRequest(bucketName, objectKey, encryptedInputStream, metadata);
+            s3Client.putObject(request);
+
+            Logger.info("DbDumpService.uploadDirectToS3", 
+                    "Encrypted upload successful: s3://" + bucketName + "/" + objectKey);
+            Logger.info("DbDumpService.uploadDirectToS3", 
+                    "Patient data is client-side encrypted with KMS key: " + kmsKeyId);
+            
+            // Clean up sensitive data from memory
+            java.util.Arrays.fill(plaintextDataKey, (byte) 0);
+            
+            return null;
+        } catch (Exception e) {
+            Logger.error("DbDumpService.uploadDirectToS3", "Encryption/upload failed: " + e.getMessage());
+            e.printStackTrace();
+            return e.getMessage();
         }
     }
 

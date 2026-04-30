@@ -47,6 +47,7 @@ POST        /admin/updateDb                                    @femr.ui.controll
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Manager
 GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()
+GET         /manager/exportDailyReport                         @femr.ui.controllers.manager.ManagerController.exportDailyReport()
 #Pharmacy
 GET         /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)

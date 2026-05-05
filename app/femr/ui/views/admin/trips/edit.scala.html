@@ -72,7 +72,7 @@
                                 <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
                                 @defining(viewModel.getAllUsers) { allUsers =>
                                     @for(i <- 1 to allUsers.size) {
-                                        <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName</option>
+                                        <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName (@allUsers.get(i - 1).getEmail)</option>
                                     }
                                 }
                                 </select>
@@ -93,7 +93,7 @@
                                 <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
                                     @defining(viewModel.getUsers) { users =>
                                         @for(i <- 1 to users.size) {
-                                            <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</option>
+                                            <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName (@users.get(i - 1).getEmail)</option>
                                         }
                                     }
                                 </select>

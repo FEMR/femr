@@ -7,6 +7,12 @@
     display: none;
 }
 
+.research-mobile-filters-toggle,
+.research-mobile-filters-close,
+.research-mobile-filters-backdrop {
+    display: none;
+}
+
 @media (min-width: 768px) {
 
     .sidebar {
@@ -25,6 +31,92 @@
     }
 }
 
+.research-layout.research-layout--mobile {
+    position: relative;
+    --research-mobile-sidebar-width: min(88vw, 320px);
+}
+
+.research-layout.research-layout--mobile .research-mobile-filters-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 10px 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    background: #f5f5f4;
+    color: #1c1917;
+    font-weight: 600;
+    z-index: 20;
+}
+
+.research-layout.research-layout--mobile .research-mobile-filters-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1060;
+}
+
+.research-layout.research-layout--mobile.research-layout--filters-open .research-mobile-filters-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.research-layout.research-layout--mobile .sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--research-mobile-sidebar-width);
+    max-width: 320px;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    background-color: #302d2b;
+    border-right: 1px solid #6f6f6f;
+    overflow-y: auto;
+    z-index: 1070;
+    padding: 20px;
+}
+
+.research-layout.research-layout--mobile.research-layout--filters-open .sidebar {
+    transform: translateX(0);
+}
+
+.research-layout.research-layout--mobile .research-mobile-filters-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-left: auto;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e7eb;
+}
+
+.research-layout.research-layout--mobile .main.researchWrap,
+.research-layout.research-layout--mobile .main.researchWrap.col-sm-offset-3,
+.research-layout.research-layout--mobile .main.researchWrap.col-md-offset-2 {
+    margin-left: 0 !important;
+    width: 100% !important;
+    transition: margin-left 0.22s ease, width 0.22s ease;
+    padding-top: 4px;
+}
+
+.research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap,
+.research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap.col-sm-offset-3,
+.research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap.col-md-offset-2 {
+    margin-left: var(--research-mobile-sidebar-width) !important;
+    width: calc(100% - var(--research-mobile-sidebar-width)) !important;
+}
+
 @media (min-width: 768px) {
     body.femr-shell .femr-sidebar:is(:hover, :focus-within) + .femr-shell__content .sidebar {
         transform: translateX(calc(-1 * var(--femr-sidebar-width-collapsed, 88px)));
@@ -35,6 +127,91 @@
         margin-left: 0 !important;
         width: 100% !important;
     }
+}
+
+/* Force research mobile mode to win even on wider touch-only test viewports */
+body.femr-shell .research-layout.research-layout--mobile {
+    position: relative;
+    --research-mobile-sidebar-width: min(88vw, 320px);
+}
+
+body.femr-shell .research-layout.research-layout--mobile .research-mobile-filters-toggle {
+    display: inline-flex !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile .research-mobile-filters-backdrop {
+    display: block !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile .sidebar {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: var(--research-mobile-sidebar-width) !important;
+    max-width: 320px !important;
+    height: 100vh !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.22s ease !important;
+    z-index: 1070 !important;
+    overflow-y: auto !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile.research-layout--filters-open .sidebar {
+    transform: translateX(0) !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile .research-mobile-filters-close {
+    display: inline-flex !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile .main.researchWrap,
+body.femr-shell .research-layout.research-layout--mobile .main.researchWrap.col-sm-offset-3,
+body.femr-shell .research-layout.research-layout--mobile .main.researchWrap.col-md-offset-2 {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+body.femr-shell .research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap,
+body.femr-shell .research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap.col-sm-offset-3,
+body.femr-shell .research-layout.research-layout--mobile.research-layout--filters-open .main.researchWrap.col-md-offset-2 {
+    margin-left: var(--research-mobile-sidebar-width) !important;
+    width: calc(100% - var(--research-mobile-sidebar-width)) !important;
+}
+
+/* Touch-only research mode: dock sidebar at far-left and never overlay content */
+body.femr-shell--touch-only .research-layout {
+    --research-touch-sidebar-width: min(88vw, 320px);
+}
+
+body.femr-shell--touch-only .research-layout .sidebar {
+    display: block !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: var(--research-touch-sidebar-width) !important;
+    max-width: 320px !important;
+    height: 100vh !important;
+    transform: none !important;
+    z-index: 1070 !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+}
+
+body.femr-shell--touch-only .research-layout .main.researchWrap,
+body.femr-shell--touch-only .research-layout .main.researchWrap.col-sm-offset-3,
+body.femr-shell--touch-only .research-layout .main.researchWrap.col-md-offset-2 {
+    float: none !important;
+    margin-left: var(--research-touch-sidebar-width) !important;
+    width: calc(100% - var(--research-touch-sidebar-width)) !important;
+}
+
+body.femr-shell--touch-only .research-layout .research-mobile-filters-toggle,
+body.femr-shell--touch-only .research-layout .research-mobile-filters-close,
+body.femr-shell--touch-only .research-layout .research-mobile-filters-backdrop {
+    display: none !important;
 }
 
 /* Sidebar navigation */
@@ -374,11 +551,6 @@
 }
 
 /* Table Styles */
-
-#table-container{
-
-
-}
 
 .table{
 

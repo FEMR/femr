@@ -20,13 +20,13 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
     <tbody>
         <tr class="first">
             <th></th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.getFormatedDateTime(dateIndex - 1)</td>
             }
         </tr>
         <tr id="bloodPressure">
             <th>BP</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>
                     <span class="systolic">@vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1))</span>
                     / <span class="diastolic">@vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1))</span>
@@ -35,13 +35,13 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         </tr>
         <tr id="heartRate">
             <th>HR</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
         <tr id="temperature">
             <th>T</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@if(viewModel.getSettings.isMetric) {
                     @outputTemperatureOrNA(vitalMap.get("temperatureCelsius", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
                     /@outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
@@ -54,32 +54,32 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         </tr>
         <tr id="respiratoryRate">
             <th>RR</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.get("respiratoryRate", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
         <tr id="glucose">
             <th>Gluc</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.get("glucose", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
         <tr id="oxygenSaturation">
             <th>SpO2</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.get("oxygenSaturation", vitalMap.getDate(dateIndex - 1))</td>
 			}
         </tr>
         <tr>
             <th>WP</th> <!-- Sam Zanni -->
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td>@vitalMap.get("weeksPregnant", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
         <tr id="height">
             <th>Ht</th>
             <!--- Change metric output here --->
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td data-feet="@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))"
                     data-inches="@vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))">
 
@@ -116,7 +116,7 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         </tr>
         <tr id="weight">
             <th>Wt</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td data-weight="@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))">
                 @if(viewModel.getSettings.isMetric) {
                     @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
@@ -129,31 +129,31 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         @* Could add another some rows here. ALl values are pulled from the multimap*@
         <tr id="smoker">
             <th id="medical_vitals_Smoking">Smoking</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td> @outputYesOrNA(vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="diabetic">
             <th id="medical_vitals_Diabetes">Diabetes</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td> @outputYesOrNA(vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="alcohol">
             <th id="medical_vitals_Alcohol">Alcohol</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td> @outputYesOrNA(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="cholesterol">
             <th id="medical_vitals_Cholesterol">Cholesterol</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td> @outputYesOrNA(vitalMap.get("cholesterol", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="hypertension">
             <th id="medical_vitals_Hypertension">Hypertension</th>
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+            @for(dateIndex <- (1 to vitalMap.getDateListChronological.size).reverse) {
                 <td> @outputYesOrNA(vitalMap.get("hypertension", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>

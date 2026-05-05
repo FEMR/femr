@@ -683,6 +683,21 @@ body.femr-shell {
     box-shadow: 0 10px 24px -20px rgba(51, 94, 200, 0.28);
 }
 
+.femr-btn--danger {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+    border-color: rgba(220, 38, 38, 0.35);
+    box-shadow: none;
+}
+
+.femr-btn--danger:hover,
+.femr-btn--danger:focus {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.5);
+    color: #991b1b;
+    box-shadow: 0 10px 24px -20px rgba(220, 38, 38, 0.45);
+}
+
 .hidden {
     display: none !important;
 }
@@ -825,7 +840,7 @@ body.femr-shell {
 }
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
     .femr-shell__layout {
         flex-direction: column;
         gap: 16px;
@@ -902,4 +917,195 @@ body.femr-shell {
     .femr-shell__footer {
         padding: 0 16px 16px;
     }
+}
+
+/* Touch-only navigation: replace persistent sidebar with hamburger + drawer */
+.femr-touch-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(28, 25, 23, 0.14);
+    border-radius: 12px;
+    background: rgba(233, 233, 233, 0.96);
+    color: var(--femr-color-text, #1c1917);
+    box-shadow: 0 12px 24px -18px rgba(28, 25, 23, 0.55);
+    cursor: pointer;
+    z-index: 1200;
+}
+
+.femr-touch-menu-toggle .material-symbols-outlined {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.femr-touch-sidebar-backdrop {
+    display: none;
+}
+
+body.femr-shell--touch-only .femr-shell__layout {
+    display: block;
+    gap: 0;
+}
+
+body.femr-shell--touch-only .femr-touch-menu-toggle {
+    display: inline-flex;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+}
+
+body.femr-shell--touch-only.femr-shell--research-filters-open .femr-touch-menu-toggle {
+    left: calc(min(88vw, 320px) + 16px);
+}
+
+body.femr-shell--touch-only.femr-shell--research-page .femr-touch-menu-toggle {
+    left: calc(min(88vw, 320px) + 16px);
+}
+
+body.femr-shell--touch-only .femr-touch-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1190;
+}
+
+body.femr-shell--touch-only.femr-shell--sidebar-open .femr-touch-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.femr-shell--touch-only .femr-sidebar,
+body.femr-shell--touch-only .femr-sidebar:is(:hover, :focus-within) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(86vw, var(--femr-sidebar-width-expanded));
+    max-width: 320px;
+    min-height: 100vh;
+    height: 100vh;
+    padding: 24px;
+    transform: translateX(-104%);
+    transition: transform 0.25s ease;
+    z-index: 1250;
+}
+
+body.femr-shell--touch-only.femr-shell--sidebar-open .femr-sidebar {
+    transform: translateX(0);
+}
+
+body.femr-shell--touch-only .femr-sidebar:hover,
+body.femr-shell--touch-only .femr-sidebar:focus-within {
+    width: min(86vw, var(--femr-sidebar-width-expanded));
+    padding: 24px;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__brand-link,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__nav-link {
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__brand-text--full {
+    display: inline-flex;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__brand-text--collapsed {
+    display: none;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-text--full {
+    display: inline-flex;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__brand-text--collapsed {
+    display: none;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__search-placeholder {
+    display: none;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-placeholder,
+body.femr-shell--touch-only .femr-sidebar:is(:hover, :focus-within) .femr-sidebar__search-placeholder {
+    display: none;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__section-label,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__search-container,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__nav-text,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__user-meta,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__anonymous-title,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__anonymous-subtitle {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    max-width: 240px;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__section-label,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-text,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-meta,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-title,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__anonymous-subtitle {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    max-width: 240px;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__search-container {
+    max-height: none;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__search-container {
+    max-height: none;
+    margin: initial;
+}
+
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__nav-link,
+body.femr-shell--touch-only .femr-sidebar:is(:hover, :focus-within) .femr-sidebar__nav-link {
+    justify-content: flex-start;
+    gap: 12px;
+    padding-inline: 16px;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__user,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__user-actions,
+body.femr-shell--touch-only .femr-sidebar:not(:hover):not(:focus-within) .femr-sidebar__user-actions {
+    display: flex;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__nav-link:hover,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__nav-link:focus,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__icon-button:hover,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__icon-button:focus,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__search-placeholder:hover,
+body.femr-shell--touch-only .femr-sidebar .femr-sidebar__search-placeholder:focus {
+    background-color: inherit;
+    color: inherit;
+    box-shadow: none;
+}
+
+body.femr-shell--touch-only .femr-shell__main {
+    padding-top: 72px;
 }

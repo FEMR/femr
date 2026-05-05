@@ -2,8 +2,11 @@
         form: play.data.Form[femr.ui.models.admin.users.CreateViewModel],
         messages: java.util.List[_ <: java.lang.String],
         availableRoles: java.util.List[_ <: java.lang.String],
+    availableTrips: java.util.List[femr.common.models.MissionTripItem],
+    selectedTrips: java.util.List[femr.common.models.MissionTripItem],
         assets: AssetsFinder)
 
+@import femr.common.models.MissionTripItem
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.UsersController
 @import scala.collection.JavaConverters._
@@ -24,6 +27,8 @@
     if (maybeValue.isPresent) maybeValue.get().getRoles else java.util.Collections.emptyList[String]()
 }) { selectedRolesJava =>
 @defining(selectedRolesJava.asScala.toSet) { selectedRoles =>
+@defining(Option(selectedTrips).getOrElse(java.util.Collections.emptyList[MissionTripItem]()).asScala.toList) { selectedTripList =>
+@defining(Option(availableTrips).getOrElse(java.util.Collections.emptyList[MissionTripItem]()).asScala.toList) { availableTripList =>
 
 @admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
     <section class="admin-section">
@@ -58,6 +63,7 @@
                     <div class="admin-form__field">
                         <label for="password">Password <span class="admin-required" aria-hidden="true">*</span></label>
                         <input id="password" name="password" type="password" placeholder="Set a secure password" />
+                        <p class="admin-form__hint">Use at least 8 characters with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.</p>
                         <span class="errors"></span>
                     </div>
                     <div class="admin-form__field">
@@ -117,6 +123,71 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="admin-form__field admin-form__fieldset">
+                    <div class="admin-form__legend">Trip history</div>
+                    <p class="admin-form__hint">Optionally assign trips now. You can remove any before creating the user.</p>
+
+                    <div class="admin-form admin-form--inline">
+                        <div class="admin-form__row">
+                            <div class="admin-form__field admin-form__field--compact">
+                                <label for="createTripSelect">Add to trip</label>
+                                <select id="createTripSelect" name="createTripSelect">
+                                    @for(trip <- availableTripList) {
+                                        @defining(Option(trip.getFriendlyTripTitle).getOrElse(
+                                            Option(trip.getTeamName).getOrElse("Trip") + " • " +
+                                            Option(trip.getTripCountry).getOrElse("—") + " • " +
+                                            Option(trip.getFriendlyTripStartDate).getOrElse("—")
+                                        )) { tripLabel =>
+                                            <option
+                                                value="@trip.getId"
+                                                data-team="@Option(trip.getTeamName).getOrElse("—")"
+                                                data-country="@Option(trip.getTripCountry).getOrElse("—")"
+                                                data-date="@Option(trip.getFriendlyTripStartDate).getOrElse("—")"
+                                                data-title="@tripLabel">@tripLabel</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <button type="button" id="createAddTripBtn" class="admin-button admin-button--primary">
+                                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                                <span>Add to trip</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap" role="region" aria-label="Create user trip history">
+                        <table class="admin-table" id="createUserTripTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Organization</th>
+                                    <th scope="col">Country</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="createTripTableBody">
+                                @for(trip <- selectedTripList) {
+                                    <tr data-trip-id="@trip.getId">
+                                        <td>@Option(trip.getTeamName).getOrElse("—")</td>
+                                        <td>@Option(trip.getTripCountry).getOrElse("—")</td>
+                                        <td>@Option(trip.getFriendlyTripStartDate).getOrElse("—")</td>
+                                        <td>
+                                            <input type="hidden" name="tripIds[]" value="@trip.getId" />
+                                            <button type="button" class="admin-button admin-button--danger js-remove-create-trip" aria-label={"Remove " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="admin-empty-state" id="createTripEmptyState" @if(selectedTripList.nonEmpty) { style="display:none;" }>
+                        <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">flight</span>
+                        <h3 class="admin-empty-state__title">No trips selected</h3>
+                        <p class="admin-empty-state__description">Add trips above to assign access when this user is created.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="admin-section__actions">
@@ -127,5 +198,7 @@
     </section>
 }
 
+}
+}
 }
 }

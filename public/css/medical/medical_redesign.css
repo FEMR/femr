@@ -103,9 +103,9 @@
 }
 
 .femr-btn--primary {
-    background: var(--femr-color-primary, #dc2626);
+    background: var(--femr-color-primary, #335ec8);
     color: #ffffff;
-    box-shadow: 0 12px 30px -12px rgba(220, 38, 38, 0.5);
+    box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.5);
 }
 
 .femr-btn--ghost {
@@ -115,14 +115,14 @@
 }
 
 .femr-btn--secondary {
-    background: rgba(220, 38, 38, 0.12);
-    color: var(--femr-color-primary, #dc2626);
-    border-color: rgba(220, 38, 38, 0.24);
+    background: rgba(51, 94, 200, 0.12);
+    color: var(--femr-color-primary, #335ec8);
+    border-color: rgba(51, 94, 200, 0.24);
 }
 
 .femr-btn--link {
     background: transparent;
-    color: var(--femr-color-primary, #dc2626);
+    color: var(--femr-color-primary, #335ec8);
     border-color: transparent;
     padding-inline: 0;
 }
@@ -195,8 +195,8 @@
 }
 
 .femr-tabs li.active {
-    background: rgba(220, 38, 38, 0.14);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.14);
+    color: var(--femr-color-primary, #335ec8);
 }
 
 .femr-tabs li:hover {
@@ -416,8 +416,8 @@
 .femr-medical .input-group .input-group-btn .btn {
     border-radius: 0;
     border: none;
-    background: rgba(220, 38, 38, 0.12);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.12);
+    color: var(--femr-color-primary, #335ec8);
 }
 
 .femr-medical__vitals #vitalTable {
@@ -498,8 +498,8 @@
     height: 36px;
     border-radius: 10px;
     border: none;
-    background: rgba(220, 38, 38, 0.14);
-    color: var(--femr-color-primary, #dc2626);
+    background: rgba(51, 94, 200, 0.14);
+    color: var(--femr-color-primary, #335ec8);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -618,7 +618,7 @@
     background: #ffffff;
 }
 
-#newVitalsDialog .fButton {
+#newVitalsDialog input.fButton[type="checkbox"] {
     border: none;
     background: transparent;
 }

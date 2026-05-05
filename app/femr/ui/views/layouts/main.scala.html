@@ -25,6 +25,18 @@
     </head>
     <body class="femr-shell">
         <div class="femr-shell__layout">
+            <button
+                type="button"
+                class="femr-touch-menu-toggle"
+                aria-controls="femr-sidebar"
+                aria-expanded="false"
+                aria-label="Open navigation menu"
+                hidden>
+                <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+            </button>
+
+            <div class="femr-touch-sidebar-backdrop" hidden></div>
+
             @sidebar(currentUser, search, assets)
 
             <div class="femr-shell__content">

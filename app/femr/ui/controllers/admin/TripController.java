@@ -16,6 +16,7 @@ import femr.ui.models.admin.trips.EditViewModelPost;
 import femr.ui.models.admin.trips.TripViewModelGet;
 import femr.ui.models.admin.trips.TripViewModelPost;
 import femr.ui.views.html.admin.trips.*;
+import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -128,6 +129,37 @@ public class TripController extends Controller {
             throw new RuntimeException();
         }
         List<UserItem> allUsers = allUserItemServiceResponse.getResponseObject();
+
+        // The default admin account is intentionally excluded from retrieveAllUsers,
+        // but admins still need to be able to add themselves to a trip.
+        if (currentUser != null) {
+            boolean isCurrentUserPresent = allUsers.stream()
+                    .anyMatch(user -> user.getId() == currentUser.getId() ||
+                            (StringUtils.isNotNullOrWhiteSpace(user.getEmail()) &&
+                                    StringUtils.isNotNullOrWhiteSpace(currentUser.getEmail()) &&
+                                    user.getEmail().equalsIgnoreCase(currentUser.getEmail())));
+
+            if (!isCurrentUserPresent) {
+                UserItem currentUserItem = new UserItem();
+                currentUserItem.setId(currentUser.getId());
+                currentUserItem.setFirstName(currentUser.getFirstName());
+                currentUserItem.setLastName(currentUser.getLastName());
+                currentUserItem.setEmail(currentUser.getEmail());
+                allUsers.add(currentUserItem);
+            }
+        }
+
+        // Ensure users with blank names (e.g., default admin account) are still visible/selectable in dropdowns.
+        for (UserItem user : allUsers) {
+            if (StringUtils.isNullOrWhiteSpace(user.getFirstName()) && StringUtils.isNullOrWhiteSpace(user.getLastName())) {
+                String fallbackName = StringUtils.isNotNullOrWhiteSpace(user.getEmail())
+                        ? user.getEmail()
+                        : "User " + user.getId();
+                user.setFirstName(fallbackName);
+                user.setLastName("");
+            }
+        }
+
         //allUsers contains the users that will be searchable for adding to a trip.
         //So, remove the ones that already exist in the trip.
         allUsers.removeAll(editViewModelGet.getUsers());

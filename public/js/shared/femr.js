@@ -1,8 +1,96 @@
 var typeaheadData = [];
 
 $(document).ready(function () {
+    function showPatientSearchValidationError($input, message) {
+        if ($input && $input.length) {
+            $input.css('border', '1px solid red');
+            $input.val('');
+            $input.attr('placeholder', 'Invalid Patient');
+            $input.focus();
+        }
+
+        window.alert(message);
+    }
+
     // Handle main navigation active states
     var currentPath = window.location.pathname;
+
+    var $shellBody = $('body.femr-shell');
+    var $sidebarDrawer = $('#femr-sidebar');
+    var $touchMenuToggle = $('.femr-touch-menu-toggle');
+    var $touchBackdrop = $('.femr-touch-sidebar-backdrop');
+    var touchCapabilityQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
+    var anyFinePointerQuery = window.matchMedia('(any-pointer: fine)');
+
+    function hasTouchOnlyInput() {
+        return touchCapabilityQuery.matches && !anyFinePointerQuery.matches;
+    }
+
+    function setTouchSidebarOpen(isOpen) {
+        if (!$shellBody.length || !$touchMenuToggle.length || !$touchBackdrop.length) {
+            return;
+        }
+
+        $shellBody.toggleClass('femr-shell--sidebar-open', isOpen);
+        $touchMenuToggle.attr('aria-expanded', isOpen ? 'true' : 'false');
+        $touchBackdrop.prop('hidden', !isOpen);
+    }
+
+    function syncTouchNavigationMode() {
+        if (!$shellBody.length || !$sidebarDrawer.length || !$touchMenuToggle.length || !$touchBackdrop.length) {
+            return;
+        }
+
+        var touchOnlyMode = hasTouchOnlyInput();
+        $shellBody.toggleClass('femr-shell--touch-only', touchOnlyMode);
+
+        if (touchOnlyMode) {
+            $touchMenuToggle.prop('hidden', false);
+            $touchBackdrop.prop('hidden', true);
+            setTouchSidebarOpen(false);
+        } else {
+            $touchMenuToggle.prop('hidden', true);
+            $touchBackdrop.prop('hidden', true);
+            $shellBody.removeClass('femr-shell--sidebar-open');
+            $touchMenuToggle.attr('aria-expanded', 'false');
+        }
+    }
+
+    if ($shellBody.length && $sidebarDrawer.length && $touchMenuToggle.length && $touchBackdrop.length) {
+        $touchMenuToggle.on('click', function () {
+            setTouchSidebarOpen(!$shellBody.hasClass('femr-shell--sidebar-open'));
+        });
+
+        $touchBackdrop.on('click', function () {
+            setTouchSidebarOpen(false);
+        });
+
+        $sidebarDrawer.on('click', '.femr-sidebar__nav-link', function () {
+            if ($shellBody.hasClass('femr-shell--touch-only')) {
+                setTouchSidebarOpen(false);
+            }
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && $shellBody.hasClass('femr-shell--sidebar-open')) {
+                setTouchSidebarOpen(false);
+            }
+        });
+
+        if (typeof touchCapabilityQuery.addEventListener === 'function') {
+            touchCapabilityQuery.addEventListener('change', syncTouchNavigationMode);
+        } else if (typeof touchCapabilityQuery.addListener === 'function') {
+            touchCapabilityQuery.addListener(syncTouchNavigationMode);
+        }
+
+        if (typeof anyFinePointerQuery.addEventListener === 'function') {
+            anyFinePointerQuery.addEventListener('change', syncTouchNavigationMode);
+        } else if (typeof anyFinePointerQuery.addListener === 'function') {
+            anyFinePointerQuery.addListener(syncTouchNavigationMode);
+        }
+
+        syncTouchNavigationMode();
+    }
     
     var navLinks = $('.navigationItems a');
     
@@ -51,11 +139,51 @@ $(document).ready(function () {
         if (intRegex.test(idString)) {
             $('#id').css('border', '');
         } else {
-            $id.val('');
-            $id.css('border-color', 'red');
-            $id.attr('placeholder', 'Invalid Id');
+            showPatientSearchValidationError($id, 'Please enter a valid patient ID.');
             return false;
         }
+    });
+
+    $('.femr-sidebar__search form').on('submit', function (event) {
+        var $form = $(this);
+        var $searchInput = $form.find('input[name="patientSearchQuery"]');
+        if (!$searchInput.length) {
+            return true;
+        }
+
+        if ($form.data('validated') === true) {
+            $form.data('validated', false);
+            return true;
+        }
+
+        event.preventDefault();
+
+        var searchValue = $.trim($searchInput.val());
+        if (!searchValue) {
+            showPatientSearchValidationError($searchInput, 'Please enter a patient ID, name, or phone number before searching.');
+            return false;
+        }
+
+        $searchInput.css('border', '');
+
+        $.ajax({
+            url: '/search/check/' + encodeURIComponent(searchValue),
+            type: 'GET',
+            dataType: 'text',
+            success: function (exists) {
+                if (exists === 'true') {
+                    $form.data('validated', true);
+                    $form.trigger('submit');
+                } else {
+                    showPatientSearchValidationError($searchInput, 'No matching patient was found. Please enter a valid patient ID, name, or phone number.');
+                }
+            },
+            error: function () {
+                showPatientSearchValidationError($searchInput, 'Unable to validate the patient search right now. Please try again.');
+            }
+        });
+
+        return false;
     });
 
     $('#searchBtn').click(function () {

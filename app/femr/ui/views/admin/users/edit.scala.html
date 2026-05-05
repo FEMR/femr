@@ -188,6 +188,7 @@
                                 <th scope="col">Organization</th>
                                 <th scope="col">Country</th>
                                 <th scope="col">Date</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -196,6 +197,12 @@
                                     <td>@Option(trip.getTeamName).getOrElse("—")</td>
                                     <td>@Option(trip.getTripCountry).getOrElse("—")</td>
                                     <td>@Option(trip.getFriendlyTripStartDate).getOrElse("—")</td>
+                                    <td>
+                                        @helper.form(action = UsersController.removeTripPost(Integer.parseInt(form("userId").getValue.get())), 'class -> "admin-inline-form") {
+                                            <input type="hidden" name="tripId" value="@trip.getId" />
+                                            <button type="submit" class="admin-button admin-button--danger" aria-label={"Remove user from " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </tbody>

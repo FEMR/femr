@@ -35,6 +35,7 @@ public class UserItem {
     private String DateCreated; //Sam Zanni
     private Integer CreatedBy; //Sam Zanni
     private String languageCode;
+    private Integer passwordAgeDays;
 
     public UserItem() {
         this.roles = new ArrayList<>();
@@ -157,6 +158,14 @@ public class UserItem {
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+    }
+
+    public Integer getPasswordAgeDays() {
+        return passwordAgeDays;
+    }
+
+    public void setPasswordAgeDays(Integer passwordAgeDays) {
+        this.passwordAgeDays = passwordAgeDays;
     }
 
  }

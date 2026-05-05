@@ -8,9 +8,11 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.InternetStatusItem;
 import femr.common.models.UserItem;
+import femr.data.models.core.IRole;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IUser;
 import femr.data.models.mysql.NetworkStatus;
+import femr.data.models.mysql.Roles;
 import femr.data.models.mysql.SystemSetting;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
@@ -21,6 +23,7 @@ import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
+import play.mvc.Call;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -61,7 +64,7 @@ public class SessionsController extends Controller {
 
 
         if (currentUser != null) {
-            return redirect(routes.HomeController.index());
+            return redirect(resolvePostLoginDestination(currentUser));
         }
 
         return ok(create.render(createViewModelForm, 0,null, assetsFinder, new ArrayList<String>()));
@@ -91,21 +94,54 @@ public class SessionsController extends Controller {
             DateTime stop = new DateTime(DateTime.now());
             int daysBetween = Days.daysBetween(start, stop).getDays();
 
-            if(daysBetween > 90){
+            if(daysBetween > 90 && !isDefaultSeedUser(user)){
                 user.setPasswordReset(true);
+                ServiceResponse<IUser> stalePasswordResponse = userService.update(user, false);
+                if (stalePasswordResponse.hasErrors()) {
+                    throw new RuntimeException();
+                }
+            }
+
+            if (isDefaultSeedUser(user) && Boolean.TRUE.equals(user.getPasswordReset())) {
+                user.setPasswordReset(false);
+                ServiceResponse<IUser> clearResetResponse = userService.update(user, false);
+                if (clearResetResponse.hasErrors()) {
+                    throw new RuntimeException();
+                }
             }
 
             if (user.getPasswordReset() == true){
-                return editPasswordGet(user);
+                return renderEditPassword(user);
             }
 
             ThreadHelper threadHelper = new ThreadHelper(internetStatusService);
             Thread t = new Thread(threadHelper);
             t.start();
+
+            return redirect(resolvePostLoginDestination(response.getResponseObject()));
+        }
+    }
+
+
+    public Result editPasswordGet() {
+        CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
+        if (currentUser == null) {
+            return redirect(routes.SessionsController.createGet());
         }
 
-        return redirect(routes.HomeController.index());
+        IUser user = userService.retrieveById(currentUser.getId());
+        if (user == null) {
+            sessionsService.invalidateCurrentUserSession();
+            return redirect(routes.SessionsController.createGet());
+        }
 
+        return renderEditPassword(user);
+    }
+
+    private Result renderEditPassword(IUser user){
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>(), assetsFinder));
     }
 
     public Result editRegisterPost() {
@@ -157,26 +193,17 @@ public class SessionsController extends Controller {
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));
                 return ok(create.render(form, 2, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
-            }
-            else
+            } else {
                 //added user's last name to be displayed[FEMR-161]
                 //Contributed by Harsha Peswani during the CEN5035 course at FSU
                 if (StringUtils.isNullOrWhiteSpace(viewModel.getLastName()))
                     messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
                 else
-                    messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
+                    messages.add("An account for " + user.getFirstName() + " " + user.getLastName() + " was created successfully. You may begin creating a new user.");
 
-
-            return ok(create.render(form, 0, messages, assetsFinder,  roleServiceResponse.getResponseObject()));
+                return ok(create.render(form, 0, messages, assetsFinder, roleServiceResponse.getResponseObject()));
+            }
         }
-    }
-
-
-    public Result editPasswordGet(IUser user){
-
-        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
-
-        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>(), assetsFinder));
     }
 
     public Result editPasswordPost(){
@@ -229,7 +256,7 @@ public class SessionsController extends Controller {
         if (userResponse.hasErrors()){
             throw new RuntimeException();
         }
-        return redirect(routes.HomeController.index());
+        return redirect(resolvePostLoginDestination(currentUser));
     }
 
     public Result delete() {
@@ -250,5 +277,26 @@ public class SessionsController extends Controller {
         user.setDateCreated(viewModel.getDateCreated());
         user.setLanguageCode(viewModel.getLanguage());
         return user;
+    }
+
+    private boolean isDefaultSeedUser(IUser user) {
+        if (user == null || StringUtils.isNullOrWhiteSpace(user.getEmail())) {
+            return false;
+        }
+
+        String email = user.getEmail().trim().toLowerCase();
+        return "admin".equals(email) || "superuser".equals(email);
+    }
+
+    private Call resolvePostLoginDestination(CurrentUser currentUser) {
+        if (currentUser != null && currentUser.getRoles() != null) {
+            for (IRole role : currentUser.getRoles()) {
+                if (role != null && (role.getId() == Roles.ADMINISTRATOR || role.getId() == Roles.SUPERUSER)) {
+                    return femr.ui.controllers.admin.routes.AdminController.index();
+                }
+            }
+        }
+
+        return routes.HomeController.index();
     }
 }

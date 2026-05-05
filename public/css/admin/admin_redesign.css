@@ -1116,7 +1116,7 @@
 }
 
 .admin-required {
-    color: var(--femr-color-primary, #335ec8);
+    color: #dc2626;
     margin-left: 4px;
     font-weight: 700;
 }
@@ -1220,6 +1220,12 @@
 
 .newMedicationWrap .ingredientWrap > .admin-icon-button {
     align-self: flex-start;
+}
+
+/* Override legacy global .fOption width so custom medication dropdown text is not cut off. */
+.newMedicationWrap .fieldMedication .fOption {
+    width: 100%;
+    max-width: 100%;
 }
 
 .admin-icon-button {

@@ -123,6 +123,9 @@ const patientPhotoFeature = {
                 reader.onload = (function () {
                     return function (e) {
                         $('#patientPhoto').attr('src', e.target.result);
+                        $('#photoInputCropped').val(e.target.result);
+                        $('#deletePhoto').prop('checked', false);
+                        patientPhotoFeature.photo.deletePhoto = false;
                     };
                 })(f);
 
@@ -238,9 +241,17 @@ const patientPhotoFeature = {
     prepareForPOST: function () {
         //0.5 is the quality downgrade.
         var canvas = document.getElementById('patientPhotoCanvas');
+        var imageSource = $('#patientPhoto').attr('src');
+
         if (!isCanvasBlank(canvas)){
             var dataURL = canvas.toDataURL("image/jpeg", 0.5);
             $('#photoInputCropped').val(dataURL);
+            $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+            return;
+        }
+
+        if (patientPhotoFeature.config.isNewPhoto === true && imageSource && imageSource.indexOf('data:image') === 0) {
+            $('#photoInputCropped').val(imageSource);
             $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
         }
     }
@@ -694,6 +705,8 @@ $(function () {
             }
 
             pass = !isDiabeticScreeningPromptNecessary;
+        } else {
+            alert("Please fill in all required triage fields highlighted in red before submitting.");
         }
         return pass; //located in triageClientValidation.js
     });
@@ -723,7 +736,12 @@ $(function () {
         const ageClassification = $("[name=ageClassification]:checked").val();
 
         const url = "/search/dupPatient/findMatch";
-        const patientId = $("#patientId").val();
+        const patientId = parseInt($("#patientId").val(), 10) || 0;
+
+        // Existing patients are editing triage, not creating a new patient.
+        if (patientId > 0) {
+            return;
+        }
 
         let queryParams;
         if(ageClassification != null) {
@@ -750,18 +768,16 @@ $(function () {
 
         $.getJSON(url, queryParams,function (result) {
             if (result === true) {
-                if(!(patientId > 0)) {
-                    if (confirm("A patient with similar information already exists in the database. Would you like to view the matching patients?")) {
-                        var patientMatchesUrl;
-                        if(ageClassification != null) {
-                            patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
-                                + "&phone=" + phone + "&addr=" + addr + "&gender=" + gender + "&city=" + city;
-                        } else {
-                            patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
-                                + "&phone=" + phone + "&addr=" + addr + "&age=" + age + "&gender=" + gender + "&city=" + city;
-                        }
-                        window.location.replace(patientMatchesUrl);
+                if (confirm("A patient with similar information already exists in the database. Would you like to view the matching patients?")) {
+                    var patientMatchesUrl;
+                    if(ageClassification != null) {
+                        patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
+                            + "&phone=" + phone + "&addr=" + addr + "&gender=" + gender + "&city=" + city;
+                    } else {
+                        patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
+                            + "&phone=" + phone + "&addr=" + addr + "&age=" + age + "&gender=" + gender + "&city=" + city;
                     }
+                    window.location.replace(patientMatchesUrl);
                 }
             }
         })

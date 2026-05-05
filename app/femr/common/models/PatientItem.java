@@ -33,6 +33,7 @@ public class PatientItem {
     private Integer monthsOld;
     private Date birth;
     private String friendlyDateOfBirth;
+    private String ageClassification;
     private String sex;
     private Integer photoId;
     private String pathToPhoto;
@@ -226,6 +227,14 @@ public class PatientItem {
 
     public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
+    }
+
+    public String getAgeClassification() {
+        return ageClassification;
+    }
+
+    public void setAgeClassification(String ageClassification) {
+        this.ageClassification = ageClassification;
     }
 
     public Integer getYearsOld() {

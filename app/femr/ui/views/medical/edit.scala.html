@@ -22,7 +22,9 @@
         <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/medical/medical.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/medical/newVitals.js")"></script>
         <script type="text/javascript" src="@assets.path("js/medical/medicalClientValidation.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/fuse.js")"></script>
@@ -298,7 +300,7 @@
                 <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med femr-btn femr-btn--ghost">
                     <span class="glyphicon glyphicon-edit"></span> Edit Description
                 </button>
-                <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med femr-btn femr-btn--secondary">
+                <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med femr-btn femr-btn--danger">
                     <span class="glyphicon glyphicon-trash"></span> Delete
                 </button>
             </div>

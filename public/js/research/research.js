@@ -395,6 +395,98 @@ $(document).ready(function(){
     filterMenuModule.init();
     graphLoaderModule.init();
 
+    var $researchLayout = $('#research-layout');
+    var $researchFiltersToggle = $('.research-mobile-filters-toggle');
+    var $researchFiltersClose = $('.research-mobile-filters-close');
+    var $researchFiltersBackdrop = $('.research-mobile-filters-backdrop');
+    var $shellBody = $('body.femr-shell');
+    var researchMobileMedia = window.matchMedia('(max-width: 767px)');
+    var touchOnlyMedia = window.matchMedia('(hover: none) and (pointer: coarse)');
+    var anyFinePointerMedia = window.matchMedia('(any-pointer: fine)');
+
+    function hasTouchOnlyMode() {
+        return $shellBody.hasClass('femr-shell--touch-only') || (touchOnlyMedia.matches && !anyFinePointerMedia.matches);
+    }
+
+    if ($researchLayout.length && $shellBody.length) {
+        $shellBody.addClass('femr-shell--research-page');
+    }
+
+    function isResearchMobileMode() {
+        return researchMobileMedia.matches || hasTouchOnlyMode();
+    }
+
+    function setResearchFiltersOpen(isOpen) {
+        if (!$researchLayout.length || !$researchFiltersToggle.length || !$researchFiltersBackdrop.length) {
+            return;
+        }
+
+        $researchLayout.toggleClass('research-layout--filters-open', isOpen);
+        $shellBody.toggleClass('femr-shell--research-filters-open', isOpen);
+        $researchFiltersToggle.attr('aria-expanded', isOpen ? 'true' : 'false');
+        $researchFiltersBackdrop.prop('hidden', !isOpen);
+    }
+
+    function syncResearchFiltersMode() {
+        if (!$researchLayout.length || !$researchFiltersToggle.length || !$researchFiltersBackdrop.length) {
+            return;
+        }
+
+        var isMobileResearch = isResearchMobileMode();
+        $researchLayout.toggleClass('research-layout--mobile', isMobileResearch);
+        $researchFiltersToggle.prop('hidden', !isMobileResearch);
+
+        if (!isMobileResearch) {
+            setResearchFiltersOpen(false);
+        }
+    }
+
+    if ($researchLayout.length && $researchFiltersToggle.length && $researchFiltersBackdrop.length) {
+        $researchFiltersToggle.on('click', function () {
+            setResearchFiltersOpen(!$researchLayout.hasClass('research-layout--filters-open'));
+        });
+
+        $researchFiltersBackdrop.on('click', function () {
+            setResearchFiltersOpen(false);
+        });
+
+        $researchFiltersClose.on('click', function () {
+            setResearchFiltersOpen(false);
+        });
+
+        $('#submit-button, #export-button').on('click', function () {
+            if (isResearchMobileMode()) {
+                setResearchFiltersOpen(false);
+            }
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && $researchLayout.hasClass('research-layout--filters-open')) {
+                setResearchFiltersOpen(false);
+            }
+        });
+
+        if (typeof researchMobileMedia.addEventListener === 'function') {
+            researchMobileMedia.addEventListener('change', syncResearchFiltersMode);
+        } else if (typeof researchMobileMedia.addListener === 'function') {
+            researchMobileMedia.addListener(syncResearchFiltersMode);
+        }
+
+        if (typeof touchOnlyMedia.addEventListener === 'function') {
+            touchOnlyMedia.addEventListener('change', syncResearchFiltersMode);
+        } else if (typeof touchOnlyMedia.addListener === 'function') {
+            touchOnlyMedia.addListener(syncResearchFiltersMode);
+        }
+
+        if (typeof anyFinePointerMedia.addEventListener === 'function') {
+            anyFinePointerMedia.addEventListener('change', syncResearchFiltersMode);
+        } else if (typeof anyFinePointerMedia.addListener === 'function') {
+            anyFinePointerMedia.addListener(syncResearchFiltersMode);
+        }
+
+        syncResearchFiltersMode();
+    }
+
     $('#MissionTripId').change(function () {
         var value = $('#MissionTripId option:selected').val();
 

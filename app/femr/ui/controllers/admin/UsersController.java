@@ -44,6 +44,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,10 @@ public class UsersController extends Controller {
             throw new RuntimeException();
         }
 
-        return ok(create.render(currentUser, createViewModelForm, new ArrayList<String>(), roleServiceResponse.getResponseObject(), assetsFinder));
+        List<MissionTripItem> selectedTrips = new ArrayList<>();
+        List<MissionTripItem> availableTrips = getAvailableTrips(selectedTrips);
+
+        return ok(create.render(currentUser, createViewModelForm, new ArrayList<String>(), roleServiceResponse.getResponseObject(), availableTrips, selectedTrips, assetsFinder));
     }
 
     //Create a new User
@@ -120,11 +124,15 @@ public class UsersController extends Controller {
         if (form.field("email").getValue().isPresent() &&
                 !form.field("email").getValue().get().matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
             messages.add("Invalid Email");
-            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+            List<MissionTripItem> selectedTrips = getTripsByIds(getTripIdsFromRequest());
+            List<MissionTripItem> availableTrips = getAvailableTrips(selectedTrips);
+            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), availableTrips, selectedTrips, assetsFinder));
         }
 
         if (form.hasErrors()) {
-            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+            List<MissionTripItem> selectedTrips = getTripsByIds(getTripIdsFromRequest());
+            List<MissionTripItem> availableTrips = getAvailableTrips(selectedTrips);
+            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), availableTrips, selectedTrips, assetsFinder));
         } else {
             CreateViewModel viewModel = form.bindFromRequest().get();
             UserItem user = createUserItem(viewModel);
@@ -136,18 +144,37 @@ public class UsersController extends Controller {
             ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword(), currentUser.getId());
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));
-                return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+                List<MissionTripItem> selectedTrips = getTripsByIds(viewModel.getTripIds());
+                List<MissionTripItem> availableTrips = getAvailableTrips(selectedTrips);
+                return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), availableTrips, selectedTrips, assetsFinder));
             }
+
+            if (viewModel.getTripIds() != null && !viewModel.getTripIds().isEmpty()) {
+                for (Integer tripId : viewModel.getTripIds()) {
+                    if (tripId == null) {
+                        continue;
+                    }
+                    ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.addUsersToTrip(
+                            tripId,
+                            Collections.singletonList(response.getResponseObject().getId())
+                    );
+                    if (missionTripItemServiceResponse.hasErrors()) {
+                        throw new RuntimeException();
+                    }
+                }
+            }
+
+            //added user's last name to be displayed[FEMR-161]
+            //Contributed by Harsha Peswani during the CEN5035 course at FSU
+            if (StringUtils.isNullOrWhiteSpace(viewModel.getLastName()))
+                messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
             else
-                //added user's last name to be displayed[FEMR-161]
-                //Contributed by Harsha Peswani during the CEN5035 course at FSU
-                if (StringUtils.isNullOrWhiteSpace(viewModel.getLastName()))
-                    messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
-                else
-                    messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
+                messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
 
+            List<MissionTripItem> selectedTrips = new ArrayList<>();
+            List<MissionTripItem> availableTrips = getAvailableTrips(selectedTrips);
 
-            return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+            return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject(), availableTrips, selectedTrips, assetsFinder));
         }
     }
 
@@ -308,6 +335,36 @@ public class UsersController extends Controller {
         return redirect(routes.UsersController.editGet(id));
     }
 
+    public Result removeTripPost(Integer id) {
+        if (id == null) {
+            return internalServerError();
+        }
+
+        Map<String, String[]> data = request().body().asFormUrlEncoded();
+        if (data == null || !data.containsKey("tripId")) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        String tripIdValue = data.get("tripId")[0];
+        if (StringUtils.isNullOrWhiteSpace(tripIdValue)) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        Integer tripId;
+        try {
+            tripId = Integer.parseInt(tripIdValue);
+        } catch (NumberFormatException ex) {
+            return redirect(routes.UsersController.editGet(id));
+        }
+
+        ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.removeUsersFromTrip(tripId, Collections.singletonList(id));
+        if (missionTripItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        return redirect(routes.UsersController.editGet(id));
+    }
+
     private List<MissionTripItem> getAvailableTrips(List<MissionTripItem> assignedTrips) {
         ServiceResponse<List<MissionItem>> allTripsResponse = missionTripService.retrieveAllTripInformation();
         if (allTripsResponse.hasErrors()) {
@@ -333,6 +390,60 @@ public class UsersController extends Controller {
             }
         }
         return availableTrips;
+    }
+
+    private List<MissionTripItem> getTripsByIds(List<Integer> tripIds) {
+        if (tripIds == null || tripIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ServiceResponse<List<MissionItem>> allTripsResponse = missionTripService.retrieveAllTripInformation();
+        if (allTripsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        Map<Integer, MissionTripItem> tripsById = new HashMap<>();
+        for (MissionItem mission : allTripsResponse.getResponseObject()) {
+            if (mission.getMissionTrips() == null) {
+                continue;
+            }
+            for (MissionTripItem trip : mission.getMissionTrips()) {
+                tripsById.put(trip.getId(), trip);
+            }
+        }
+
+        List<MissionTripItem> selectedTrips = new ArrayList<>();
+        for (Integer tripId : tripIds) {
+            if (tripId == null || !tripsById.containsKey(tripId)) {
+                continue;
+            }
+            MissionTripItem trip = tripsById.get(tripId);
+            if (trip != null && selectedTrips.stream().noneMatch(item -> item.getId() == trip.getId())) {
+                selectedTrips.add(trip);
+            }
+        }
+
+        return selectedTrips;
+    }
+
+    private List<Integer> getTripIdsFromRequest() {
+        Map<String, String[]> data = request().body().asFormUrlEncoded();
+        List<Integer> tripIds = new ArrayList<>();
+        if (data == null || !data.containsKey("tripIds[]")) {
+            return tripIds;
+        }
+
+        for (String tripIdValue : data.get("tripIds[]")) {
+            if (StringUtils.isNullOrWhiteSpace(tripIdValue)) {
+                continue;
+            }
+            try {
+                tripIds.add(Integer.parseInt(tripIdValue));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        return tripIds;
     }
 
 

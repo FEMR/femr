@@ -43,6 +43,7 @@
                             <th scope="col">Roles</th>
                             <th scope="col">About</th>
                             <th scope="col">Last login</th>
+                            <th scope="col">Password age</th>
                             <th scope="col">Status</th>
                             <th scope="col" class="admin-table__actions-heading">Actions</th>
                         </tr>
@@ -73,6 +74,7 @@
                                 </td>
                                 <td>@Option(user.getNotes).filter(_.trim.nonEmpty).getOrElse("—")</td>
                                 <td>@Option(user.getLastLoginDate).filter(_.trim.nonEmpty).getOrElse("—")</td>
+                                <td>@Option(user.getPasswordAgeDays).map(days => s"${days} days").getOrElse("—")</td>
                                 <td>
                                     @if(user.isDeleted) {
                                         <span class="admin-status admin-status--inactive">Inactive</span>

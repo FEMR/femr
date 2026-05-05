@@ -251,6 +251,7 @@
         }
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
+            <input type="hidden" id="patientId" name="patientId" value="@viewModel.getPatient.getId" />
             <div class="femr-card femr-card--elevated">
                 <div class="femr-card__header">
                     <div class="femr-card__patient">
@@ -360,14 +361,14 @@
                                 <div class="generalInfoInput femr-field femr-field--stack">
                                     <label id="ageLabel"><span data-i18n-text="true">Age</span> <span class="femr-required">*</span></label>
                                     <div class="femr-age-inputs">
-                                        <input class="fInput ageInput femr-input" type="text" id="yearsInput" placeholder="Years" />
-                                        <input class="fInput ageInput femr-input" type="text" id="monthsInput" placeholder="Months" />
+                                        <input class="fInput ageInput femr-input" type="text" id="yearsInput" name="years" placeholder="Years" value="@{if(viewModel != null && viewModel.getPatient.getYearsOld != null) viewModel.getPatient.getYearsOld else ""}" />
+                                        <input class="fInput ageInput femr-input" type="text" id="monthsInput" name="months" placeholder="Months" value="@{if(viewModel != null && viewModel.getPatient.getMonthsOld != null) viewModel.getPatient.getMonthsOld else ""}" />
                                     </div>
                                 </div>
                                 <div class="femr-age-separator"><span class="orSpan">OR</span></div>
                                 <div class="generalInfoInput femr-field femr-field--stack" id="birthDateWrapper">
                                     <label id="birthDateLabel" for="birthDateInput"><span data-i18n-text="true">Birth Date</span> <span class="femr-required">*</span></label>
-                                    <input type="date" class="fInput femr-input" id="birthDateInput" name="age" value="@{if(viewModel != null) viewModel.getPatient.getBirth() else ""}" />
+                                    <input type="date" class="fInput femr-input" id="birthDateInput" name="age" value="@{if(viewModel != null && viewModel.getPatient.getBirth != null) { new java.text.SimpleDateFormat("yyyy-MM-dd").format(viewModel.getPatient.getBirth) } else { "" }}" />
                                 </div>
                             </div>
                             <div class="generalInfoInput femr-field femr-field--stack femr-field--full">
@@ -375,7 +376,7 @@
                                 <div id="classificationRadioWrap" class="femr-classification">
                                 @for((key, value) <- viewModel.getPossibleAgeClassifications) {
                                     <label class="ageRadio femr-chip" id="@("label_" + key)">
-                                        <input type="radio" name="ageClassification" value="@key" />
+                                        <input type="radio" name="ageClassification" value="@key" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getAgeClassification != null && (viewModel.getPatient.getAgeClassification.equalsIgnoreCase(key) || (key.equalsIgnoreCase("teen") && viewModel.getPatient.getAgeClassification.equalsIgnoreCase("teenager")))) { checked } />
                                         <span id="@("span_" + key)">@value</span>
                                     </label>
                                 }
@@ -462,20 +463,20 @@
                                 <label for="@viewModel.getVitalNames.get(4).getName" id="heightLabel"><span data-i18n-text="true">Height</span></label>
                                 <div class="doubleVital femr-double-field">
                                 @if(viewModel.getSettings.isMetric) {
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getHeightFeet != null && viewModel.getPatient.getHeightFeet > 0) viewModel.getPatient.getHeightFeet else ""}"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getHeightInches != null && viewModel.getPatient.getHeightInches > 0) viewModel.getPatient.getHeightInches else ""}"/>
                                 } else {
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getHeightFeet != null && viewModel.getPatient.getHeightFeet > 0) viewModel.getPatient.getHeightFeet else ""}"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getHeightInches != null && viewModel.getPatient.getHeightInches > 0) viewModel.getPatient.getHeightInches else ""}"/>
                                 }
                                 </div>
                             </div>
                             <div class="vitalWrap femr-field">
                                 <label for="@viewModel.getVitalNames.get(6).getName" id="weightLabel"><span data-i18n-text="true">Weight</span></label>
                                 @if(viewModel.getSettings.isMetric) {
-                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs"/>
+                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="kgs" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getWeight != null) viewModel.getPatient.getWeight else ""}"/>
                                 } else {
-                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
+                                    <input type="number" step="any" min="0" class="fInput femr-input" id="@viewModel.getVitalNames.get(6).getName" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getWeight != null) viewModel.getPatient.getWeight else ""}"/>
                                 }
                             </div>
                             <div class="vitalWrap femr-field">
@@ -489,7 +490,7 @@
                             <div class="vitalWrap femr-field">
                                 <label id="weeksPregnantLabel" for="weeksPregnant"><span data-i18n-text="true">Weeks Pregnant</span></label>
                                 @if(viewModel.getPatient.getSex == "Female") {
-                                    <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
+                                    <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" value="@{if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getWeeksPregnant != null) viewModel.getPatient.getWeeksPregnant else ""}"/>
                                 } else {
                                     <input type="number" step="number" min="0" class="fInput femr-input" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
                                 }
@@ -500,23 +501,23 @@
                             <label id="historyOfLabel"><span data-i18n-text="true">History of:</span></label>
                             <div class="historyOfWrap femr-chip-group">
                                 <label class="historyOfButton femr-chip">
-                                    <input type="checkbox" step="any" id="diabetic" name="diabetic" value="1">
+                                    <input type="checkbox" step="any" id="diabetic" name="diabetic" value="1" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getDiabetes != null && viewModel.getPatient.getDiabetes == 1) { checked }>
                                     <span id="diabetesLabel" data-i18n-text="true">Diabetes</span>
                                 </label>
                                 <label class="historyOfButton femr-chip">
-                                    <input type="checkbox" step="any" id="hypertension" name="hypertension" value="1">
+                                    <input type="checkbox" step="any" id="hypertension" name="hypertension" value="1" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getHypertension != null && viewModel.getPatient.getHypertension == 1) { checked }>
                                     <span id="hypertensionLabel" data-i18n-text="true">Hypertension</span>
                                 </label>
                                 <label class="historyOfButton femr-chip">
-                                    <input type="checkbox" step="any" id="cholesterol" name="cholesterol" value="1">
+                                    <input type="checkbox" step="any" id="cholesterol" name="cholesterol" value="1" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getCholesterol != null && viewModel.getPatient.getCholesterol == 1) { checked }>
                                     <span id="highCholesterolLabel" data-i18n-text="true">High Cholesterol</span>
                                 </label>
                                 <label class="historyOfButton femr-chip">
-                                    <input type="checkbox" step="any" id="smoker" name="smoker" value="1">
+                                    <input type="checkbox" step="any" id="smoker" name="smoker" value="1" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getSmoker != null && viewModel.getPatient.getSmoker == 1) { checked }>
                                     <span id="tobaccoUseDisorderLabel" data-i18n-text="true">Tobacco Use Disorder</span>
                                 </label>
                                 <label class="historyOfButton femr-chip">
-                                    <input type="checkbox" step="any" id="alcohol" name="alcohol" value="1">
+                                    <input type="checkbox" step="any" id="alcohol" name="alcohol" value="1" @if(viewModel != null && viewModel.getPatient != null && viewModel.getPatient.getAlcohol != null && viewModel.getPatient.getAlcohol == 1) { checked }>
                                     <span id="substanceAlcoholAbuseLabel" data-i18n-text="true">Substance/Alcohol Abuse</span>
                                 </label>
                             </div>

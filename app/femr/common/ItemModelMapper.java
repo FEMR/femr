@@ -25,6 +25,7 @@ import femr.data.models.mysql.InternetStatus;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -217,6 +218,9 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
 
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(ageClassification)) {
+            patientItem.setAgeClassification(ageClassification);
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {
 
@@ -654,6 +658,10 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setPasswordReset(user.getPasswordReset());
 
         userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
+        if (user.getPasswordCreatedDate() != null) {
+            int passwordAgeDays = Days.daysBetween(user.getPasswordCreatedDate(), DateTime.now()).getDays();
+            userItem.setPasswordAgeDays(Math.max(passwordAgeDays, 0));
+        }
         userItem.setCreatedBy(user.getCreatedBy()); //Sam Zanni
         userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
 

@@ -373,15 +373,26 @@
 
 #encounterViewHeader .btn.btn-danger,
 .deleteEncounterbtn.btn-danger {
-    background: var(--femr-color-primary, #dc2626);
+    background: #dc2626;
     color: #ffffff;
-    border-color: transparent !important;
+    border-color: #b91c1c !important;
 }
 
 #viewPatientHeader .btn.btn-danger {
-    background: var(--femr-color-primary, #dc2626);
+    background: #dc2626;
     color: #ffffff;
-    border-color: transparent !important;
+    border-color: #b91c1c !important;
+}
+
+#encounterViewHeader .btn.btn-danger:hover,
+.deleteEncounterbtn.btn-danger:hover,
+#encounterViewHeader .btn.btn-danger:focus,
+.deleteEncounterbtn.btn-danger:focus,
+#viewPatientHeader .btn.btn-danger:hover,
+#viewPatientHeader .btn.btn-danger:focus {
+    background: #b91c1c;
+    color: #ffffff;
+    border-color: #991b1b !important;
 }
 
 .encbtns.btn {
@@ -437,7 +448,7 @@
 
     margin-bottom: 10px;
     display: inline-block;
-    whitespace: nowrap;
+    white-space: nowrap;
 
 }
 .activeDrug {

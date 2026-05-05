@@ -1,6 +1,7 @@
 package femr.ui.models.manager;
 
 import femr.common.models.PatientEncounterItem;
+import femr.common.models.SettingItem;
 
 import java.util.List;
 
@@ -37,5 +38,15 @@ public class IndexViewModelGet {
 
     public void setUserFriendlyTrip(String userFriendlyTrip) {
         this.userFriendlyTrip = userFriendlyTrip;
+    }
+
+    private SettingItem settings;
+
+    public SettingItem getSettings() {
+        return settings;
+    }
+
+    public void setSettings(SettingItem settings) {
+        this.settings = settings;
     }
 }

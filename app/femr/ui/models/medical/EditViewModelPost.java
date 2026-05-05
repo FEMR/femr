@@ -30,6 +30,10 @@ public class EditViewModelPost {
     private List<TabFieldItem> tabFieldItems;
     private List<PrescriptionItem> prescriptions;
     private List<ProblemItem> problems;
+    private List<String> whoHealthEvents;
+    private List<Integer> whoHealthEventIds;
+    private String whoProcedure;
+    private Integer whoProcedureId;
 
     //Photo stuff
     private List<Boolean> deleteRequested;
@@ -95,5 +99,37 @@ public class EditViewModelPost {
 
     public void setProblems(List<ProblemItem> problems) {
         this.problems = problems;
+    }
+
+    public List<String> getWhoHealthEvents() {
+        return whoHealthEvents;
+    }
+
+    public void setWhoHealthEvents(List<String> whoHealthEvents) {
+        this.whoHealthEvents = whoHealthEvents;
+    }
+
+    public List<Integer> getWhoHealthEventIds() {
+        return whoHealthEventIds;
+    }
+
+    public void setWhoHealthEventIds(List<Integer> whoHealthEventIds) {
+        this.whoHealthEventIds = whoHealthEventIds;
+    }
+
+    public String getWhoProcedure() {
+        return whoProcedure;
+    }
+
+    public void setWhoProcedure(String whoProcedure) {
+        this.whoProcedure = whoProcedure;
+    }
+
+    public Integer getWhoProcedureId() {
+        return whoProcedureId;
+    }
+
+    public void setWhoProcedureId(Integer whoProcedureId) {
+        this.whoProcedureId = whoProcedureId;
     }
 }

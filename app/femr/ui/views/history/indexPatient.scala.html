@@ -113,8 +113,7 @@
                             <th>Gender</th>
                             <th>Age</th>
                             <th>City</th>
-                            <th>Match</th>
-                            <th>&nbsp;</th>
+                            <th>Select</th>
                         </tr>
 
                         @for(a <- 1 to viewModel.getPatientItems.size) {
@@ -127,9 +126,6 @@
                                     <td class="vert-align">@patient.getSex</td>
                                     <td class="vert-align">@patient.getAge</td>
                                     <td class="vert-align">@patient.getCity</td>
-                                    <td class="vert-align">
-                                        <button type="button" class="selectPageFromRow fButton pull-right">Select</button>
-                                    <td class="vert-align">50%</td>
                                     <td class="vert-align">
                                         <button type="button" class="selectPageFromRow fButton">Select</button>
                                     </td>
@@ -157,8 +153,8 @@
                             <th>Gender</th>
                             <th>Age</th>
                             <th>City</th>
-                            <th>Match</th>
-                            <th>&nbsp;</th>
+                            <th>Match %</th>
+                            <th>Select</th>
                         </tr>
 
                         @for(a <- 1 to viewModel.getRankedPatientItems.size) {

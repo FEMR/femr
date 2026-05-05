@@ -71,4 +71,14 @@ public class SettingItem {
     public void setIsDiabetesPrompt(boolean isDiabetesPrompt) {
         this.isDiabetesPrompt = isDiabetesPrompt;
     }
+
+    private boolean isWhoReporting;
+
+    public boolean isWhoReporting() {
+        return isWhoReporting;
+    }
+
+    public void setWhoReporting(boolean isWhoReporting) {
+        this.isWhoReporting = isWhoReporting;
+    }
 }

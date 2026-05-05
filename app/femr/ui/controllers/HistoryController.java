@@ -289,14 +289,21 @@ public class HistoryController extends Controller {
 
         //get problems
         List<String> problems = new ArrayList<>();
+        List<String> whoHealthEvents = new ArrayList<>();
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(encounterId);
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         for (ProblemItem pi : problemItemServiceResponse.getResponseObject()) {
             problems.add(pi.getName());
+            whoHealthEvents.add(pi.getWhoHealthEvent() != null ? pi.getWhoHealthEvent() : "");
         }
         indexEncounterPharmacyViewModel.setProblems(problems);
+        indexEncounterPharmacyViewModel.setWhoHealthEvents(whoHealthEvents);
+
+        //get WHO procedure from tab field multimap
+        TabFieldItem whoProcedureField = tabFieldMultiMap.getMostRecentOrEmpty("whoProcedure", null);
+        indexEncounterPharmacyViewModel.setWhoProcedure(whoProcedureField != null ? whoProcedureField.getValue() : "");
 
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();

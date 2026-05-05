@@ -3,6 +3,7 @@
 
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.TripController
+@import femr.ui.controllers.admin.routes.ConfigureController
 
 @additionalStyles = {
 
@@ -17,6 +18,12 @@
 }
 
 @admin("Trips - Manage Trips - Edit Trip", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @if(viewModel.isWhoReportingEnabled) {
+        <div style="overflow: hidden; margin-bottom: 10px;">
+            <a href="@ConfigureController.whoSetupGet(viewModel.getTripId)" class="fButton fOtherButton fAdminButton userBtns" style="white-space: nowrap;">Configure WHO Report</a>
+        </div>
+    }
 
     @defining(viewModel.getTrip) { trip =>
         <p>Id: @trip.getId</p>

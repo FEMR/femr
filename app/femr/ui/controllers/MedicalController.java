@@ -362,13 +362,23 @@ public class MedicalController extends Controller {
 
         //get and save problems
         List<String> problemList = new ArrayList<>();
+        List<String> whoHealthEventList = viewModelPost.getWhoHealthEvents() != null ? viewModelPost.getWhoHealthEvents() : new ArrayList<>();
+        List<Integer> whoHealthEventIdList = viewModelPost.getWhoHealthEventIds() != null ? viewModelPost.getWhoHealthEventIds() : new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName())) {
                 problemList.add(pi.getName());
             }
         }
         if (problemList.size() > 0) {
-            encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
+            encounterService.createProblems(problemList, whoHealthEventList, whoHealthEventIdList, patientEncounterItem.getId(), currentUserSession.getId());
+        }
+
+        //save WHO procedure if selected
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getWhoProcedure())) {
+            Map<String, String> whoProcedureMap = new HashMap<>();
+            whoProcedureMap.put("whoProcedure", viewModelPost.getWhoProcedure());
+            encounterService.createPatientEncounterTabFields(whoProcedureMap, patientEncounterItem.getId(), currentUserSession.getId());
+            encounterService.setWhoProcedureId(patientEncounterItem.getId(), viewModelPost.getWhoProcedureId());
         }
 
         //get tab fields that do not have a related chief complaint and put them into a nice map

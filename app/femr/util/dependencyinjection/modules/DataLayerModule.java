@@ -60,6 +60,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPhoto.class).toProvider(PhotoProvider.class);
         bind(IRole.class).toProvider(RoleProvider.class);
         bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
+        bind(IWhoReportConfig.class).toProvider(WhoReportConfigProvider.class);
         bind(INetworkStatus.class).toProvider(NetworkStatusProvider.class);
         bind(IKitStatus.class).toProvider(KitStatusProvider.class);
         bind(IDatabaseStatus.class).toProvider(DatabaseStatusProvider.class);
@@ -84,6 +85,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
 
         bind(IInternetStatusRepository.class).to(InternetStatusRepository.class);
+        bind(IDailyReportRepository.class).to(DailyReportRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
@@ -91,6 +93,8 @@ public class DataLayerModule extends AbstractModule {
         //Generic repositories (being phased out in place of non generic)
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<IConceptWhoHealthEvent>>() {}).to(new TypeLiteral<Repository<IConceptWhoHealthEvent>>() {});
+        bind(new TypeLiteral<IRepository<IConceptWhoProcedure>>() {}).to(new TypeLiteral<Repository<IConceptWhoProcedure>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});
@@ -99,6 +103,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
+        bind(new TypeLiteral<IRepository<IWhoReportConfig>>() {}).to(new TypeLiteral<Repository<IWhoReportConfig>>() {});
         bind(new TypeLiteral<IRepository<INetworkStatus>>() {}).to(new TypeLiteral<Repository<INetworkStatus>>(){});
         bind(new TypeLiteral<IRepository<IKitStatus>>() {}).to(new TypeLiteral<Repository<IKitStatus>>(){});
         bind(new TypeLiteral<IRepository<IDatabaseStatus>>() {}).to(new TypeLiteral<Repository<IDatabaseStatus>>(){});

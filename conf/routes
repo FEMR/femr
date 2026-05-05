@@ -28,6 +28,8 @@ POST        /admin/inventory/editCurrent/:id/:tripId           @femr.ui.controll
 POST        /admin/inventory/editTotal/:id/:tripId             @femr.ui.controllers.admin.InventoryController.ajaxEditTotal(id: Integer, tripId: Integer)
 GET         /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.manageGet()
 POST        /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.managePost()
+GET         /admin/configure/who-setup/:tripId                  @femr.ui.controllers.admin.ConfigureController.whoSetupGet(tripId: Integer)
+POST        /admin/configure/who-setup/:tripId                 @femr.ui.controllers.admin.ConfigureController.whoSetupPost(tripId: Integer)
 GET         /admin/updates                                     @femr.ui.controllers.admin.UpdatesController.manageGet()
 POST        /admin/updates/database                            @femr.ui.controllers.admin.UpdatesController.databasePost()
 POST        /admin/updates/kit                                 @femr.ui.controllers.admin.UpdatesController.kitUpdatePost()
@@ -47,6 +49,7 @@ POST        /admin/updateDb                                    @femr.ui.controll
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Manager
 GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()
+GET         /manager/dailyReport                               @femr.ui.controllers.manager.ManagerController.dailyReportGet()
 #Pharmacy
 GET         /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)

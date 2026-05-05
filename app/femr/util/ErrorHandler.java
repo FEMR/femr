@@ -39,6 +39,7 @@ public class ErrorHandler implements HttpErrorHandler {
     //called when throwing a runtime exception
     @Override
     public CompletionStage<Result> onServerError(Http.RequestHeader request, Throwable exception) {
+        play.Logger.error("Server error on request: " + request.uri(), exception);
         return CompletableFuture.completedFuture(
                 Results.internalServerError(
                         femr.ui.views.html.errors.global.render(assetsFinder)

@@ -3,6 +3,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
 @import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.manager.routes.{ManagerController => ManagerRoutes}
 @additionalStyles = {
 
     <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
@@ -52,6 +53,9 @@
 
             @if(currentUser.getTripId != null) {
                 <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
+                @if(viewModelGet.getSettings != null && viewModelGet.getSettings.isWhoReporting) {
+                    <a href="@ManagerRoutes.dailyReportGet()" class="btn btn-primary" style="margin-bottom:10px;">WHO MDS Daily Report</a>
+                }
 
 
             <div id="table-container center-panel-grid" >

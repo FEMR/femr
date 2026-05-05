@@ -29,6 +29,7 @@ var problemFeature = {
             .parent()
             .append("<div class='problem'>" +
             "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems'/>" +
+            ($('#whoReportingEnabled').length ? whoDropdown.buildHealthEventDropdown(problemIndex) : '') +
             "</div>");
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name']");
@@ -798,6 +799,7 @@ $('.deleteProblem').click(function(){
         url: '/medical/deleteProblem/' + $('#patientId').val() + '/' + $(this).data('problem'),
         success: function(result){
             if(result == "true"){
+                lineToRemove.next('.who-searchable-dropdown').remove();
                 lineToRemove.remove();
             }
         },
@@ -805,4 +807,135 @@ $('.deleteProblem').click(function(){
 
         }
     });
+});
+
+// WHO Searchable Dropdown
+var whoDropdown = {
+    healthEventItemsHTML:
+        '<li class="who-group-header">Trauma</li>' +
+        '<li class="who-item" data-value="Major head/spine injury" data-id="1">Major head/spine injury</li>' +
+        '<li class="who-item" data-value="Major torso injury" data-id="2">Major torso injury</li>' +
+        '<li class="who-item" data-value="Major extremity injury" data-id="3">Major extremity injury</li>' +
+        '<li class="who-item" data-value="Moderate injury" data-id="4">Moderate injury</li>' +
+        '<li class="who-item" data-value="Minor injury" data-id="5">Minor injury</li>' +
+        '<li class="who-group-header">Infectious disease</li>' +
+        '<li class="who-item" data-value="Acute respiratory infection" data-id="6">Acute respiratory infection</li>' +
+        '<li class="who-item" data-value="Acute watery diarrhea" data-id="7">Acute watery diarrhea</li>' +
+        '<li class="who-item" data-value="Acute bloody diarrhea" data-id="8">Acute bloody diarrhea</li>' +
+        '<li class="who-item" data-value="Acute jaundice syndrome" data-id="9">Acute jaundice syndrome</li>' +
+        '<li class="who-item" data-value="Suspected measles" data-id="10">Suspected measles</li>' +
+        '<li class="who-item" data-value="Suspected meningitis" data-id="11">Suspected meningitis</li>' +
+        '<li class="who-item" data-value="Suspected tetanus" data-id="12">Suspected tetanus</li>' +
+        '<li class="who-item" data-value="Acute flaccid paralysis" data-id="13">Acute flaccid paralysis</li>' +
+        '<li class="who-item" data-value="Acute haemorrhagic fever" data-id="14">Acute haemorrhagic fever</li>' +
+        '<li class="who-item" data-value="Fever of unknown origin" data-id="15">Fever of unknown origin</li>' +
+        '<li class="who-group-header">Emergency</li>' +
+        '<li class="who-item" data-value="Surgical emergency (Non-trauma)" data-id="16">Surgical emergency (Non-trauma)</li>' +
+        '<li class="who-item" data-value="Medical emergency (Non-infectious)" data-id="17">Medical emergency (Non-infectious)</li>' +
+        '<li class="who-group-header">Other key diseases</li>' +
+        '<li class="who-item" data-value="Skin disease" data-id="18">Skin disease</li>' +
+        '<li class="who-item" data-value="Acute mental health problem" data-id="19">Acute mental health problem</li>' +
+        '<li class="who-item" data-value="Obstetric complications" data-id="20">Obstetric complications</li>' +
+        '<li class="who-item" data-value="Severe Acute Malnutrition (SAM)" data-id="21">Severe Acute Malnutrition (SAM)</li>' +
+        '<li class="who-item" data-value="Other diagnosis, not specified above" data-id="22">Other diagnosis, not specified above</li>',
+
+    buildHealthEventDropdown: function(index) {
+        return '<div class="who-searchable-dropdown">' +
+               '<div class="who-dropdown-toggle">' +
+               '<span class="who-dropdown-label">- WHO Health Event -</span>' +
+               '<span class="caret"></span>' +
+               '</div>' +
+               '<div class="who-dropdown-menu">' +
+               '<input type="text" class="who-search-input" placeholder=""/>' +
+               '<ul class="who-dropdown-list">' + whoDropdown.healthEventItemsHTML + '</ul>' +
+               '</div>' +
+               '<input type="hidden" name="whoHealthEvents[' + index + ']" class="who-selected-value"/>' +
+               '<input type="hidden" name="whoHealthEventIds[' + index + ']" class="who-selected-id"/>' +
+               '</div>';
+    },
+
+    filter: function($input) {
+        var query = $input.val().toLowerCase();
+        var $list = $input.closest('.who-dropdown-menu').find('.who-dropdown-list');
+        var lastHeader = null;
+        var headerHasVisible = false;
+
+        $list.children().each(function() {
+            var $el = $(this);
+            if ($el.hasClass('who-group-header')) {
+                if (lastHeader) { lastHeader.toggle(headerHasVisible); }
+                lastHeader = $el;
+                headerHasVisible = false;
+            } else {
+                var matches = $el.data('value').toLowerCase().indexOf(query) !== -1;
+                $el.toggle(matches);
+                if (matches) { headerHasVisible = true; }
+            }
+        });
+        if (lastHeader) { lastHeader.toggle(headerHasVisible); }
+    },
+
+    closeAll: function() {
+        $('.who-dropdown-menu').hide();
+    }
+};
+
+// Restore saved WHO procedure ID by matching the saved name against the list items
+$('.who-searchable-dropdown[data-saved-procedure]').each(function() {
+    var saved = $(this).data('saved-procedure');
+    $(this).find('.who-item').each(function() {
+        if ($(this).data('value') === saved) {
+            $(this).closest('.who-searchable-dropdown').find('.who-selected-id').val($(this).data('id'));
+            return false;
+        }
+    });
+});
+
+// Inject a WHO Health Event dropdown (or read-only display if already saved) into each problem row on page load
+if ($('#whoReportingEnabled').length) {
+    $('.problemWrap .input-group').each(function() {
+        var saved = $(this).data('who-health-event');
+        if (saved) {
+            $(this).after('<div class="who-searchable-dropdown"><div class="who-dropdown-toggle who-readonly"><span class="who-dropdown-label">' + saved + '</span></div></div>');
+        } else {
+            $(this).after(whoDropdown.buildHealthEventDropdown(-1));
+        }
+    });
+    $('.problemWrap .problem').append(whoDropdown.buildHealthEventDropdown(0));
+}
+
+// Event delegation — handles both static (procedure) and dynamic (per-problem) dropdowns
+$(document).on('click', '.who-dropdown-toggle', function(e) {
+    e.stopPropagation();
+    var $menu = $(this).siblings('.who-dropdown-menu');
+    var isOpen = $menu.is(':visible');
+    whoDropdown.closeAll();
+    if (!isOpen) {
+        $menu.show();
+        var $search = $menu.find('.who-search-input');
+        $search.val('');
+        whoDropdown.filter($search);
+        $search.focus();
+    }
+});
+
+$(document).on('keydown', '.who-search-input', function(e) {
+    e.stopPropagation();
+});
+
+$(document).on('input', '.who-search-input', function() {
+    whoDropdown.filter($(this));
+});
+
+$(document).on('click', '.who-item', function(e) {
+    e.stopPropagation();
+    var $dropdown = $(this).closest('.who-searchable-dropdown');
+    $dropdown.find('.who-dropdown-label').text($(this).data('value'));
+    $dropdown.find('.who-selected-value').val($(this).data('value'));
+    $dropdown.find('.who-selected-id').val($(this).data('id'));
+    whoDropdown.closeAll();
+});
+
+$(document).click(function() {
+    whoDropdown.closeAll();
 });

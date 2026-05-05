@@ -972,6 +972,15 @@ public class DatabaseSeeder {
                 tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
+            if (!containTabField(tabFields, "whoProcedure")) {
+
+                tabField = new TabField();
+                tabField.setName("whoProcedure");
+                tabField.setIsDeleted(false);
+                tabField.setTab(Ebean.getReference(Tab.class, treatmentId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
+                tabFieldsToAdd.add(tabField);
+            }
             if (!containTabField(tabFields, "medicalSurgicalHistory")) {
 
                 tabField = new TabField();

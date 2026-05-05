@@ -51,6 +51,12 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     private DateTime IsDeleted;
     @Column(name = "DeletedByUserId", nullable = true)
     private Integer DeletedByUserId;
+    @Column(name = "who_health_event", nullable = true)
+    private String whoHealthEvent;
+    @Column(name = "who_health_event_id", nullable = true)
+    private Integer whoHealthEventId;
+    @Column(name = "who_procedure_id", nullable = true)
+    private Integer whoProcedureId;
 
 
     @Override
@@ -140,4 +146,22 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
 
     @Override
     public void setDeletedByUserId(Integer userId){ this.DeletedByUserId = userId; };
+
+    @Override
+    public String getWhoHealthEvent() { return whoHealthEvent; }
+
+    @Override
+    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
+
+    @Override
+    public Integer getWhoHealthEventId() { return whoHealthEventId; }
+
+    @Override
+    public void setWhoHealthEventId(Integer whoHealthEventId) { this.whoHealthEventId = whoHealthEventId; }
+
+    @Override
+    public Integer getWhoProcedureId() { return whoProcedureId; }
+
+    @Override
+    public void setWhoProcedureId(Integer whoProcedureId) { this.whoProcedureId = whoProcedureId; }
 }

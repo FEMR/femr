@@ -423,7 +423,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public ProblemItem createProblemItem(String name) {
+    public ProblemItem createProblemItem(String name, String whoHealthEvent) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -433,6 +433,7 @@ public class ItemModelMapper implements IItemModelMapper {
         ProblemItem problemItem = new ProblemItem();
 
         problemItem.setName(name);
+        problemItem.setWhoHealthEvent(whoHealthEvent);
 
         return problemItem;
     }
@@ -488,6 +489,9 @@ public class ItemModelMapper implements IItemModelMapper {
                         break;
                     case "Diabetes Prompt":
                         settingItem.setIsDiabetesPrompt(ss.isActive());
+                        break;
+                    case "WHO Reporting":
+                        settingItem.setWhoReporting(ss.isActive());
                         break;
                 }
             }
@@ -701,5 +705,36 @@ public class ItemModelMapper implements IItemModelMapper {
         internetStatusItem.setStatus(status.getStatus());
 
         return internetStatusItem;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WhoHealthEventItem createWhoHealthEventItem(int id, String name, String category) {
+        if (StringUtils.isNullOrWhiteSpace(name))
+            return null;
+
+        WhoHealthEventItem item = new WhoHealthEventItem();
+        item.setId(id);
+        item.setName(name);
+        item.setCategory(category);
+
+        return item;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WhoProcedureItem createWhoProcedureItem(int id, String name) {
+        if (StringUtils.isNullOrWhiteSpace(name))
+            return null;
+
+        WhoProcedureItem item = new WhoProcedureItem();
+        item.setId(id);
+        item.setName(name);
+
+        return item;
     }
 }

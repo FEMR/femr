@@ -3,11 +3,20 @@ package femr.common.models;
 import java.util.Date;
 
 public class TripItem {
+    private int id;
     private String teamName;
     private String tripCity;
     private String tripCountry;
     private Date tripStartDate;
     private Date tripEndDate;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTeamName() {
         return teamName;

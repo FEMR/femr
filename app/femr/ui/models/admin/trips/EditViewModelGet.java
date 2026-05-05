@@ -11,6 +11,7 @@ public class EditViewModelGet {
     private MissionTripItem trip;
     private List<UserItem> users;
     private List<UserItem> allUsers;
+    private boolean whoReportingEnabled;
 
     public int getTripId() {
         return tripId;
@@ -42,5 +43,13 @@ public class EditViewModelGet {
 
     public void setAllUsers(List<UserItem> allUsers) {
         this.allUsers = allUsers;
+    }
+
+    public boolean isWhoReportingEnabled() {
+        return whoReportingEnabled;
+    }
+
+    public void setWhoReportingEnabled(boolean whoReportingEnabled) {
+        this.whoReportingEnabled = whoReportingEnabled;
     }
 }

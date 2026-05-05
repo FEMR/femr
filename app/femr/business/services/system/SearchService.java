@@ -36,6 +36,8 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
+import femr.data.models.mysql.concepts.ConceptWhoHealthEvent;
+import femr.data.models.mysql.concepts.ConceptWhoProcedure;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -49,6 +51,8 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class SearchService implements ISearchService {
 
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
+    private final IRepository<IConceptWhoHealthEvent> whoHealthEventRepository;
+    private final IRepository<IConceptWhoProcedure> whoProcedureRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
     private final IPatientRepository patientRepository;
     private final IPrescriptionRepository prescriptionRepository;
@@ -61,6 +65,8 @@ public class SearchService implements ISearchService {
 
     @Inject
     public SearchService(IRepository<IConceptDiagnosis> diagnosisRepository,
+                         IRepository<IConceptWhoHealthEvent> whoHealthEventRepository,
+                         IRepository<IConceptWhoProcedure> whoProcedureRepository,
                          IRepository<IMissionTrip> missionTripRepository,
                          IPatientRepository patientRepository,
                          IEncounterRepository patientEncounterRepository,
@@ -72,6 +78,8 @@ public class SearchService implements ISearchService {
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
+        this.whoHealthEventRepository = whoHealthEventRepository;
+        this.whoProcedureRepository = whoProcedureRepository;
         this.missionTripRepository = missionTripRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -892,6 +900,65 @@ public class SearchService implements ISearchService {
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<WhoHealthEventItem>> findWhoHealthEventsForSearch() {
+
+        ServiceResponse<List<WhoHealthEventItem>> response = new ServiceResponse<>();
+        try {
+
+            List<? extends IConceptWhoHealthEvent> allHealthEvents = whoHealthEventRepository.findAll(ConceptWhoHealthEvent.class);
+            List<WhoHealthEventItem> healthEventItems = new ArrayList<>();
+
+            for (IConceptWhoHealthEvent he : allHealthEvents) {
+                if (StringUtils.isNotNullOrWhiteSpace(he.getName()))
+                    healthEventItems.add(itemModelMapper.createWhoHealthEventItem(
+                            he.getId(),
+                            he.getName(),
+                            he.getCategory()
+                    ));
+            }
+
+            response.setResponseObject(healthEventItems);
+
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<WhoProcedureItem>> findWhoProceduresForSearch() {
+
+        ServiceResponse<List<WhoProcedureItem>> response = new ServiceResponse<>();
+        try {
+
+            List<? extends IConceptWhoProcedure> allProcedures = whoProcedureRepository.findAll(ConceptWhoProcedure.class);
+            List<WhoProcedureItem> procedureItems = new ArrayList<>();
+
+            for (IConceptWhoProcedure p : allProcedures) {
+                if (StringUtils.isNotNullOrWhiteSpace(p.getName()))
+                    procedureItems.add(itemModelMapper.createWhoProcedureItem(
+                            p.getId(),
+                            p.getName()
+                    ));
+            }
+
+            response.setResponseObject(procedureItems);
+
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
         return response;
     }
 }

@@ -4,7 +4,11 @@ import femr.business.services.core.IDailyReportService;
 import femr.business.services.system.DailyReportService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.DailyReportItem;
+import femr.data.daos.IRepository;
+import femr.data.models.core.IWhoReportConfig;
 import mock.femr.data.daos.MockDailyReportRepository;
+
+import static org.mockito.Mockito.mock;
 import mock.femr.data.models.MockMissionCity;
 import mock.femr.data.models.MockMissionCountry;
 import mock.femr.data.models.MockMissionTeam;
@@ -22,11 +26,14 @@ public class DailyReportServiceTest {
 
     private IDailyReportService dailyReportService;
     private MockDailyReportRepository mockDailyReportRepository;
+    private IRepository<IWhoReportConfig> mockWhoConfigRepository;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         mockDailyReportRepository = new MockDailyReportRepository();
-        dailyReportService = new DailyReportService(mockDailyReportRepository);
+        mockWhoConfigRepository = (IRepository<IWhoReportConfig>) mock(IRepository.class);
+        dailyReportService = new DailyReportService(mockDailyReportRepository, mockWhoConfigRepository);
     }
 
     @After

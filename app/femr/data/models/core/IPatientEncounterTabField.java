@@ -65,4 +65,16 @@ public interface IPatientEncounterTabField {
     Integer getDeletedByUserId();
 
     void setDeletedByUserId(Integer userId);
+
+    String getWhoHealthEvent();
+
+    void setWhoHealthEvent(String whoHealthEvent);
+
+    Integer getWhoHealthEventId();
+
+    void setWhoHealthEventId(Integer whoHealthEventId);
+
+    Integer getWhoProcedureId();
+
+    void setWhoProcedureId(Integer whoProcedureId);
 }

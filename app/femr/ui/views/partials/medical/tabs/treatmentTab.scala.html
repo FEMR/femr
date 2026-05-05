@@ -1,4 +1,4 @@
-@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem])
+@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem], whoReporting: Boolean)
 
 @import femr.ui.views.html.partials.medical.tabs.prescriptionRow
 
@@ -17,8 +17,8 @@
         <div class="row">
             <div class="col-xs-10 col-sm-10 col-md-10 problemWrap">
                 @for(problem <- problems) {
-                    <div class="input-group">
-                            <input type="text" class="form-control oldProblems femr-input" value="@problem.getName" readonly/>
+                    <div class="input-group" @if(problem.getWhoHealthEvent != null && !problem.getWhoHealthEvent.isEmpty){data-who-health-event="@problem.getWhoHealthEvent"}>
+                            <input type="text" class="form-control oldProblems" value="@problem.getName" readonly/>
 
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-danger deleteProblem femr-icon-button" data-problem="@problem.getName"><span class="glyphicon glyphicon-remove"></span></button>
@@ -80,6 +80,31 @@
             <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="procedure_counseling"/>
             <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm femr-textarea" placeholder="Ex: Suturing, Ultrasound, Splint, etc..." id="procedureTab">@treatment.getValue</textarea>
             <div class="hidden" id="procedureTabStore"></div>
+        }
+        @if(whoReporting) {
+        <div id="whoReportingEnabled" class="hidden"></div>
+        @defining(treatmentTab.getTabFieldItemByName(null, "whoProcedure")) { savedProc =>
+        @defining(if(savedProc != null && savedProc.getValue != null) savedProc.getValue else "") { savedProcValue =>
+        <div class="who-searchable-dropdown" @if(!savedProcValue.isEmpty){data-saved-procedure="@savedProcValue"}>
+            <div class="who-dropdown-toggle">
+                <span class="who-dropdown-label">@if(!savedProcValue.isEmpty){@savedProcValue}else{- WHO Procedure -}</span>
+                <span class="caret"></span>
+            </div>
+            <div class="who-dropdown-menu">
+                <input type="text" class="who-search-input" placeholder=""/>
+                <ul class="who-dropdown-list">
+                    <li class="who-item" data-value="Major procedure (excluding MDS31)" data-id="1">Major procedure (excluding MDS31)</li>
+                    <li class="who-item" data-value="Limb amputation excluding digits" data-id="2">Limb amputation excluding digits</li>
+                    <li class="who-item" data-value="Minor surgical procedure" data-id="3">Minor surgical procedure</li>
+                    <li class="who-item" data-value="Normal Vaginal Delivery (NVD)" data-id="4">Normal Vaginal Delivery (NVD)</li>
+                    <li class="who-item" data-value="Caesarean section" data-id="5">Caesarean section</li>
+                    <li class="who-item" data-value="Obstetrics others" data-id="6">Obstetrics others</li>
+                </ul>
+            </div>
+            <input type="hidden" name="whoProcedure" class="who-selected-value" value="@savedProcValue"/>
+            <input type="hidden" name="whoProcedureId" class="who-selected-id"/>
+        </div>
+        }}
         }
     </div>
     <div class="form-group femr-field">

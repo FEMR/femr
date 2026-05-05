@@ -3,8 +3,10 @@ package femr.ui.controllers.admin;
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.IMissionTripService;
+import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
+import femr.common.models.SettingItem;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -34,6 +36,7 @@ public class TripController extends Controller {
     private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IMissionTripService missionTripService;
+    private final ISearchService searchService;
     private final ISessionService sessionService;
     private final IUserService userService;
 
@@ -41,12 +44,14 @@ public class TripController extends Controller {
     public TripController(AssetsFinder assetsFinder,
                           FormFactory formFactory,
                           IMissionTripService missionTripService,
+                          ISearchService searchService,
                           ISessionService sessionService,
                           IUserService userService) {
 
         this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.missionTripService = missionTripService;
+        this.searchService = searchService;
         this.sessionService = sessionService;
         this.userService = userService;
     }
@@ -87,6 +92,13 @@ public class TripController extends Controller {
                             .collect(Collectors.toList()
                             )
             );
+        } else {
+            ServiceResponse<SettingItem> settingsResponse = searchService.retrieveSystemSettings();
+            SettingItem settings = settingsResponse.getResponseObject();
+            if (settings != null && settings.isWhoReporting()) {
+                int newTripId = newTripItemServiceResponse.getResponseObject().getId();
+                return redirect(femr.ui.controllers.admin.routes.ConfigureController.whoSetupGet(newTripId));
+            }
         }
 
         TripViewModelGet tripViewModel = createTripViewModelGet(messages);
@@ -164,6 +176,10 @@ public class TripController extends Controller {
         //So, remove the ones that already exist in the trip.
         allUsers.removeAll(editViewModelGet.getUsers());
         editViewModelGet.setAllUsers(allUsers);
+
+        ServiceResponse<SettingItem> settingsResponse = searchService.retrieveSystemSettings();
+        SettingItem settings = settingsResponse.getResponseObject();
+        editViewModelGet.setWhoReportingEnabled(settings != null && settings.isWhoReporting());
 
         return ok(edit.render(currentUser, editViewModelGet, assetsFinder));
     }

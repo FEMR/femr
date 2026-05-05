@@ -1,0 +1,105 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+  config: femr.common.models.WhoReportConfigItem,
+  tripId: Int,
+  assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.ConfigureController
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
+    <style>
+        #whoSetupForm { max-width: 700px; margin: 20px auto; }
+        #whoSetupForm h2 { margin-bottom: 20px; }
+        .who-field-row { margin-bottom: 14px; display: flex; align-items: center; }
+        .who-field-row label { width: 220px; font-weight: bold; flex-shrink: 0; }
+        .who-field-row input[type=text],
+        .who-field-row input[type=email] { flex: 1; padding: 5px 8px; font-size: 14px; }
+        .who-checkboxes { display: flex; gap: 18px; flex-wrap: wrap; }
+        .who-checkboxes label { width: auto; font-weight: normal; display: flex; align-items: center; gap: 4px; }
+        .who-geotag { display: flex; gap: 12px; flex: 1; }
+        .who-geotag input { flex: 1; padding: 5px 8px; font-size: 14px; }
+        .who-geotag span { align-self: center; font-size: 13px; color: #555; }
+        #whoSetupForm .fButton { margin-top: 24px; }
+        .who-section-title { font-size: 16px; font-weight: bold; margin: 24px 0 10px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+        .who-note { font-size: 13px; color: #666; margin-bottom: 18px; }
+    </style>
+}
+
+@admin("WHO Report Setup", currentUser, styles = additionalStyles, assets = assets) {
+
+    <div id="whoSetupForm">
+        <h2>WHO Report Configuration</h2>
+        <p class="who-note">
+            These fields are shared across all daily reports. Fill them in once and they will be
+            pre-populated whenever the MDS Daily Report is opened. You can update them here at any time.
+        </p>
+
+        @helper.form(action = ConfigureController.whoSetupPost(tripId)) {
+
+            <div class="who-section-title">Team Information</div>
+
+            <div class="who-field-row">
+                <label>Organization name:</label>
+                <input type="text" name="orgName" value="@{if(config != null && config.getOrgName != null) config.getOrgName else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Team type:</label>
+                <div class="who-checkboxes">
+                    <label><input type="checkbox" name="type1Mobile" value="true" @{if(config != null && config.isType1Mobile) "checked"} /> Type 1 mobile</label>
+                    <label><input type="checkbox" name="type1Fixed" value="true" @{if(config != null && config.isType1Fixed) "checked"} /> Type 1 fixed</label>
+                    <label><input type="checkbox" name="type2" value="true" @{if(config != null && config.isType2) "checked"} /> Type 2</label>
+                    <label><input type="checkbox" name="type3" value="true" @{if(config != null && config.isType3) "checked"} /> Type 3</label>
+                    <label><input type="checkbox" name="specializedCell" value="true" @{if(config != null && config.isSpecializedCell) "checked"} /> Specialized cell</label>
+                </div>
+            </div>
+
+            <div class="who-field-row">
+                <label>Contact person(s):</label>
+                <input type="text" name="contactPersons" value="@{if(config != null && config.getContactPersons != null) config.getContactPersons else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Phone No.:</label>
+                <input type="text" name="phoneNo" value="@{if(config != null && config.getPhoneNo != null) config.getPhoneNo else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Email:</label>
+                <input type="email" name="email" value="@{if(config != null && config.getEmail != null) config.getEmail else ""}" />
+            </div>
+
+            <div class="who-section-title">Location</div>
+
+            <div class="who-field-row">
+                <label>State etc.:</label>
+                <input type="text" name="stateAdmin1" value="@{if(config != null && config.getStateAdmin1 != null) config.getStateAdmin1 else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Village etc.:</label>
+                <input type="text" name="villageAdmin3" value="@{if(config != null && config.getVillageAdmin3 != null) config.getVillageAdmin3 else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Facility name:</label>
+                <input type="text" name="facilityName" value="@{if(config != null && config.getFacilityName != null) config.getFacilityName else ""}" />
+            </div>
+
+            <div class="who-field-row">
+                <label>Geo-tag:</label>
+                <div class="who-geotag">
+                    <span>Lat</span>
+                    <input type="text" name="geoLat" value="@{if(config != null && config.getGeoLat != null) config.getGeoLat else ""}" placeholder="Latitude" />
+                    <span>Long</span>
+                    <input type="text" name="geoLong" value="@{if(config != null && config.getGeoLong != null) config.getGeoLong else ""}" placeholder="Longitude" />
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="fButton">Save Configuration</button>
+            </div>
+        }
+    </div>
+}

@@ -18,6 +18,9 @@ public class MockPatientEncounterTabField implements IPatientEncounterTabField {
     DateTime isDeleted;
     IChiefComplaint complaint;
     int deletedByUserId;
+    String whoHealthEvent;
+    Integer whoHealthEventId;
+    Integer whoProcedureId;
 
 
     @Override
@@ -118,5 +121,35 @@ public class MockPatientEncounterTabField implements IPatientEncounterTabField {
     @Override
     public void setDeletedByUserId(Integer userId) {
         this.deletedByUserId = userId;
+    }
+
+    @Override
+    public String getWhoHealthEvent() {
+        return whoHealthEvent;
+    }
+
+    @Override
+    public void setWhoHealthEvent(String whoHealthEvent) {
+        this.whoHealthEvent = whoHealthEvent;
+    }
+
+    @Override
+    public Integer getWhoHealthEventId() {
+        return whoHealthEventId;
+    }
+
+    @Override
+    public void setWhoHealthEventId(Integer whoHealthEventId) {
+        this.whoHealthEventId = whoHealthEventId;
+    }
+
+    @Override
+    public Integer getWhoProcedureId() {
+        return whoProcedureId;
+    }
+
+    @Override
+    public void setWhoProcedureId(Integer whoProcedureId) {
+        this.whoProcedureId = whoProcedureId;
     }
 }

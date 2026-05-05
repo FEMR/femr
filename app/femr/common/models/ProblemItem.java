@@ -20,10 +20,15 @@ package femr.common.models;
 
 public class ProblemItem {
     private String name;
+    private String whoHealthEvent;
 
     public String getName() {
         return name;
     }
 
     public void setName(String name) { this.name = name; }
+
+    public String getWhoHealthEvent() { return whoHealthEvent; }
+
+    public void setWhoHealthEvent(String whoHealthEvent) { this.whoHealthEvent = whoHealthEvent; }
 }

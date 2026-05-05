@@ -98,7 +98,17 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public ProblemItem createProblemItem(String name) {
+    public ProblemItem createProblemItem(String name, String whoHealthEvent) {
+        return null;
+    }
+
+    @Override
+    public WhoHealthEventItem createWhoHealthEventItem(int id, String name, String category) {
+        return null;
+    }
+
+    @Override
+    public WhoProcedureItem createWhoProcedureItem(int id, String name) {
         return null;
     }
 

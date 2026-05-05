@@ -152,5 +152,20 @@ public interface ISearchService {
      */
     ServiceResponse<List<CityItem>> retrieveCitiesForSearch();
 
+    /**
+     * Get all WHO health events for use in search dropdowns.
+     *
+     * @return a service response that contains a list of WhoHealthEventItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<WhoHealthEventItem>> findWhoHealthEventsForSearch();
+
+    /**
+     * Get all WHO procedures for use in search dropdowns.
+     *
+     * @return a service response that contains a list of WhoProcedureItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<WhoProcedureItem>> findWhoProceduresForSearch();
 
 }

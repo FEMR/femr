@@ -102,7 +102,15 @@ public interface IEncounterService {
      * @return a service response that contains a list of ProblemItems representing the problems that were created
      * and/or errors if they exist.
      */
-    ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
+    ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, List<String> whoHealthEvents, List<Integer> whoHealthEventIds, int encounterId, int userId);
+
+    /**
+     * Sets the WHO procedure concept ID on the most recent whoProcedure tab field for the encounter.
+     *
+     * @param encounterId   id of the encounter, not null
+     * @param whoProcedureId id referencing concept_who_procedures, may be null
+     */
+    void setWhoProcedureId(int encounterId, Integer whoProcedureId);
 
     /**
      * Deletes a patient encounter

@@ -1,0 +1,189 @@
+.femr-history {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.femr-history__header {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 24px 40px -32px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+#patientPhoto,
+#patientInformation {
+    float: none;
+    width: auto;
+}
+
+#viewPatientHeader {
+    border-bottom: none;
+    margin-bottom: 24px;
+}
+
+#viewPatientHeader img {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    border: none;
+    object-fit: cover;
+}
+
+#viewPatientHeader h1 {
+    margin: 0 0 12px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.femr-history__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.femr-history__panel {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    box-shadow: 0 18px 30px -26px rgba(0, 0, 0, 0.3);
+}
+
+.medicalHistoryLineDivide {
+    background: rgba(28, 25, 23, 0.12);
+    margin: 12px 0 16px;
+}
+
+.inputRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    font-size: 14px;
+}
+
+.inputLabel {
+    float: none;
+    text-align: left;
+    font-weight: 600;
+    color: var(--femr-color-text-muted, #6b7280);
+    margin-top: 6px;
+}
+
+.inputRow .form-control {
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    padding: 10px 14px;
+    min-height: 40px;
+}
+
+.encbtns {
+    background: #ffffff;
+    border: 1px solid rgba(28, 25, 23, 0.1) !important;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: left;
+}
+
+.encbtns:hover {
+    background: #f9fafb;
+}
+
+#encounterAlert {
+    border-radius: 12px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    background: rgba(37, 99, 235, 0.08);
+    color: #1d4ed8;
+}
+
+/* Encounter view */
+#encounterViewWrap {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+#encounterViewHeader {
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 24px 40px -32px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#encounterViewHeader img {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    border: none;
+    object-fit: cover;
+}
+
+#encounterViewHeader p {
+    font-size: 20px;
+    margin: 0;
+}
+
+.encounterViewBodyHeader {
+    background: transparent;
+    text-align: left;
+    font-size: 18px;
+    padding: 20px 0 10px;
+}
+
+.encounterViewBody {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.encounterViewBodyLeft,
+.encounterViewBodyMiddle,
+.encounterViewBodyRight {
+    width: auto;
+    float: none;
+    padding: 16px;
+    background: var(--femr-color-surface, #ffffff);
+    border-radius: 16px;
+    border: 1px solid rgba(28, 25, 23, 0.08);
+}
+
+.encounterViewBodyLeft {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.encounterViewBodyLeftHalf {
+    width: auto;
+    float: none;
+    padding: 0;
+}
+
+.infoLabel {
+    font-weight: 600;
+    width: auto;
+}
+
+@media (max-width: 900px) {
+    .inputRow {
+        grid-template-columns: 1fr;
+    }
+
+    .encounterViewBody {
+        grid-template-columns: 1fr;
+    }
+
+    .femr-history__header {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,67 +1,121 @@
 // Admin navigation active state handling
-document.addEventListener('DOMContentLoaded', function() {
-    var currentPath = window.location.pathname;
-    
-    var adminLinks = document.querySelectorAll('#admin-left-panel .userBtns');
-    
-    adminLinks.forEach(function(link) {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
+document.addEventListener('DOMContentLoaded', function () {
+    const currentPath = window.location.pathname || '/';
+    const navLinks = document.querySelectorAll('.femr-sidebar__nav-link');
+
+    const normalisePath = function (path) {
+        if (!path) {
+            return '';
         }
-        
-        link.addEventListener('click', function() {
-            adminLinks.forEach(function(l) {
-                l.classList.remove('active');
-            });
-            this.classList.add('active');
+        if (path.length > 1 && path.endsWith('/')) {
+            return path.slice(0, -1);
+        }
+        return path;
+    };
+
+    const markActive = function (link) {
+        link.classList.add('is-active');
+        if (!link.hasAttribute('aria-current')) {
+            link.setAttribute('aria-current', 'page');
+        }
+    };
+
+    const normalizedCurrent = normalisePath(currentPath);
+
+    navLinks.forEach(function (link) {
+        const navRoot = normalisePath(link.dataset.navRoot || link.getAttribute('href'));
+
+        if (!navRoot || navRoot.startsWith('http')) {
+            return;
+        }
+
+        if (navRoot === '/admin') {
+            if (normalizedCurrent === '/admin') {
+                markActive(link);
+            }
+            return;
+        }
+
+        if (normalizedCurrent === navRoot || normalizedCurrent.startsWith(navRoot + '/')) {
+            markActive(link);
+        }
+    });
+
+    const accordionTriggers = document.querySelectorAll('[data-accordion-trigger]');
+    accordionTriggers.forEach(function (trigger) {
+        const contentId = trigger.getAttribute('aria-controls');
+        const content = contentId ? document.getElementById(contentId) : trigger.nextElementSibling;
+
+        if (!content) {
+            return;
+        }
+
+        content.hidden = trigger.getAttribute('aria-expanded') !== 'true';
+
+        trigger.addEventListener('click', function () {
+            const expanded = trigger.getAttribute('aria-expanded') === 'true';
+            trigger.setAttribute('aria-expanded', String(!expanded));
+            content.hidden = expanded;
         });
     });
-});
 
-var coll = document.getElementsByClassName("collapsible");
-var i;
+    const languageCheckboxes = document.querySelectorAll('.language-checkbox');
+    if (languageCheckboxes.length > 0) {
+        languageCheckboxes.forEach(function (checkbox) {
+            const code = checkbox.name;
+            updateScheduled[code] = checkbox.checked && !checkbox.disabled;
 
-for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
+            checkbox.addEventListener('change', function (event) {
+                if (checkbox.disabled) {
+                    event.preventDefault();
+                    return;
+                }
+
+                updateSchedule(code, checkbox.checked);
+            });
+        });
+
+        const initButton = document.querySelector('[data-updates-action="init-languages"]');
+        if (initButton) {
+            initButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                initLanguages();
+            });
         }
-    });
-}
+
+        const downloadButton = document.querySelector('[data-updates-action="download-packages"]');
+        if (downloadButton) {
+            downloadButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                downloadPackages();
+            });
+        }
+    }
+});
 
 //updates list logic
 const updateScheduled = {}
-window.addEventListener("load", function(){
-    const langs = document.getElementsByClassName("language-checkbox");
-    for(const lang of langs){
-        updateScheduled[lang.name] = lang.checked && !lang.disabled;
-    }
-})
 
-function updateSchedule(code){
-    updateScheduled[code] = !updateScheduled[code];
+function updateSchedule(code, nextValue){
+    const shouldSchedule = typeof nextValue === 'boolean' ? nextValue : !updateScheduled[code];
+    updateScheduled[code] = shouldSchedule;
     $.ajax({
         type: 'get',
         url: '/admin/updates/scheduleUpdate',
-        data: {code: code, update: updateScheduled[code]},
+        data: {code: code, update: shouldSchedule},
         failure: function(){console.log("Error Occurred");}
-    }).done(function(){location.reload()});
+    }).done(function(){window.location.reload()});
 }
 
 function downloadPackages(){
-    const updates = []
-    const loader = document.getElementById("loading");
-    for(const lang in updateScheduled){
-        if(updateScheduled[lang]){
-            updates.push(lang);
-        }
-    }
+    const updates = Object.keys(updateScheduled).filter(function (lang) {
+        return updateScheduled[lang];
+    });
+    const loader = document.querySelector('[data-updates-loader]');
     if(updates.length > 0){
-        loader.hidden = false;
+        if (loader) {
+            loader.hidden = false;
+        }
         $.ajax({
             type: 'get',
             url: '/admin/updates/downloadPackages',
@@ -69,8 +123,10 @@ function downloadPackages(){
             failure: function() {console.log("Error Occurred");}
         }).done(function() {
             console.log("All packages downloaded")
-            loader.hidden = true;
-            location.reload();
+            if (loader) {
+                loader.hidden = true;
+            }
+            window.location.reload();
         });
     }
 }
@@ -80,7 +136,7 @@ function initLanguages(){
         type: 'get',
         url: '/admin/updates/initLanguages',
         failure: function() {console.log("Error Occurred");}
-    }).done(function(){location.reload()});
+    }).done(function(){window.location.reload()});
 }
 
 

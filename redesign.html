@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Triage - femr</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#dc2626", // red-600
+                        "background-light": "#f3f4f6", // gray-100
+                        "background-dark": "#1c1917", // stone-900
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem", // 8px
+                    },
+                },
+            },
+        };
+    </script>
+<link href="public/css/fonts.css" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-stone-900 dark:text-stone-100 font-display">
+<div class="flex min-h-screen">
+<aside class="w-64 bg-stone-900 dark:bg-stone-950 text-white flex flex-col p-6 shadow-2xl">
+<h1 class="text-3xl font-bold text-primary mb-8">femr</h1>
+<div class="mb-8">
+<label class="text-sm font-medium text-stone-300 mb-2 block" for="patient-search">Search Patient</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">search</span>
+<input class="w-full bg-stone-800 border-stone-700 rounded-md shadow-sm pl-10 pr-4 py-2 text-white focus:ring-primary focus:border-primary" id="patient-search" placeholder="ID or Name..." type="text"/>
+</div>
+</div>
+<nav class="flex flex-col space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 rounded-md bg-primary/20 text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person_add</span>
+                Triage
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-md text-stone-300 hover:bg-stone-800 hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+                Medical
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-md text-stone-300 hover:bg-stone-800 hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">vaccines</span>
+                Pharmacy
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-md text-stone-300 hover:bg-stone-800 hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">science</span>
+                Research
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-md text-stone-300 hover:bg-stone-800 hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+                Manager
+            </a>
+</nav>
+<div class="mt-auto">
+<div class="flex items-center space-x-3 p-3 bg-stone-800/50 rounded-lg">
+<div class="w-10 h-10 rounded-full bg-stone-700 flex items-center justify-center">
+<span class="text-lg font-semibold text-stone-300">TT</span>
+</div>
+<div>
+<p class="font-semibold text-white">test test</p>
+<p class="text-xs text-stone-400">Clinician</p>
+</div>
+<button class="ml-auto text-stone-400 hover:text-white">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+</div>
+</div>
+</aside>
+<main class="flex-grow p-8">
+<div class="bg-white dark:bg-stone-800 p-8 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 rounded-full bg-stone-200 dark:bg-stone-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-stone-500">person</span>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-stone-800 dark:text-stone-100">Patient Triage</h2>
+<p class="text-stone-500 dark:text-stone-400">Patient ID: <span class="font-semibold text-stone-600 dark:text-stone-300">123-456-789</span></p>
+</div>
+</div>
+<div class="flex gap-4 mt-4 md:mt-0">
+<button class="flex items-center justify-center gap-2 px-6 py-2 border border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-300 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors duration-200">
+<span class="material-symbols-outlined text-xl">refresh</span>
+                        Reset Fields
+                    </button>
+<button class="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity duration-200 shadow-md shadow-primary/30 font-semibold">
+<span class="material-symbols-outlined text-xl">send</span>
+                        Submit Patient
+                    </button>
+</div>
+</div>
+<div class="w-full">
+<div class="border-b border-stone-200 dark:border-stone-700 mb-6">
+<nav aria-label="Tabs" class="flex -mb-px space-x-8">
+<a aria-current="page" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-primary text-primary" href="#">
+                            General Info
+                        </a>
+<a class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:border-stone-300 dark:hover:border-stone-600" href="#">
+                            Vitals
+                        </a>
+</nav>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="first-name">First Name <span class="text-primary">*</span></label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="first-name" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="last-name">Last Name <span class="text-primary">*</span></label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="last-name" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="phone-number">Phone Number</label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="phone-number" type="tel"/>
+</div>
+<div class="lg:col-span-2">
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="address">Address</label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="address" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="city">City <span class="text-primary">*</span></label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="city" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="birth-date">Birth Date <span class="text-primary">*</span></label>
+<input class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="birth-date" type="date"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Gender <span class="text-primary">*</span></label>
+<select class="w-full bg-stone-50 dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-md shadow-sm focus:ring-primary focus:border-primary" id="gender">
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" for="patient-photo">Patient Photo</label>
+<input class="w-full text-sm text-stone-500 dark:text-stone-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 dark:file:bg-primary/20 file:text-primary hover:file:bg-primary/20 dark:hover:file:bg-primary/30" id="patient-photo" type="file"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

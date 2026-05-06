@@ -1,0 +1,27 @@
+@(number: Integer, problemField: femr.common.models.TabFieldItem)
+
+@if(number == 0) {
+    @if(problemField != null) {
+
+        <div class="problem">
+            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
+        </div>
+    } else {
+
+        <div id="problem@number-container" class="problem">
+            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm" value=""/>
+        </div>
+    }
+} else {
+    @if(problemField != null) {
+
+        <div id="problem@number-container" class="problem">
+            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
+        </div>
+    } else {
+
+        <div id="problem@number-container" class="problem hidden">
+            <input id="problem@number" name="problem@number" type="text" class="form-control input-sm" value=""/>
+        </div>
+    }
+}

@@ -1,0 +1,35 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        //viewModelGet: femr.ui.models.settings.IndexViewModelGet,
+        //form: play.data.Form[femr.ui.models.settings.EditViewModel],
+        assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.settings
+@import femr.ui.controllers.routes.SettingsController
+
+<script>
+        document.addEventListener('DOMContentLoaded', function(event) {
+            let languageData;
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                    .then(response => response.json())
+                    .then(data => {
+                        languageData = data;
+                        updateLanguage("@{currentUser.getLanguageCode}");
+                    });
+
+
+            function updateTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            function updateLanguage(languageCode) {
+                localStorage.setItem('languageCode', languageCode);
+                updateTextContent("settings_title", languageData[languageCode].settings_title);
+                updateTextContent("settings_language", languageData[languageCode].settings_language);
+            }
+        });
+</script>
+
+@settings("Settings Panel", currentUser, assets = assets)

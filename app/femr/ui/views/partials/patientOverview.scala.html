@@ -5,36 +5,60 @@
 @import femr.ui.views.html.partials.helpers.outputWeightOrNA
 @import femr.ui.views.html.partials.helpers.outputIntOrNA
 
-<div id="patientOverviewWrap" class="backgroundForWrap">
+<div id="patientOverviewWrap" class="femr-card femr-card--overview">
 
-    <h3 id="partials_medical_Overview_Patient">Patient Overview - @pageName</h3>
+    <div class="femr-card__header">
+        <h3 id="partials_medical_Overview_Patient" class="femr-card__title">Patient Overview - @pageName</h3>
+    </div>
 
-    @if(patient.getPathToPhoto != null) {
-        <img src="@patient.getPathToPhoto" height="90" width="90">
-        <div id= "patientOverViewInfoPhoto">
-    } else {
-        <div id= "patientOverViewInfo">
-    }
+    <div class="femr-card__body">
+        <div class="femr-overview">
+            <div class="femr-overview__photo">
+                @if(patient.getPathToPhoto != null) {
+                    <img src="@patient.getPathToPhoto" alt="Patient photo">
+                }
+            </div>
 
-    <label id="partials_medical_Overview_Name">Name: </label><span>@patient.getFirstName @patient.getLastName</span>
-    <label for="" id="partials_medical_Overview_Age">Age: </label><span>@patient.getAge</span>
-    <label for="" id="partials_medical_Overview_Sex">Sex: </label><span>@patient.getSex</span>
-    <label for="" id="partials_medical_Overview_City">City: </label><span>@patient.getCity</span>
-    <!-- [FEMR-217] - views/medical/edit.scala.html no longer passes simply "Medical" - now passes "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId -->
-    <!-- broken in commit 23c533c -->
-    <!-- Currently assumes "Medical -" will start pageName argument.  If this changes, updated string in conditional execution -->
-    <!-- Contributed by Jonathan Clow during the CEN5035 course at FSU -->
-    @if(pageName.contains("Medical -")) {
-        <label for="">BMI: </label> <span id="bmi"></span>
-    } else {
-           <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric) / @outputHeightOrNA(String.valueOf(patient.getHeightFeetDual), String.valueOf(patient.getHeightInchesDual), !settings.isMetric)</span>
-            <label>Weight: </label> <span>@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric) / @outputWeightOrNA(String.valueOf(patient.getWeightDual), !settings.isMetric)</span>
+            <div id="patientOverViewInfo" class="femr-overview__grid">
+                <div class="femr-overview__item">
+                    <span id="partials_medical_Overview_Name" class="femr-overview__label">Name</span>
+                    <span class="femr-overview__value">@patient.getFirstName @patient.getLastName</span>
+                </div>
+                <div class="femr-overview__item">
+                    <span id="partials_medical_Overview_Age" class="femr-overview__label">Age</span>
+                    <span class="femr-overview__value">@patient.getAge</span>
+                </div>
+                <div class="femr-overview__item">
+                    <span id="partials_medical_Overview_Sex" class="femr-overview__label">Sex</span>
+                    <span class="femr-overview__value">@patient.getSex</span>
+                </div>
+                <div class="femr-overview__item">
+                    <span id="partials_medical_Overview_City" class="femr-overview__label">City</span>
+                    <span class="femr-overview__value">@patient.getCity</span>
+                </div>
+                @if(pageName.contains("Medical -")) {
+                    <div class="femr-overview__item">
+                        <span class="femr-overview__label">BMI</span>
+                        <span class="femr-overview__value" id="bmi"></span>
+                    </div>
+                } else {
+                    <div class="femr-overview__item">
+                        <span class="femr-overview__label">Height</span>
+                        <span class="femr-overview__value">@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric) / @outputHeightOrNA(String.valueOf(patient.getHeightFeetDual), String.valueOf(patient.getHeightInchesDual), !settings.isMetric)</span>
+                    </div>
+                    <div class="femr-overview__item">
+                        <span class="femr-overview__label">Weight</span>
+                        <span class="femr-overview__value">@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric)</span>
+                    </div>
+                }
 
-    }
-
-    @* Weeks Pregnant *@
-
-    <label id="partials_medical_Overview_Pregnant">Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
-
-</div>
+                @if(patient.getWeeksPregnant != null) {
+                    <div class="femr-overview__item">
+                        <span id="partials_medical_Overview_Pregnant" class="femr-overview__label">Weeks Pregnant</span>
+                        <span class="femr-overview__value">@outputIntOrNA(patient.getWeeksPregnant)</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

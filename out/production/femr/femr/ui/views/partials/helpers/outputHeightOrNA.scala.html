@@ -1,0 +1,29 @@
+@(feet: java.lang.String, inches: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "N/A")
+
+
+    @if(isMetric) {
+        @if(feet == null && inches == null ) {
+            @emptyValue
+        } else {
+
+            @* Output height in meters with centimeters 0 padded on the left
+            * Hack to do it on a string using String.Format() *@
+            @("%s.%2sm".format(feet, inches).replace(' ', '0'))
+            
+        }
+    } else {
+		@* Output empty value if feet and inches are equal to "null" string *@
+		@if((inches != null && feet != null) && (inches.equals("null") && feet.equals("null")) ) {
+			@emptyValue
+		} else {
+			@if(feet != null && !feet.equals("null")) {
+				@* Truncate feet at period so feet is a whole value *@
+				@feet.replaceAll("\\..*", "")'
+			}
+			@if(inches != null && !inches.equals("null")) {
+				@* Truncate inches at period so inches is a whole value *@
+				@inches.replaceAll("\\..*", "")"
+		    }
+        }
+    }
+

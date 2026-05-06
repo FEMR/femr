@@ -1,0 +1,7 @@
+@(tabFieldItem: femr.common.models.TabFieldItem)
+
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+
+@if(tabFieldItem != null){
+    <span class="value" data-id="@tabFieldItem.getName"> @outputStringOrNA(tabFieldItem.getValue)</span>
+}

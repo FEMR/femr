@@ -32,20 +32,34 @@
 </script>
 
 @if(missionTripItem == null) {
-    <div class="alert warning">
-        <h3 id="no_trip_assigned_title">Your account is not assigned to a trip</h3>
-        <p id="no_trip_assigned_text">In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
-        <a id="manage_trip_users_btn" class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
+    <div class="admin-empty-state">
+        <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">hiking</span>
+        <h3 class="admin-empty-state__title" id="no_trip_assigned_title">Your account is not assigned to a trip</h3>
+        <p class="admin-empty-state__description" id="no_trip_assigned_text">In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
+    <a id="manage_trip_users_btn" class="admin-button admin-button--secondary" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
     </div>
 
 } else {
-    <div id="inventoryOptionsWrap">
-        <a href="@InventoryController.existingGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
-            Existing Medication</a>
-        <a href="@InventoryController.customGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
-            Custom Medication</a>
-    </div>
-
-    <p id="formulary_view_info">You are viewing the formulary for <b>@missionTripItem.getFriendlyTripTitle</b></p>
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <div>
+                <h2 class="admin-section__title">Inventory actions</h2>
+                <p class="admin-section__description">
+                    <span id="formulary_view_info">You are viewing the formulary for</span>
+                    <strong>@missionTripItem.getFriendlyTripTitle</strong>
+                </p>
+            </div>
+            <div class="admin-section__actions">
+                <a href="@InventoryController.existingGet(missionTripItem.getId)" class="admin-button admin-button--primary">
+                    <span class="material-symbols-outlined" aria-hidden="true">medication</span>
+                    <span>Existing Medication</span>
+                </a>
+                <a href="@InventoryController.customGet(missionTripItem.getId)" class="admin-button admin-button--primary">
+                    <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
+                    <span>Custom Medication</span>
+                </a>
+            </div>
+        </div>
+    </section>
 }
 

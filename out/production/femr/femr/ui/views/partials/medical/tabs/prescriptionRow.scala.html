@@ -1,0 +1,61 @@
+@( medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem],
+   index: Integer,
+   script: femr.common.models.PrescriptionItem
+)
+
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+
+@if( script == null ) {
+@* Will get submitted - new prescriptions in medical and replaced prescriptions in pharmacy *@
+@* The index variable is how we link the replaced prescription back to the prescribed prescription? *@
+
+    <div class="prescription-grid prescriptionRow prescriptionInput">
+
+        <input class='medicationID' name='prescriptions[@index].medicationID' type='hidden' />
+
+        <span class="prescription-field prescriptionName">
+            <input type='text' name="prescriptions[@index].medicationName" class='medicationName form-control input-sm'/>
+        </span>
+        <span class="prescription-field prescriptionAdministration">
+            @*<input type="text" class="administrationName form-control input-sm"/>*@
+            <select class="administrationName form-control" name="prescriptions[@index].administrationID">
+                <option value="-1">- Select -</option>
+                @for(item <- medicationAdministrationItems) {
+                    <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
+                }
+            </select>
+        </span>
+        <span class="prescription-field prescriptionAdministrationDays">
+            <input type="number" class="form-control input-sm" />
+        </span>
+        <span class="prescription-field prescriptionAmount">
+            <input name="prescriptions[@index].amount" type="number" class="form-control input-sm"/>
+        </span>
+    </div>
+
+}else{
+@* won't get submitted, the prescription has already been prescribed for the encounter (happens in medical) *@
+    <div class="prescription-grid prescriptionRow prescriptionInput">
+
+        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
+
+        <span class="prescription-field prescriptionName">
+            <input type='text' class='medicationName form-control input-sm' value="@script.getMedicationItem.getFullName" readonly />
+        </span>
+        <span class="prescription-field prescriptionAdministration">
+
+            <select class="administrationName form-control" readonly disabled>
+                <option value="-1">- Select -</option>
+                @for(item <- medicationAdministrationItems) {
+                    <option value="@item.getId" data-modifier="@item.getDailyModifier" @if( item.getId == script.getAdministrationID ){ selected="selected" }>@item.getName</option>
+                }
+            </select>
+        </span>
+        <span class="prescription-field prescriptionAdministrationDays">
+            <input type="number" class="form-control input-sm" readonly />
+        </span>
+        <span class="prescription-field prescriptionAmount">
+            <input type="number" class="form-control input-sm" value='@script.getAmountWithNull' readonly />
+        </span>
+    </div>
+}

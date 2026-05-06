@@ -41,7 +41,7 @@ public class Photo implements IPhoto {
     @Column(name = "photo")
     private byte[] _photo;
 
-    @Column(name = "content_type") // Add this field
+    @Transient
     private String _contentType;
 
     private String languageCode;

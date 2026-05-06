@@ -2,31 +2,38 @@ $(document).ready(function () {
     var urlPieces = window.location.href.split('/');
 
     if ($.inArray("edit", urlPieces) !== -1) {
-        editUsers.bindRoleDropDownClick();
-        editUsers.bindRoleBadge();
         editUsers.bindSubmitButton();
     } else if ($.inArray("create", urlPieces) !== -1 || $.inArray("register", urlPieces) !== -1 ) {
         createUsers.bindSubmitButton();
+        createUsers.bindTripHistoryControls();
     } else {
         manageUsers.bindUserToggleButtons();
     }
 
-    $("#userTable").DataTable({
-        columnDefs: [
-                    { orderable: false, targets: [4] },
-                    { orderable: false, targets: [6] },
-                    { orderable: false, targets: [7] }]
-    });
+    const $userTable = $("#userTable");
+    if ($userTable.length) {
+        $userTable.DataTable({
+            columnDefs: [
+                { orderable: false, targets: [2, 3, 7] }
+            ]
+        });
+    }
 });
 
 var manageUsers = {
-    elements: {
-        userToggleButtons: $('.toggleBtn')
-    },
     bindUserToggleButtons: function () {
-        manageUsers.elements.userToggleButtons.click(function () {
+        $(document).on('click', '.toggleBtn', function (event) {
+            event.preventDefault();
             manageUsers.toggleUser(this);
         });
+    },
+    setButtonState: function (btn, variant, label, icon) {
+        var $btn = $(btn);
+        $btn.removeClass('admin-button--success admin-button--danger');
+        if (variant) {
+            $btn.addClass('admin-button--' + variant);
+        }
+        $btn.html('<span class="material-symbols-outlined" aria-hidden="true">' + icon + '</span><span>' + label + '</span>');
     },
     toggleUser: function (btn) {
         //user ID
@@ -40,14 +47,10 @@ var manageUsers = {
             success: function (isDeleted) {
                 //on success, toggle button to reflect current state of the user
                 if (isDeleted === "false") {
-                    $(btn).html("Deactivate");
-                    $(btn).removeClass("btn-success");
-                    $(btn).addClass("btn-danger");
+                    manageUsers.setButtonState(btn, 'danger', 'Deactivate', 'block');
 
                 } else {
-                    $(btn).html("Activate");
-                    $(btn).removeClass("btn-danger");
-                    $(btn).addClass("btn-success");
+                    manageUsers.setButtonState(btn, 'success', 'Activate', 'check_circle');
                 }
             },
             error: function () {
@@ -106,7 +109,7 @@ var createUsers = {
             if(password.length < 8){
                 pass = false;
             }
-            var re = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%\^&*()_\-+=|\\\"\':;?\/\{\}\[\]<>,\.~` \t]{8,}/;
+            var re = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9])[a-zA-Z\d!@#$%\^&*()_\-+=|\\\"\':;?\/\{\}\[\]<>,\.~` \t]{8,}/;
             if(!re.test(password)) {
                 pass = false;
             }
@@ -117,7 +120,7 @@ var createUsers = {
             if (passwordErrors !== "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least one uppercase, one lowercase, one digit and 8 characters long.");
+                createUsers.elements.password.next(".errors").text("password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long.");
         }
         else{
             createUsers.elements.password.next(".errors").text("");
@@ -147,12 +150,68 @@ var createUsers = {
             var elementValidation = createAndEditUsers.validateElements();
             return roleAndPasswordValidation && elementValidation;
         });
+    },
+    escapeHtml: function (value) {
+        return $('<div/>').text(value || '').html();
+    },
+    updateTripEmptyState: function () {
+        var $emptyState = $('#createTripEmptyState');
+        if (!$emptyState.length) {
+            return;
+        }
+
+        if ($('#createTripTableBody tr').length === 0) {
+            $emptyState.show();
+        } else {
+            $emptyState.hide();
+        }
+    },
+    addTripRow: function () {
+        var $tripSelect = $('#createTripSelect');
+        var selectedTripId = $tripSelect.val();
+        if (!selectedTripId) {
+            return;
+        }
+
+        if ($('#createTripTableBody tr[data-trip-id="' + selectedTripId + '"]').length > 0) {
+            return;
+        }
+
+        var $option = $tripSelect.find('option:selected');
+        var team = createUsers.escapeHtml($option.data('team'));
+        var country = createUsers.escapeHtml($option.data('country'));
+        var date = createUsers.escapeHtml($option.data('date'));
+        var title = createUsers.escapeHtml($option.data('title'));
+
+        var rowHtml = '<tr data-trip-id="' + selectedTripId + '">' +
+            '<td>' + team + '</td>' +
+            '<td>' + country + '</td>' +
+            '<td>' + date + '</td>' +
+            '<td>' +
+            '<input type="hidden" name="tripIds[]" value="' + selectedTripId + '" />' +
+            '<button type="button" class="admin-button admin-button--danger js-remove-create-trip" aria-label="Remove ' + title + '">Remove</button>' +
+            '</td>' +
+            '</tr>';
+
+        $('#createTripTableBody').append(rowHtml);
+        createUsers.updateTripEmptyState();
+    },
+    bindTripHistoryControls: function () {
+        $('#createAddTripBtn').off('click').on('click', function () {
+            createUsers.addTripRow();
+        });
+
+        $(document).off('click.createTripRemove', '.js-remove-create-trip').on('click.createTripRemove', '.js-remove-create-trip', function () {
+            $(this).closest('tr').remove();
+            createUsers.updateTripEmptyState();
+        });
+
+        createUsers.updateTripEmptyState();
     }
 };
 
 var editUsers = {
     elements: {
-        xButtonOnRoleListItem: $('.roleBadge'),
         passwordTextBox: $('#newPassword')
     },
     /**
@@ -163,9 +222,32 @@ var editUsers = {
         //validate passwords
         var newPassword = $.trim(document.forms["createForm"]["newPassword"].value);
         var newPasswordVerify = $.trim(document.forms["createForm"]["newPasswordVerify"].value);
+        var passwordErrors = [];
+
+        if (newPassword.length > 0) {
+            if (newPassword.length < 8) {
+                passwordErrors.push("be at least 8 characters long");
+            }
+            if (!/[A-Z]/.test(newPassword)) {
+                passwordErrors.push("include at least one uppercase character");
+            }
+            if (!/[a-z]/.test(newPassword)) {
+                passwordErrors.push("include at least one lowercase character");
+            }
+            if (!/\d/.test(newPassword)) {
+                passwordErrors.push("include at least one number");
+            }
+        }
+
         if (newPassword !== "") {
-            if (newPassword != newPasswordVerify) {
-                editUsers.elements.passwordTextBox.next(".errors").text("passwords do not match");
+            if (newPassword !== newPasswordVerify) {
+                passwordErrors.push("match the verify password field");
+            }
+
+            if (passwordErrors.length > 0) {
+                var errorMessage = "Invalid password reset. Password must " + passwordErrors.join(", ") + ".";
+                editUsers.elements.passwordTextBox.next(".errors").text(errorMessage);
+                window.alert(errorMessage);
                 pass = false;
             } else {
                 editUsers.elements.passwordTextBox.next(".errors").text("");
@@ -179,44 +261,28 @@ var editUsers = {
      * Validates the roles for edit user page
      */
     validateRoles: function () {
-        var role = true;
-        //validate roles
-        if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
-            role = false;
+        var roles = document.forms["createForm"].elements["roles[]"];
+        var hasRole = false;
+
+        if (roles) {
+            if (roles.length === undefined) {
+                hasRole = roles.checked;
+            } else {
+                for (var i = 0; i < roles.length; i++) {
+                    if (roles[i].checked) {
+                        hasRole = true;
+                        break;
+                    }
+                }
+            }
         }
-        if (role === false) {
+
+        if (!hasRole) {
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");
         }
-        return role;
-    },
-    bindRoleDropDownClick: function () {
-        $('.roleListItem').click(function () {
-            var role = $(this).text();
-            if (!editUsers.doesRoleExistInList(role)) {
-                $('#currentRoles').append("<li class=list-group-item value=" + role + "><span class='badge roleBadge'>X</span>" + role + "<input type=text class=hidden name=roles[] value=" + role + "></li>");
-                editUsers.elements.xButtonOnRoleListItem = $(editUsers.elements.xButtonOnRoleListItem.selector);
-                editUsers.bindRoleBadge();
-            }
-        });
-    },
-    bindRoleBadge: function () {
-        editUsers.elements.xButtonOnRoleListItem.unbind();
-        editUsers.elements.xButtonOnRoleListItem.click(function () {
-            editUsers.elements.xButtonOnRoleListItem = $(editUsers.elements.xButtonOnRoleListItem.selector);
-            $(this).parent().remove();
-        });
-    },
-    doesRoleExistInList: function (role) {
-        var exist = false;
-        var $roles = $('#currentRoles').find('> li');
-        $($roles).each(function () {
-            if ($(this).attr('value').toLowerCase() === role.toLowerCase()) {
-                exist = true;
-            }
-        });
-        return exist;
+        return hasRole;
     },
     bindSubmitButton: function () {
         $('#editUserSubmitBtn').click(function () {

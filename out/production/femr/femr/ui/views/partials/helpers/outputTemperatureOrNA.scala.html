@@ -1,0 +1,14 @@
+@(temp: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "N/A")
+
+
+@if(temp == null){
+    @emptyValue
+}else{
+    @if(isMetric) {
+        @* Output temp with only 1 decimal place showing *@
+        @temp.replaceAll("(\\.\\d).*", "$1")&deg;C
+    } else {
+        @* Output temp with only 1 decimal place showing *@
+        @temp.replaceAll("(\\.\\d).*", "$1")&deg;F
+    }
+}

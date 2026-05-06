@@ -53,14 +53,14 @@
             </div>
         }
     } else {
-        <input name="tabFieldItems[@index].value" type="text" placeholder="@placeholder" class="fInput customField" value="@value"@if(isReadOnly){readonly}/>
+    <input name="tabFieldItems[@index].value" type="text" placeholder="@placeholder" class="fInput customField femr-input" value="@value"@if(isReadOnly){readonly}/>
     }
     <br/>
 } else {
     @if(size.toLowerCase == "large") {
-        <label for="@name">@name</label>
+    <label for="@name">@name</label>
         <input type="text" class="hidden" name="tabFieldItems[@index].name" value="@name"/>
-        <textarea name="tabFieldItems[@index].value" class="fTextArea customField" placeholder="@placeholder"@if(isReadOnly){readonly} >@value</textarea>
+    <textarea name="tabFieldItems[@index].value" class="fTextArea customField femr-textarea" placeholder="@placeholder"@if(isReadOnly){readonly} >@value</textarea>
 
         <br/>
     }

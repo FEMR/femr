@@ -39,6 +39,7 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
     private String newPassword;
     private String newPasswordVerify;
     private String notes;
+    private List<Integer> tripIds;
     private Integer CreatedBy; //Sam Zanni
     private String DateCreated; //Sam Zanni
 
@@ -46,7 +47,7 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
 
-        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{8,}");    //Aditya Nerella
+    Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,}");
 
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
@@ -56,8 +57,8 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
             errors.add(new ValidationError("password", "password is a required field"));
         // added for FEMR-159
 
-        if (!PassReqs.matcher(password).find()){ 
-            errors.add(new ValidationError("password", "password must have at least one Uppercase, one lowercase, one digit and 8 characters long."));
+        if (StringUtils.isNotNullOrWhiteSpace(password) && !PassReqs.matcher(password).find()) {
+            errors.add(new ValidationError("password", "password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long."));
         }
 
         if (!password.equals(passwordVerify)) {
@@ -66,7 +67,7 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
         if (roles == null || roles.size() < 1)
             errors.add(new ValidationError("roles", "a user needs at least one role"));
 
-        if(password.length() < 8)
+        if (StringUtils.isNotNullOrWhiteSpace(password) && password.length() < 8)
             errors.add(new ValidationError("password", "The password must contain at least 8 characters"));
 
         return errors.isEmpty() ? null : errors;
@@ -166,6 +167,14 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<Integer> getTripIds() {
+        return tripIds;
+    }
+
+    public void setTripIds(List<Integer> tripIds) {
+        this.tripIds = tripIds;
     }
 
     public Integer getCreatedBy() { return CreatedBy; } //Sam Zanni

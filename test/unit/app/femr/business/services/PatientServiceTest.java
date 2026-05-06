@@ -75,6 +75,22 @@ public class PatientServiceTest {
     }
 
     @Test
+    public void updatePatientCountry_countryProvided_countryPersisted() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientCountry(1, "Guatemala");
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals("Guatemala", response.getResponseObject().getCountry());
+    }
+
+    @Test
     public void updatePatientAge_ageProvided_agePersisted() throws Exception {
 
         Date testDate = Calendar.getInstance().getTime();

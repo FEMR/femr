@@ -41,7 +41,7 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public PatientItem createPatientItem(int id, String firstName, String lastName, String phoneNumber, String city, String address,
+    public PatientItem createPatientItem(int id, String firstName, String lastName, String phoneNumber, String city, String country, String address,
                                          int userId, Date age, String sex, Integer weeksPregnant, Integer heightFeet, Integer heightInches,
                                          Float weight, String pathToPatientPhoto, Integer photoId, String ageClassification, Integer smoker, Integer diabetic, Integer alcohol, Integer cholesterol, Integer hypertension) {
 
@@ -53,6 +53,7 @@ public class MockItemModelMapper implements IItemModelMapper{
         patientItem.setLastName(lastName);
         patientItem.setPhoneNumber(phoneNumber);
         patientItem.setCity(city);
+    patientItem.setCountry(country);
         patientItem.setAddress(address);
         patientItem.setUserId(userId);
         patientItem.setSex(sex);

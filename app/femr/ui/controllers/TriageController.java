@@ -258,6 +258,13 @@ class PatientEncounterCreationProcess {
                 throw new RuntimeException();
             }
 
+            patientServiceResponse = patientService.updatePatientCountry(id, viewModel.getCountry());
+            if (patientServiceResponse.hasErrors()) {
+
+                Logger.error("TriageController-indexPost", "there was an issue updating the patient's country");
+                throw new RuntimeException();
+            }
+
             patientServiceResponse = patientService.updatePatientPhoneNumber(id, viewModel.getPhoneNumber());
             if (patientServiceResponse.hasErrors()){
 
@@ -275,7 +282,11 @@ class PatientEncounterCreationProcess {
         }
 
         patientItem = patientServiceResponse.getResponseObject();
-        photoService.createPatientPhoto(patientItem.getPathToPhoto(), patientItem.getId(), viewModel.getDeletePhoto());
+        ServiceResponse<Boolean> patientPhotoServiceResponse = photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        if (patientPhotoServiceResponse.hasErrors() || Boolean.FALSE.equals(patientPhotoServiceResponse.getResponseObject())) {
+            Logger.error("TriageController-indexPost", "there was an issue saving the patient's photo");
+            throw new RuntimeException();
+        }
 
         List<String> chiefComplaints = parseChiefComplaintsJSON(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientItem.getId(), currentUser.getId(), currentUser.getTripId(), viewModel.getAgeClassification(), chiefComplaints);
@@ -498,6 +509,7 @@ class PatientEncounterCreationProcess {
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
+    patient.setCountry(viewModelPost.getCountry());
         patient.setPathToPhoto(viewModelPost.getPatientPhotoCropped());
         return patient;
     }

@@ -233,6 +233,7 @@ var recentVitals ={
         $('.systolic').each(function(){
             if ($.trim($(this).text()) !== ''){
                 systolic = $(this).text();
+                return false;
             }
         });
 
@@ -249,6 +250,7 @@ var recentVitals ={
         $('.diastolic').each(function(){
             if ($.trim($(this).text()) !== ''){
                 diastolic = $(this).text();
+                return false;
             }
         });
 
@@ -267,6 +269,7 @@ var recentVitals ={
             var tryParse = parseFloat($(this).attr("data-weight"));
             if (!isNaN(tryParse)) {
                 weight = tryParse;
+                return false;
             }
         });
 
@@ -285,6 +288,7 @@ var recentVitals ={
             var tryParseFeet = parseFloat($(this).attr("data-feet"));
             if (!isNaN(tryParseFeet)) {
                 heightFeet = tryParseFeet;
+                return false;
             }
         });
 
@@ -517,6 +521,69 @@ $(document).ready(function () {
 
     });
 
+    // Fail-safe handlers for dynamically injected new-vitals partial.
+    $(document).off('click', '#cancelVitalsBtn').on('click', '#cancelVitalsBtn', function () {
+        $('#newVitalsDialog').dialog("close");
+    });
+
+    $(document).off('click', '#saveVitalsBtn').on('click', '#saveVitalsBtn', function () {
+        var patientVitals = {
+            respiratoryRate: $('#newRespiratoryRate'),
+            bloodPressureSystolic: $('#newSystolic'),
+            bloodPressureDiastolic: $('#newDiastolic'),
+            heartRate: $('#newHeartRate'),
+            oxygenSaturation: $('#newOxygen'),
+            temperature: $('#newTemperature'),
+            weight: $('#newWeight'),
+            heightFeet: $('#newHeightFeet'),
+            heightInches: $('#newHeightInches'),
+            glucose: $('#newGlucose'),
+            weeksPregnant: $('#weeksPreg')
+        };
+
+        var isValid = (typeof vitalClientValidator === 'function') ? vitalClientValidator(patientVitals) : true;
+        if (!isValid) {
+            alert("Please correct highlighted vitals before saving.");
+            return;
+        }
+
+        var newVitals = {};
+        if (patientVitals.bloodPressureSystolic.val() !== '') { newVitals.bloodPressureSystolic = patientVitals.bloodPressureSystolic.val(); }
+        if (patientVitals.bloodPressureDiastolic.val() !== '') { newVitals.bloodPressureDiastolic = patientVitals.bloodPressureDiastolic.val(); }
+        if (patientVitals.heartRate.val() !== '') { newVitals.heartRate = patientVitals.heartRate.val(); }
+        if (patientVitals.temperature.val() !== '') { newVitals.temperature = patientVitals.temperature.val(); }
+        if (patientVitals.oxygenSaturation.val() !== '') { newVitals.oxygenSaturation = patientVitals.oxygenSaturation.val(); }
+        if (patientVitals.respiratoryRate.val() !== '') { newVitals.respiratoryRate = patientVitals.respiratoryRate.val(); }
+        if (patientVitals.heightFeet.val() !== '') { newVitals.heightFeet = patientVitals.heightFeet.val(); }
+        if (patientVitals.heightInches.val() !== '') { newVitals.heightInches = patientVitals.heightInches.val(); }
+        if (patientVitals.weight.val() !== '') { newVitals.weight = patientVitals.weight.val(); }
+        if (patientVitals.glucose.val() !== '') { newVitals.glucose = patientVitals.glucose.val(); }
+        if (patientVitals.weeksPregnant.val() !== '') { newVitals.weeksPregnant = patientVitals.weeksPregnant.val(); }
+
+        newVitals.smoker = document.getElementById("newSmoker")?.checked ? "1" : null;
+        newVitals.diabetic = document.getElementById("newDiabetic")?.checked ? "1" : null;
+        newVitals.alcohol = document.getElementById("newAlcohol")?.checked ? "1" : null;
+        newVitals.cholesterol = document.getElementById("newCholesterol")?.checked ? "1" : null;
+        newVitals.hypertension = document.getElementById("newHypertension")?.checked ? "1" : null;
+
+        $.ajax({
+            url: '/medical/updateVitals/' + $('#patientId').val(),
+            type: 'POST',
+            data: newVitals
+        }).done(function () {
+            $('#newVitalsDialog').dialog("close");
+            $.ajax({
+                url: '/medical/listVitals/' + $('#patientId').val(),
+                type: 'GET',
+                success: function (partialView) {
+                    $('#vitalsPartial').html(partialView);
+                }
+            });
+        }).fail(function () {
+            alert("Unable to save vitals right now. Please try again.");
+        });
+    });
+
     $('#modalCancelPortrait').click(function () {
         //remove warnings
         $('#modalImg').parent().find('p').remove();
@@ -697,7 +764,7 @@ function addNewPortrait() {
 }
 
 function replaceFileInputControl() {
-    $('#photoInputContainer').html('<input type="file" class="form-control" onchange="imageInputChange(this)" placeholder="Choose Image" />');
+    $('#photoInputContainer').html('<input type="file" class="form-control femr-input" onchange="imageInputChange(this)" placeholder="Choose Image" />');
 }
 
 function imageInputChange(evt) {

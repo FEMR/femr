@@ -1,0 +1,9 @@
+@(text: java.lang.String)
+
+@import femr.util.stringhelpers.StringUtils
+
+@if(StringUtils.isNullOrWhiteSpace(text)){
+    N/A
+}else{
+    @text
+}

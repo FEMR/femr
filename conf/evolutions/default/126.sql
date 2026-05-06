@@ -1,5 +1,13 @@
 # --- !Ups
 
+ALTER TABLE patients
+  ADD COLUMN country VARCHAR(255);
+
+# --- !Downs
+
+ALTER TABLE patients
+  DROP COLUMN country;
+  
 CREATE TABLE `concept_who_health_events` (
     `id`       INT(11) NOT NULL AUTO_INCREMENT,
     `name`     VARCHAR(255) NOT NULL,

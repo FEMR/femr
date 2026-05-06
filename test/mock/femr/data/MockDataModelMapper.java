@@ -87,7 +87,7 @@ public class MockDataModelMapper implements IDataModelMapper{
     }
 
     @Override
-    public IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID) {
+    public IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, String country, Integer photoID) {
 
         IPatient mockPatient = new MockPatient();
         mockPatient.setId(1);
@@ -99,6 +99,7 @@ public class MockDataModelMapper implements IDataModelMapper{
         mockPatient.setSex(sex);
         mockPatient.setAddress(address);
         mockPatient.setCity(city);
+    mockPatient.setCountry(country);
         //mockPatient.setPhoto();
         return mockPatient;
     }

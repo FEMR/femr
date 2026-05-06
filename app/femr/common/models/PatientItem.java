@@ -27,11 +27,13 @@ public class PatientItem {
     private String phoneNumber;
     private String address;
     private String city;
+    private String country;
     private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
     private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
     private Integer monthsOld;
     private Date birth;
     private String friendlyDateOfBirth;
+    private String ageClassification;
     private String sex;
     private Integer photoId;
     private String pathToPhoto;
@@ -102,6 +104,14 @@ public class PatientItem {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getAge() {
@@ -217,6 +227,14 @@ public class PatientItem {
 
     public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
+    }
+
+    public String getAgeClassification() {
+        return ageClassification;
+    }
+
+    public void setAgeClassification(String ageClassification) {
+        this.ageClassification = ageClassification;
     }
 
     public Integer getYearsOld() {

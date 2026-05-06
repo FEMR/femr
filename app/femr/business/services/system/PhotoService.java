@@ -113,8 +113,18 @@ public class PhotoService implements IPhotoService {
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
 
                 //Decode image, save as BufferedImage:
-                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
+                String parsedImage = imageString;
+                int delimiterIndex = imageString.indexOf(",");
+                if (delimiterIndex >= 0 && delimiterIndex + 1 < imageString.length()) {
+                    parsedImage = imageString.substring(delimiterIndex + 1);
+                }
+                parsedImage = parsedImage.replaceAll("\\s+", "");
                 BufferedImage bufferedImage = decodeToImage(parsedImage);
+                if (bufferedImage == null) {
+                    response.setResponseObject(false);
+                    response.addError("HandlePatientPhoto", "Unable to decode patient image payload.");
+                    return response;
+                }
                 String imageFileName = "N/A";
 
                 if(!_bUseDbPhotoStorage) {
@@ -134,8 +144,13 @@ public class PhotoService implements IPhotoService {
                     patient.setPhoto(pPhoto);
                     patientRepository.savePatient(patient);
                 } else {
-                    //Record already exists:
-                    //photoId = patient.getPhoto().getId();
+                    //Record already exists: update it with the latest uploaded image.
+                    Integer existingPhotoId = patient.getPhoto().getId();
+                    if (_bUseDbPhotoStorage) {
+                        photoRepository.updatePhotoData(existingPhotoId, convertBufferedImageToByteArray(bufferedImage));
+                    } else {
+                        photoRepository.updatePhotoFilePath(existingPhotoId, imageFileName);
+                    }
                 }
 
 
@@ -154,6 +169,7 @@ public class PhotoService implements IPhotoService {
             response.setResponseObject(true);
         } catch (Exception ex) {
             response.setResponseObject(false);
+            Logger.error("PhotoService-createPatientPhoto", ex);
             response.addError("HandlePatientPhoto", ex.getMessage());
         }
         return response;

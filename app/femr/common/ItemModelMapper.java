@@ -25,6 +25,7 @@ import femr.data.models.mysql.InternetStatus;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -166,6 +167,7 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 String lastName,
                                                 String phoneNumber,
                                                 String city,
+                                                String country,
                                                 String address,
                                                 int userId,
                                                 Date age,
@@ -200,6 +202,8 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setYearsOld(dateUtils.getYearsInteger(age));
         patientItem.setMonthsOld(dateUtils.getMonthsInteger(age));
         patientItem.setCity(city);
+        if (StringUtils.isNotNullOrWhiteSpace(country))
+            patientItem.setCountry(country);
         patientItem.setUserId(userId);
         //optional fields
         if (StringUtils.isNotNullOrWhiteSpace(phoneNumber))
@@ -214,6 +218,9 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
 
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(ageClassification)) {
+            patientItem.setAgeClassification(ageClassification);
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {
 
@@ -283,6 +290,7 @@ public class ItemModelMapper implements IItemModelMapper {
                 patientEncounter.getPatient().getLastName(),
                 patientEncounter.getPatient().getPhoneNumber(),
                 patientEncounter.getPatient().getCity(),
+        patientEncounter.getPatient().getCountry(),
                 patientEncounter.getPatient().getAddress(),
                 patientEncounter.getPatient().getUserId(),
                 patientEncounter.getPatient().getAge(),
@@ -654,6 +662,10 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setPasswordReset(user.getPasswordReset());
 
         userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
+        if (user.getPasswordCreatedDate() != null) {
+            int passwordAgeDays = Days.daysBetween(user.getPasswordCreatedDate(), DateTime.now()).getDays();
+            userItem.setPasswordAgeDays(Math.max(passwordAgeDays, 0));
+        }
         userItem.setCreatedBy(user.getCreatedBy()); //Sam Zanni
         userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
 

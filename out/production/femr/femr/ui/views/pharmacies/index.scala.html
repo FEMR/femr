@@ -1,0 +1,38 @@
+@(currentUser: femr.common.dtos.CurrentUser, message: java.lang.String, patientId: java.lang.Integer, assets: AssetsFinder)
+
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.shared._
+
+
+@main("Pharmacy", currentUser, assets = assets) {
+    <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                let languageData;
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            languageData = data;
+                            updateLanguage("@{currentUser.getLanguageCode()}");
+
+                        });
+
+                function updateTextContent(elementId, value) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                }
+
+                function updateLanguage(languageCode = "en") {
+                    localStorage.setItem('languageCode', languageCode);
+                    updateTextContent("search_box_title", languageData[languageCode].title_pharmacy_search);
+                }
+            });
+    </script>
+    <div class="container">
+    @helper.form(action = PharmaciesController.indexPost()) {
+        @searchBox("Pharmacy", currentUser, patientId, message)
+    }
+    </div>
+}

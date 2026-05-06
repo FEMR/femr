@@ -128,8 +128,25 @@
 }
 @main("Research", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
-        <div class="row dropdown">
-            <div class="col-sm-3 col-md-2 sidebar">
+        <div class="row dropdown research-layout" id="research-layout">
+            <button type="button"
+                    class="research-mobile-filters-toggle"
+                    aria-controls="research-filters-sidebar"
+                    aria-expanded="false"
+                    aria-label="Open research filters"
+                    hidden>
+                <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+                <span>Filters</span>
+            </button>
+
+            <div class="research-mobile-filters-backdrop" hidden></div>
+
+            <div class="col-sm-3 col-md-2 sidebar" id="research-filters-sidebar">
+                <button type="button"
+                        class="research-mobile-filters-close"
+                        aria-label="Close research filters">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
                 @helper.form(action = ResearchController.exportPost, 'id -> "graph-options") {
                     <div id="filter-errors">
 

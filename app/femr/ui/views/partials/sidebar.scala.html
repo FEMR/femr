@@ -10,8 +10,6 @@
 @import femr.ui.controllers.routes.ReferenceController
 @import femr.ui.controllers.routes.SettingsController
 @import femr.ui.controllers.manager.routes.ManagerController
-@import femr.ui.controllers.superuser.routes.SuperuserController
-@import femr.ui.controllers.superuser.routes.TabController
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.admin.routes.ConfigureController
 @import femr.ui.controllers.admin.routes.InventoryController
@@ -80,7 +78,6 @@
                         updateTextContent('langCode_admin_trips', languageData[languageCode].admin_trips);
                         updateTextContent('langCode_admin_users', languageData[languageCode].admin_users);
                         updateTextContent('langCode_admin_updates', languageData[languageCode].admin_updates);
-                        updateTextContent('langCode_superUser', languageData[languageCode].langCode_superUser);
                         updateTextContent('langCode_reference', languageData[languageCode].langCode_reference);
                         updateTextContent('langCode_settings', languageData[languageCode].langCode_settings);
                     }
@@ -172,22 +169,6 @@
                             <span class="femr-sidebar__nav-text" id="langCode_admin_updates">Updates</span>
                         </a>
                     </li>
-                }
-                @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
-                    <li>
-                        <a class="femr-sidebar__nav-link" href="@SuperuserController.indexGet()" aria-label="Superuser">
-                            <span class="material-symbols-outlined femr-sidebar__nav-icon">shield_person</span>
-                            <span class="femr-sidebar__nav-text" id="langCode_superUser">Superuser</span>
-                        </a>
-                    </li>
-                    @if(currentUser.getEmail == "superuser") {
-                        <li>
-                            <a class="femr-sidebar__nav-link" href="@TabController.manageGet()" aria-label="Tabs">
-                                <span class="material-symbols-outlined femr-sidebar__nav-icon">tab</span>
-                                <span class="femr-sidebar__nav-text">Tabs</span>
-                            </a>
-                        </li>
-                    }
                 }
                 <li>
                     <a class="femr-sidebar__nav-link" href="@DatabaseDumpController.indexGet()" aria-label="Backup Data">

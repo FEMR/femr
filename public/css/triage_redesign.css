@@ -148,6 +148,13 @@
     box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.6);
 }
 
+.femr-btn--primary:hover,
+.femr-btn--primary:focus,
+.femr-btn--primary:active {
+    background: var(--femr-color-primary-hover, #294ba0);
+    color: #ffffff;
+}
+
 .femr-btn--ghost {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(28, 25, 23, 0.14);
@@ -291,9 +298,9 @@
 .femr-field input[type="date"]:focus,
 .femr-field input[type="email"]:focus,
 .femr-field .citySearch:focus {
-    border-color: var(--femr-color-primary, #dc2626);
+    border-color: var(--femr-color-primary, #335ec8);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.18);
 }
 
 .femr-field--span-2 {
@@ -328,9 +335,9 @@
 
 .femr-input:focus,
 .femr-textarea:focus {
-    border-color: var(--femr-color-primary, #dc2626);
+    border-color: var(--femr-color-primary, #335ec8);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.18);
 }
 
 .generalInfoInput.has-errors label,

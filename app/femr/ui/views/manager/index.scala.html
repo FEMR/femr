@@ -3,6 +3,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
 @import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.manager.routes.ManagerController
 @import scala.collection.JavaConverters._
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/admin/admin_redesign.css")">
@@ -37,6 +38,9 @@
                             <span class="manager-trip-card__label">Current Trip</span>
                             <span class="manager-trip-card__value">@tripName</span>
                         </div>
+                    }
+                    @if(viewModelGet.getSettings != null && viewModelGet.getSettings.isWhoReporting) {
+                        <a class="admin-button admin-button--primary" href="@ManagerController.dailyReportGet()">Open WHO Daily Report</a>
                     }
                 }
             </div>

@@ -108,6 +108,13 @@
     box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.5);
 }
 
+.femr-btn--primary:hover,
+.femr-btn--primary:focus,
+.femr-btn--primary:active {
+    background: var(--femr-color-primary-hover, #294ba0);
+    color: #ffffff;
+}
+
 .femr-btn--ghost {
     background: rgba(255, 255, 255, 0.6);
     color: var(--femr-color-text, #1c1917);
@@ -394,9 +401,9 @@
 .femr-medical .fTextArea:focus,
 .femr-medical select:focus,
 .femr-medical textarea:focus {
-    border-color: var(--femr-color-primary, #dc2626);
+    border-color: var(--femr-color-primary, #335ec8);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 3px rgba(51, 94, 200, 0.18);
 }
 
 .femr-medical .input-group {
@@ -418,6 +425,97 @@
     border: none;
     background: rgba(51, 94, 200, 0.12);
     color: var(--femr-color-primary, #335ec8);
+}
+
+/* WHO dropdowns (match redesigned inputs) */
+.femr-medical .who-searchable-dropdown {
+    position: relative;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.femr-medical .who-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    background: #ffffff;
+    color: var(--femr-color-text, #1c1917);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.femr-medical .who-dropdown-toggle:hover {
+    background: #f8fafc;
+}
+
+.femr-medical .who-dropdown-toggle .caret {
+    margin-left: 12px;
+    border-top-color: var(--femr-color-text-muted, #6b7280);
+}
+
+.femr-medical .who-dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--femr-color-border, #e5e7eb);
+    background: #ffffff;
+    box-shadow: 0 18px 40px -30px rgba(15, 23, 42, 0.65);
+    overflow: hidden;
+}
+
+.femr-medical .who-search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid var(--femr-color-border, #e5e7eb);
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.femr-medical .who-dropdown-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.femr-medical .who-group-header {
+    padding: 8px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--femr-color-text-muted, #6b7280);
+    background: #f8fafc;
+}
+
+.femr-medical .who-item {
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--femr-color-text, #1c1917);
+}
+
+.femr-medical .who-item:hover,
+.femr-medical .who-item.who-highlighted {
+    background: rgba(51, 94, 200, 0.12);
+    color: var(--femr-color-primary, #335ec8);
+}
+
+.femr-medical .who-dropdown-toggle.who-readonly {
+    background: #f3f4f6;
+    color: var(--femr-color-text-muted, #6b7280);
+    cursor: default;
 }
 
 .femr-medical__vitals #vitalTable {

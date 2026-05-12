@@ -76,10 +76,22 @@ $(document).ready(function () {
 
     //selects a patient from the duplicate patient search to be seen in triage
     $('.selectPageFromRow').click(function () {
-
         var id = $.trim($(this).parent().parent().find('.patientId').html());
-        document.getElementById("nameOrIdSearchForm").value = id;
-        document.getElementById("searchBtn").click();
+        var $sidebarSearch = $('.femr-sidebar__search form');
+        var $sidebarInput = $sidebarSearch.find('input[name="patientSearchQuery"]');
+
+        if ($sidebarSearch.length && $sidebarInput.length) {
+            $sidebarInput.val(id);
+            $sidebarSearch.trigger('submit');
+            return;
+        }
+
+        var legacyInput = document.getElementById("nameOrIdSearchForm");
+        var legacyButton = document.getElementById("searchBtn");
+        if (legacyInput && legacyButton) {
+            legacyInput.value = id;
+            legacyButton.click();
+        }
     });
 
     //this is used to get the dialog for editing a field

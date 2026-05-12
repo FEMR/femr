@@ -7,6 +7,7 @@
     margin: 0;
 }
 .mds-report-container input[type="number"] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -14,6 +15,7 @@
     margin-top: 80px;
     margin-bottom: 40px;
     font-size: 13px;
+    padding-right: 24px;
 }
 
 .mds-report-header {

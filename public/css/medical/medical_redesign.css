@@ -121,6 +121,55 @@
     border-color: rgba(28, 25, 23, 0.14);
 }
 
+.femr-diagnosis-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(28, 25, 23, 0.12);
+}
+
+.femr-diagnosis-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.femr-diagnosis-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.femr-diagnosis-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.femr-diagnosis-who {
+    display: flex;
+}
+
+.femr-diagnosis-remove {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.femr-diagnosis-add {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
 .femr-btn--secondary {
     background: rgba(51, 94, 200, 0.12);
     color: var(--femr-color-primary, #335ec8);
@@ -567,7 +616,7 @@
 
 .prescription-grid {
     display: grid;
-    grid-template-columns: 2fr 1.2fr 0.6fr 0.6fr;
+    grid-template-columns: 2fr 1.2fr 0.6fr 0.6fr 36px;
     gap: 10px;
     align-items: center;
 }
@@ -584,6 +633,20 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.prescriptionAction {
+    align-items: flex-end;
+}
+
+.prescription-action-placeholder {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+}
+
+.femr-prescription-actions {
+    margin-top: 10px;
 }
 
 .problemWrap .problem {

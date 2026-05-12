@@ -14,62 +14,60 @@
 
     <div class="form-group femr-field">
         <label for="problem" id="partials_medical_tabs_treatment_Diagnosis">Diagnosis</label>
-        <div class="row">
-            <div class="col-xs-10 col-sm-10 col-md-10 problemWrap">
-                @for(problem <- problems) {
-                    <div class="input-group" @if(problem.getWhoHealthEvent != null && !problem.getWhoHealthEvent.isEmpty){data-who-health-event="@problem.getWhoHealthEvent"}>
-                            <input type="text" class="form-control oldProblems" value="@problem.getName" readonly/>
-
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-danger deleteProblem femr-icon-button" data-problem="@problem.getName"><span class="glyphicon glyphicon-remove"></span></button>
-                        </span>
+        <div class="femr-diagnosis-list problemWrap">
+            @for(problem <- problems) {
+                <div class="femr-diagnosis-item" @if(problem.getWhoHealthEvent != null && !problem.getWhoHealthEvent.isEmpty){data-who-health-event="@problem.getWhoHealthEvent"}>
+                    <div class="femr-diagnosis-row">
+                        <input type="text" class="form-control oldProblems" value="@problem.getName" readonly/>
+                        <button type="button" class="btn btn-danger deleteProblem femr-icon-button femr-diagnosis-remove" data-problem="@problem.getName" aria-label="Remove diagnosis">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
                     </div>
-                }
-                <div class="problem">
+                    <div class="femr-diagnosis-who"></div>
+                </div>
+            }
+            <div class="femr-diagnosis-item problem">
+                <div class="femr-diagnosis-row">
                     <input name="problems[0].name" type="text" class="form-control newProblems femr-input"/>
+                    <button class="btn addSubtractBtn femr-icon-button femr-diagnosis-remove subtractProblemButton" type="button" aria-label="Remove diagnosis">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
                 </div>
+                <div class="femr-diagnosis-who"></div>
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <button id="addProblemButton" class="btn addSubtractBtn pull-right femr-icon-button" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <button id="subtractProblemButton" class="btn addSubtractBtn pull-right femr-icon-button" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                    </div>
-                </div>
+            <div class="femr-diagnosis-actions">
+                <button id="addProblemButton" class="btn addSubtractBtn femr-icon-button femr-diagnosis-add" type="button" aria-label="Add diagnosis">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
             </div>
         </div>
     </div>
     <div class="form-group femr-field">
-        <div class="row">
-            <div class="col-xs-10 col-sm-10 col-md-10 prescriptionWrap">
-                <div class="prescription-grid prescriptionHeader">
-                    <label class="prescription-field prescriptionName" for="prescription" id="partials_medical_tabs_treatment_Prescriptions">Prescriptions</label>
-                    <label class="prescription-field prescriptionAdministration" id="partials_medical_tabs_treatment_Administration">Administration</label>
-                    <label class="prescription-field prescriptionAdministrationDays" id="partials_medical_tabs_treatment_Days">Days</label>
-                    <label class="prescription-field prescriptionAmount" id="partials_medical_tabs_treatment_Amount">Amount</label>
-                </div>
-
-                @for(script <- prescriptions) {
-
-                    @prescriptionRow( medicationAdministrationItems, 0, script )
-                }
-
-                <div class="newPrescriptionsContainer">
-                @prescriptionRow( medicationAdministrationItems, 0, null )
-                </div>
-
+        <div class="prescriptionWrap">
+            <div class="prescription-grid prescriptionHeader">
+                <label class="prescription-field prescriptionName" for="prescription" id="partials_medical_tabs_treatment_Prescriptions">Prescriptions</label>
+                <label class="prescription-field prescriptionAdministration" id="partials_medical_tabs_treatment_Administration">Administration</label>
+                <label class="prescription-field prescriptionAdministrationDays" id="partials_medical_tabs_treatment_Days">Days</label>
+                <label class="prescription-field prescriptionAmount" id="partials_medical_tabs_treatment_Amount">Amount</label>
+                <span class="prescription-field prescriptionAction"></span>
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2">
-                <div class="row">
-                    <button id="addPrescriptionButton" class="btn addSubtractBtn femr-icon-button" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
-                <div class="row">
-                    <button id="subtractPrescriptionButton" class="btn addSubtractBtn femr-icon-button" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                </div>
+
+            @for(script <- prescriptions) {
+                @prescriptionRow( medicationAdministrationItems, 0, script )
+            }
+
+            <div class="newPrescriptionsContainer">
+                @prescriptionRow( medicationAdministrationItems, 0, null )
+            </div>
+
+            <div class="prescription-grid femr-prescription-actions">
+                <span class="prescription-field" aria-hidden="true"></span>
+                <span class="prescription-field" aria-hidden="true"></span>
+                <span class="prescription-field" aria-hidden="true"></span>
+                <span class="prescription-field" aria-hidden="true"></span>
+                <span class="prescription-field prescriptionAction">
+                    <button id="addPrescriptionButton" class="btn addSubtractBtn femr-icon-button" type="button" aria-label="Add prescription"><span class="glyphicon glyphicon-plus"></span></button>
+                </span>
             </div>
         </div>
         <p id="partials_medical_tabs_treatment_looking">Don't see what you're looking for? Only medications in stock will appear.</p>

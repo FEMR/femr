@@ -28,24 +28,35 @@ var problemFeature = {
     },
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
-        $('.problem')
-            .parent()
-            .append("<div class='problem'>" +
+        $('.problemWrap .femr-diagnosis-actions')
+            .before("<div class='femr-diagnosis-item problem'>" +
+            "<div class='femr-diagnosis-row'>" +
             "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems'/>" +
-            ($('#whoReportingEnabled').length ? whoDropdown.buildHealthEventDropdown(problemIndex) : '') +
+            "<button class='btn addSubtractBtn femr-icon-button femr-diagnosis-remove subtractProblemButton' type='button' aria-label='Remove diagnosis'>" +
+            "<span class='glyphicon glyphicon-minus'></span>" +
+            "</button>" +
+            "</div>" +
+            "<div class='femr-diagnosis-who'></div>" +
             "</div>");
+
+        if ($('#whoReportingEnabled').length) {
+            $('.problemWrap .femr-diagnosis-item.problem').last().find('.femr-diagnosis-who').append(whoDropdown.buildHealthEventDropdown(problemIndex));
+        }
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name']");
         //data for typeahead already exists on the page from loading the diagnoses input box
         typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
         $(problemInputElement).focus();
     },
-    removeProblemField: function () {
+    removeProblemField: function ($trigger) {
         problemFeature.refreshSelectors();
-        var lastProblem = $(problemFeature.newProblems).last();
+        var $problemItem = $trigger && $trigger.length
+            ? $trigger.closest('.femr-diagnosis-item.problem')
+            : $('.femr-diagnosis-item.problem').last();
+        var lastProblem = $problemItem.find('.newProblems').last();
         if ($(problemFeature.newProblems).size() > 1) {
             if (!$(lastProblem).is('[readonly]')) {
-                $(lastProblem).parent().parent().remove();
+                $problemItem.remove();
             }
         } else {
             if (!$(lastProblem).is('[readonly]')) {
@@ -169,19 +180,31 @@ var prescriptionFeature = {
                 $('.medicationName:last').focus();
             });
     },
-    removePrescriptionField: function () {
+    removePrescriptionField: function ($trigger) {
+        console.log('removePrescriptionField called', $trigger && $trigger.length ? $trigger.get(0) : null);
         prescriptionFeature.refreshSelectors();
-        var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
-        if ($(prescriptionFeature.allPrescriptions).size() > 1) {
-            if (!$(lastPrescription).is('[readonly]')) {
-                $(lastPrescription).remove();
-            }
-        } else {
-            if (!$(lastPrescription).is('[readonly]')) {
-                $(lastPrescription).val('');
-            }
+        var $rowToRemove = $trigger && $trigger.length
+            ? $trigger.closest('.prescriptionRow')
+            : $(prescriptionFeature.allPrescriptions).last();
+    var isReadonly = $rowToRemove.data('prescriptionReadonly') === true;
+
+        console.log('Prescription row found', $rowToRemove.get(0));
+        console.log('Is readonly?', isReadonly, 'total rows', $(prescriptionFeature.allPrescriptions).length);
+
+        if (isReadonly) {
+            console.log('Skipping remove: readonly prescription');
+            return;
         }
 
+        $rowToRemove.remove();
+        prescriptionFeature.refreshSelectors();
+
+        console.log('Row removed. Remaining rows', $(prescriptionFeature.allPrescriptions).length);
+
+        if ($(prescriptionFeature.allPrescriptions).length === 0) {
+            console.log('No rows left, adding new prescription row');
+            prescriptionFeature.addPrescriptionField();
+        }
     }
 };
 var multipleChiefComplaintFeature = {
@@ -421,8 +444,8 @@ $(document).ready(function () {
         prescriptionFeature.addPrescriptionField();
     });
 
-    $('#subtractPrescriptionButton').click(function () {
-        prescriptionFeature.removePrescriptionField();
+    $(document).on('click', '.subtractPrescriptionButton', function () {
+        prescriptionFeature.removePrescriptionField($(this));
     });
 
     // toggle translated text
@@ -473,8 +496,8 @@ $(document).ready(function () {
         problemFeature.addProblemField();
     });
 
-    $('#subtractProblemButton').click(function () {
-        problemFeature.removeProblemField();
+    $(document).on('click', '.subtractProblemButton', function () {
+        problemFeature.removeProblemField($(this));
     });
 
     $('#medicalTabs li').click(function () {
@@ -861,19 +884,22 @@ function photoNameFixup() {
     return true;
 }
 
-$('.deleteProblem').click(function(){
-    var lineToRemove = $(this).parent().parent();
+$(document).on('click', '.deleteProblem', function (event) {
+    event.preventDefault();
+    var $button = $(this);
+    var $itemToRemove = $button.closest('.femr-diagnosis-item');
+    var problemValue = $.trim($button.data('problem'));
+    var encodedProblem = encodeURIComponent(problemValue || '');
 
     $.ajax({
         type: 'post',
-        url: '/medical/deleteProblem/' + $('#patientId').val() + '/' + $(this).data('problem'),
-        success: function(result){
-            if(result == "true"){
-                lineToRemove.next('.who-searchable-dropdown').remove();
-                lineToRemove.remove();
+        url: '/medical/deleteProblem/' + $('#patientId').val() + '/' + encodedProblem,
+        success: function (result) {
+            if (result == "true") {
+                $itemToRemove.remove();
             }
         },
-        failure: function(result){
+        failure: function () {
 
         }
     });
@@ -963,15 +989,23 @@ $('.who-searchable-dropdown[data-saved-procedure]').each(function() {
 
 // Inject a WHO Health Event dropdown (or read-only display if already saved) into each problem row on page load
 if ($('#whoReportingEnabled').length) {
-    $('.problemWrap .input-group').each(function() {
-        var saved = $(this).data('who-health-event');
-        if (saved) {
-            $(this).after('<div class="who-searchable-dropdown"><div class="who-dropdown-toggle who-readonly"><span class="who-dropdown-label">' + saved + '</span></div></div>');
-        } else {
-            $(this).after(whoDropdown.buildHealthEventDropdown(-1));
+    $('.problemWrap .femr-diagnosis-item').each(function(index) {
+        var $item = $(this);
+        var $whoContainer = $item.find('.femr-diagnosis-who');
+        if ($whoContainer.find('.who-searchable-dropdown').length) {
+            return;
+        }
+
+        if ($item.find('.oldProblems').length) {
+            var saved = $item.data('who-health-event') || '- WHO Health Event -';
+            $whoContainer.append('<div class="who-searchable-dropdown"><div class="who-dropdown-toggle who-readonly"><span class="who-dropdown-label">' + saved + '</span></div></div>');
+        } else if ($item.hasClass('problem')) {
+            var problemIndex = $item.find('.newProblems').first().attr('name');
+            var indexMatch = problemIndex ? problemIndex.match(/\[(\d+)\]/) : null;
+            var indexValue = indexMatch ? parseInt(indexMatch[1], 10) : index;
+            $whoContainer.append(whoDropdown.buildHealthEventDropdown(indexValue));
         }
     });
-    $('.problemWrap .problem').append(whoDropdown.buildHealthEventDropdown(0));
 }
 
 // Event delegation — handles both static (procedure) and dynamic (per-problem) dropdowns

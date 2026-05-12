@@ -6,6 +6,9 @@ window.addEventListener('keydown',function(e){
             || e.target.type==='checkbox'|| e.target.type==='tel' || e.target.type==='date'
             || e.target.type==='radio'))
         {
+            if ($(e.target).closest('.femr-sidebar__search').length || $(e.target).is('input[name="patientSearchQuery"]')) {
+                return true;
+            }
             e.preventDefault();
             return false;
         }

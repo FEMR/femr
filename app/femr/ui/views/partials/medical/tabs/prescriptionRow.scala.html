@@ -9,7 +9,7 @@
 @* Will get submitted - new prescriptions in medical and replaced prescriptions in pharmacy *@
 @* The index variable is how we link the replaced prescription back to the prescribed prescription? *@
 
-    <div class="prescription-grid prescriptionRow prescriptionInput">
+    <div class="prescription-grid prescriptionRow prescriptionInput" data-prescription-readonly="false">
 
         <input class='medicationID' name='prescriptions[@index].medicationID' type='hidden' />
 
@@ -31,11 +31,16 @@
         <span class="prescription-field prescriptionAmount">
             <input name="prescriptions[@index].amount" type="number" class="form-control input-sm femr-input"/>
         </span>
+        <span class="prescription-field prescriptionAction">
+            <button type="button" class="btn addSubtractBtn femr-icon-button subtractPrescriptionButton" aria-label="Remove prescription" onclick="console.log('Prescription minus clicked'); prescriptionFeature.removePrescriptionField($(this));">
+                <span class="glyphicon glyphicon-minus"></span>
+            </button>
+        </span>
     </div>
 
 }else{
 @* won't get submitted, the prescription has already been prescribed for the encounter (happens in medical) *@
-    <div class="prescription-grid prescriptionRow prescriptionInput">
+    <div class="prescription-grid prescriptionRow prescriptionInput" data-prescription-readonly="true">
 
         <input class='medicationID' value='@script.getMedicationID' type='hidden' />
 
@@ -56,6 +61,9 @@
         </span>
         <span class="prescription-field prescriptionAmount">
             <input type="number" class="form-control input-sm femr-input" value='@script.getAmountWithNull' readonly />
+        </span>
+        <span class="prescription-field prescriptionAction">
+            <span class="prescription-action-placeholder" aria-hidden="true"></span>
         </span>
     </div>
 }

@@ -662,6 +662,22 @@ body.femr-shell {
     box-shadow: 0 12px 30px -12px rgba(51, 94, 200, 0.5);
 }
 
+.femr-btn--primary:hover,
+.femr-btn--primary:focus,
+.femr-btn--primary:active {
+    background: var(--femr-color-primary-hover, #294ba0);
+    color: #ffffff;
+}
+
+.femr-btn--primary:hover .femr-btn__label,
+.femr-btn--primary:focus .femr-btn__label,
+.femr-btn--primary:active .femr-btn__label,
+.femr-btn--primary:hover .material-symbols-outlined,
+.femr-btn--primary:focus .material-symbols-outlined,
+.femr-btn--primary:active .material-symbols-outlined {
+    color: #ffffff;
+}
+
 .femr-btn--ghost {
     background: rgba(255, 255, 255, 0.6);
     color: var(--femr-color-text, #1c1917);

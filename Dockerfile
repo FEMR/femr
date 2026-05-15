@@ -83,7 +83,7 @@ ENV BUILD_DATE=$BUILD_DATE
 COPY --from=builder /usr/src/app/target/universal/femr-* /opt/bin/femr
 
 #include speedtest scripts into final image
-COPY --from=builder /usr/speedtest /usr/src/speedtest
+COPY --from=builder /usr/src/speedtest /usr/src/speedtest
 
 #open port 9000 for connections
 EXPOSE 9000

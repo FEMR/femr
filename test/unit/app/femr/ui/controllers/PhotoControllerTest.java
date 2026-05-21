@@ -18,17 +18,27 @@ public class PhotoControllerTest {
     public void getPatientPhotoUsesOverriddenDefaultPhotoPath() {
         IPhotoService photoService = mock(IPhotoService.class);
         
+        final String[] capturedPath = {null};
+        
         // Create test subclass that overrides the hook
         PhotoController controller = new PhotoController(photoService) {
             @Override
             protected String getDefaultProfilePhotoPath() {
+                capturedPath[0] = "target/test-data/default-photo.jpg";
                 return "target/test-data/default-photo.jpg";
             }
         };
         
-        // Verify the hook was extracted and is overridable
-        String result = controller.getDefaultProfilePhotoPath();
-        Assert.assertEquals("target/test-data/default-photo.jpg", result);
+        // Call the public method which will invoke the overridden hook
+        try {
+            controller.GetPatientPhoto(null, true);
+        } catch (Exception e) {
+            // OK - we're just verifying the hook was called with our override
+        }
+        
+        // Verify the hook was actually invoked (and our override was used)
+        Assert.assertNotNull("Override hook was not called", capturedPath[0]);
+        Assert.assertEquals("Override value should be used", "target/test-data/default-photo.jpg", capturedPath[0]);
     }
 
     /**
@@ -53,7 +63,7 @@ public class PhotoControllerTest {
         try {
             controller.GetPatientPhoto(null, false);
         } catch (Exception e) {
-            // OK if exception (empty response, not our concern in this test)
+            // OK if exception
         }
         
         Assert.assertFalse("Hook should not be called when showDefault=false", hookCalled[0]);

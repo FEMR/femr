@@ -7,7 +7,9 @@ import org.junit.Test;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.mock;
@@ -28,7 +30,9 @@ public class PhotoControllerTest {
         Map<String, Object> config = new HashMap<>();
         config.put("play.evolutions.autoApply", false);
         config.put("play.evolutions.autoApplyDowns", false);
-        config.put("play.modules.disabled", new String[]{"play.api.db.DBModule"});
+        List<String> disabledModules = new ArrayList<>();
+        disabledModules.add("play.api.db.DBModule");
+        config.put("play.modules.disabled", disabledModules);
         return config;
     }
 

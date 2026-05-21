@@ -32,6 +32,7 @@ public class PhotoControllerTest {
         config.put("play.evolutions.autoApplyDowns", false);
         List<String> disabledModules = new ArrayList<>();
         disabledModules.add("play.api.db.DBModule");
+        disabledModules.add("play.api.db.evolutions.EvolutionsModule");
         config.put("play.modules.disabled", disabledModules);
         return config;
     }

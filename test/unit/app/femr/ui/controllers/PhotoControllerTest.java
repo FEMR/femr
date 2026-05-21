@@ -5,53 +5,49 @@ import femr.ui.controllers.PhotoController;
 import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Result;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import play.test.Helpers;
 
 import static org.mockito.Mockito.mock;
 
 public class PhotoControllerTest {
 
-    private PhotoController newControllerWithDefaultPhoto(Path defaultPhotoPath) {
+    private PhotoController newControllerWithDefaultPhoto(String defaultPhotoPath) {
         IPhotoService photoService = mock(IPhotoService.class);
         return new PhotoController(photoService) {
             @Override
             protected String getDefaultProfilePhotoPath() {
-                return defaultPhotoPath.toString();
+                return defaultPhotoPath;
             }
         };
     }
 
     @Test
-    public void getPatientPhotoUsesOverriddenDefaultPhotoPath() throws Exception {
-        Path defaultPhotoDirectory = Paths.get("target", "test-data");
-        Files.createDirectories(defaultPhotoDirectory);
-        Path defaultPhotoPath = Files.createTempFile(defaultPhotoDirectory, "femr-default-photo", ".jpg");
-        Files.write(defaultPhotoPath, new byte[]{1, 2, 3});
-
-        try {
-            Result result = newControllerWithDefaultPhoto(defaultPhotoPath).GetPatientPhoto(null, true);
-
-            Assert.assertNotNull(result);
-        } finally {
-            Files.deleteIfExists(defaultPhotoPath);
-        }
+    public void getPatientPhotoUsesOverriddenDefaultPhotoPath() {
+        Helpers.running(Helpers.fakeApplication(), new Runnable() {
+            @Override
+            public void run() {
+                Result result = newControllerWithDefaultPhoto("target/test-data/default-photo.jpg").GetPatientPhoto(null, true);
+                Assert.assertNotNull(result);
+            }
+        });
     }
 
     @Test
     public void getPatientPhotoReturnsEmptyImageWhenDefaultNotRequested() {
-        PhotoController controller = new PhotoController(mock(IPhotoService.class)) {
+        Helpers.running(Helpers.fakeApplication(), new Runnable() {
             @Override
-            protected String getDefaultProfilePhotoPath() {
-                Assert.fail("The default profile photo path should not be needed for this code path");
-                return null;
+            public void run() {
+                PhotoController controller = new PhotoController(mock(IPhotoService.class)) {
+                    @Override
+                    protected String getDefaultProfilePhotoPath() {
+                        Assert.fail("The default profile photo path should not be needed for this code path");
+                        return null;
+                    }
+                };
+
+                Result result = controller.GetPatientPhoto(null, false);
+                Assert.assertNotNull(result);
             }
-        };
-
-        Result result = controller.GetPatientPhoto(null, false);
-
-        Assert.assertNotNull(result);
+        });
     }
 }

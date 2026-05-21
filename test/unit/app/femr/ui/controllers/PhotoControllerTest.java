@@ -7,6 +7,9 @@ import org.junit.Test;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.mock;
 
 public class PhotoControllerTest {
@@ -21,9 +24,17 @@ public class PhotoControllerTest {
         };
     }
 
+    private Map<String, Object> getFakeAppConfig() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("play.evolutions.autoApply", false);
+        config.put("play.evolutions.autoApplyDowns", false);
+        config.put("play.modules.disabled", new String[]{"play.api.db.DBModule"});
+        return config;
+    }
+
     @Test
     public void getPatientPhotoUsesOverriddenDefaultPhotoPath() {
-        Helpers.running(Helpers.fakeApplication(), new Runnable() {
+        Helpers.running(Helpers.fakeApplication(getFakeAppConfig()), new Runnable() {
             @Override
             public void run() {
                 Result result = newControllerWithDefaultPhoto("target/test-data/default-photo.jpg").GetPatientPhoto(null, true);
@@ -34,7 +45,7 @@ public class PhotoControllerTest {
 
     @Test
     public void getPatientPhotoReturnsEmptyImageWhenDefaultNotRequested() {
-        Helpers.running(Helpers.fakeApplication(), new Runnable() {
+        Helpers.running(Helpers.fakeApplication(getFakeAppConfig()), new Runnable() {
             @Override
             public void run() {
                 PhotoController controller = new PhotoController(mock(IPhotoService.class)) {

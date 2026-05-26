@@ -2,13 +2,11 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
-import femr.business.helpers.LogicDoer;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IPhotoService;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.util.stringhelpers.StringUtils;
 import play.mvc.*;
 import static play.mvc.Results.ok;
 
@@ -44,11 +42,15 @@ public class PhotoController {
         }
 
         if (showDefault) {
-            String pathToDefaultPhoto = ConfigFactory.load().getString("photos.defaultProfilePhoto");
+            String pathToDefaultPhoto = getDefaultProfilePhotoPath();
             return ok(new File(pathToDefaultPhoto)).as("image/jpg");
         }
 
         return ok().as("image/jpg");
+    }
+
+    protected String getDefaultProfilePhotoPath() {
+        return ConfigFactory.load().getString("photos.defaultProfilePhoto");
     }
 
     /**

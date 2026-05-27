@@ -71,6 +71,14 @@ public class ResearchService implements IResearchService {
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
     }
 
+    protected Query<Vital> getVitalQuery() {
+        return QueryProvider.getVitalQuery();
+    }
+    
+    protected Query<ResearchEncounter> getResearchEncounterQuery() {
+        return QueryProvider.getResearchEncounterQuery();
+    }
+
 
     @Override
     public ServiceResponse<File> retrieveCsvExportFile(ResearchFilterItem filters) {
@@ -86,22 +94,17 @@ public class ResearchService implements IResearchService {
         //why is this either height or not height?
         //when it is not height it assumes it's a vital?
         if (filters.getPrimaryDataset().equals("height")){
-
-            ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", "heightFeet");
+            ExpressionList<Vital> query = getVitalQuery().where().eq("name", "heightFeet");
             vital = vitalRepository.findOne(query);
-
             heightFeetId = vital.getId();
-
-            query = QueryProvider.getVitalQuery().where().eq("name", "heightInches");
+            query = getVitalQuery().where().eq("name", "heightInches");
             vital = vitalRepository.findOne(query);
-
             heightInchesId = vital.getId();
         }
         else{
             String vitalName = filters.getPrimaryDataset();
-            ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", vitalName);
+            ExpressionList<Vital> query = getVitalQuery().where().eq("name", vitalName);
             vital = vitalRepository.findOne(query);
-
         }
 
         ServiceResponse<File> response = new ServiceResponse<>();
@@ -109,16 +112,13 @@ public class ResearchService implements IResearchService {
         // Find Patient Encounters which match the current filters
         filters.setOrderBy("patientId");
         List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
-
         List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
         //this for loop makes sure that the primary dataset is properly filtered when the user enters
         //a start and end number under "Filter Primary Dataset".
         //what about weight filters?
         for(IResearchEncounter patientEncounter : patientEncounters ){
-
             // only filtering age, height, and vitals
             if( filters.getPrimaryDataset().equals("age") ) {
-
                 Float age = (float) Math.floor(dateUtils.getAgeAsOfDateFloat(patientEncounter.getPatient().getAge(), patientEncounter.getDateOfTriageVisit()));
                 // skip encounter if age is out of range
                 if (age < filters.getFilterRangeStart() || age > filters.getFilterRangeEnd()) continue;
@@ -133,23 +133,17 @@ public class ResearchService implements IResearchService {
 //
 //            }
             else if( filters.getPrimaryDataset().equals("height") ){
-
                 ResearchEncounterVital vitalFeet = patientEncounter.getEncounterVitals().get(heightFeetId);
                 ResearchEncounterVital vitalInches = patientEncounter.getEncounterVitals().get(heightInchesId);
-
                 // height values may not exist
                 Float vitalValue = 0.0f;
                 if( vitalFeet != null ){
-
                     vitalValue += vitalFeet.getVitalValue() * 12;
                 }
                 if( vitalInches != null ){
-
                     vitalValue += vitalInches.getVitalValue();
                 }
-
                 if( vitalValue < filters.getFilterRangeStart() || vitalValue > filters.getFilterRangeEnd() ) continue;
-
             }
             // Check for medication filters
 //            else if( filters.getPrimaryDataset().equals("prescribedMeds") ||
@@ -158,12 +152,9 @@ public class ResearchService implements IResearchService {
 //
 //            }
             else if (vital != null){
-
                 ResearchEncounterVital vitals = patientEncounter.getEncounterVitals().get(vital.getId());
                 if( vitals == null ) continue;
-
                 Float vitalValue = vitals.getVitalValue();
-
                 if( vitalValue == null ) continue;
                 if( vitalValue < filters.getFilterRangeStart() || vitalValue > filters.getFilterRangeEnd() ) continue;
             }
@@ -171,24 +162,18 @@ public class ResearchService implements IResearchService {
             UUID muddledPatientId;
             // If UUID already generated for patient, use that
             if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
-
                 muddledPatientId = patientIdMap.get(patientEncounter.getPatient().getId());
             }
             // otherwise generate and store for potential additional patient encounters
             else{
-
                 muddledPatientId = UUID.randomUUID();
                 patientIdMap.put(patientEncounter.getPatient().getId(), muddledPatientId);
             }
             ResearchExportItem item = createResearchExportItem(patientEncounter, muddledPatientId);
             researchExportItemsForCSVExport.add(item);
-
         }
-
         File eFile = createCsvFile(researchExportItemsForCSVExport);
-
         response.setResponseObject(eFile);
-
         return response;
     }
 
@@ -293,38 +278,28 @@ public class ResearchService implements IResearchService {
 
     @Override
     public ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filters){
-
         ServiceResponse<ResearchResultSetItem> response = new ServiceResponse<>();
-
         try {
-
             List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
-
             ResearchResultSetItem results;
             if (filters.getPrimaryDataset().equals("age")) {
-
                 results = buildAgeResultSet(patientEncounters, filters);
             } else if (filters.getPrimaryDataset().equals("pregnancyStatus") ||
                     filters.getPrimaryDataset().equals("pregnancyTime")) {
-
                 results = buildPregnancyResultSet(patientEncounters, filters);
             } else if (filters.getPrimaryDataset().equals("gender")) {
-
                 results = buildGenderResultSet(patientEncounters, filters);
             } else if (filters.getPrimaryDataset().equals("height")) {
-
                 results = buildHeightResultSet(patientEncounters, filters);
             }
             // Check for medication filters
             else if (filters.getPrimaryDataset().equals("prescribedMeds") ||
                     filters.getPrimaryDataset().equals("dispensedMeds")) {
-
                 results = buildMedicationResultSet(patientEncounters, filters);
             }
 
             // non-special situations are all considered vitals
             else{
-
                 results = buildVitalResultSet(patientEncounters, filters);
             }
 
@@ -333,7 +308,6 @@ public class ResearchService implements IResearchService {
             response.setResponseObject(results);
 
         } catch (Exception ex) {
-
             response.addError("exception", ex.getMessage());
         }
 
@@ -342,12 +316,9 @@ public class ResearchService implements IResearchService {
 
     @Override
     public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
-
         ServiceResponse<File> response = new ServiceResponse<>();
-
         // Build Query based on Filters
-        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
-
+        Query<ResearchEncounter> researchEncounterQuery = getResearchEncounterQuery();
         researchEncounterQuery
                 .fetch("patient")
                 .fetch("patientPrescriptions")
@@ -367,7 +338,6 @@ public class ResearchService implements IResearchService {
 
         List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
 
-
         // As new patients are encountered, generate a UUID to represent them in the export file
         Map<Integer, UUID> patientIdMap = new HashMap<>();
 
@@ -377,27 +347,21 @@ public class ResearchService implements IResearchService {
         for(IResearchEncounter patientEncounter : patientEncounters ){
 
             UUID patient_uuid;
-
             // If UUID already generated for patient, use that
             if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
-
                 patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
             }
             // otherwise generate and store for potential additional patient encounters
             else{
-
                 patient_uuid = UUID.randomUUID();
                 patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
             }
-
             ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
             researchExportItemsForCSVExport.add(item);
         }
 
         File eFile = createCsvFile(researchExportItemsForCSVExport);
-
         response.setResponseObject(eFile);
-
         return response;
     }
 
@@ -464,7 +428,6 @@ public class ResearchService implements IResearchService {
     private List<? extends IResearchEncounter> queryPatientData(ResearchFilterItem filters){
 
         String datasetName = filters.getPrimaryDataset();
-
         String startDateString = filters.getStartDate();
         String endDateString = filters.getEndDate();
         Date startDateObj;
@@ -472,7 +435,6 @@ public class ResearchService implements IResearchService {
         SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
-
             // Set Start Date to start of day
             String startParseDate = startDateString + " 00:00:00";
             startDateObj = sqlFormat.parse(startParseDate);
@@ -482,24 +444,21 @@ public class ResearchService implements IResearchService {
             endDateObj = sqlFormat.parse(parseEndDate);
         }
         catch(ParseException e){
-
             startDateObj = null;
             endDateObj = null;
         }
 
         // Build Query based on Filters
-        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
-                researchEncounterQuery.fetch("patient");
+        Query<ResearchEncounter> researchEncounterQuery = getResearchEncounterQuery();
+        researchEncounterQuery.fetch("patient");
 
 
         if( datasetName.equals("prescribedMeds") || datasetName.equals("dispensedMeds") ){
-
             researchEncounterQuery.fetch("patientPrescriptions");
         }
 
         // filtering by medication, so make sure to fetch the medication info
         if( filters.getMedicationName() != null && filters.getMedicationName().length() > 0 ){
-
             researchEncounterQuery.fetch("patientPrescriptions.medication");
         }
 
@@ -515,58 +474,24 @@ public class ResearchService implements IResearchService {
 
         // filtering by medication if the name is set
         if( filters.getMedicationName() != null && filters.getMedicationName().length() > 0 ){
-
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
-
         if ( filters.getMissionTripId() != null) {
-
             researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId()); //Andrew Trip Filter
         }
-
-        // if the filters exist - use them in the query
-//        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){
-//
-//            if( filters.getPrimaryDataset().equals("age") ){
-//
-//                // Age comes in as an integer -- need to make it a date
-//                Float age = filters.getFilterRangeStart();
-//                DateTime maxBirthDate = new DateTime();
-//                maxBirthDate = maxBirthDate.withTimeAtStartOfDay().minusYears((int) Math.floor(age));
-//
-//                e.le("patient.age", sqlFormat.format(maxBirthDate.toDate()));
-//            }
-//
-//        }
-//
-//        if( filters.getFilterRangeEnd() < Float.MAX_VALUE ){
-//
-//            if( filters.getPrimaryDataset().equals("age") ){
-//
-//                // Age comes in as an integer -- need to make it a date
-//                Float age = filters.getFilterRangeEnd();
-//                DateTime maxBirthDate = new DateTime();
-//                maxBirthDate = maxBirthDate.withTimeAtStartOfDay().minusYears((int) Math.floor(age));
-//
-//                e.ge("patient.age", sqlFormat.format(maxBirthDate.toDate()));
-//            }
-//        }
         researchEncounterExpressionList.isNull("patient.isDeleted");
+
         // add age specific parameters
         if( datasetName.equals("age") ) {
-
             researchEncounterExpressionList.ne("patient.age", null);
             researchEncounterExpressionList.orderBy().desc("patient.age");
         }
-
         if( filters.getOrderBy() != null && filters.getOrderBy().equals("patientId") ){
-
             researchEncounterExpressionList.orderBy().desc("patient.id");
         }
         else {
             researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
         }
-
 
         researchEncounterExpressionList.findList();
         return researchEncounterRepository.find(researchEncounterExpressionList);
@@ -855,7 +780,7 @@ public class ResearchService implements IResearchService {
 
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
-        ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", vitalName);
+        ExpressionList<Vital> query = getVitalQuery().where().eq("name", vitalName);
         IVital vital = vitalRepository.findOne(query);
 
         if( vital == null ){
@@ -1052,12 +977,12 @@ public class ResearchService implements IResearchService {
 
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
-        ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", "heightFeet");
+        ExpressionList<Vital> query = getVitalQuery().where().eq("name", "heightFeet");
         IVital vital = vitalRepository.findOne(query);
 
         Integer heightFeetId = vital.getId();
 
-        query = QueryProvider.getVitalQuery().where().eq("name", "heightInches");
+        query = getVitalQuery().where().eq("name", "heightInches");
         vital = vitalRepository.findOne(query);
 
         Integer heightInchesId = vital.getId();
@@ -1618,7 +1543,7 @@ public class ResearchService implements IResearchService {
 
     private Integer getWeeksPregnant( IResearchEncounter encounter ){
 
-        ExpressionList<Vital> wkPregnantQuery = QueryProvider.getVitalQuery().where().eq("name", "weeksPregnant");
+        ExpressionList<Vital> wkPregnantQuery = getVitalQuery().where().eq("name", "weeksPregnant");
         IVital vital = vitalRepository.findOne(wkPregnantQuery);
 
         ResearchEncounterVital wksPregnantVital = encounter.getEncounterVitals().get(vital.getId());

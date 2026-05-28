@@ -61,7 +61,8 @@ public class MedicalController extends Controller {
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             FieldHelper fieldHelper) {
 
         this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
@@ -72,7 +73,7 @@ public class MedicalController extends Controller {
         this.medicationService = medicationService;
         this.photoService = photoService;
         this.vitalService = vitalService;
-        this.fieldHelper = new FieldHelper();
+        this.fieldHelper = fieldHelper;
     }
 
     public Result indexGet() {

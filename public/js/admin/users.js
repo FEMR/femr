@@ -67,24 +67,47 @@ var createAndEditUsers = {
     elements: {
         firstName: $("#firstName"),
         email: $("#email"),
-        roles: $("#roleWrap")
+        roles: $("#roleWrap"),
+        summary: $("#createUserFormSummary")
+    },
+    setFieldInvalid: function ($field, message) {
+        $field.addClass("admin-form__field--invalid");
+        $field.find(".errors").first().text(message);
+    },
+    clearFieldInvalid: function ($field) {
+        $field.removeClass("admin-form__field--invalid");
+        $field.find(".errors").first().text("");
+    },
+    setSummary: function (message) {
+        if (createAndEditUsers.elements.summary.length) {
+            createAndEditUsers.elements.summary.text(message).show();
+        }
+    },
+    clearSummary: function () {
+        if (createAndEditUsers.elements.summary.length) {
+            createAndEditUsers.elements.summary.text("").hide();
+        }
     },
     validateElements: function () {
         var pass = true;
+        createAndEditUsers.clearSummary();
+        createAndEditUsers.clearFieldInvalid(createAndEditUsers.elements.email.closest(".admin-form__field"));
+        createAndEditUsers.clearFieldInvalid(createAndEditUsers.elements.firstName.closest(".admin-form__field"));
+
         if ($.trim(document.forms["createForm"]["email"].value) === "") {
-            createAndEditUsers.elements.email.next(".errors").text("email is a required field");
+            createAndEditUsers.setFieldInvalid(createAndEditUsers.elements.email.closest(".admin-form__field"), "Email is a required field.");
             pass = false;
-        } else {
-            createAndEditUsers.elements.email.next(".errors").text("");
         }
 
         if ($.trim(document.forms["createForm"]["firstName"].value) === "") {
-            createAndEditUsers.elements.firstName.next(".errors").text("first name is a required field");
+            createAndEditUsers.setFieldInvalid(createAndEditUsers.elements.firstName.closest(".admin-form__field"), "First name is a required field.");
             pass = false;
-        } else {
-            createAndEditUsers.elements.firstName.next(".errors").text("");
         }
         //check roles
+
+        if (pass === false) {
+            createAndEditUsers.setSummary("Please fix the highlighted fields and try again.");
+        }
 
         return pass;
     }
@@ -92,17 +115,31 @@ var createAndEditUsers = {
 
 var createUsers = {
     elements: {
-        password: $("#password")
+        password: $("#password"),
+        passwordVerify: $("#passwordVerify")
+    },
+    setFieldInvalid: function ($field, message) {
+        $field.addClass("admin-form__field--invalid");
+        $field.find(".errors").first().text(message);
+    },
+    clearFieldInvalid: function ($field) {
+        $field.removeClass("admin-form__field--invalid");
+        $field.find(".errors").first().text("");
     },
     validateRolesAndPassword: function () {
         var pass = true;
         // Adding password constraint!
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
-        createUsers.elements.password.next(".errors").text(passwordVerify);
+        var passwordVerify = $.trim(document.forms["createForm"]["passwordVerify"].value);
+        var $passwordField = createUsers.elements.password.closest(".admin-form__field");
+        var $passwordVerifyField = createUsers.elements.passwordVerify.closest(".admin-form__field");
+
+        createUsers.clearFieldInvalid($passwordField);
+        createUsers.clearFieldInvalid($passwordVerifyField);
 
         if (password  === "") {
-            passwordErrors = "please assign this user a password";
+            passwordErrors = "Please assign this user a password.";
             pass = false;
         }
         else{
@@ -115,19 +152,27 @@ var createUsers = {
             }
         }
 
+        if (password !== "" && password !== passwordVerify) {
+            pass = false;
+            createUsers.setFieldInvalid($passwordVerifyField, "Passwords do not match.");
+            createUsers.setFieldInvalid($passwordField, "Passwords do not match.");
+        }
+
         if(pass === false)
         {
             if (passwordErrors !== "")
-                createUsers.elements.password.next (".errors").text(passwordErrors);
+                createUsers.setFieldInvalid($passwordField, passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long.");
+                createUsers.setFieldInvalid($passwordField, "Password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long.");
         }
         else{
-            createUsers.elements.password.next(".errors").text("");
+            createUsers.clearFieldInvalid($passwordField);
         }
 
         //validate roles
         var isARoleChecked = false;
+        var $roleField = createAndEditUsers.elements.roles.closest(".admin-form__field");
+        createAndEditUsers.clearFieldInvalid($roleField);
         $.each(document.forms["createForm"].elements["roles[]"], function () {
             if ($(this).is(':checked')) {
                 isARoleChecked = true;
@@ -138,9 +183,9 @@ var createUsers = {
         }
         if (isARoleChecked === false) {
             pass = false;
-            createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
+            createAndEditUsers.setFieldInvalid($roleField, "Select at least one role.");
         } else {
-            createAndEditUsers.elements.roles.find(".errors").text("");
+            createAndEditUsers.clearFieldInvalid($roleField);
         }
         return pass;
     },
@@ -148,6 +193,9 @@ var createUsers = {
         $('#addUserSubmitBtn').click(function () {
             var roleAndPasswordValidation = createUsers.validateRolesAndPassword();
             var elementValidation = createAndEditUsers.validateElements();
+            if (!roleAndPasswordValidation || !elementValidation) {
+                createAndEditUsers.setSummary("Please fix the highlighted fields and try again.");
+            }
             return roleAndPasswordValidation && elementValidation;
         });
     },

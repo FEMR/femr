@@ -41,6 +41,21 @@ const validatePatientInformation = () => {
 
     const birthDateFilledOut = patientInformation.birthDate.val().toString().length > 0;
 
+    // validate birth date is not in the future
+    if (birthDateFilledOut) {
+        // Interpret as local date (yyyy-mm-dd). Create date at midnight local time.
+        const enteredDate = new Date(patientInformation.birthDate.val() + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (enteredDate > today) {
+            $(patientInformation.birthDate).parents(".generalInfoInput").addClass("has-errors");
+            triageFieldValidator.isValid = isPatientInformationValid = false;
+        } else {
+            $(patientInformation.birthDate).parents(".generalInfoInput").removeClass("has-errors");
+        }
+    }
+
 
     if (!ageFilledOut && !ageClassificationFilledOut && !birthDateFilledOut) {
         $('#ageInputWrap').children(".generalInfoInput").addClass("has-errors");

@@ -18,30 +18,8 @@
 */
 package femr.business.wrappers.sessions;
 
-import com.google.inject.Inject;
-
-public class SessionHelper implements ISessionHelper {
-
-    private final ISessionContext sessionContext;
-
-    @Inject
-    public SessionHelper(ISessionContext sessionContext) {
-        this.sessionContext = sessionContext;
-    }
-
-    @Override
-    public int getInt(String sessionKey) {
-        String value = sessionContext.get(sessionKey);
-        return value != null ? Integer.parseInt(value) : 0;
-    }
-
-    @Override
-    public void set(String sessionKey, String sessionObject) {
-        sessionContext.set(sessionKey, sessionObject);
-    }
-
-    @Override
-    public void delete(String sessionKey) {
-        sessionContext.remove(sessionKey);
-    }
+public interface ISessionContext {
+    String get(String sessionKey);
+    void set(String sessionKey, String sessionObject);
+    void remove(String sessionKey);
 }

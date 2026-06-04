@@ -16,32 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.business.wrappers.sessions;
+package femr.util.dependencyinjection.providers;
 
-import com.google.inject.Inject;
+import com.google.inject.Provider;
+import femr.data.models.core.IConceptPrescriptionAdministration;
+import femr.data.models.mysql.ConceptPrescriptionAdministration;
 
-public class SessionHelper implements ISessionHelper {
-
-    private final ISessionContext sessionContext;
-
-    @Inject
-    public SessionHelper(ISessionContext sessionContext) {
-        this.sessionContext = sessionContext;
-    }
-
+public class ConceptPrescriptionAdministrationProvider implements Provider<IConceptPrescriptionAdministration> {
     @Override
-    public int getInt(String sessionKey) {
-        String value = sessionContext.get(sessionKey);
-        return value != null ? Integer.parseInt(value) : 0;
-    }
-
-    @Override
-    public void set(String sessionKey, String sessionObject) {
-        sessionContext.set(sessionKey, sessionObject);
-    }
-
-    @Override
-    public void delete(String sessionKey) {
-        sessionContext.remove(sessionKey);
+    public IConceptPrescriptionAdministration get() {
+        return new ConceptPrescriptionAdministration();
     }
 }

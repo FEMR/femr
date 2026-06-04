@@ -50,25 +50,25 @@ public class CreateViewModel implements Constraints.Validatable<List<ValidationE
     Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,}");
 
         if (StringUtils.isNullOrWhiteSpace(firstName))
-            errors.add(new ValidationError("firstName", "first name is a required field"));
+            errors.add(new ValidationError("firstName", "First name is a required field."));
         if (StringUtils.isNullOrWhiteSpace(email))
-            errors.add(new ValidationError("email", "email is a required field"));
+            errors.add(new ValidationError("email", "Email is a required field."));
         if (StringUtils.isNullOrWhiteSpace(password))
-            errors.add(new ValidationError("password", "password is a required field"));
+            errors.add(new ValidationError("password", "Password is a required field."));
         // added for FEMR-159
 
         if (StringUtils.isNotNullOrWhiteSpace(password) && !PassReqs.matcher(password).find()) {
-            errors.add(new ValidationError("password", "password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long."));
+            errors.add(new ValidationError("password", "Password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long."));
         }
 
-        if (!password.equals(passwordVerify)) {
-            errors.add(new ValidationError("password", "passwords do not match"));
+        if (StringUtils.isNotNullOrWhiteSpace(password) && !password.equals(passwordVerify)) {
+            errors.add(new ValidationError("passwordVerify", "Passwords do not match."));
          }
         if (roles == null || roles.size() < 1)
-            errors.add(new ValidationError("roles", "a user needs at least one role"));
+            errors.add(new ValidationError("roles", "A user needs at least one role."));
 
         if (StringUtils.isNotNullOrWhiteSpace(password) && password.length() < 8)
-            errors.add(new ValidationError("password", "The password must contain at least 8 characters"));
+            errors.add(new ValidationError("password", "Password must contain at least 8 characters."));
 
         return errors.isEmpty() ? null : errors;
     }

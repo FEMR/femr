@@ -400,6 +400,12 @@
     text-align: left;
 }
 
+.chiefComplaint {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 .encbtns:hover {
     background: #f9fafb;
 }

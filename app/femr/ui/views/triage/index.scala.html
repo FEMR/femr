@@ -533,7 +533,8 @@
                                 </label>
                             </div>
                             <input type="text" class="hidden" name="chiefComplaintsJSON"/>
-                            <textarea class="fTextArea femr-textarea" id="chiefComplaint" name="chiefComplaint"></textarea>
+                            <textarea class="fTextArea femr-textarea" id="chiefComplaint" name="chiefComplaint" maxlength="2000"></textarea>
+                            <small id="chiefComplaintCharCount" class="femr-char-count">0 / 2000</small>
                             @if(viewModel.getSettings.isMultipleChiefComplaint) {
                                 <ol id="chiefComplaintList" class="femr-chief__list"></ol>
                             }

@@ -46,8 +46,14 @@
         </div>
 
         @helper.form(action = UsersController.createPost(), 'name -> "createForm") {
+            <div class="admin-form__alert" id="createUserFormSummary" role="alert" @if(!form.hasErrors) { style="display:none;" }>
+                @if(form.hasErrors) {
+                    Please fix the highlighted fields and try again.
+                }
+            </div>
+
             <div class="admin-form admin-form--stacked">
-                <div class="admin-form__field">
+                <div class="admin-form__field @if(!form("email").errors.isEmpty) {admin-form__field--invalid}">
                     <label for="email">Email address <span class="admin-required" aria-hidden="true">*</span></label>
                     @defining(form("email").getValue.orElse("")) { value =>
                         <input id="email" name="email" type="email" value="@value" placeholder="name@@example.com" />
@@ -60,21 +66,29 @@
                 </div>
 
                 <div class="admin-form__row">
-                    <div class="admin-form__field">
+                    <div class="admin-form__field @if(!form("password").errors.isEmpty) {admin-form__field--invalid}">
                         <label for="password">Password <span class="admin-required" aria-hidden="true">*</span></label>
                         <input id="password" name="password" type="password" placeholder="Set a secure password" />
                         <p class="admin-form__hint">Use at least 8 characters with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.</p>
-                        <span class="errors"></span>
+                        <span class="errors">
+                            @if(!form("password").errors.isEmpty) {
+                                @form("password").errors.get(0).message
+                            }
+                        </span>
                     </div>
-                    <div class="admin-form__field">
+                    <div class="admin-form__field @if(!form("passwordVerify").errors.isEmpty) {admin-form__field--invalid}">
                         <label for="passwordVerify">Verify password</label>
                         <input id="passwordVerify" name="passwordVerify" type="password" placeholder="Re-enter password" />
-                        <span class="errors"></span>
+                        <span class="errors">
+                            @if(!form("passwordVerify").errors.isEmpty) {
+                                @form("passwordVerify").errors.get(0).message
+                            }
+                        </span>
                     </div>
                 </div>
 
                 <div class="admin-form__row">
-                    <div class="admin-form__field">
+                    <div class="admin-form__field @if(!form("firstName").errors.isEmpty) {admin-form__field--invalid}">
                         <label for="firstName">First name <span class="admin-required" aria-hidden="true">*</span></label>
                         @defining(form("firstName").getValue.orElse("")) { value =>
                             <input id="firstName" name="firstName" type="text" value="@value" placeholder="First name" />
@@ -103,7 +117,7 @@
                 </div>
 
                 <div class="admin-form__field">
-                    <div id="roleWrap" class="admin-form__fieldset">
+                    <div id="roleWrap" class="admin-form__fieldset @if(!form("roles").errors.isEmpty) {admin-form__field--invalid}">
                         <div class="admin-form__legend">
                             <span>Roles</span>
                             <span class="admin-required" aria-hidden="true">*</span>

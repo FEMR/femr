@@ -115,7 +115,7 @@
                                             .filter(_.nonEmpty)
                                             .getOrElse("—")
                                     ) { chiefComplaint =>
-                                        <td>@chiefComplaint</td>
+                                        <td class="manager-table__chief-complaint">@chiefComplaint</td>
                                     }
                                     @defining(Option(encounterItem.getTriageDateOfVisit).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { triageTime =>
                                         <td>@triageTime</td>

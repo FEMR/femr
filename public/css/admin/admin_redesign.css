@@ -1161,6 +1161,45 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.admin-form__field--invalid input[type="text"],
+.admin-form__field--invalid input[type="number"],
+.admin-form__field--invalid input[type="date"],
+.admin-form__field--invalid input[type="email"],
+.admin-form__field--invalid input[type="password"],
+.admin-form__field--invalid select,
+.admin-form__field--invalid textarea {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
+}
+
+.admin-form__field--invalid label,
+.admin-form__field--invalid .admin-form__legend,
+.admin-form__field--invalid .admin-checkbox span {
+    color: #dc2626;
+}
+
+.admin-form__field--invalid .admin-checkbox-grid {
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(220, 38, 38, 0.04);
+}
+
+.admin-form__field--invalid .errors {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.admin-form__alert {
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    background: rgba(220, 38, 38, 0.08);
+    color: #991b1b;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
 .admin-guidelines {
     margin: 0 0 16px 18px;
     padding: 0;

@@ -620,6 +620,18 @@
     gap: 8px;
 }
 
+.femr-char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--femr-color-text-secondary, #6b7280);
+}
+
+.femr-char-count--limit {
+    color: var(--femr-color-primary, #dc2626);
+    font-weight: 600;
+}
+
 .femr-diabetes-prompt {
     padding: 24px;
     border-radius: 16px;

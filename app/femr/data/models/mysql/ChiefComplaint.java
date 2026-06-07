@@ -29,7 +29,7 @@ public class ChiefComplaint implements IChiefComplaint {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "value")
+    @Column(name = "value", columnDefinition = "TEXT")
     private String value;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_encounter_id")

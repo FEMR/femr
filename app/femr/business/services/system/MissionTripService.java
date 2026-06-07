@@ -35,6 +35,7 @@ import femr.data.models.mysql.*;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -353,7 +354,18 @@ public class MissionTripService implements IMissionTripService {
                 tripItem.getTripEndDate() == null) {
             response.addError("", "you're missing required fields, try again");
         } else {
-            try {
+            Calendar calToday = Calendar.getInstance();
+            calToday.set(Calendar.HOUR_OF_DAY, 0);
+            calToday.set(Calendar.MINUTE, 0);
+            calToday.set(Calendar.SECOND, 0);
+            calToday.set(Calendar.MILLISECOND, 0);
+            Date today = calToday.getTime();
+
+            if (tripItem.getTripStartDate().before(today)) {
+                response.addError("", "start date cannot be in the past");
+            } else if (tripItem.getTripEndDate().before(tripItem.getTripStartDate())) {
+                response.addError("", "end date cannot be before start date");
+            } else try {
 
 
                 ExpressionList<MissionTeam> missionTeamExpressionList = QueryProvider.getMissionTeamQuery()

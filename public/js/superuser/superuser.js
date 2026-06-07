@@ -6,6 +6,17 @@ $(document).ready(function(){
         $("[name='newTripCountry']").val($(this).find(':selected').attr('country-name'));
     });
 
+    var today = new Date().toISOString().split('T')[0];
+    $('#newTripStartDate').attr('min', today);
+
+    $('#newTripStartDate').change(function() {
+        var startDate = $(this).val();
+        $('#newTripEndDate').attr('min', startDate);
+        if ($('#newTripEndDate').val() && $('#newTripEndDate').val() < startDate) {
+            $('#newTripEndDate').val('');
+        }
+    });
+
     if ($.fn.DataTable) {
         if ($('#tripTable').length > 0)
             $('#tripTable').DataTable();

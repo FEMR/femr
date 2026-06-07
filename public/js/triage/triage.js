@@ -966,5 +966,16 @@ $("#heightInches").change(function(){
     $(triageFields.patientVitals.heightInches).val(heightInches || "");
 });
 
+$('#chiefComplaint').on('input', function () {
+    var maxLen = parseInt($(this).attr('maxlength'), 10);
+    var currentLen = $(this).val().length;
+    var counter = $('#chiefComplaintCharCount');
+    counter.text(currentLen + ' / ' + maxLen);
+    if (currentLen >= maxLen) {
+        counter.addClass('femr-char-count--limit');
+    } else {
+        counter.removeClass('femr-char-count--limit');
+    }
+});
 
 

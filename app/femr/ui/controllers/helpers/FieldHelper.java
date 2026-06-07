@@ -6,11 +6,13 @@ import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.stringhelpers.StringUtils;
 
+import javax.inject.Singleton;
 import java.util.*;
 
 /**
  * Helps logically arrange fields for the views after retrieving data from the service
  */
+@Singleton
 public class FieldHelper {
 
     //READ THE METHOD NAME LOL

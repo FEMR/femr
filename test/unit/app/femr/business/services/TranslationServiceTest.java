@@ -3,6 +3,7 @@ package unit.app.femr.business.services;
 import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.ui.controllers.MedicalController;
+import femr.ui.controllers.helpers.FieldHelper;
 import femr.util.translation.TranslationServer;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +48,8 @@ public class TranslationServiceTest {
                 photoService,
                 sessionService,
                 searchService,
-                vitalService);
+                vitalService,
+                new FieldHelper());
     }
 
     //MedicalController Tests

@@ -64,3 +64,8 @@ Thank you to everyone who has contributed to fEMR's design and implementation:
 * [Kevin Yuan](https://github.com/thekevinWHYuan)
 * [Josue Lopez](https://github.com/JLpro-cd)
 * [Brendan Holt](https://github.com/bholt13)
+* [Rohan Udupa](https://github.com/lab596)
+* [Felipe Rotelli](https://github.com/Felps49)
+* [Moe M. Aung](https://github.com/KrakenMInitials)
+* [Joshua Cavender](https://github.com/j-cavender)
+* [Brendan Donovan](https://github.com/BrendannnD)

@@ -23,6 +23,7 @@ val appDependencies = Seq(
   "org.apache.commons" % "commons-text" % "1.3",
   "org.mockito" % "mockito-inline" % "3.5.13",
   "com.google.code.gson" % "gson" % "2.3.1",
+  "com.amazonaws" % "aws-java-sdk-s3" % "1.12.780",
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",
   "com.h2database" % "h2" % "1.4.193",

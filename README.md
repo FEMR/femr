@@ -14,7 +14,7 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 ### Community
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
-3. [Team FEMR](https://teamfemr.org)
+3. [Team FEMR](https://femr.global/)
 4. [Confluence](https://calpoly-se-capstone.atlassian.net/wiki/spaces/fEMR/pages/45809675/START+HERE+What+is+fEMR)
 
 ### tEMR Community
@@ -29,7 +29,7 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
 ### CI
-This repo uses Github Actions workflows for continuous integration, which can be found under the [Actions tab in Github](https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch. When a pull request is submitted to master, a Docker image is built for testing purposes. On a successful merge with master, the docker image will be published to [dockerhub](https://hub.docker.com/r/teamfemrdev/teamfemr).
+This repo uses GitHub Actions workflows for continuous integration; see the [Actions tab in GitHub](https://github.com/FEMR/femr/actions). The Scala CI workflow runs `sbt test` whenever code is pushed or a pull request is made to the main branch. When a pull request is submitted to master, a Docker image is built for testing purposes. On a successful merge with master, the docker image will be published to [dockerhub](https://hub.docker.com/r/teamfemrdev/teamfemr).
 
 ### Setting up weekly backup reminder
 
@@ -40,6 +40,42 @@ This repo uses Github Actions workflows for continuous integration, which can be
 2. A text editor should appear.
 3. Add the following line to this file: 0 11 * * 5 <path to fEMR project home directory>/util/WeeklyReminder.sh
 4. This will display a reminder pop up at 11:00AM every Friday.
+
+### S3 Backups
+
+fEMR can create SQL dumps and upload them to an S3 bucket for offsite backups. For local Docker development you must provide AWS credentials and configure the bucket name in a `.env` file next to `docker-compose.yml`.
+
+Required environment variables (example `.env` file):
+
+AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
+AWS_SESSION_TOKEN=OPTIONAL_IF_USING_TEMP_CREDS
+AWS_REGION=us-west-2
+S3_BACKUP_BUCKET=femr-kit-db-dumps-west
+
+After populating `.env`, recreate the container(s):
+
+```bash
+docker compose down
+docker compose up --build -d --force-recreate femr
+```
+
+If you run into AccessDenied errors when uploading to S3, ensure the IAM principal for the credentials above has `s3:PutObject` permission to the bucket objects (example policy):
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": ["s3:PutObject"],
+            "Resource": "arn:aws:s3:::femr-kit-db-dumps-west/*"
+        }
+    ]
+}
+```
+
+Note: some development branches change the host port mapping (for example `8080:9000`) — check `docker-compose.yml` if the app is not reachable at the default `http://localhost:9000`.
 
 ### Warnings
 
@@ -56,7 +92,7 @@ Email: kevin.zurek@teamfemr.org
 2. Clone the [FEMR/femr](https://github.com/FEMR/femr) repo: `git clone https://github.com/FEMR/femr.git`
 3. Checkout the [master](https://github.com/FEMR/femr/tree/master) branch: `git checkout master`.
 4. Cd into the femr directory: `cd femr`    
-5. Run `docker-compose up` to start the app.
+5. Run `docker compose up` to start the app.
 6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/
     
 # Setting up the project with IntelliJ on macOS and Windows
@@ -72,7 +108,7 @@ Email: kevin.zurek@teamfemr.org
 ### Step 3: Setting up the DB 
 1. Ensure Docker Desktop is running
 2. Open a terminal at the repository root
-3. Run `docker-compose up db` to bring up the database. To stop the database use Ctrl+c
+3. Run `docker compose up db` to bring up the database. To stop the database use Ctrl+c
 
 ### Step 4: Configuring IntelliJ
 

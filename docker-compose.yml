@@ -33,13 +33,20 @@ services:
     tty: true
     restart: on-failure:10
     ports:
-      - '9000:9000'
+      - '8080:9000'
 
     environment:
       DB_URL: 'jdbc:mysql://db:3306/femr_db?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true'
+      DB_NAME: 'femr_db'
       DB_USER: 'femr'
       DB_PASS: 'password'
       IS_DOCKER: 'true'
+      S3_BACKUP_BUCKET: 'femr-kit-db-dumps-west'
+      AWS_REGION: '${AWS_REGION:-us-west-2}'
+      AWS_DEFAULT_REGION: '${AWS_DEFAULT_REGION:-us-west-2}'
+      AWS_ACCESS_KEY_ID: '${AWS_ACCESS_KEY_ID:-}'
+      AWS_SECRET_ACCESS_KEY: '${AWS_SECRET_ACCESS_KEY:-}'
+      AWS_SESSION_TOKEN: '${AWS_SESSION_TOKEN:-}'
 
     volumes:
       - ./speedtest:/usr/src/speedtest

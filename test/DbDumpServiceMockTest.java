@@ -14,8 +14,7 @@ public class DbDumpServiceMockTest {
      */
     @Test
     public void testEnvironmentVariableConfiguration() {
-        // Simulate environment setup
-        String endpoint = System.getenv("S3_BACKUP_ENDPOINT");
+        String bucket = System.getenv("S3_BACKUP_BUCKET");
         String kitId = System.getenv("KIT_ID");
         
         // Test should pass either way - configuration is optional
@@ -27,24 +26,22 @@ public class DbDumpServiceMockTest {
      */
     @Test
     public void testDumpFilePathConstruction() {
-        String expectedPath = "db_dump.sql.gz";
+        String expectedPath = "db_dump_20260604_120000.sql";
         
-        assertTrue("Dump file should have .gz extension", expectedPath.endsWith(".gz"));
+        assertTrue("Dump file should have .sql extension", expectedPath.endsWith(".sql"));
         assertTrue("Dump file should be named db_dump", expectedPath.startsWith("db_dump"));
     }
 
     /**
-     * Test that HTTP endpoint URL is valid
+     * Test that S3 object key format is valid
      */
     @Test
-    public void testS3EndpointURLFormat() {
-        String endpoint = "https://q4n92he4x4.execute-api.us-east-2.amazonaws.com/prod/";
+    public void testS3ObjectKeyFormat() {
         String kitId = "test-kit";
-        String uploadUrl = endpoint + "upload_dump/" + kitId;
+        String objectKey = kitId + "/db_dump_20260604_120000.sql";
         
-        assertTrue("URL should use HTTPS", uploadUrl.startsWith("https://"));
-        assertTrue("URL should include upload_dump route", uploadUrl.contains("upload_dump"));
-        assertTrue("URL should include kit ID", uploadUrl.contains(kitId));
+        assertTrue("Object key should include kit ID", objectKey.contains(kitId));
+        assertTrue("Object key should end with .sql", objectKey.endsWith(".sql"));
     }
 
     /**
@@ -62,9 +59,9 @@ public class DbDumpServiceMockTest {
      */
     @Test
     public void testFallbackBehavior() {
-        String endpoint = System.getenv("S3_BACKUP_ENDPOINT");
+        String bucket = System.getenv("S3_BACKUP_BUCKET");
         
-        if (endpoint == null || endpoint.isEmpty()) {
+        if (bucket == null || bucket.isEmpty()) {
             assertTrue("Should fallback to local storage", true);
         } else {
             assertTrue("Should attempt S3 upload", true);

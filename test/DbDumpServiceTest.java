@@ -19,7 +19,7 @@ public class DbDumpServiceTest {
         
         // Set environment variables for testing
         // Note: In real Docker environment, these are set via docker-compose.yml
-        System.setProperty("S3_BACKUP_ENDPOINT", "https://q4n92he4x4.execute-api.us-east-2.amazonaws.com/prod/");
+        System.setProperty("S3_BACKUP_BUCKET", "femr-kit-db-dumps-west");
         System.setProperty("KIT_ID", "test-kit-unit");
     }
 
@@ -46,12 +46,11 @@ public class DbDumpServiceTest {
      */
     @Test
     public void testS3EndpointConfiguration() {
-        String endpoint = System.getenv("S3_BACKUP_ENDPOINT");
+        String bucket = System.getenv("S3_BACKUP_BUCKET");
         
-        if (endpoint != null) {
-            assertTrue("S3 endpoint should start with https://", endpoint.startsWith("https://"));
-            assertTrue("S3 endpoint should end with /prod/", endpoint.endsWith("/prod/"));
-            System.out.println("✓ S3 endpoint properly configured: " + endpoint);
+        if (bucket != null) {
+            assertTrue("S3 bucket should be configured", bucket.length() > 0);
+            System.out.println("✓ S3 bucket properly configured: " + bucket);
         } else {
             System.out.println("ℹ S3 endpoint not configured (will fallback to local storage)");
         }

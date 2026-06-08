@@ -783,7 +783,7 @@
         <!-- ===== ACTIONS ===== -->
         <div class="mds-actions">
             <button type="button" class="fButton femr-btn femr-btn--secondary" onclick="window.print()">Print Form</button>
-            <button type="button" class="fButton femr-btn femr-btn--primary">Export</button>
+            <button type="button" class="fButton femr-btn femr-btn--primary" onclick="exportToCSV()">Export</button>
         </div>
 
     </form>
@@ -817,6 +817,122 @@
     var hh = String(now.getHours()).padStart(2, '0');
     var mm = String(now.getMinutes()).padStart(2, '0');
     document.getElementById('timeOfReporting').value = hh + ':' + mm;
+
+    function exportToCSV() {
+        var form = document.getElementById('dailyReportForm');
+
+        function val(name) {
+            var el = form.elements[name];
+            if (!el) return '';
+            if (el.type === 'checkbox') return el.checked ? '1' : '0';
+            return el.value || '';
+        }
+        function n(name) { return parseInt(val(name)) || 0; }
+        function ev(l, g) { var lt = n(l), gt = n(g); return [lt, gt, lt + gt]; }
+        function sum(arr) { return arr.reduce(function(a, b) { return a + b; }, 0); }
+        function csvField(v) {
+            var s = String(v);
+            if (s.indexOf(',') !== -1 || s.indexOf('"') !== -1 || s.indexOf('\n') !== -1)
+                return '"' + s.replace(/"/g, '""') + '"';
+            return s;
+        }
+
+        var geoTag = (val('geoLat') || val('geoLong')) ? val('geoLat') + ',' + val('geoLong') : '';
+        var male   = [n('maleUnder1'), n('male1to4'), n('male5to17'), n('male18to64'), n('male65plus')];
+        var femNp  = [n('femaleNpUnder1'), n('femaleNp1to4'), n('femaleNp5to17'), n('femaleNp18to64'), n('femaleNp65plus')];
+        var femPrg = [0, 0, n('femalePreg5to17'), n('femalePreg18to64'), n('femalePreg65plus')];
+
+        var mdsRange = [];
+        for (var i = 4; i <= 35; i++) mdsRange = mdsRange.concat(['MDS'+i+':0', 'MDS'+i+':5-', 'Total'+i]);
+
+        var headers = [
+            '1','a','b','c1','c2','c3','c4','c5','d','e','f','g','h','i','j','k','l','m','n',
+            'o','p','q','r','s','t','u',
+            'MDS1:0','MDS1:1-4','MDS1:5-17','MDS1:18-64','MDS1:65-','Total1',
+            'MDS2:0','MDS2:1-4','MDS2:5-17','MDS2:18-64','MDS2:65-','Total2',
+            'MDS3:0','MDS3:1-4','MDS3:5-17','MDS3:18-64','MDS3:65-','Total3'
+        ].concat(mdsRange).concat([
+            'MDS36','MDS37','MDS38','MDS39','MDS40','MDS41','MDS42','MDS43',
+            'MDS44','MDS45','MDS46','MDS47','MDS48','MDS49','MDS50',
+            '51','52','53','54','55','56','57','58','59','60','61','62','63','64','65',
+            'NR1-No','NR1-DC','NR2-No','NR2-DC','NR3-No','NR3-DC','NR4-No','NR4-DC'
+        ]);
+
+        var values = [
+            '2',
+            val('organizationName'), val('teamName'),
+            val('type1mobile'), val('type1fixed'), val('type2'), val('type3'), val('specializedCell'),
+            val('contactPersons'), val('phoneNo'), val('email'),
+            val('departureDate'), val('dateOfActivity'), val('timeOfReporting'),
+            val('stateAdmin1'), val('cityAdmin2'), val('villageAdmin3'), val('facilityName'),
+            geoTag,
+            val('totalNewConsultations'), val('newAdmissions'), val('liveBirths'),
+            val('totalBedCapacity'), val('emptyInpatientBed'), val('emptyICUBed'),
+            '0'
+        ].concat(
+            male, [sum(male)],
+            femNp, [sum(femNp)],
+            femPrg, [sum(femPrg)],
+            ev('ev_majorHeadSpine_lt5','ev_majorHeadSpine_gte5'),
+            ev('ev_majorTorso_lt5','ev_majorTorso_gte5'),
+            ev('ev_majorExtremity_lt5','ev_majorExtremity_gte5'),
+            ev('ev_moderateInjury_lt5','ev_moderateInjury_gte5'),
+            ev('ev_minorInjury_lt5','ev_minorInjury_gte5'),
+            ev('ev_acuteRespiratory_lt5','ev_acuteRespiratory_gte5'),
+            ev('ev_wateryDiarrhea_lt5','ev_wateryDiarrhea_gte5'),
+            ev('ev_bloodyDiarrhea_lt5','ev_bloodyDiarrhea_gte5'),
+            ev('ev_jaundice_lt5','ev_jaundice_gte5'),
+            ev('ev_measles_lt5','ev_measles_gte5'),
+            ev('ev_meningitis_lt5','ev_meningitis_gte5'),
+            ev('ev_tetanus_lt5','ev_tetanus_gte5'),
+            ev('ev_flaccidParalysis_lt5','ev_flaccidParalysis_gte5'),
+            ev('ev_haemorrhagicFever_lt5','ev_haemorrhagicFever_gte5'),
+            ev('ev_feverUnknown_lt5','ev_feverUnknown_gte5'),
+            ev('ev_additional1_lt5','ev_additional1_gte5'),
+            ev('ev_additional2_lt5','ev_additional2_gte5'),
+            ev('ev_additional3_lt5','ev_additional3_gte5'),
+            ev('ev_additional4_lt5','ev_additional4_gte5'),
+            ev('ev_surgicalEmergency_lt5','ev_surgicalEmergency_gte5'),
+            ev('ev_medicalEmergency_lt5','ev_medicalEmergency_gte5'),
+            ev('ev_skinDisease_lt5','ev_skinDisease_gte5'),
+            ev('ev_mentalHealth_lt5','ev_mentalHealth_gte5'),
+            ev('ev_obstetric_lt5','ev_obstetric_gte5'),
+            ev('ev_sam_lt5','ev_sam_gte5'),
+            ev('ev_otherDiagnosis_lt5','ev_otherDiagnosis_gte5'),
+            ev('proc_major_lt5','proc_major_gte5'),
+            ev('proc_amputation_lt5','proc_amputation_gte5'),
+            ev('proc_minor_lt5','proc_minor_gte5'),
+            ev('proc_nvd_lt5','proc_nvd_gte5'),
+            ev('proc_csection_lt5','proc_csection_gte5'),
+            ev('proc_obsOther_lt5','proc_obsOther_gte5')
+        ).concat([
+            val('dischargeNoFollowup'), val('dischargeWithFollowup'), val('dischargeAgainstAdvice'),
+            val('referral'), val('deadOnArrival'), val('deathWithinFacility'), val('longTermRehab'),
+            '',
+            val('directlyRelated'), val('indirectlyRelated'), val('notRelated'),
+            val('vulnerableChild'), val('vulnerableAdult'), val('sgbv'), val('violenceNonSgbv'),
+            val('risk_51'), val('risk_52'), val('risk_53'), val('risk_54'), val('risk_55'),
+            val('risk_56'), val('risk_57'), val('risk_58'), val('risk_59'), val('risk_60'),
+            val('risk_61'), val('risk_62'), val('risk_63'), val('risk_64'), val('risk_65'),
+            val('comment_immediate_no'), val('comment_immediate'),
+            val('comment_community_no'), val('comment_community'),
+            val('comment_operational_no'), val('comment_operational'),
+            '', ''
+        ]);
+
+        var csvContent = headers.map(csvField).join(',') + '\n' + values.map(csvField).join(',');
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        var dateStr = new Date().toISOString().slice(0, 10);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'who-daily-report-' + dateStr + '.csv');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
 </script>
 
 }

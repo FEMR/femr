@@ -20,17 +20,26 @@ import femr.ui.views.html.sessions.editPassword;
 import femr.util.ThreadHelper;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
+import play.Environment;
 import play.mvc.Call;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -38,7 +47,11 @@ import femr.util.InternetConnnection.InternetCheck;
 
 public class SessionsController extends Controller {
 
+    private static final Map<String, String> PASSWORD_RESET_MESSAGE_KEYS = createPasswordResetMessageKeys();
+    private static final Map<String, String> PASSWORD_RESET_FALLBACKS = createPasswordResetFallbacks();
+
     private final AssetsFinder assetsFinder;
+    private final Environment environment;
     private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
@@ -46,10 +59,11 @@ public class SessionsController extends Controller {
     private final IUpdatesService internetStatusService;
 
     @Inject
-    public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService,
+    public SessionsController(AssetsFinder assetsFinder, Environment environment, FormFactory formFactory, ISessionService sessionsService, IUserService userService,
                               IRoleService roleService, IUpdatesService internetStatusService) {
 
         this.assetsFinder = assetsFinder;
+        this.environment = environment;
         this.formFactory = formFactory;
         this.sessionsService = sessionsService;
         this.userService = userService;
@@ -139,9 +153,15 @@ public class SessionsController extends Controller {
     }
 
     private Result renderEditPassword(IUser user){
-        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+        return renderEditPassword(user, new ArrayList<String>());
+    }
 
-        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>(), assetsFinder));
+    private Result renderEditPassword(IUser user, List<String> messages){
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+        String languageCode = resolveLanguageCode(user);
+        Map<String, String> translations = loadPasswordResetTranslations(languageCode);
+
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), languageCode, translations, createViewModelForm, translatePasswordResetMessages(messages, translations), assetsFinder));
     }
 
     public Result editRegisterPost() {
@@ -228,10 +248,10 @@ public class SessionsController extends Controller {
             if(!hasLowercase.matcher(viewModel.getNewPassword()).find())
                 messages.add("password must have a lowercase character");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have an uppercase character");
+                messages.add("password must have an uppercase character");
 
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have a number");
+                messages.add("password must have a number");
 
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
                 messages.add("passwords do not match");
@@ -243,7 +263,7 @@ public class SessionsController extends Controller {
         }
 
         if(!messages.isEmpty())
-            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages, assetsFinder));
+            return renderEditPassword(user, messages);
         else
         {
             user.setPassword(viewModel.getNewPassword());
@@ -286,6 +306,84 @@ public class SessionsController extends Controller {
 
         String email = user.getEmail().trim().toLowerCase();
         return "admin".equals(email) || "superuser".equals(email);
+    }
+
+    private String resolveLanguageCode(IUser user) {
+        Http.Cookie languageCookie = request().cookie("languageCode");
+        if (languageCookie != null && !StringUtils.isNullOrWhiteSpace(languageCookie.value())) {
+            return languageCookie.value();
+        }
+
+        if (user == null || StringUtils.isNullOrWhiteSpace(user.getLanguageCode())) {
+            return "en";
+        }
+
+        return user.getLanguageCode();
+    }
+
+    private Map<String, String> loadPasswordResetTranslations(String languageCode) {
+        Map<String, String> translations = new HashMap<>(PASSWORD_RESET_FALLBACKS);
+
+        try {
+            File languagesFile = environment.getFile("public/json/languages.json");
+            String languagesJson = new String(Files.readAllBytes(languagesFile.toPath()), StandardCharsets.UTF_8);
+            JSONObject languageData = new JSONObject(languagesJson);
+            JSONObject englishStrings = languageData.getJSONObject("en");
+            JSONObject selectedStrings = languageData.has(languageCode) ? languageData.getJSONObject(languageCode) : englishStrings;
+
+            for (String key : PASSWORD_RESET_FALLBACKS.keySet()) {
+                if (englishStrings.has(key)) {
+                    translations.put(key, englishStrings.getString(key));
+                }
+                if (selectedStrings.has(key)) {
+                    translations.put(key, selectedStrings.getString(key));
+                }
+            }
+        } catch (Exception e) {
+            return translations;
+        }
+
+        return translations;
+    }
+
+    private List<String> translatePasswordResetMessages(List<String> messages, Map<String, String> translations) {
+        List<String> translatedMessages = new ArrayList<>();
+
+        for (String message : messages) {
+            String translationKey = PASSWORD_RESET_MESSAGE_KEYS.get(message);
+            translatedMessages.add(translationKey == null ? message : translations.getOrDefault(translationKey, message));
+        }
+
+        return translatedMessages;
+    }
+
+    private static Map<String, String> createPasswordResetMessageKeys() {
+        Map<String, String> messageKeys = new HashMap<>();
+        messageKeys.put("password is a required field", "sessions_edit_password_error_required");
+        messageKeys.put("password is less than 8 characters", "sessions_edit_password_error_min_length");
+        messageKeys.put("password must have a lowercase character", "sessions_edit_password_error_lowercase");
+        messageKeys.put("password must have an uppercase character", "sessions_edit_password_error_uppercase");
+        messageKeys.put("password must have a number", "sessions_edit_password_error_number");
+        messageKeys.put("passwords do not match", "sessions_edit_password_error_match");
+        messageKeys.put("password must not be the same one used before reset", "sessions_edit_password_error_reused");
+        return messageKeys;
+    }
+
+    private static Map<String, String> createPasswordResetFallbacks() {
+        Map<String, String> fallbacks = new HashMap<>();
+        fallbacks.put("sessions_edit_password_heading", "Hello, {name}, your password is older than 90 days.");
+        fallbacks.put("sessions_edit_password_prompt", "Please choose a new password:");
+        fallbacks.put("sessions_edit_password_enter_password", "Enter password:");
+        fallbacks.put("sessions_edit_password_reenter_password", "Re-enter password:");
+        fallbacks.put("sessions_edit_password_submit", "Submit");
+        fallbacks.put("sessions_edit_password_error_required", "password is a required field");
+        fallbacks.put("sessions_edit_password_error_min_length", "password is less than 8 characters");
+        fallbacks.put("sessions_edit_password_error_lowercase", "password must have a lowercase character");
+        fallbacks.put("sessions_edit_password_error_uppercase", "password must have an uppercase character");
+        fallbacks.put("sessions_edit_password_error_number", "password must have a number");
+        fallbacks.put("sessions_edit_password_error_match", "passwords do not match");
+        fallbacks.put("sessions_edit_password_error_reused", "password must not be the same one used before reset");
+        return fallbacks;
     }
 
     private Call resolvePostLoginDestination(CurrentUser currentUser) {

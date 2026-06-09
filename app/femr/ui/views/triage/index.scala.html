@@ -171,8 +171,10 @@
                 }
 
                 function updateLanguage(languageCode = "en") {
-                    localStorage.setItem('languageCode', languageCode);
-                    const language = languageCode;
+                    const language = languageData[languageCode] ? languageCode : "en";
+                    const strings = Object.assign({}, languageData.en || {}, languageData[language] || {});
+                    localStorage.setItem('languageCode', language);
+                    window.femrTranslationStrings = strings;
                     updateTextContent("triage_index_p_That", languageData[language].triage_index_p_That);
                     updateTextContent("triage_index_p_Patient", languageData[language].triage_index_p_Patient);
                     updateTextContent("triage_index_a_Go", languageData[language].triage_index_a_Go);
@@ -180,6 +182,7 @@
                     updateTextContent("triage_index_h2_General", languageData[language].triage_index_h2_General);
                     updateTextContent("triageSubmitBtn", languageData[language].triage_index_button_submit_patient);
                     updateTextContent("triageResetBtn", languageData[language].triage_index_button_reset_fields);
+                    updateTextContent("triage_index_Patient2", strings.triage_index_Patient2);
                     const patientDemographics = document.getElementById("triage_index_b_patientDemographics");
                     if (patientDemographics) {
                         patientDemographics.title = languageData[language].triage_index_b_patientDemographics;
@@ -226,7 +229,7 @@
                     updateTextContent("tobaccoUseDisorderLabel", languageData[language].triage_index_Tobacco);
                     updateTextContent("substanceAlcoholAbuseLabel", languageData[language].triage_index_Substance_Alcohol);
                     updateTextContent("chiefComplaintTitle", languageData[language].triage_index_Chief);
-                    updateAgeInputPlaceholders(languageCode);
+                    updateAgeInputPlaceholders(language);
                 }
             });
     </script>
@@ -235,7 +238,7 @@
     <link rel="stylesheet" href="@assets.path("css/triage_redesign.css")">
     <link rel="stylesheet" href="@assets.path("css/libraries/datepicker.css")">
 }
-@main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
+@main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage", currentUser.getLanguageCode), assets = assets) {
 
     <div id="triageContentWrap" class="femr-triage">
         @if(viewModel.isSearchError) {
@@ -270,7 +273,7 @@
                         @if(viewModel.getPatient.getId != 0) {
                             <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="femr-btn femr-btn--secondary" target="_blank">
                                 <span class="material-symbols-outlined" aria-hidden="true">history</span>
-                                <span class="femr-btn__label">Patient History</span>
+                                <span class="femr-btn__label" id="triage_index_Patient2">Patient History</span>
                             </a>
                         }
                     </div>

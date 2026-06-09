@@ -1,4 +1,4 @@
-@(page: String)
+@(page: String, languageCode: String = "en")
 
 @import femr.ui.controllers.routes.SearchController
 
@@ -6,38 +6,66 @@
 @defining(s"sidebar-search-field-$pageKey") { searchFieldId =>
 
 <div id="searchContainer" class="femr-sidebar__search-container">
-    <label class="femr-sidebar__section-label" for="@searchFieldId" id="sidebar_search_label">Search Patient</label>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function (response) { return response.json(); })
+                .then(function (languageData) {
+                    const serverLanguage = '@languageCode';
+                    const storedLanguage = localStorage.getItem('languageCode');
+                    const language = languageData[serverLanguage] ? serverLanguage : (languageData[storedLanguage] ? storedLanguage : 'en');
+                    const strings = Object.assign({}, languageData.en || {}, languageData[language] || {});
+
+                    localStorage.setItem('languageCode', language);
+
+                    const label = document.getElementById('@searchFieldId-label');
+                    if (label && strings.shared_search_patient) {
+                        label.textContent = strings.shared_search_patient;
+                    }
+
+                    document.querySelectorAll('[data-shared-search-input="@searchFieldId"]').forEach(function (input) {
+                        input.placeholder = strings.shared_search_placeholder || input.placeholder;
+                    });
+
+                    document.querySelectorAll('[data-shared-search-button="@searchFieldId"]').forEach(function (button) {
+                        button.setAttribute('aria-label', strings.shared_search_patients_aria || button.getAttribute('aria-label'));
+                    });
+                })
+                .catch(function () {});
+        });
+    </script>
+    <label class="femr-sidebar__section-label" for="@searchFieldId" id="@searchFieldId-label">Search Patient</label>
     <div class="femr-sidebar__search">
         @pageKey match {
             case "triage" => {
                 @helper.form(action = SearchController.handleSearch("triage")) {
                     <div class="nameOrIdSearchFormWrap">
-                        <input type="text" class="fInput sidebar-search-input" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
-                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off" data-shared-search-input="@searchFieldId"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients" data-shared-search-button="@searchFieldId"></button>
                     </div>
                 }
             }
             case "history" => {
                 @helper.form(action = SearchController.handleSearch("history")) {
                     <div class="nameOrIdSearchFormWrap">
-                        <input type="text" class="fInput sidebar-search-input" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
-                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off" data-shared-search-input="@searchFieldId"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients" data-shared-search-button="@searchFieldId"></button>
                     </div>
                 }
             }
             case "medical" => {
                 @helper.form(action = SearchController.handleSearch("medical")) {
                     <div class="nameOrIdSearchFormWrap">
-                        <input type="text" class="fInput sidebar-search-input" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
-                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off" data-shared-search-input="@searchFieldId"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients" data-shared-search-button="@searchFieldId"></button>
                     </div>
                 }
             }
             case "pharmacy" => {
                 @helper.form(action = SearchController.handleSearch("pharmacy")) {
                     <div class="nameOrIdSearchFormWrap">
-                        <input type="text" class="fInput sidebar-search-input" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off"/>
-                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients"></button>
+                        <input type="text" class="fInput" id="@searchFieldId" placeholder="ID, Name, or Phone #" name="patientSearchQuery" autocomplete="off" data-shared-search-input="@searchFieldId"/>
+                        <button type="submit" class="nameOrIdSearchButton" aria-label="Search patients" data-shared-search-button="@searchFieldId"></button>
                     </div>
                 }
             }
@@ -52,6 +80,7 @@
 <button type="button"
         class="femr-sidebar__search-placeholder"
         aria-label="Search patients"
+        data-shared-search-button="@searchFieldId"
         onfocus="document.getElementById('@searchFieldId')?.focus()"
         onclick="document.getElementById('@searchFieldId')?.focus()">
     <span class="material-symbols-outlined" aria-hidden="true">search</span>

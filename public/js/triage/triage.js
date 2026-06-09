@@ -15,6 +15,10 @@ window.addEventListener('keydown',function(e){
     }
 },true);
 
+function triageText(key, fallback) {
+    return (window.femrTranslationStrings && window.femrTranslationStrings[key]) || fallback;
+}
+
 const patientPhotoFeature = {
 
     config: {
@@ -678,7 +682,7 @@ $(function () {
         $('#city').css('border', '');
     });
     $('#btnDeletePhoto').click(function () {
-        const b = confirm("Are you sure you would like to delete this photo?");
+        const b = confirm(triageText("triage_photo_delete_confirm", "Are you sure you would like to delete this photo?"));
         if (b === true)
             patientPhotoFeature.flagForDeletion();
     });
@@ -709,7 +713,7 @@ $(function () {
 
             pass = !isDiabeticScreeningPromptNecessary;
         } else {
-            alert("Please fill in all required triage fields highlighted in red before submitting.");
+            alert(triageText("triage_required_alert", "Please fill in all required triage fields highlighted in red before submitting."));
         }
         return pass; //located in triageClientValidation.js
     });
@@ -771,7 +775,7 @@ $(function () {
 
         $.getJSON(url, queryParams,function (result) {
             if (result === true) {
-                if (confirm("A patient with similar information already exists in the database. Would you like to view the matching patients?")) {
+                if (confirm(triageText("triage_duplicate_patient_confirm", "A patient with similar information already exists in the database. Would you like to view the matching patients?"))) {
                     var patientMatchesUrl;
                     if(ageClassification != null) {
                         patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
@@ -849,7 +853,7 @@ $(function () {
                 },
                 templates: {
                     empty: [
-                        '<div class="emptyMessage">No matching cities found</div>'
+                        '<div class="emptyMessage">' + triageText("triage_no_matching_cities", "No matching cities found") + '</div>'
                     ]
                 }
             }).on('typeahead:selected', function(event, item) {

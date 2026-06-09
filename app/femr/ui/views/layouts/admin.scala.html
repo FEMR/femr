@@ -10,11 +10,15 @@
 @import femr.ui.views.html.layouts.main
 
 @adminScripts = {
+    <script>
+        window.femrLanguageUrl = '@routes.Assets.versioned("json/languages.json")';
+        window.femrLanguageCode = '@{currentUser.getLanguageCode}';
+    </script>
     <script type="text/javascript" src="@assets.path("js/admin/admin.js")"></script>
     @scripts
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const languageUrl = '@routes.Assets.versioned("json/languages.json")';
+            const languageUrl = window.femrLanguageUrl || '@routes.Assets.versioned("json/languages.json")';
             let languageData = null;
 
             function applyLanguage(languageCode) {
@@ -35,8 +39,8 @@
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
                     languageData = data;
-                    const storedLanguage = localStorage.getItem('languageCode') || "@{currentUser.getLanguageCode()}";
-                    applyLanguage(storedLanguage);
+                    const selectedLanguage = window.femrLanguageCode || localStorage.getItem('languageCode') || "@{currentUser.getLanguageCode()}";
+                    applyLanguage(selectedLanguage);
                 })
                 .catch(function () {
                     applyLanguage('en');

@@ -73,7 +73,7 @@
 
 @admin("Trips - Manage Cities", currentUser, scripts = additionalScripts, styles = additionalStyles, assets = assets) {
 
-    @tripsMenu("cities")
+    @tripsMenu("cities", currentUser.getLanguageCode)
 
     @if(viewModel.getMessages.size > 0) {
         <div class="admin-view__messages" role="status">

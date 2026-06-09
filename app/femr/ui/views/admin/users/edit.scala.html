@@ -14,55 +14,6 @@
     }
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
-        <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('@routes.Assets.versioned("json/languages.json")')
-                .then(function(response) { return response.json(); })
-                .then(function(data) {
-                    var lang = "@{currentUser.getLanguageCode}" || 'en';
-                    var t = data[lang] || data['en'];
-                    function setText(id, val) {
-                        var el = document.getElementById(id);
-                        if (el && val) el.textContent = val;
-                    }
-                    setText('admin_edit_user_title', t.admin_edit_user_title);
-                    setText('admin_edit_user_desc', t.admin_edit_user_desc);
-                    setText('admin_edit_back_to_users', t.admin_edit_back_to_users);
-                    setText('admin_edit_email_label', t.admin_edit_email_label);
-                    setText('admin_edit_first_name_label', t.admin_edit_first_name_label);
-                    setText('admin_edit_last_name_label', t.admin_edit_last_name_label);
-                    setText('admin_edit_about_label', t.admin_edit_about_label);
-                    setText('admin_edit_password_reset_legend', t.admin_edit_password_reset_legend);
-                    setText('admin_edit_password_reset_hint', t.admin_edit_password_reset_hint);
-                    setText('admin_edit_new_password_label', t.admin_edit_new_password_label);
-                    setText('admin_edit_verify_password_label', t.admin_edit_verify_password_label);
-                    setText('admin_edit_roles_label', t.admin_edit_roles_label);
-                    setText('admin_edit_save_btn', t.admin_edit_save_btn);
-                    setText('admin_edit_cancel_btn', t.admin_edit_cancel_btn);
-                    setText('admin_edit_trip_history_title', t.admin_edit_trip_history_title);
-                    setText('admin_edit_trip_history_desc', t.admin_edit_trip_history_desc);
-                    setText('admin_edit_add_to_trip_label', t.admin_edit_add_to_trip_label);
-                    setText('admin_edit_no_trips_title', t.admin_edit_no_trips_title);
-                    setText('admin_edit_no_trips_desc', t.admin_edit_no_trips_desc);
-                    document.querySelectorAll('.admin-edit-th-organization').forEach(function(el) {
-                        if (t.admin_edit_th_organization) el.textContent = t.admin_edit_th_organization;
-                    });
-                    document.querySelectorAll('.admin-edit-th-country').forEach(function(el) {
-                        if (t.admin_edit_th_country) el.textContent = t.admin_edit_th_country;
-                    });
-                    document.querySelectorAll('.admin-edit-th-date').forEach(function(el) {
-                        if (t.admin_edit_th_date) el.textContent = t.admin_edit_th_date;
-                    });
-                    document.querySelectorAll('.admin-edit-th-action').forEach(function(el) {
-                        if (t.admin_edit_th_action) el.textContent = t.admin_edit_th_action;
-                    });
-                    setText('admin_edit_add_to_trip_btn', t.admin_edit_add_to_trip_btn);
-                    document.querySelectorAll('.admin-edit-remove-trip-btn').forEach(function(el) {
-                        if (t.admin_edit_remove_trip_btn) el.textContent = t.admin_edit_remove_trip_btn;
-                    });
-                });
-        });
-        </script>
     }
     @additionalMessages = {
     @for(message <- messages) {
@@ -87,13 +38,13 @@
     <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title" id="admin_edit_user_title">Account Details</h2>
-                    <p class="admin-section__description" id="admin_edit_user_desc">Update contact information, reset passwords, and adjust permissions.</p>
+                    <h2 class="admin-section__title" data-i18n="admin_user_edit_title">Account Details</h2>
+                    <p class="admin-section__description" data-i18n="admin_user_edit_description">Update contact information, reset passwords, and adjust permissions.</p>
                 </div>
                 <div class="admin-section__actions">
                     <a class="admin-button" id="cancelBtn" href="@UsersController.manageGet()">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-                        <span id="admin_edit_back_to_users">Back to users</span>
+                        <span data-i18n="admin_users_back">Back to users</span>
                     </a>
                 </div>
             </div>
@@ -101,7 +52,7 @@
             <div class="admin-form admin-form--stacked">
                 <div class="admin-form__row">
                     <div class="admin-form__field">
-                        <label for="email"><span id="admin_edit_email_label">Email address</span> <span class="admin-required" aria-hidden="true">*</span></label>
+                        <label for="email"><span data-i18n="admin_users_email_address">Email address</span> <span class="admin-required" aria-hidden="true">*</span></label>
                         <input id="email" name="email" type="email" value="@form("email").getValue.orElse("")" readonly />
                         <span class="errors">
                             @if(!form("email").errors.isEmpty) {
@@ -110,7 +61,7 @@
                         </span>
                     </div>
                     <div class="admin-form__field">
-                        <label for="firstName"><span id="admin_edit_first_name_label">First name</span> <span class="admin-required" aria-hidden="true">*</span></label>
+                        <label for="firstName"><span data-i18n="admin_users_first_name">First name</span> <span class="admin-required" aria-hidden="true">*</span></label>
                         <input id="firstName" name="firstName" type="text" value="@form("firstName").getValue.orElse("")" />
                         <span class="errors">
                             @if(!form("firstName").errors.isEmpty) {
@@ -122,30 +73,30 @@
 
                 <div class="admin-form__row">
                     <div class="admin-form__field">
-                        <label for="lastName" id="admin_edit_last_name_label">Last name</label>
+                        <label for="lastName" data-i18n="admin_users_last_name">Last name</label>
                         <input id="lastName" name="lastName" type="text" value="@form("lastName").getValue.orElse("")" />
                         <span class="errors"></span>
                     </div>
                     <div class="admin-form__field">
-                        <label for="notes" id="admin_edit_about_label">About user</label>
-                        <textarea id="notes" name="notes" rows="3" placeholder="Add a short description">@form("notes").getValue.orElse("")</textarea>
+                        <label for="notes" data-i18n="admin_users_about_user">About user</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Add a short description" data-i18n-placeholder="admin_users_about_placeholder">@form("notes").getValue.orElse("")</textarea>
                         <span class="errors"></span>
                     </div>
                 </div>
 
                 <div class="admin-form__field admin-form__fieldset">
-                    <div class="admin-form__legend" id="admin_edit_password_reset_legend">Password Reset</div>
+                    <div class="admin-form__legend" data-i18n="admin_user_edit_password_reset">Password Reset</div>
                     <label class="admin-toggle-check">
                         <input type="checkbox" name="passwordReset" @if(form("passwordReset").getValue != null && form("passwordReset").getValue.get() == "true") { checked } />
-                        <span>Require user to set a new password on next login</span>
+                        <span data-i18n="admin_user_edit_require_reset">Require user to set a new password on next login</span>
                     </label>
-                    <p class="admin-form__hint" id="admin_edit_password_reset_hint">Enabling this prompts the user to create a new password upon sign in.</p>
+                    <p class="admin-form__hint" data-i18n="admin_user_edit_reset_hint">Enabling this prompts the user to create a new password upon sign in.</p>
                 </div>
 
                 <div class="admin-form__row">
                     <div class="admin-form__field">
-                        <label for="newPassword" id="admin_edit_new_password_label">New password</label>
-                        <input id="newPassword" name="newPassword" type="password" placeholder="Leave blank to keep current password" />
+                        <label for="newPassword" data-i18n="admin_user_edit_new_password">New password</label>
+                        <input id="newPassword" name="newPassword" type="password" placeholder="Leave blank to keep current password" data-i18n-placeholder="admin_user_edit_new_password_placeholder" />
                         <span class="errors">
                             @if(!form("newPassword").errors.isEmpty) {
                                 @form("newPassword").errors.get(0).message
@@ -153,8 +104,8 @@
                         </span>
                     </div>
                     <div class="admin-form__field">
-                        <label for="newPasswordVerify" id="admin_edit_verify_password_label">Verify new password</label>
-                        <input id="newPasswordVerify" name="newPasswordVerify" type="password" placeholder="Re-enter new password" />
+                        <label for="newPasswordVerify" data-i18n="admin_user_edit_verify_new_password">Verify new password</label>
+                        <input id="newPasswordVerify" name="newPasswordVerify" type="password" placeholder="Re-enter new password" data-i18n-placeholder="admin_user_edit_verify_new_password_placeholder" />
                         <span class="errors">
                             @if(!form("newPasswordVerify").errors.isEmpty) {
                                 @form("newPasswordVerify").errors.get(0).message
@@ -166,7 +117,7 @@
                 <div class="admin-form__field">
                     <div id="roleWrap" class="admin-form__fieldset">
                         <div class="admin-form__legend">
-                            <span id="admin_edit_roles_label">Roles</span>
+                            <span data-i18n="admin_users_roles">Roles</span>
                             <span class="admin-required" aria-hidden="true">*</span>
                         </div>
                         <span class="errors">
@@ -178,7 +129,7 @@
                             @for(role <- availableRoles.asScala) {
                                 <label class="admin-checkbox">
                                     <input type="checkbox" name="roles[]" value="@role" @if(selectedRoles.contains(role)) { checked } />
-                                    <span>@role</span>
+                                    <span data-role-name="@role">@role</span>
                                 </label>
                             }
                         </div>
@@ -187,8 +138,8 @@
             </div>
 
             <div class="admin-section__actions">
-                <button type="submit" class="admin-button admin-button--primary" id="editUserSubmitBtn"><span id="admin_edit_save_btn">Save changes</span></button>
-                <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()" id="admin_edit_cancel_btn">Cancel</a>
+                <button type="submit" class="admin-button admin-button--primary" id="editUserSubmitBtn" data-i18n="admin_users_save_changes">Save changes</button>
+                <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()" data-i18n="admin_users_cancel">Cancel</a>
             </div>
         </section>
     }
@@ -196,8 +147,8 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title" id="admin_edit_trip_history_title">Trip History</h2>
-                    <p class="admin-section__description" id="admin_edit_trip_history_desc">Trips granted access to this user for inventory visibility.</p>
+                    <h2 class="admin-section__title" data-i18n="admin_users_trip_history">Trip History</h2>
+                    <p class="admin-section__description" data-i18n="admin_user_edit_trip_history_description">Trips granted access to this user for inventory visibility.</p>
                 </div>
                 @if(availableTripList.nonEmpty) {
                     <div class="admin-section__actions">
@@ -205,7 +156,7 @@
                             <div class="admin-form admin-form--inline">
                                 <div class="admin-form__row">
                                     <div class="admin-form__field admin-form__field--compact">
-                                        <label for="addTripSelect" id="admin_edit_add_to_trip_label">Add to trip</label>
+                                        <label for="addTripSelect" data-i18n="admin_users_add_to_trip">Add to trip</label>
                                         <select id="addTripSelect" name="tripId">
                                             @for(trip <- availableTripList) {
                                                 @defining(Option(trip.getFriendlyTripTitle).getOrElse(
@@ -220,7 +171,7 @@
                                     </div>
                                     <button type="submit" class="admin-button admin-button--primary">
                                         <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                                        <span id="admin_edit_add_to_trip_btn">Add to trip</span>
+                                        <span data-i18n="admin_users_add_to_trip">Add to trip</span>
                                     </button>
                                 </div>
                             </div>
@@ -234,10 +185,10 @@
                     <table class="admin-table" id="userTripTable">
                         <thead>
                             <tr>
-                                <th scope="col" class="admin-edit-th-organization">Organization</th>
-                                <th scope="col" class="admin-edit-th-country">Country</th>
-                                <th scope="col" class="admin-edit-th-date">Date</th>
-                                <th scope="col" class="admin-edit-th-action">Action</th>
+                                <th scope="col" data-i18n="admin_users_organization">Organization</th>
+                                <th scope="col" data-i18n="admin_users_country">Country</th>
+                                <th scope="col" data-i18n="admin_users_date">Date</th>
+                                <th scope="col" data-i18n="admin_users_action">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -249,7 +200,7 @@
                                     <td>
                                         @helper.form(action = UsersController.removeTripPost(Integer.parseInt(form("userId").getValue.get())), 'class -> "admin-inline-form") {
                                             <input type="hidden" name="tripId" value="@trip.getId" />
-                                            <button type="submit" class="admin-button admin-button--danger admin-edit-remove-trip-btn" aria-label={"Remove user from " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
+                                            <button type="submit" class="admin-button admin-button--danger" aria-label={"Remove user from " + Option(trip.getFriendlyTripTitle).getOrElse("trip")} data-i18n="admin_users_remove">Remove</button>
                                         }
                                     </td>
                                 </tr>
@@ -260,8 +211,8 @@
             } else {
                 <div class="admin-empty-state">
                     <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">flight</span>
-                    <h3 class="admin-empty-state__title" id="admin_edit_no_trips_title">No trips recorded</h3>
-                    <p class="admin-empty-state__description" id="admin_edit_no_trips_desc">Assign this user to a trip to grant inventory access.</p>
+                    <h3 class="admin-empty-state__title" data-i18n="admin_user_edit_no_trips_title">No trips recorded</h3>
+                    <p class="admin-empty-state__description" data-i18n="admin_user_edit_no_trips_description">Assign this user to a trip to grant inventory access.</p>
                 </div>
             }
         </section>

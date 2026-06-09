@@ -75,7 +75,7 @@
 
 @admin("Trips - Manage Teams", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
-    @tripsMenu("teams")
+    @tripsMenu("teams", currentUser.getLanguageCode)
 
     @if(viewModel.getMessages.size > 0) {
         <div class="admin-view__messages" role="status">

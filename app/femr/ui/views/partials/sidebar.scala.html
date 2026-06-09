@@ -61,6 +61,9 @@
                             const parentLink = element.closest('a');
                             if (parentLink) {
                                 parentLink.setAttribute('aria-label', value);
+                                if (parentLink.hasAttribute('title')) {
+                                    parentLink.setAttribute('title', value);
+                                }
                             }
                         }
                     }
@@ -78,16 +81,10 @@
                         updateTextContent('langCode_admin_trips', languageData[languageCode].admin_trips);
                         updateTextContent('langCode_admin_users', languageData[languageCode].admin_users);
                         updateTextContent('langCode_admin_updates', languageData[languageCode].admin_updates);
+                        updateTextContent('langCode_backup', languageData[languageCode].sidebar_backup_data);
                         updateTextContent('langCode_reference', languageData[languageCode].langCode_reference);
                         updateTextContent('langCode_settings', languageData[languageCode].langCode_settings);
-                        updateTextContent('langCode_backup', languageData[languageCode].langCode_backup);
-                        updateTextContent('sidebar_search_label', languageData[languageCode].sidebar_search_label);
-                        var searchPlaceholder = languageData[languageCode].sidebar_search_placeholder;
-                        if (searchPlaceholder) {
-                            document.querySelectorAll('.sidebar-search-input').forEach(function(el) {
-                                el.setAttribute('placeholder', searchPlaceholder);
-                            });
-                        }
+                        updateTextContent('langCode_sign_out', languageData[languageCode].sidebar_sign_out);
                     }
                 });
         </script>
@@ -98,7 +95,7 @@
             </div>
         } else if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
             <div class="femr-sidebar__section">
-                @femr.ui.views.html.partials.search("history")
+                @femr.ui.views.html.partials.search("history", currentUser.getLanguageCode)
             </div>
         }
 
@@ -210,7 +207,7 @@
                 </a>
                 <a href="@SessionsController.delete()" class="femr-sidebar__icon-button" title="Sign out">
                     <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-                    <span class="femr-sidebar__sr">Sign out</span>
+                    <span class="femr-sidebar__sr" id="langCode_sign_out">Sign out</span>
                 </a>
             </div>
         </div>

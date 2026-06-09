@@ -21,6 +21,10 @@ function getPatientVitalsInputs() {
     };
 }
 
+function newVitalsText(key, fallback) {
+    return (window.femrTranslationStrings && window.femrTranslationStrings[key]) || fallback;
+}
+
 $(document).off('click', '#cancelVitalsBtn').on('click', '#cancelVitalsBtn', function () {
     closeDialog("newVitalsDialog");
 });
@@ -104,7 +108,7 @@ $(document).off('click', '#saveVitalsBtn').on('click', '#saveVitalsBtn', functio
                 }
             });
         }).fail(function () {
-            alert("Unable to save vitals right now. Please try again.");
+            alert(newVitalsText("medical_vitals_save_error", "Unable to save vitals right now. Please try again."));
         });
     }
 });

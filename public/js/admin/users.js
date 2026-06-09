@@ -1,27 +1,106 @@
-window.initUserTable = function(dtLang) {
-    var $t = $('#userTable');
-    if (!$t.length || !$.fn.DataTable) return;
-    if ($.fn.DataTable.isDataTable('#userTable')) return;
-    $t.DataTable({
-        columnDefs: [{ orderable: false, targets: [2, 3, 7] }],
-        language: dtLang || {}
-    });
+var adminUserI18n = {
+    strings: {},
+    t: function (key, fallback) {
+        return this.strings[key] || fallback || key;
+    },
+    load: function (callback) {
+        var languageUrl = window.femrLanguageUrl || '/assets/json/languages.json';
+        var serverLanguage = window.femrLanguageCode;
+        var storedLanguage = localStorage.getItem('languageCode');
+
+        fetch(languageUrl)
+            .then(function (response) { return response.json(); })
+            .then(function (languageData) {
+                var language = languageData[serverLanguage] ? serverLanguage : (languageData[storedLanguage] ? storedLanguage : 'en');
+                adminUserI18n.strings = Object.assign({}, languageData.en || {}, languageData[language] || {});
+                localStorage.setItem('languageCode', language);
+                adminUserI18n.applyDomTranslations();
+                callback();
+            })
+            .catch(function () {
+                adminUserI18n.applyDomTranslations();
+                callback();
+            });
+    },
+    roleKey: function (roleName) {
+        return 'admin_users_role_' + String(roleName || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+    },
+    applyDomTranslations: function () {
+        $('[data-i18n]').each(function () {
+            var key = $(this).attr('data-i18n');
+            var value = adminUserI18n.t(key, $(this).text());
+            $(this).text(value);
+        });
+
+        $('[data-i18n-placeholder]').each(function () {
+            var key = $(this).attr('data-i18n-placeholder');
+            $(this).attr('placeholder', adminUserI18n.t(key, $(this).attr('placeholder')));
+        });
+
+        $('[data-i18n-aria]').each(function () {
+            var key = $(this).attr('data-i18n-aria');
+            $(this).attr('aria-label', adminUserI18n.t(key, $(this).attr('aria-label')));
+        });
+
+        $('[data-role-name]').each(function () {
+            var roleName = $(this).attr('data-role-name');
+            $(this).text(adminUserI18n.t(adminUserI18n.roleKey(roleName), roleName));
+        });
+
+        adminUserI18n.translatePasswordAges();
+    },
+    translatePasswordAges: function () {
+        $('#userTable tbody td').each(function () {
+            var text = $.trim($(this).text());
+            var match = /^(\d+)\s+days$/i.exec(text);
+            if (match) {
+                $(this).text(match[1] + ' ' + adminUserI18n.t('admin_users_days', 'days'));
+            }
+        });
+    },
+    dataTableLanguage: function () {
+        return {
+            lengthMenu: adminUserI18n.t('datatable_show', 'Show') + ' _MENU_ ' + adminUserI18n.t('datatable_entries', 'entries'),
+            search: adminUserI18n.t('datatable_search', 'Search') + ':',
+            info: adminUserI18n.t('datatable_info', 'Showing _START_ to _END_ of _TOTAL_ entries'),
+            infoEmpty: adminUserI18n.t('datatable_info_empty', 'Showing 0 to 0 of 0 entries'),
+            infoFiltered: adminUserI18n.t('datatable_info_filtered', '(filtered from _MAX_ total entries)'),
+            emptyTable: adminUserI18n.t('datatable_empty_table', 'No data available in table'),
+            zeroRecords: adminUserI18n.t('datatable_zero_records', 'No matching records found'),
+            paginate: {
+                previous: adminUserI18n.t('datatable_previous', 'Previous'),
+                next: adminUserI18n.t('datatable_next', 'Next')
+            }
+        };
+    }
 };
 
 $(document).ready(function () {
-    var urlPieces = window.location.href.split('/');
+    adminUserI18n.load(function () {
+        var urlPieces = window.location.href.split('/');
 
-    if ($.inArray("edit", urlPieces) !== -1) {
-        editUsers.bindSubmitButton();
-    } else if ($.inArray("create", urlPieces) !== -1 || $.inArray("register", urlPieces) !== -1 ) {
-        createUsers.bindSubmitButton();
-        createUsers.bindTripHistoryControls();
-    } else {
-        manageUsers.bindUserToggleButtons();
-    }
+        if ($.inArray("edit", urlPieces) !== -1) {
+            editUsers.bindSubmitButton();
+        } else if ($.inArray("create", urlPieces) !== -1 || $.inArray("register", urlPieces) !== -1 ) {
+            createUsers.bindSubmitButton();
+            createUsers.bindTripHistoryControls();
+        } else {
+            manageUsers.bindUserToggleButtons();
+        }
 
-    // DataTable init is handled by window.initUserTable, called from the language fetch callback.
-    // The isDataTable guard prevents double init if somehow called before the fetch resolves.
+        const $userTable = $("#userTable");
+        if ($userTable.length) {
+            $userTable.DataTable({
+                columnDefs: [
+                    { orderable: false, targets: [2, 3, 7] }
+                ],
+                language: adminUserI18n.dataTableLanguage(),
+                drawCallback: function () {
+                    adminUserI18n.applyDomTranslations();
+                }
+            });
+        }
+    });
 });
 
 var manageUsers = {
@@ -31,13 +110,13 @@ var manageUsers = {
             manageUsers.toggleUser(this);
         });
     },
-    setButtonState: function (btn, variant, label, icon) {
+    setButtonState: function (btn, variant, labelKey, fallbackLabel, icon) {
         var $btn = $(btn);
         $btn.removeClass('admin-button--success admin-button--danger');
         if (variant) {
             $btn.addClass('admin-button--' + variant);
         }
-        $btn.html('<span class="material-symbols-outlined" aria-hidden="true">' + icon + '</span><span>' + label + '</span>');
+        $btn.html('<span class="material-symbols-outlined" aria-hidden="true">' + icon + '</span><span data-i18n="' + labelKey + '">' + adminUserI18n.t(labelKey, fallbackLabel) + '</span>');
     },
     toggleUser: function (btn) {
         //user ID
@@ -51,10 +130,10 @@ var manageUsers = {
             success: function (isDeleted) {
                 //on success, toggle button to reflect current state of the user
                 if (isDeleted === "false") {
-                    manageUsers.setButtonState(btn, 'danger', 'Deactivate', 'block');
+                    manageUsers.setButtonState(btn, 'danger', 'admin_users_deactivate', 'Deactivate', 'block');
 
                 } else {
-                    manageUsers.setButtonState(btn, 'success', 'Activate', 'check_circle');
+                    manageUsers.setButtonState(btn, 'success', 'admin_users_activate', 'Activate', 'check_circle');
                 }
             },
             error: function () {
@@ -71,47 +150,24 @@ var createAndEditUsers = {
     elements: {
         firstName: $("#firstName"),
         email: $("#email"),
-        roles: $("#roleWrap"),
-        summary: $("#createUserFormSummary")
-    },
-    setFieldInvalid: function ($field, message) {
-        $field.addClass("admin-form__field--invalid");
-        $field.find(".errors").first().text(message);
-    },
-    clearFieldInvalid: function ($field) {
-        $field.removeClass("admin-form__field--invalid");
-        $field.find(".errors").first().text("");
-    },
-    setSummary: function (message) {
-        if (createAndEditUsers.elements.summary.length) {
-            createAndEditUsers.elements.summary.text(message).show();
-        }
-    },
-    clearSummary: function () {
-        if (createAndEditUsers.elements.summary.length) {
-            createAndEditUsers.elements.summary.text("").hide();
-        }
+        roles: $("#roleWrap")
     },
     validateElements: function () {
         var pass = true;
-        createAndEditUsers.clearSummary();
-        createAndEditUsers.clearFieldInvalid(createAndEditUsers.elements.email.closest(".admin-form__field"));
-        createAndEditUsers.clearFieldInvalid(createAndEditUsers.elements.firstName.closest(".admin-form__field"));
-
         if ($.trim(document.forms["createForm"]["email"].value) === "") {
-            createAndEditUsers.setFieldInvalid(createAndEditUsers.elements.email.closest(".admin-form__field"), "Email is a required field.");
+            createAndEditUsers.elements.email.next(".errors").text(adminUserI18n.t('admin_users_error_email_required', 'email is a required field'));
             pass = false;
+        } else {
+            createAndEditUsers.elements.email.next(".errors").text("");
         }
 
         if ($.trim(document.forms["createForm"]["firstName"].value) === "") {
-            createAndEditUsers.setFieldInvalid(createAndEditUsers.elements.firstName.closest(".admin-form__field"), "First name is a required field.");
+            createAndEditUsers.elements.firstName.next(".errors").text(adminUserI18n.t('admin_users_error_first_name_required', 'first name is a required field'));
             pass = false;
+        } else {
+            createAndEditUsers.elements.firstName.next(".errors").text("");
         }
         //check roles
-
-        if (pass === false) {
-            createAndEditUsers.setSummary("Please fix the highlighted fields and try again.");
-        }
 
         return pass;
     }
@@ -122,28 +178,18 @@ var createUsers = {
         password: $("#password"),
         passwordVerify: $("#passwordVerify")
     },
-    setFieldInvalid: function ($field, message) {
-        $field.addClass("admin-form__field--invalid");
-        $field.find(".errors").first().text(message);
-    },
-    clearFieldInvalid: function ($field) {
-        $field.removeClass("admin-form__field--invalid");
-        $field.find(".errors").first().text("");
-    },
     validateRolesAndPassword: function () {
         var pass = true;
         // Adding password constraint!
-        var passwordErrors = "";
+        var passwordError = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
-        var passwordVerify = $.trim(document.forms["createForm"]["passwordVerify"].value);
-        var $passwordField = createUsers.elements.password.closest(".admin-form__field");
-        var $passwordVerifyField = createUsers.elements.passwordVerify.closest(".admin-form__field");
-
-        createUsers.clearFieldInvalid($passwordField);
-        createUsers.clearFieldInvalid($passwordVerifyField);
+        var passwordVerifyField = document.forms["createForm"]["passwordVerify"];
+        var passwordVerify = passwordVerifyField ? $.trim(passwordVerifyField.value) : password;
+        createUsers.elements.password.next(".errors").text("");
+        createUsers.elements.passwordVerify.next(".errors").text("");
 
         if (password  === "") {
-            passwordErrors = "Please assign this user a password.";
+            passwordError = adminUserI18n.t('admin_users_error_password_required', 'please assign this user a password');
             pass = false;
         }
         else{
@@ -157,26 +203,27 @@ var createUsers = {
         }
 
         if (password !== "" && password !== passwordVerify) {
+            var passwordMatchError = adminUserI18n.t('sessions_edit_password_error_match', 'passwords do not match');
             pass = false;
-            createUsers.setFieldInvalid($passwordVerifyField, "Passwords do not match.");
-            createUsers.setFieldInvalid($passwordField, "Passwords do not match.");
+            createUsers.elements.passwordVerify.next(".errors").text(passwordMatchError);
+            if (passwordError === "") {
+                passwordError = passwordMatchError;
+            }
         }
 
         if(pass === false)
         {
-            if (passwordErrors !== "")
-                createUsers.setFieldInvalid($passwordField, passwordErrors);
+            if (passwordError !== "")
+                createUsers.elements.password.next(".errors").text(passwordError);
             else
-                createUsers.setFieldInvalid($passwordField, "Password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long.");
+                createUsers.elements.password.next(".errors").text(adminUserI18n.t('admin_users_error_password_complexity', 'password must have at least one uppercase, one lowercase, one digit, one symbol, and be at least 8 characters long.'));
         }
         else{
-            createUsers.clearFieldInvalid($passwordField);
+            createUsers.elements.password.next(".errors").text("");
         }
 
         //validate roles
         var isARoleChecked = false;
-        var $roleField = createAndEditUsers.elements.roles.closest(".admin-form__field");
-        createAndEditUsers.clearFieldInvalid($roleField);
         $.each(document.forms["createForm"].elements["roles[]"], function () {
             if ($(this).is(':checked')) {
                 isARoleChecked = true;
@@ -187,9 +234,9 @@ var createUsers = {
         }
         if (isARoleChecked === false) {
             pass = false;
-            createAndEditUsers.setFieldInvalid($roleField, "Select at least one role.");
+            createAndEditUsers.elements.roles.find(".errors").text(adminUserI18n.t('admin_users_error_role_required', 'select at least one role'));
         } else {
-            createAndEditUsers.clearFieldInvalid($roleField);
+            createAndEditUsers.elements.roles.find(".errors").text("");
         }
         return pass;
     },
@@ -197,9 +244,6 @@ var createUsers = {
         $('#addUserSubmitBtn').click(function () {
             var roleAndPasswordValidation = createUsers.validateRolesAndPassword();
             var elementValidation = createAndEditUsers.validateElements();
-            if (!roleAndPasswordValidation || !elementValidation) {
-                createAndEditUsers.setSummary("Please fix the highlighted fields and try again.");
-            }
             return roleAndPasswordValidation && elementValidation;
         });
     },
@@ -234,6 +278,8 @@ var createUsers = {
         var country = createUsers.escapeHtml($option.data('country'));
         var date = createUsers.escapeHtml($option.data('date'));
         var title = createUsers.escapeHtml($option.data('title'));
+        var removeLabel = adminUserI18n.t('admin_users_remove', 'Remove');
+        var removeAria = adminUserI18n.t('admin_users_remove_aria', 'Remove {name}').replace('{name}', title);
 
         var rowHtml = '<tr data-trip-id="' + selectedTripId + '">' +
             '<td>' + team + '</td>' +
@@ -241,7 +287,7 @@ var createUsers = {
             '<td>' + date + '</td>' +
             '<td>' +
             '<input type="hidden" name="tripIds[]" value="' + selectedTripId + '" />' +
-            '<button type="button" class="admin-button admin-button--danger js-remove-create-trip" aria-label="Remove ' + title + '">Remove</button>' +
+            '<button type="button" class="admin-button admin-button--danger js-remove-create-trip" aria-label="' + removeAria + '" data-i18n="admin_users_remove">' + removeLabel + '</button>' +
             '</td>' +
             '</tr>';
 
@@ -278,26 +324,26 @@ var editUsers = {
 
         if (newPassword.length > 0) {
             if (newPassword.length < 8) {
-                passwordErrors.push("be at least 8 characters long");
+                passwordErrors.push(adminUserI18n.t('admin_users_error_password_min', 'be at least 8 characters long'));
             }
             if (!/[A-Z]/.test(newPassword)) {
-                passwordErrors.push("include at least one uppercase character");
+                passwordErrors.push(adminUserI18n.t('admin_users_error_password_uppercase', 'include at least one uppercase character'));
             }
             if (!/[a-z]/.test(newPassword)) {
-                passwordErrors.push("include at least one lowercase character");
+                passwordErrors.push(adminUserI18n.t('admin_users_error_password_lowercase', 'include at least one lowercase character'));
             }
             if (!/\d/.test(newPassword)) {
-                passwordErrors.push("include at least one number");
+                passwordErrors.push(adminUserI18n.t('admin_users_error_password_number', 'include at least one number'));
             }
         }
 
         if (newPassword !== "") {
             if (newPassword !== newPasswordVerify) {
-                passwordErrors.push("match the verify password field");
+                passwordErrors.push(adminUserI18n.t('admin_users_error_password_verify_match', 'match the verify password field'));
             }
 
             if (passwordErrors.length > 0) {
-                var errorMessage = "Invalid password reset. Password must " + passwordErrors.join(", ") + ".";
+                var errorMessage = adminUserI18n.t('admin_users_error_invalid_password_reset', 'Invalid password reset. Password must {requirements}.').replace('{requirements}', passwordErrors.join(", "));
                 editUsers.elements.passwordTextBox.next(".errors").text(errorMessage);
                 window.alert(errorMessage);
                 pass = false;
@@ -330,7 +376,7 @@ var editUsers = {
         }
 
         if (!hasRole) {
-            createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
+            createAndEditUsers.elements.roles.find(".errors").text(adminUserI18n.t('admin_users_error_role_required', 'select at least one role'));
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");
         }

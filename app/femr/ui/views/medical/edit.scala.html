@@ -35,10 +35,9 @@
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
-                                window.femrLanguageData = data;
-                                const initialLanguage = localStorage.getItem('languageCode') || 'en';
-                                window.femrLanguageCode = initialLanguage;
-                                //const initialLanguage = currentUser.getLanguageCode();
+                                const userLanguage = '@{currentUser.getLanguageCode}';
+                                const storedLanguage = localStorage.getItem('languageCode');
+                                const initialLanguage = languageData[userLanguage] ? userLanguage : (languageData[storedLanguage] ? storedLanguage : 'en');
                                 updateLanguage(initialLanguage);
                                 if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
                             });
@@ -70,7 +69,7 @@
                     function updateInputFieldValue(identifier, value) {
                         const inputElement = document.getElementById(identifier);
                         // No need to find a label element if you're just updating an input's placeholder
-                        if (inputElement) {
+                        if (inputElement && value) {
                             inputElement.placeholder = value;
                         }
                     }
@@ -79,14 +78,33 @@
                     function updateTextContent(elementId, value) {
                         const element = document.getElementById(elementId);
                         // console.log(elementId);
-                        if (element) {
+                        if (element && value) {
                             element.textContent = value;
                         }
                     }
 
+                    function updateDataI18n(strings) {
+                        document.querySelectorAll("[data-i18n]").forEach(function (element) {
+                            const key = element.getAttribute("data-i18n");
+                            if (strings[key]) {
+                                element.textContent = strings[key];
+                            }
+                        });
+
+                        document.querySelectorAll("[data-i18n-placeholder]").forEach(function (element) {
+                            const key = element.getAttribute("data-i18n-placeholder");
+                            if (strings[key]) {
+                                element.placeholder = strings[key];
+                            }
+                        });
+                    }
+
                     function updateLanguage(languageCode ) {
-                        localStorage.setItem('languageCode', languageCode);
-                        const language = languageCode;
+                        const language = languageData[languageCode] ? languageCode : 'en';
+                        const strings = Object.assign({}, languageData.en || {}, languageData[language] || {});
+                        localStorage.setItem('languageCode', language);
+                        window.femrTranslationStrings = strings;
+                        updateDataI18n(strings);
                         // in hpi fields
                         updateTextContent("partials_medical_tabs_hpi_onset", languageData[language].partials_medical_tabs_hpi_onset);
                         updateTextContent("partials_medical_tabs_hpi_Radiation", languageData[language].partials_medical_tabs_hpi_Radiation);
@@ -157,28 +175,17 @@
                         updateTextContent("partials_medical_Overview_Sex", languageData[language].partials_medical_Overview_Sex);
                         updateTextContent("partials_medical_Overview_City", languageData[language].partials_medical_Overview_City);
                         updateTextContent("partials_medical_Overview_Pregnant", languageData[language].partials_medical_Overview_Pregnant);
+                        updateTextContent("partials_medical_Overview_Height", languageData[language].triage_index_Height);
+                        updateTextContent("partials_medical_Overview_Weight", languageData[language].triage_index_Weight);
                         updateTextContentInLineVar("partials_medical_Overview_Patient", languageData[language].partials_medical_Overview_Patient);
 
                         const patientSearch = document.getElementById("patientSearch");
                         if (patientSearch) {
                             patientSearch.placeholder = languageData[language].home_index_div_ID;
                         }
-
-                        // WHO Procedure dropdown items
-                        const t = languageData[language];
-                        if (t.who_proc_major) updateTextContent('who_proc_major_item', t.who_proc_major);
-                        if (t.who_proc_amputation) updateTextContent('who_proc_amputation_item', t.who_proc_amputation);
-                        if (t.who_proc_minor) updateTextContent('who_proc_minor_item', t.who_proc_minor);
-                        if (t.who_proc_nvd) updateTextContent('who_proc_nvd_item', t.who_proc_nvd);
-                        if (t.who_proc_csection) updateTextContent('who_proc_csection_item', t.who_proc_csection);
-                        if (t.who_proc_obstetrics_others) updateTextContent('who_proc_obstetrics_others_item', t.who_proc_obstetrics_others);
-                        const procLabel = document.getElementById('who_proc_placeholder_label');
-                        if (procLabel && t.who_proc_placeholder && procLabel.textContent.trim() === '- WHO Procedure -') {
-                            procLabel.textContent = t.who_proc_placeholder;
-                        }
-                        if (typeof whoDropdown !== 'undefined') {
-                            whoDropdown.rebuildLabels(t);
-                        }
+                        updateInputFieldValue("procedureTab", strings.partials_medical_tabs_treatment_ProcedurePlaceholder);
+                        updateInputFieldValue("pharmacyTab", strings.partials_medical_tabs_treatment_PharmacyPlaceholder);
+                        updateDataI18n(strings);
                     }
 
                     window.femrApplyTranslations = function() {
@@ -203,7 +210,7 @@
         </script>
     }
 
-@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical"), assets = assets) {
+@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical", currentUser.getLanguageCode), assets = assets) {
     <input type="hidden" value="@viewModel.getPatientItem.getId" id="patientId"/>
 
     <div id="medicalContentWrap" class="femr-medical">
@@ -222,10 +229,11 @@
                     <script type="text/javascript">
                         function change(el)
                         {
-                            if (el.innerHTML === "Show Original")
-                                el.innerHTML = "↻";
-                            else if (el.innerHTML === "↻")
-                                el.innerHTML = "Show Original";
+                            const showOriginal = (window.femrTranslationStrings && window.femrTranslationStrings.medical_show_original) || "Show Original";
+                            if (el.textContent.trim() === showOriginal)
+                                el.innerHTML = "\u21bb";
+                            else if (el.innerHTML === "\u21bb")
+                                el.innerHTML = showOriginal;
                         }
                     </script>
                 </div>
@@ -336,10 +344,10 @@
             <p name="photoDescription" ></p>
             <div class="femr-photo-card__actions">
                 <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med femr-btn femr-btn--ghost">
-                    <span class="glyphicon glyphicon-edit"></span> Edit Description
+                    <span class="glyphicon glyphicon-edit"></span> <span data-i18n="medical_photo_edit_description">Edit Description</span>
                 </button>
                 <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med femr-btn femr-btn--danger">
-                    <span class="glyphicon glyphicon-trash"></span> Delete
+                    <span class="glyphicon glyphicon-trash"></span> <span data-i18n="partials_medical_tabs_photo_Delete">Delete</span>
                 </button>
             </div>
         </div>
@@ -363,21 +371,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">New photo</h4>
+                <h4 class="modal-title" id="myModalLabel" data-i18n="medical_photo_new_photo">New photo</h4>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <div class="thumbnail">
                         <img id="modalImg" src="" />
                     </div>
-                    <label for="modalTextEntry" class="control-label">Description:</label>
+                    <label for="modalTextEntry" class="control-label" data-i18n="medical_photo_description">Description:</label>
                     <textarea rows="8" id="modalTextEntry" name="modalTextEntryName" class="form-control input-med femr-textarea" ></textarea>
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="modalCancelPortrait" class="btn btn-default femr-btn femr-btn--ghost" data-dismiss="modal">Close</button>
-                <button type="button" id="modalSavePortrait" class="btn btn-primary femr-btn femr-btn--primary">Save changes</button>
+                <button type="button" id="modalCancelPortrait" class="btn btn-default femr-btn femr-btn--ghost" data-dismiss="modal" data-i18n="medical_photo_close">Close</button>
+                <button type="button" id="modalSavePortrait" class="btn btn-primary femr-btn femr-btn--primary" data-i18n="medical_photo_save_changes">Save changes</button>
             </div>
         </div>
     </div>

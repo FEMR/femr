@@ -56,6 +56,10 @@
                     document.querySelectorAll('.admin-edit-th-action').forEach(function(el) {
                         if (t.admin_edit_th_action) el.textContent = t.admin_edit_th_action;
                     });
+                    setText('admin_edit_add_to_trip_btn', t.admin_edit_add_to_trip_btn);
+                    document.querySelectorAll('.admin-edit-remove-trip-btn').forEach(function(el) {
+                        if (t.admin_edit_remove_trip_btn) el.textContent = t.admin_edit_remove_trip_btn;
+                    });
                 });
         });
         </script>
@@ -216,7 +220,7 @@
                                     </div>
                                     <button type="submit" class="admin-button admin-button--primary">
                                         <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                                        <span>Add to trip</span>
+                                        <span id="admin_edit_add_to_trip_btn">Add to trip</span>
                                     </button>
                                 </div>
                             </div>
@@ -245,7 +249,7 @@
                                     <td>
                                         @helper.form(action = UsersController.removeTripPost(Integer.parseInt(form("userId").getValue.get())), 'class -> "admin-inline-form") {
                                             <input type="hidden" name="tripId" value="@trip.getId" />
-                                            <button type="submit" class="admin-button admin-button--danger" aria-label={"Remove user from " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
+                                            <button type="submit" class="admin-button admin-button--danger admin-edit-remove-trip-btn" aria-label={"Remove user from " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
                                         }
                                     </td>
                                 </tr>

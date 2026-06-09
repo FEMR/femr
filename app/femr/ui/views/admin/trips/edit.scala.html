@@ -45,6 +45,18 @@
                     setText('trips_edit_th_last', t.trips_edit_last_name);
                     setText('trips_edit_th_email', t.trips_edit_email_col);
                     setText('trips_edit_th_about', t.trips_edit_about);
+                    setText('trips_edit_label_id', t.trips_edit_label_id);
+                    setText('trips_edit_label_team', t.trips_edit_label_team);
+                    setText('trips_edit_label_city', t.trips_edit_label_city);
+                    setText('trips_edit_label_country', t.trips_edit_label_country);
+                    setText('trips_edit_label_start', t.trips_edit_label_start);
+                    setText('trips_edit_label_end', t.trips_edit_label_end);
+                    if (typeof window.initTripsSelect2 === 'function') {
+                        window.initTripsSelect2(t.trips_edit_select_add, t.trips_edit_select_remove);
+                    }
+                })
+                .catch(function() {
+                    if (typeof window.initTripsSelect2 === 'function') window.initTripsSelect2();
                 });
         });
     </script>
@@ -71,22 +83,22 @@
                 <div class="admin-card">
                     <h3 class="admin-card__title" id="trips_edit_trip_identifiers">Trip identifiers</h3>
                     <div class="admin-card__body">
-                        <div><strong>ID:</strong> @trip.getId</div>
-                        <div><strong>Team:</strong> @trip.getTeamName</div>
+                        <div><strong id="trips_edit_label_id">ID:</strong> @trip.getId</div>
+                        <div><strong id="trips_edit_label_team">Team:</strong> @trip.getTeamName</div>
                     </div>
                 </div>
                 <div class="admin-card">
                     <h3 class="admin-card__title" id="trips_edit_destination">Destination</h3>
                     <div class="admin-card__body">
-                        <div><strong>City:</strong> @trip.getTripCity</div>
-                        <div><strong>Country:</strong> @trip.getTripCountry</div>
+                        <div><strong id="trips_edit_label_city">City:</strong> @trip.getTripCity</div>
+                        <div><strong id="trips_edit_label_country">Country:</strong> @trip.getTripCountry</div>
                     </div>
                 </div>
                 <div class="admin-card">
                     <h3 class="admin-card__title" id="trips_edit_schedule">Schedule</h3>
                     <div class="admin-card__body">
-                        <div><strong>Start:</strong> @trip.getFriendlyTripStartDate</div>
-                        <div><strong>End:</strong> @trip.getFriendlyTripEndDate</div>
+                        <div><strong id="trips_edit_label_start">Start:</strong> @trip.getFriendlyTripStartDate</div>
+                        <div><strong id="trips_edit_label_end">End:</strong> @trip.getFriendlyTripEndDate</div>
                     </div>
                 </div>
             </div>

@@ -59,6 +59,33 @@
                     document.querySelectorAll('.admin-users-edit-btn').forEach(function(el) {
                         if (t.admin_users_edit_btn) el.textContent = t.admin_users_edit_btn;
                     });
+                    var roleMap = {
+                        'Administrator': t.role_administrator,
+                        'Physician': t.role_physician,
+                        'Pharmacist': t.role_pharmacist,
+                        'Researcher': t.role_researcher,
+                        'Nurse': t.role_nurse,
+                        'SuperUser': t.role_superuser,
+                        'Manager': t.role_manager
+                    };
+                    document.querySelectorAll('.admin-chip').forEach(function(el) {
+                        var role = el.textContent.trim();
+                        if (roleMap[role]) el.textContent = roleMap[role];
+                    });
+                    var dtLang = {};
+                    if (t.manager_dt_empty_table)  dtLang.emptyTable  = t.manager_dt_empty_table;
+                    if (t.manager_dt_info)         dtLang.info         = t.manager_dt_info;
+                    if (t.manager_dt_info_empty)   dtLang.infoEmpty    = t.manager_dt_info_empty;
+                    if (t.manager_dt_length_menu)  dtLang.lengthMenu   = t.manager_dt_length_menu;
+                    if (t.manager_dt_search)       dtLang.search       = t.manager_dt_search;
+                    if (t.manager_dt_zero_records) dtLang.zeroRecords  = t.manager_dt_zero_records;
+                    dtLang.paginate = {};
+                    if (t.manager_dt_previous) dtLang.paginate.previous = t.manager_dt_previous;
+                    if (t.manager_dt_next)     dtLang.paginate.next     = t.manager_dt_next;
+                    if (typeof window.initUserTable === 'function') window.initUserTable(dtLang);
+                })
+                .catch(function() {
+                    if (typeof window.initUserTable === 'function') window.initUserTable({});
                 });
         });
         </script>

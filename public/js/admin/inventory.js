@@ -157,7 +157,8 @@ var manageInventoryFeature = {
                 data: {},
                 dataType: 'text',
                 success: function () {
-                    $(btn).html("Undo");
+                    var label = (window.invTranslations && window.invTranslations.undo) || 'Undo';
+                    $(btn).html(label);
                     $(btn).removeClass("admin-chip-button--danger");
                     $(btn).addClass("admin-chip-button--success");
                 },
@@ -173,7 +174,8 @@ var manageInventoryFeature = {
                 data: {},
                 dataType: 'text',
                 success: function () {
-                    $(btn).html("Remove");
+                    var label = (window.invTranslations && window.invTranslations.remove) || 'Remove';
+                    $(btn).html(label);
                     $(btn).removeClass("admin-chip-button--success");
                     $(btn).addClass("admin-chip-button--danger");
                 },
@@ -205,18 +207,23 @@ $(document).ready(function () {
     });
 
 
-    $("#inventoryTable").DataTable({
-        columnDefs: [ { orderable: false, targets: [4] }]
-    });
-
-    $("#inventoryTable").on("draw.dt", function() {
-
-        manageInventoryFeature.bindEditCurrentQuantityButtonClick();
-        manageInventoryFeature.bindEditTotalQuantityButtonClick();
-        manageInventoryFeature.bindEditCurrentQuantityEnterKey();
-        manageInventoryFeature.bindEditTotalQuantityEnterKey();
-        manageInventoryFeature.bindRemoveButtonClick();
-    });
+    // Exposed so the language fetch callback can call it with translated strings.
+    // Safe to call multiple times — the isDataTable guard prevents double init.
+    window.initInventoryTable = function(dtLang) {
+        if (!$('#inventoryTable').length) return;
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#inventoryTable')) return;
+        $('#inventoryTable').DataTable({
+            columnDefs: [{ orderable: false, targets: [4] }],
+            language: dtLang || {}
+        });
+        $('#inventoryTable').on('draw.dt', function() {
+            manageInventoryFeature.bindEditCurrentQuantityButtonClick();
+            manageInventoryFeature.bindEditTotalQuantityButtonClick();
+            manageInventoryFeature.bindEditCurrentQuantityEnterKey();
+            manageInventoryFeature.bindEditTotalQuantityEnterKey();
+            manageInventoryFeature.bindRemoveButtonClick();
+        });
+    };
     manageInventoryFeature.bindEditCurrentQuantityButtonClick();
     manageInventoryFeature.bindEditTotalQuantityButtonClick();
     manageInventoryFeature.bindEditCurrentQuantityEnterKey();

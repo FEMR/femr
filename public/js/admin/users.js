@@ -1,3 +1,13 @@
+window.initUserTable = function(dtLang) {
+    var $t = $('#userTable');
+    if (!$t.length || !$.fn.DataTable) return;
+    if ($.fn.DataTable.isDataTable('#userTable')) return;
+    $t.DataTable({
+        columnDefs: [{ orderable: false, targets: [2, 3, 7] }],
+        language: dtLang || {}
+    });
+};
+
 $(document).ready(function () {
     var urlPieces = window.location.href.split('/');
 
@@ -10,14 +20,8 @@ $(document).ready(function () {
         manageUsers.bindUserToggleButtons();
     }
 
-    const $userTable = $("#userTable");
-    if ($userTable.length) {
-        $userTable.DataTable({
-            columnDefs: [
-                { orderable: false, targets: [2, 3, 7] }
-            ]
-        });
-    }
+    // DataTable init is handled by window.initUserTable, called from the language fetch callback.
+    // The isDataTable guard prevents double init if somehow called before the fetch resolves.
 });
 
 var manageUsers = {

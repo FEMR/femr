@@ -19,9 +19,10 @@
                     .then(data => {
                         languageData = data;
                         updateLanguage("@{currentUser.getLanguageCode}");
-
                     })
-                    .catch(error => console.error('Error fetching language data:', error));
+                    .catch(function() {
+                        if (typeof window.initTripsTables === 'function') window.initTripsTables({});
+                    });
 
 
             function updateTextContent(elementId, value) {
@@ -43,15 +44,31 @@
                 const strings = languageData[locale];
 
                 updateTextContent("trips_teams_Add", strings.trips_teams_Add);
+                updateTextContent("trips_teams_add_desc", strings.trips_teams_add_desc);
                 updateTextContent("trips_teams_Description1", strings.trips_teams_Description1);
                 updateTextContent("trips_teams_Submit", strings.trips_teams_Submit);
                 updateTextContent("trips_teams_TeamName1", strings.trips_teams_TeamName1);
                 updateTextContent("trips_teams_Location", strings.trips_teams_Location);
+                updateTextContent("trips_teams_dir_title", strings.trips_teams_dir_title);
+                updateTextContent("trips_teams_dir_desc", strings.trips_teams_dir_desc);
+                updateTextContent("trips_teams_no_teams_title", strings.trips_teams_no_teams_title);
+                updateTextContent("trips_teams_no_teams_desc", strings.trips_teams_no_teams_desc);
 
                 updateTextContentAll("[data-i18n='trips_teams_TeamName2']", strings.trips_teams_TeamName2 || 'Team Name');
                 updateTextContentAll("[data-i18n='trips_teams_Description2']", strings.trips_teams_Description2 || 'Description');
                 updateTextContentAll("[data-i18n='trips_teams_Origin']", strings.trips_teams_Origin || 'Origin');
 
+                var dtLang = {};
+                if (strings.manager_dt_empty_table)  dtLang.emptyTable  = strings.manager_dt_empty_table;
+                if (strings.manager_dt_info)         dtLang.info         = strings.manager_dt_info;
+                if (strings.manager_dt_info_empty)   dtLang.infoEmpty    = strings.manager_dt_info_empty;
+                if (strings.manager_dt_length_menu)  dtLang.lengthMenu   = strings.manager_dt_length_menu;
+                if (strings.manager_dt_search)       dtLang.search       = strings.manager_dt_search;
+                if (strings.manager_dt_zero_records) dtLang.zeroRecords  = strings.manager_dt_zero_records;
+                dtLang.paginate = {};
+                if (strings.manager_dt_previous) dtLang.paginate.previous = strings.manager_dt_previous;
+                if (strings.manager_dt_next)     dtLang.paginate.next     = strings.manager_dt_next;
+                if (typeof window.initTripsTables === 'function') window.initTripsTables(dtLang);
             }
     </script>
 }
@@ -73,7 +90,7 @@
             <div class="admin-section__header">
                 <div>
                     <h2 class="admin-section__title" id="trips_teams_Add">Add Team</h2>
-                    <p class="admin-section__description">Capture team details to assign members to upcoming trips.</p>
+                    <p class="admin-section__description" id="trips_teams_add_desc">Capture team details to assign members to upcoming trips.</p>
                 </div>
             </div>
 
@@ -110,16 +127,16 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Teams directory</h2>
-                <p class="admin-section__description">Review existing teams participating in trips.</p>
+                <h2 class="admin-section__title" id="trips_teams_dir_title">Teams directory</h2>
+                <p class="admin-section__description" id="trips_teams_dir_desc">Review existing teams participating in trips.</p>
             </div>
         </div>
 
         @if(viewModel.getMissionItems.isEmpty) {
             <div class="admin-empty-state">
                 <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">groups</span>
-                <h3 class="admin-empty-state__title">No teams available</h3>
-                <p class="admin-empty-state__description">Add a team to begin assigning volunteers to trips.</p>
+                <h3 class="admin-empty-state__title" id="trips_teams_no_teams_title">No teams available</h3>
+                <p class="admin-empty-state__description" id="trips_teams_no_teams_desc">Add a team to begin assigning volunteers to trips.</p>
             </div>
         } else {
             <div class="admin-table-wrap" role="region" aria-label="Teams directory">

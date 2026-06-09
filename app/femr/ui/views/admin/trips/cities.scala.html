@@ -19,9 +19,10 @@
                     .then(data => {
                         languageData = data;
                         updateLanguage("@{currentUser.getLanguageCode}");
-
                     })
-                    .catch(error => console.error('Error fetching language data:', error));
+                    .catch(function() {
+                        if (typeof window.initTripsTables === 'function') window.initTripsTables({});
+                    });
 
 
             function updateTextContent(elementId, value) {
@@ -43,12 +44,29 @@
                 const strings = languageData[locale];
 
                 updateTextContent("trips_cities_Add", strings.trips_cities_Add);
+                updateTextContent("trips_cities_add_desc", strings.trips_cities_add_desc);
                 updateTextContent("trips_cities_City", strings.trips_cities_City);
                 updateTextContent("trips_cities_Country", strings.trips_cities_Country);
                 updateTextContent("trips_cities_Submit", strings.trips_cities_Submit);
+                updateTextContent("trips_cities_dir_title", strings.trips_cities_dir_title);
+                updateTextContent("trips_cities_dir_desc", strings.trips_cities_dir_desc);
+                updateTextContent("trips_cities_no_cities_title", strings.trips_cities_no_cities_title);
+                updateTextContent("trips_cities_no_cities_desc", strings.trips_cities_no_cities_desc);
 
                 updateTextContentAll("[data-i18n='trips_cities_tCity']", strings.trips_cities_tCity || 'City');
                 updateTextContentAll("[data-i18n='trips_cities_tCountry']", strings.trips_cities_tCountry || 'Country');
+
+                var dtLang = {};
+                if (strings.manager_dt_empty_table)  dtLang.emptyTable  = strings.manager_dt_empty_table;
+                if (strings.manager_dt_info)         dtLang.info         = strings.manager_dt_info;
+                if (strings.manager_dt_info_empty)   dtLang.infoEmpty    = strings.manager_dt_info_empty;
+                if (strings.manager_dt_length_menu)  dtLang.lengthMenu   = strings.manager_dt_length_menu;
+                if (strings.manager_dt_search)       dtLang.search       = strings.manager_dt_search;
+                if (strings.manager_dt_zero_records) dtLang.zeroRecords  = strings.manager_dt_zero_records;
+                dtLang.paginate = {};
+                if (strings.manager_dt_previous) dtLang.paginate.previous = strings.manager_dt_previous;
+                if (strings.manager_dt_next)     dtLang.paginate.next     = strings.manager_dt_next;
+                if (typeof window.initTripsTables === 'function') window.initTripsTables(dtLang);
             }
     </script>
 }
@@ -70,7 +88,7 @@
             <div class="admin-section__header">
                 <div>
                     <h2 class="admin-section__title" id="trips_cities_Add">Add City</h2>
-                    <p class="admin-section__description">Register new trip destinations and connect them with their country.</p>
+                    <p class="admin-section__description" id="trips_cities_add_desc">Register new trip destinations and connect them with their country.</p>
                 </div>
             </div>
 
@@ -106,16 +124,16 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">City directory</h2>
-                <p class="admin-section__description">Browse the destinations available for mission trips.</p>
+                <h2 class="admin-section__title" id="trips_cities_dir_title">City directory</h2>
+                <p class="admin-section__description" id="trips_cities_dir_desc">Browse the destinations available for mission trips.</p>
             </div>
         </div>
 
         @if(viewModel.getAvailableCities.isEmpty) {
             <div class="admin-empty-state">
                 <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">location_city</span>
-                <h3 class="admin-empty-state__title">No cities added</h3>
-                <p class="admin-empty-state__description">Add cities to make them available when creating new trips.</p>
+                <h3 class="admin-empty-state__title" id="trips_cities_no_cities_title">No cities added</h3>
+                <p class="admin-empty-state__description" id="trips_cities_no_cities_desc">Add cities to make them available when creating new trips.</p>
             </div>
         } else {
             <div class="admin-table-wrap" role="region" aria-label="City directory">

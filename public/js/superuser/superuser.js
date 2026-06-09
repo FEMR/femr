@@ -1,4 +1,25 @@
 
+// Called by each trips page's language fetch callback with translated DataTables strings.
+// Falls back to empty language object if fetch fails (each page's .catch calls initTripsTables({})).
+window.initTripsSelect2 = function(addPlaceholder, removePlaceholder) {
+    if ($('#addUsersSelect2').length > 0) {
+        $('#addUsersSelect2').select2({ placeholder: addPlaceholder || 'Add users here' });
+    }
+    if ($('#removeUsersSelect2').length > 0) {
+        $('#removeUsersSelect2').select2({ placeholder: removePlaceholder || 'Remove users here' });
+    }
+};
+
+window.initTripsTables = function(dtLang) {
+    if (!$.fn.DataTable) return;
+    var lang = dtLang || {};
+    ['#tripTable', '#cityTable', '#teamTable'].forEach(function(id) {
+        var $t = $(id);
+        if ($t.length && !$.fn.DataTable.isDataTable(id)) {
+            $t.DataTable({ language: lang });
+        }
+    });
+};
 
 $(document).ready(function(){
     $("[name='newTripCity']").change(function(){
@@ -17,25 +38,6 @@ $(document).ready(function(){
         }
     });
 
-    if ($.fn.DataTable) {
-        if ($('#tripTable').length > 0)
-            $('#tripTable').DataTable();
-        if ($('#cityTable').length > 0)
-            $('#cityTable').DataTable();
-        if ($('#teamTable').length > 0)
-            $('#teamTable').DataTable();
-    }
-    if ($('#addUsersSelect2').length > 0){
-
-        $('#addUsersSelect2').select2({
-            placeholder: "Add users here"
-        });
-    }
-    if ($('#removeUsersSelect2').length > 0){
-
-        $('#removeUsersSelect2').select2({
-            placeholder: "Remove users here"
-        });
-    }
+    // Select2 init is handled by window.initTripsSelect2, called from edit.scala.html's fetch callback.
 
 });

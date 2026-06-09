@@ -43,7 +43,7 @@
                 @if(currentUser.getTripId != null) {
                     @defining(Option(viewModelGet.getUserFriendlyTrip).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { tripName =>
                         <div class="manager-trip-card" role="status" aria-live="polite">
-                            <span class="manager-trip-card__label">Current Trip</span>
+                            <span class="manager-trip-card__label" id="manager_current_trip_label">Current Trip</span>
                             <span class="manager-trip-card__value">@tripName</span>
                         </div>
                     }

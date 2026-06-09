@@ -40,6 +40,7 @@
                                 window.femrLanguageCode = initialLanguage;
                                 //const initialLanguage = currentUser.getLanguageCode();
                                 updateLanguage(initialLanguage);
+                                if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
                             });
 
                     function updateInputField(identifier, value) {
@@ -179,6 +180,25 @@
                             whoDropdown.rebuildLabels(t);
                         }
                     }
+
+                    window.femrApplyTranslations = function() {
+                        var lang = localStorage.getItem('languageCode') || 'en';
+                        var t = window.femrLanguageData && (window.femrLanguageData[lang] || window.femrLanguageData['en']);
+                        if (!t) return;
+                        function s(id, val) { var el = document.getElementById(id); if (el && val) el.textContent = val; }
+                        s('medical_vitals_Smoking', t.medical_vitals_Smoking);
+                        s('medical_vitals_Diabetes', t.medical_vitals_Diabetes);
+                        s('medical_vitals_Alcohol', t.medical_vitals_Alcohol);
+                        s('medical_vitals_Cholesterol', t.medical_vitals_Cholesterol);
+                        s('medical_vitals_Hypertension', t.medical_vitals_Hypertension);
+                        s('medical_new_vitals_Smoking', t.medical_new_vitals_Smoking);
+                        s('medical_new_vitals_Diabetes', t.medical_new_vitals_Diabetes);
+                        s('medical_new_vitals_Alcohol', t.medical_new_vitals_Alcohol);
+                        s('medical_new_vitals_Cholesterol', t.medical_new_vitals_Cholesterol);
+                        s('medical_new_vitals_Hypertension', t.medical_new_vitals_Hypertension);
+                        s('saveVitalsBtn', t.medical_new_vitals_Save);
+                        s('cancelVitalsBtn', t.medical_new_vitals_Cancel);
+                    };
                 });
         </script>
     }

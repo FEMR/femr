@@ -30,6 +30,9 @@
                 function updateLanguage(languageCode = "en") {
                     localStorage.setItem('languageCode', languageCode);
                     const language = languageCode;
+                    updateTextContent('backup_title', languageData[language].backup_title);
+                    updateTextContent('backup_not_installed', languageData[language].backup_not_installed);
+                    updateTextContent('backup_btn', languageData[language].backup_btn);
                 }
             });
     </script>
@@ -41,17 +44,17 @@
 
 @main("Backup", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
     <div class="backupWrapper">
-        <h2>
+        <h2 id="backup_title">
             Database Dump
         </h2>
         @if(!commandInstalled){
-            <p>
+            <p id="backup_not_installed">
                 mysqldump not detected. Please have it installed.
             </p>
         }
         @if(commandInstalled){
             @helper.form(action = DatabaseDumpController.indexPost()){
-                <button class="fButton fRedButton">Backup Your Data</button>
+                <button id="backup_btn" class="fButton fRedButton">Backup Your Data</button>
             }
             <p>
                 @successMessage

@@ -42,6 +42,57 @@
                     setText('updates_backup_btn', t.updates_backup_btn);
                     setText('updates_kit_updates_title', t.updates_kit_updates_title);
                     setText('updates_kit_updates_desc', t.updates_kit_updates_desc);
+                    setText('updates_init_languages_btn', t.updates_init_languages_btn);
+                    setText('updates_update_now_btn', t.updates_update_now_btn);
+                    setText('updates_apply_update_btn', t.updates_apply_update_btn);
+                    setText('updates_downloading_pkgs', t.updates_downloading_pkgs);
+                    setText('updates_opt_schedule_title', t.updates_opt_schedule_title);
+                    setText('updates_opt_schedule_desc', t.updates_opt_schedule_desc);
+                    setText('updates_no_languages', t.updates_no_languages);
+                    setText('updates_schedule_th', t.updates_schedule_th);
+                    setText('updates_language_th', t.updates_language_th);
+                    setText('updates_status_th', t.updates_status_th);
+                    setText('updates_queued_pkgs_title', t.updates_queued_pkgs_title);
+                    setText('updates_queued_pkgs_desc', t.updates_queued_pkgs_desc);
+                    setText('updates_no_langs_scheduled', t.updates_no_langs_scheduled);
+                    setText('updates_no_optimized_langs', t.updates_no_optimized_langs);
+                    setText('updates_no_db_status', t.updates_no_db_status);
+                    setText('updates_kit_update_available', t.updates_kit_update_available);
+                    setText('updates_kit_up_to_date', t.updates_kit_up_to_date);
+                    setText('updates_no_connection_details', t.updates_no_connection_details);
+                    setText('updates_no_network_metrics', t.updates_no_network_metrics);
+                    setText('updates_no_add_network_metrics', t.updates_no_add_network_metrics);
+                    setText('updates_no_kit_diagnostics', t.updates_no_kit_diagnostics);
+                    setText('updates_no_add_kit_diagnostics', t.updates_no_add_kit_diagnostics);
+                    setText('updates_last_check', t.updates_last_check);
+                    setText('updates_last_update', t.updates_last_update);
+                    document.querySelectorAll('.updates-translations-label').forEach(function(el) {
+                        if (t.updates_translations_label) el.textContent = t.updates_translations_label;
+                    });
+                    var connMap = {
+                        'Good connection': t.updates_connection_good,
+                        'Moderate connection': t.updates_connection_moderate,
+                        'Poor connection': t.updates_connection_poor
+                    };
+                    document.querySelectorAll('.updates-connection-status').forEach(function(el) {
+                        var key = el.getAttribute('data-connection-key');
+                        if (key && t[key]) el.textContent = t[key];
+                    });
+                    var metricKeyMap = {
+                        'Status':           t.updates_metric_status,
+                        'Download':         t.updates_metric_download,
+                        'Upload':           t.updates_metric_upload,
+                        'Ping':             t.updates_metric_ping,
+                        'Type':             t.updates_metric_type,
+                        'Version':          t.updates_metric_version,
+                        'Currently Online': t.updates_metric_currently_online,
+                        'Last Backup':      t.updates_metric_last_backup,
+                        'Backend Connection': t.updates_metric_backend_connection
+                    };
+                    document.querySelectorAll('.updates-metric-label[data-metric-key]').forEach(function(el) {
+                        var key = el.getAttribute('data-metric-key');
+                        if (key && metricKeyMap[key]) el.textContent = metricKeyMap[key];
+                    });
                 });
         });
         </script>
@@ -73,11 +124,11 @@
         <div class="admin-columns">
             @defining({
                 if (downloadSpeed > 5) {
-                    ("Good connection", "admin-status--success", assets.path("networkIcons/good_connection_icon.png"))
+                    ("Good connection", "admin-status--success", assets.path("networkIcons/good_connection_icon.png"), "updates_connection_good")
                 } else if (downloadSpeed > 2) {
-                    ("Moderate connection", "admin-status--warning", assets.path("networkIcons/okay_connection_icon.png"))
+                    ("Moderate connection", "admin-status--warning", assets.path("networkIcons/okay_connection_icon.png"), "updates_connection_moderate")
                 } else {
-                    ("Poor connection", "admin-status--danger", assets.path("networkIcons/poor_connection_icon.png"))
+                    ("Poor connection", "admin-status--danger", assets.path("networkIcons/poor_connection_icon.png"), "updates_connection_poor")
                 }
             }) { connectionMeta =>
                 <article class="admin-card admin-card--status">
@@ -95,11 +146,11 @@
                                     <img src="@connectionMeta._3" alt="" width="64" height="64">
                                 </div>
                                 <div class="admin-status-overview__details">
-                                    <span class={"admin-status " + connectionMeta._2}>@connectionMeta._1</span>
-                                    <span class="admin-status-overview__hint">No connection details reported.</span>
+                                    <span class={"admin-status updates-connection-status " + connectionMeta._2} data-connection-key="@connectionMeta._4">@connectionMeta._1</span>
+                                    <span class="admin-status-overview__hint" id="updates_no_connection_details">No connection details reported.</span>
                                 </div>
                             </div>
-                            <p class="admin-card__fallback">No network metrics reported.</p>
+                            <p class="admin-card__fallback" id="updates_no_network_metrics">No network metrics reported.</p>
                         </div>
                     } else {
                         @defining(Option(viewModel.getNetworkStatus.get("Last Available")).filter(_.trim.nonEmpty).getOrElse("—")) { lastAvailable =>
@@ -110,17 +161,17 @@
                                         <img src="@connectionMeta._3" alt="" width="64" height="64">
                                     </div>
                                     <div class="admin-status-overview__details">
-                                        <span class={"admin-status " + connectionMeta._2}>@connectionMeta._1</span>
-                                        <span class="admin-status-overview__hint">Last check @lastAvailable</span>
+                                        <span class={"admin-status updates-connection-status " + connectionMeta._2} data-connection-key="@connectionMeta._4">@connectionMeta._1</span>
+                                        <span class="admin-status-overview__hint"><span id="updates_last_check">Last check</span> @lastAvailable</span>
                                     </div>
                                 </div>
                                 @if(networkMetrics.isEmpty) {
-                                    <p class="admin-card__fallback">No additional network metrics.</p>
+                                    <p class="admin-card__fallback" id="updates_no_add_network_metrics">No additional network metrics.</p>
                                 } else {
                                     <dl class="admin-key-value-list admin-key-value-list--metrics">
                                         @for(metric <- networkMetrics) {
                                             <div class="admin-key-value-list__item">
-                                                <dt class="admin-key-value-list__label">@metric.getKey</dt>
+                                                <dt class="admin-key-value-list__label updates-metric-label" data-metric-key="@metric.getKey">@metric.getKey</dt>
                                                 <dd class="admin-key-value-list__value">@metric.getValue</dd>
                                             </div>
                                         }
@@ -143,7 +194,7 @@
 
                 @if(viewModel.getKitStatus.isEmpty) {
                     <div class="admin-card__body">
-                        <p class="admin-card__fallback">No kit diagnostics available.</p>
+                        <p class="admin-card__fallback" id="updates_no_kit_diagnostics">No kit diagnostics available.</p>
                     </div>
                 } else {
                     @defining(Option(viewModel.getKitStatus.get("Status")).filter(_.trim.nonEmpty).getOrElse("Status Unknown")) { kitStatusSummary =>
@@ -158,15 +209,15 @@
                         <div class="admin-card__body">
                             <div class="admin-status-overview admin-status-overview--compact">
                                 <span class={"admin-status " + kitStatusClass}>@kitStatusSummary</span>
-                                <span class="admin-status-overview__hint">Last update @kitLastUpdate</span>
+                                <span class="admin-status-overview__hint"><span id="updates_last_update">Last update</span> @kitLastUpdate</span>
                             </div>
                             @if(kitMetrics.isEmpty) {
-                                <p class="admin-card__fallback">No additional kit diagnostics.</p>
+                                <p class="admin-card__fallback" id="updates_no_add_kit_diagnostics">No additional kit diagnostics.</p>
                             } else {
                                 <dl class="admin-key-value-list admin-key-value-list--metrics">
                                     @for(metric <- kitMetrics) {
                                         <div class="admin-key-value-list__item">
-                                            <dt class="admin-key-value-list__label">@metric.getKey</dt>
+                                            <dt class="admin-key-value-list__label updates-metric-label" data-metric-key="@metric.getKey">@metric.getKey</dt>
                                             <dd class="admin-key-value-list__value">@metric.getValue</dd>
                                         </div>
                                     }
@@ -191,15 +242,15 @@
             <div class="admin-section__actions admin-section__actions--stacked">
                 <button type="button" class="admin-button admin-button--ghost" data-updates-action="init-languages">
                     <span class="material-symbols-outlined" aria-hidden="true">auto_fix_normal</span>
-                    <span>Initialize languages (dev)</span>
+                    <span id="updates_init_languages_btn">Initialize languages (dev)</span>
                 </button>
                 <button type="button" class="admin-button admin-button--primary" data-updates-action="download-packages">
                     <span class="material-symbols-outlined" aria-hidden="true">system_update_alt</span>
-                    <span>Update now</span>
+                    <span id="updates_update_now_btn">Update now</span>
                 </button>
                 <span class="admin-inline-loader" data-updates-loader hidden>
                     <img src="@assets.path("img/graph-loader.gif")" alt="" role="presentation">
-                    <span>Downloading packages…</span>
+                    <span id="updates_downloading_pkgs">Downloading packages…</span>
                 </span>
             </div>
         </div>
@@ -208,21 +259,21 @@
             <article class="admin-card">
                 <div class="admin-card__header">
                     <div>
-                        <h3 class="admin-card__title">Optimization Schedule</h3>
-                        <p class="admin-card__description">Toggle languages to include in the next optimization cycle.</p>
+                        <h3 class="admin-card__title" id="updates_opt_schedule_title">Optimization Schedule</h3>
+                        <p class="admin-card__description" id="updates_opt_schedule_desc">Toggle languages to include in the next optimization cycle.</p>
                     </div>
                 </div>
 
                 @if(viewModel.getLanguages.isEmpty) {
-                    <p class="admin-card__fallback">No languages found.</p>
+                    <p class="admin-card__fallback" id="updates_no_languages">No languages found.</p>
                 } else {
                     <div class="admin-table-wrap" role="region" aria-label="Language optimization schedule">
                         <table class="admin-table" id="languageScheduleTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Schedule</th>
-                                    <th scope="col">Language</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col" id="updates_schedule_th">Schedule</th>
+                                    <th scope="col" id="updates_language_th">Language</th>
+                                    <th scope="col" id="updates_status_th">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -266,13 +317,13 @@
             <article class="admin-card">
                 <div class="admin-card__header">
                     <div>
-                        <h3 class="admin-card__title">Queued Packages</h3>
-                        <p class="admin-card__description">Review the cross-language builds queued for deployment.</p>
+                        <h3 class="admin-card__title" id="updates_queued_pkgs_title">Queued Packages</h3>
+                        <p class="admin-card__description" id="updates_queued_pkgs_desc">Review the cross-language builds queued for deployment.</p>
                     </div>
                 </div>
 
                 @if(viewModel.getLanguageUpdates.isEmpty) {
-                    <p class="admin-card__fallback">No languages scheduled.</p>
+                    <p class="admin-card__fallback" id="updates_no_langs_scheduled">No languages scheduled.</p>
                 } else {
                     <div class="admin-accordion">
                         @for(language <- viewModel.getLanguageUpdates) {
@@ -284,12 +335,12 @@
                                             aria-expanded="false"
                                             aria-controls="@panelId">
                                         <span class="admin-accordion__title">@language.getLanguageName</span>
-                                        <span class="admin-accordion__meta">@viewModel.getOptimizedLanguages.size translations</span>
+                                        <span class="admin-accordion__meta">@viewModel.getOptimizedLanguages.size <span class="updates-translations-label">translations</span></span>
                                         <span class="material-symbols-outlined admin-accordion__icon" aria-hidden="true">expand_more</span>
                                     </button>
                                     <div class="admin-accordion__content" id="@panelId" hidden>
                                         @if(viewModel.getOptimizedLanguages.isEmpty) {
-                                            <p class="admin-card__fallback">No optimized languages available for pairing.</p>
+                                            <p class="admin-card__fallback" id="updates_no_optimized_langs">No optimized languages available for pairing.</p>
                                         } else {
                                             <ul class="admin-list">
                                                 @for(optLang <- viewModel.getOptimizedLanguages) {
@@ -326,12 +377,12 @@
                 </div>
 
                 @if(viewModel.getDatabaseStatus.isEmpty) {
-                    <p class="admin-card__fallback">No database status information available.</p>
+                    <p class="admin-card__fallback" id="updates_no_db_status">No database status information available.</p>
                 } else {
                     <dl class="admin-key-value-list">
                         @for((key, value) <- viewModel.getDatabaseStatus) {
                             <div class="admin-key-value-list__item">
-                                <dt class="admin-key-value-list__label">@key</dt>
+                                <dt class="admin-key-value-list__label updates-metric-label" data-metric-key="@key">@key</dt>
                                 <dd class="admin-key-value-list__value">@value</dd>
                             </div>
                         }
@@ -356,15 +407,15 @@
 
                 <div class="admin-kit-status">
                     @if(viewModel.isUpdateAvailable) {
-                        <span class="admin-status admin-status--warning">Kit update available</span>
+                        <span class="admin-status admin-status--warning" id="updates_kit_update_available">Kit update available</span>
                         @helper.form(action = UpdatesController.kitUpdatePost()) {
                             <button type="submit" class="admin-button admin-button--primary">
                                 <span class="material-symbols-outlined" aria-hidden="true">upgrade</span>
-                                <span>Apply update</span>
+                                <span id="updates_apply_update_btn">Apply update</span>
                             </button>
                         }
                     } else {
-                        <span class="admin-status admin-status--success">Kit is up to date</span>
+                        <span class="admin-status admin-status--success" id="updates_kit_up_to_date">Kit is up to date</span>
                     }
                 </div>
             </article>

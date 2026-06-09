@@ -24,55 +24,52 @@
         }
 
         localStorage.setItem('languageCode', languageCode);
-        updateChildTextContent('manager_trip_message', data[languageCode].manager_trip_message);
-        updateTextContent('manager_trip_link', data[languageCode].manager_trip_link);
-        updateTextContent('manager_patients_overview', data[languageCode].manager_patients_overview);
-        updateTextContent('manager_date_label', data[languageCode].manager_date_label);
-        updateTextContent('manager_date_submit', data[languageCode].manager_date_submit);
-        updateTextContent('manager_open_who_report', data[languageCode].manager_open_who_report);
-        updateTextContent('manager_th_patient_id', data[languageCode].manager_th_patient_id);
-        updateTextContent('manager_th_name', data[languageCode].manager_th_name);
-        updateTextContent('manager_th_patient_info', data[languageCode].manager_th_patient_info);
-        updateTextContent('manager_th_chief_complaint', data[languageCode].manager_th_chief_complaint);
-        updateTextContent('manager_th_triage_checkin', data[languageCode].manager_th_triage_checkin);
-        updateTextContent('manager_th_medical_checkin', data[languageCode].manager_th_medical_checkin);
-        updateTextContent('manager_th_pharmacy_checkin', data[languageCode].manager_th_pharmacy_checkin);
-        updateTextContent('manager_th_total_time', data[languageCode].manager_th_total_time);
-        updateTextContent('manager_no_active_trip', data[languageCode].manager_no_active_trip);
+        var t = data[languageCode];
+        updateChildTextContent('manager_trip_message', t.manager_trip_message);
+        updateTextContent('manager_trip_link', t.manager_trip_link);
+        updateTextContent('manager_patients_overview', t.manager_patients_overview);
+        updateTextContent('manager_date_label', t.manager_date_label);
+        updateTextContent('manager_date_submit', t.manager_date_submit);
+        updateTextContent('manager_open_who_report', t.manager_open_who_report);
+        updateTextContent('manager_th_patient_id', t.manager_th_patient_id);
+        updateTextContent('manager_th_name', t.manager_th_name);
+        updateTextContent('manager_th_patient_info', t.manager_th_patient_info);
+        updateTextContent('manager_th_chief_complaint', t.manager_th_chief_complaint);
+        updateTextContent('manager_th_triage_checkin', t.manager_th_triage_checkin);
+        updateTextContent('manager_th_medical_checkin', t.manager_th_medical_checkin);
+        updateTextContent('manager_th_pharmacy_checkin', t.manager_th_pharmacy_checkin);
+        updateTextContent('manager_th_total_time', t.manager_th_total_time);
+        updateTextContent('manager_no_active_trip', t.manager_no_active_trip);
+        updateTextContent('manager_current_trip_label', t.manager_current_trip_label);
         document.querySelectorAll('.manager-meta-gender').forEach(function(el) {
-            if (data[languageCode].manager_th_gender) el.textContent = data[languageCode].manager_th_gender;
+            if (t.manager_th_gender) el.textContent = t.manager_th_gender;
         });
         document.querySelectorAll('.manager-meta-age').forEach(function(el) {
-            if (data[languageCode].manager_th_age) el.textContent = data[languageCode].manager_th_age;
+            if (t.manager_th_age) el.textContent = t.manager_th_age;
         });
         document.querySelectorAll('.manager-meta-city').forEach(function(el) {
-            if (data[languageCode].manager_th_city) el.textContent = data[languageCode].manager_th_city;
+            if (t.manager_th_city) el.textContent = t.manager_th_city;
         });
     }
 
-    function hydrateLanguage() {
-        var config = window.managerConfig || {};
-        var defaultLanguage = config.languageCode || 'en';
-
-        if (!config.languagesUrl) {
-            applyLanguage(defaultLanguage, {});
-            return;
-        }
-
-        fetch(config.languagesUrl)
-            .then(function (response) { return response.json(); })
-            .then(function (data) {
-                var chosenLanguage = data[defaultLanguage] ? defaultLanguage : 'en';
-                applyLanguage(chosenLanguage, data);
-            })
-            .catch(function () {
-                applyLanguage(defaultLanguage, {});
-            });
+    function buildDtLanguage(t) {
+        if (!t) return {};
+        var lang = {};
+        if (t.manager_dt_empty_table)  lang.emptyTable  = t.manager_dt_empty_table;
+        if (t.manager_dt_info)         lang.info         = t.manager_dt_info;
+        if (t.manager_dt_info_empty)   lang.infoEmpty    = t.manager_dt_info_empty;
+        if (t.manager_dt_length_menu)  lang.lengthMenu   = t.manager_dt_length_menu;
+        if (t.manager_dt_search)       lang.search       = t.manager_dt_search;
+        if (t.manager_dt_zero_records) lang.zeroRecords  = t.manager_dt_zero_records;
+        lang.paginate = {};
+        if (t.manager_dt_next)     lang.paginate.next     = t.manager_dt_next;
+        if (t.manager_dt_previous) lang.paginate.previous = t.manager_dt_previous;
+        return lang;
     }
 
-    function initDataTable() {
+    function initDataTable(t) {
         var $table = $('#managersTable');
-        if (!$table.length || !$table.DataTable) {
+        if (!$table.length || !$.fn.DataTable) {
             return null;
         }
 
@@ -81,7 +78,8 @@
             columnDefs: [
                 { orderable: false, targets: [2, 3] }
             ],
-            order: [[0, 'asc']]
+            order: [[0, 'asc']],
+            language: buildDtLanguage(t)
         });
     }
 
@@ -121,9 +119,28 @@
         scheduleAdjust();
     }
 
+    function hydrateLanguage() {
+        var config = window.managerConfig || {};
+        var defaultLanguage = config.languageCode || 'en';
+
+        if (!config.languagesUrl) {
+            bindLayoutObservers(initDataTable(null));
+            return;
+        }
+
+        fetch(config.languagesUrl)
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                var chosenLanguage = data[defaultLanguage] ? defaultLanguage : 'en';
+                applyLanguage(chosenLanguage, data);
+                bindLayoutObservers(initDataTable(data[chosenLanguage]));
+            })
+            .catch(function () {
+                bindLayoutObservers(initDataTable(null));
+            });
+    }
+
     $(function () {
         hydrateLanguage();
-        var dataTable = initDataTable();
-        bindLayoutObservers(dataTable);
     });
 })(jQuery);

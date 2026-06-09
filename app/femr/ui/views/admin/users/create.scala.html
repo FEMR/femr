@@ -58,6 +58,9 @@
                     document.querySelectorAll('.admin-create-th-action').forEach(function(el) {
                         if (t.admin_create_th_action) el.textContent = t.admin_create_th_action;
                     });
+                    document.querySelectorAll('.admin-create-remove-trip-btn').forEach(function(el) {
+                        if (t.admin_create_remove_trip_btn) el.textContent = t.admin_create_remove_trip_btn;
+                    });
                 });
         });
         </script>
@@ -234,7 +237,7 @@
                                         <td>@Option(trip.getFriendlyTripStartDate).getOrElse("—")</td>
                                         <td>
                                             <input type="hidden" name="tripIds[]" value="@trip.getId" />
-                                            <button type="button" class="admin-button admin-button--danger js-remove-create-trip" aria-label={"Remove " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
+                                            <button type="button" class="admin-button admin-button--danger js-remove-create-trip admin-create-remove-trip-btn" aria-label={"Remove " + Option(trip.getFriendlyTripTitle).getOrElse("trip")}>Remove</button>
                                         </td>
                                     </tr>
                                 }

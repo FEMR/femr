@@ -80,6 +80,14 @@
                         updateTextContent('langCode_admin_updates', languageData[languageCode].admin_updates);
                         updateTextContent('langCode_reference', languageData[languageCode].langCode_reference);
                         updateTextContent('langCode_settings', languageData[languageCode].langCode_settings);
+                        updateTextContent('langCode_backup', languageData[languageCode].langCode_backup);
+                        updateTextContent('sidebar_search_label', languageData[languageCode].sidebar_search_label);
+                        var searchPlaceholder = languageData[languageCode].sidebar_search_placeholder;
+                        if (searchPlaceholder) {
+                            document.querySelectorAll('.sidebar-search-input').forEach(function(el) {
+                                el.setAttribute('placeholder', searchPlaceholder);
+                            });
+                        }
                     }
                 });
         </script>
@@ -173,7 +181,7 @@
                 <li>
                     <a class="femr-sidebar__nav-link" href="@DatabaseDumpController.indexGet()" aria-label="Backup Data">
                         <span class="material-symbols-outlined femr-sidebar__nav-icon">download</span>
-                        <span class="femr-sidebar__nav-text">Backup Data</span>
+                        <span class="femr-sidebar__nav-text" id="langCode_backup">Backup Data</span>
                     </a>
                 </li>
                 <li>

@@ -19,9 +19,10 @@
                     .then(data => {
                         languageData = data;
                         updateLanguage("@{currentUser.getLanguageCode}");
-
                     })
-                    .catch(error => console.error('Error fetching language data:', error));
+                    .catch(function() {
+                        if (typeof window.initTripsTables === 'function') window.initTripsTables({});
+                    });
 
 
             function updateTextContent(elementId, value) {
@@ -43,12 +44,17 @@
                 const strings = languageData[locale];
 
                 updateTextContent("trips_manage_Add", strings.trips_manage_Add);
+                updateTextContent("trips_manage_add_desc", strings.trips_manage_add_desc);
                 updateTextContent("trips_manage_Team", strings.trips_manage_Team);
                 updateTextContent("trips_manage_TripCity", strings.trips_manage_TripCity);
                 updateTextContent("trips_manage_TripCountry", strings.trips_manage_TripCountry);
                 updateTextContent("trips_manage_Start1", strings.trips_manage_Start1);
                 updateTextContent("trips_manage_End1", strings.trips_manage_End1);
                 updateTextContent("trips_manage_Submit", strings.trips_manage_Submit);
+                updateTextContent("trips_manage_upcoming_title", strings.trips_manage_upcoming_title);
+                updateTextContent("trips_manage_upcoming_desc", strings.trips_manage_upcoming_desc);
+                updateTextContent("trips_manage_no_trips_title", strings.trips_manage_no_trips_title);
+                updateTextContent("trips_manage_no_trips_desc", strings.trips_manage_no_trips_desc);
 
                 updateTextContentAll("[data-i18n='trips_manage_Edit']", strings.trips_manage_Edit || 'Edit');
                 updateTextContentAll("[data-i18n='trips_manage_Name']", strings.trips_manage_Name || 'Team Name');
@@ -57,6 +63,17 @@
                 updateTextContentAll("[data-i18n='trips_manage_Start2']", strings.trips_manage_Start2 || 'Start Date');
                 updateTextContentAll("[data-i18n='trips_manage_End2']", strings.trips_manage_End2 || 'End Date');
 
+                var dtLang = {};
+                if (strings.manager_dt_empty_table)  dtLang.emptyTable  = strings.manager_dt_empty_table;
+                if (strings.manager_dt_info)         dtLang.info         = strings.manager_dt_info;
+                if (strings.manager_dt_info_empty)   dtLang.infoEmpty    = strings.manager_dt_info_empty;
+                if (strings.manager_dt_length_menu)  dtLang.lengthMenu   = strings.manager_dt_length_menu;
+                if (strings.manager_dt_search)       dtLang.search       = strings.manager_dt_search;
+                if (strings.manager_dt_zero_records) dtLang.zeroRecords  = strings.manager_dt_zero_records;
+                dtLang.paginate = {};
+                if (strings.manager_dt_previous) dtLang.paginate.previous = strings.manager_dt_previous;
+                if (strings.manager_dt_next)     dtLang.paginate.next     = strings.manager_dt_next;
+                if (typeof window.initTripsTables === 'function') window.initTripsTables(dtLang);
             }
     </script>
 }
@@ -78,7 +95,7 @@
             <div class="admin-section__header">
                 <div>
                     <h2 class="admin-section__title" id="trips_manage_Add">Add Trip</h2>
-                    <p class="admin-section__description">Create a new trip by assigning a team, destination, and timeline.</p>
+                    <p class="admin-section__description" id="trips_manage_add_desc">Create a new trip by assigning a team, destination, and timeline.</p>
                 </div>
             </div>
 
@@ -150,16 +167,16 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Upcoming trips</h2>
-                <p class="admin-section__description">Review current trip schedules and jump into editing assignments.</p>
+                <h2 class="admin-section__title" id="trips_manage_upcoming_title">Upcoming trips</h2>
+                <p class="admin-section__description" id="trips_manage_upcoming_desc">Review current trip schedules and jump into editing assignments.</p>
             </div>
         </div>
 
         @if(viewModel.getMissionItems.isEmpty) {
             <div class="admin-empty-state">
                 <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">calendar_month</span>
-                <h3 class="admin-empty-state__title">No trips scheduled</h3>
-                <p class="admin-empty-state__description">Create a trip to start managing assignments and formulary access.</p>
+                <h3 class="admin-empty-state__title" id="trips_manage_no_trips_title">No trips scheduled</h3>
+                <p class="admin-empty-state__description" id="trips_manage_no_trips_desc">Create a trip to start managing assignments and formulary access.</p>
             </div>
         } else {
             <div class="admin-table-wrap" role="region" aria-label="Upcoming trips">

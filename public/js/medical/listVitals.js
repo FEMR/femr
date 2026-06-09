@@ -2,6 +2,8 @@ $(document).ready(function () {
 
     $('#vitalTable').tableScroll({ height: 670, width: 250 });
 
+    if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
+
     //sets the patient's BMI score in the patient overview everytime
     //listVitals loads.
     setBMI();

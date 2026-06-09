@@ -35,6 +35,14 @@
                 document.querySelectorAll('[data-label-off]').forEach(function(el) {
                     if (t.configure_status_disabled) el.setAttribute('data-label-off', t.configure_status_disabled);
                 });
+                document.querySelectorAll('[data-i18n-feature]').forEach(function(el) {
+                    var key = el.getAttribute('data-i18n-feature');
+                    if (t[key]) el.textContent = t[key];
+                });
+                document.querySelectorAll('[data-i18n-desc]').forEach(function(el) {
+                    var key = el.getAttribute('data-i18n-desc');
+                    if (t[key]) el.textContent = t[key];
+                });
             });
     });
     </script>
@@ -65,10 +73,13 @@
                     </thead>
                     <tbody>
                     @for((key, valyew) <- viewModel.getSettings) {
+                        @defining(key.toLowerCase.trim.replaceAll("[^a-z0-9]+", "_").replaceAll("^_+|_+$", "")) { slug =>
                         <tr>
-                            <td class="name">@key</td>
-                            @defining(Option(viewModel.getDescriptions.get(key)).map(_.trim).filter(_.nonEmpty).getOrElse("No description provided")) { description =>
-                                <td class="description">@description</td>
+                            <td class="name" data-i18n-feature="configure_feature_@slug">@key</td>
+                            @defining(Option(viewModel.getDescriptions.get(key)).map(_.trim).filter(_.nonEmpty)) { maybeDesc =>
+                            @defining(maybeDesc.map(_ => s"configure_desc_${slug}").getOrElse("configure_no_description")) { descKey =>
+                                <td class="description" data-i18n-desc="@descKey">@{maybeDesc.getOrElse("No description provided")}</td>
+                            }
                             }
                             <td class="isActive admin-toggle-cell">
                                 <label class="admin-toggle">
@@ -78,6 +89,7 @@
                                 </label>
                             </td>
                         </tr>
+                        }
                     }
                     </tbody>
                 </table>

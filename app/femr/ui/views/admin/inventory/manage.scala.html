@@ -58,6 +58,31 @@
                     document.querySelectorAll('.removeBtn').forEach(function(el) {
                         if (t.inv_manage_remove_btn) el.textContent = t.inv_manage_remove_btn;
                     });
+                    setText('inv_manage_guideline_add', t.inv_manage_guideline_add);
+                    setText('inv_manage_guideline_update', t.inv_manage_guideline_update);
+                    setText('inv_manage_guideline_dispensing', t.inv_manage_guideline_dispensing);
+
+                    // Store Undo/Remove labels for use in AJAX callbacks
+                    window.invTranslations = {
+                        remove: t.inv_manage_remove_btn || 'Remove',
+                        undo:   t.inv_manage_undo_btn   || 'Undo'
+                    };
+
+                    // Init DataTable with translated strings
+                    var dtLang = {};
+                    if (t.manager_dt_empty_table)  dtLang.emptyTable  = t.manager_dt_empty_table;
+                    if (t.manager_dt_info)         dtLang.info         = t.manager_dt_info;
+                    if (t.manager_dt_info_empty)   dtLang.infoEmpty    = t.manager_dt_info_empty;
+                    if (t.manager_dt_length_menu)  dtLang.lengthMenu   = t.manager_dt_length_menu;
+                    if (t.manager_dt_search)       dtLang.search       = t.manager_dt_search;
+                    if (t.manager_dt_zero_records) dtLang.zeroRecords  = t.manager_dt_zero_records;
+                    dtLang.paginate = {};
+                    if (t.manager_dt_previous) dtLang.paginate.previous = t.manager_dt_previous;
+                    if (t.manager_dt_next)     dtLang.paginate.next     = t.manager_dt_next;
+                    if (typeof window.initInventoryTable === 'function') window.initInventoryTable(dtLang);
+                })
+                .catch(function() {
+                    if (typeof window.initInventoryTable === 'function') window.initInventoryTable({});
                 });
         });
         </script>
@@ -113,10 +138,10 @@
             </div>
 
             <ul class="admin-guidelines">
-                <li>Add medications using the actions above.</li>
+                <li id="inv_manage_guideline_add">Add medications using the actions above.</li>
                 <li>Formulary changes apply to users on <strong>@viewModel.getMissionTripItem.getFriendlyTripTitle</strong>.</li>
-                <li>Update current or initial quantities as inventory evolves.</li>
-                <li>Dispensing medications automatically decreases the current quantity.</li>
+                <li id="inv_manage_guideline_update">Update current or initial quantities as inventory evolves.</li>
+                <li id="inv_manage_guideline_dispensing">Dispensing medications automatically decreases the current quantity.</li>
             </ul>
 
             <div class="admin-table-wrap">

@@ -539,6 +539,7 @@ $(document).ready(function () {
             success: function (partialView) {
                 $('#newVitalsPartial').html(partialView);
                 $('#newVitalsDialog').dialog("open");
+                if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
             },
             error: function () {
                 alert("Error. Please make sure you are connected to fEMR.");
@@ -603,6 +604,7 @@ $(document).ready(function () {
                 type: 'GET',
                 success: function (partialView) {
                     $('#vitalsPartial').html(partialView);
+                    if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
                 }
             });
         }).fail(function () {

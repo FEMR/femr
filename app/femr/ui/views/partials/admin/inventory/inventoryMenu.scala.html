@@ -25,7 +25,10 @@
                 updateTextContent("no_trip_assigned_title", languageData[languageCode].no_trip_assigned_title);
                 updateTextContent("no_trip_assigned_text", languageData[languageCode].no_trip_assigned_text);
                 updateTextContent("manage_trip_users_btn", languageData[languageCode].manage_trip_users);
-                updateTextContent("formulary_view_info", languageData[languageCode].formulary_view_info)
+                updateTextContent("formulary_view_info", languageData[languageCode].formulary_view_info);
+                updateTextContent("inv_menu_actions_title", languageData[languageCode].inv_menu_actions_title);
+                updateTextContent("inv_menu_existing_btn", languageData[languageCode].inv_menu_existing_btn);
+                updateTextContent("inv_menu_custom_btn", languageData[languageCode].inv_menu_custom_btn);
             }
 
         });
@@ -43,7 +46,7 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Inventory actions</h2>
+                <h2 class="admin-section__title" id="inv_menu_actions_title">Inventory actions</h2>
                 <p class="admin-section__description">
                     <span id="formulary_view_info">You are viewing the formulary for</span>
                     <strong>@missionTripItem.getFriendlyTripTitle</strong>
@@ -52,11 +55,11 @@
             <div class="admin-section__actions">
                 <a href="@InventoryController.existingGet(missionTripItem.getId)" class="admin-button admin-button--primary">
                     <span class="material-symbols-outlined" aria-hidden="true">medication</span>
-                    <span>Existing Medication</span>
+                    <span id="inv_menu_existing_btn">Existing Medication</span>
                 </a>
                 <a href="@InventoryController.customGet(missionTripItem.getId)" class="admin-button admin-button--primary">
                     <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
-                    <span>Custom Medication</span>
+                    <span id="inv_menu_custom_btn">Custom Medication</span>
                 </a>
             </div>
         </div>

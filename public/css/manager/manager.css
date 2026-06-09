@@ -34,6 +34,40 @@
     gap: 6px;
 }
 
+.manager-date-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.manager-date-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--admin-text-muted, #6b7280);
+    white-space: nowrap;
+}
+
+.manager-date-input {
+    padding: 6px 10px;
+    border: 1px solid var(--admin-border-color, rgba(28, 25, 23, 0.2));
+    border-radius: var(--admin-radius-sm, 8px);
+    font-size: 14px;
+    color: var(--femr-color-text, #1c1917);
+    background: #fff;
+    cursor: pointer;
+}
+
+.manager-date-input:focus {
+    outline: 2px solid var(--femr-color-primary, #2563eb);
+    outline-offset: 1px;
+}
+
+.manager-date-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
 .manager-date {
     font-weight: 600;
     color: var(--femr-color-text, #1c1917);

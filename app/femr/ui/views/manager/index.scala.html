@@ -29,8 +29,16 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div class="manager-section__heading">
-                    <h2 class="admin-section__title" id="manager_patients_overview">Overview of patients checked in today</h2>
-                    <p class="admin-section__description">Check-ins recorded on <span class="manager-date">@viewModelGet.getUserFriendlyDate</span>.</p>
+                    <h2 class="admin-section__title" id="manager_patients_overview">Patient check-in overview:</h2>
+@if(currentUser.getTripId != null) {
+                        <form class="manager-date-form" method="get" action="@ManagerController.indexGet(null)">
+                            <label class="manager-date-label" for="manager_date_input" id="manager_date_label">View date:</label>
+                            <input class="manager-date-input" type="date" id="manager_date_input" name="date"
+                                   value="@{Option(viewModelGet.getIsoDate).getOrElse("")}"
+                                   max="@{java.time.LocalDate.now().toString}" />
+                            <button class="admin-button admin-button--secondary manager-date-btn" type="submit" id="manager_date_submit">Go</button>
+                        </form>
+                    }
                 </div>
                 @if(currentUser.getTripId != null) {
                     @defining(Option(viewModelGet.getUserFriendlyTrip).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { tripName =>
@@ -40,7 +48,11 @@
                         </div>
                     }
                     @if(viewModelGet.getSettings != null && viewModelGet.getSettings.isWhoReporting) {
-                        <a class="admin-button admin-button--primary" href="@ManagerController.dailyReportGet()" id="manager_open_who_report">Open WHO Daily Report</a>
+                        @defining(Option(viewModelGet.getIsoDate).getOrElse("")) { isoDate =>
+                            <a class="admin-button admin-button--primary"
+                               href="@{if(isoDate.nonEmpty) ManagerController.dailyReportGet(isoDate) else ManagerController.dailyReportGet(null)}"
+                               id="manager_open_who_report">Open WHO Daily Report</a>
+                        }
                     }
                 }
             </div>

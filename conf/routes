@@ -50,8 +50,8 @@ POST        /admin/trips/cities                                @femr.ui.controll
 POST        /admin/updateDb                                    @femr.ui.controllers.admin.DatabaseController.downloadPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Manager
-GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()
-GET         /manager/dailyReport                               @femr.ui.controllers.manager.ManagerController.dailyReportGet()
+GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet(date: String ?= null)
+GET         /manager/dailyReport                               @femr.ui.controllers.manager.ManagerController.dailyReportGet(date: String ?= null)
 #Pharmacy
 GET         /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)

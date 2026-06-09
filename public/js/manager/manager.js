@@ -27,6 +27,8 @@
         updateChildTextContent('manager_trip_message', data[languageCode].manager_trip_message);
         updateTextContent('manager_trip_link', data[languageCode].manager_trip_link);
         updateTextContent('manager_patients_overview', data[languageCode].manager_patients_overview);
+        updateTextContent('manager_date_label', data[languageCode].manager_date_label);
+        updateTextContent('manager_date_submit', data[languageCode].manager_date_submit);
         updateTextContent('manager_open_who_report', data[languageCode].manager_open_who_report);
         updateTextContent('manager_th_patient_id', data[languageCode].manager_th_patient_id);
         updateTextContent('manager_th_name', data[languageCode].manager_th_name);

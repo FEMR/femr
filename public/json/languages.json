@@ -189,7 +189,7 @@
         "admin_title": "Admin Panel",
         "manager_trip_message": "User is not currently assigned to a trip. To manage trips please have an Admin visit the",
         "manager_trip_link": " Trip Page",
-        "manager_patients_overview": "Overview of patients checked in today: ",
+        "manager_patients_overview": "Patient check-in overview:",
         "patient_id": "Patient ID",
         "search_btn": "Search",
         "title_medical_search": "Medical Search",
@@ -735,7 +735,9 @@
         "social_history_label": "Social History:",
         "pharmacy_replace_btn": "Replace",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Deleted Custom Medical Tabs:"
+        "superuser_deleted_tabs_header": "Deleted Custom Medical Tabs:",
+        "manager_date_label": "View date:",
+        "manager_date_submit": "Go"
     },
     "es": {
         "research_select_lang_sub": "-- Seleccione el idioma --",
@@ -930,7 +932,7 @@
         "admin_title": "Panel de administrador",
         "manager_trip_message": "El usuario no está actualmente asignado a ningún viaje. ",
         "manager_trip_link": " Página de viaje",
-        "manager_patients_overview": "Resumen de los pacientes registrados hoy: ",
+        "manager_patients_overview": "Resumen de pacientes registrados:",
         "patient_id": "ID del paciente",
         "search_btn": "Buscar",
         "title_medical_search": "Búsqueda médica",
@@ -1473,7 +1475,9 @@
         "social_history_label": "Historia social:",
         "pharmacy_replace_btn": "Sustitución",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Tabs médicas personalizadas suprimidas:"
+        "superuser_deleted_tabs_header": "Tabs médicas personalizadas suprimidas:",
+        "manager_date_label": "Ver fecha:",
+        "manager_date_submit": "Ir"
     },
     "fr": {
         "home_index_h2_Welcome": "Bienvenue dans fEMR,",
@@ -1666,7 +1670,7 @@
         "admin_title": "panneau d'administration",
         "manager_trip_message": "L'utilisateur n'est actuellement pas affecté à un voyage. ",
         "manager_trip_link": " Page de voyage",
-        "manager_patients_overview": "Aperçu des patients enregistrés aujourd'hui : ",
+        "manager_patients_overview": "Aperçu des patients enregistrés :",
         "patient_id": "ID du patient",
         "search_btn": "Recherche",
         "title_medical_search": "Recherche médicale",
@@ -2212,7 +2216,9 @@
         "social_history_label": "Histoire sociale :",
         "pharmacy_replace_btn": "Remplacer",
         "superuser_fields_toggle_header": "Faire basculer le champ",
-        "superuser_deleted_tabs_header": "Onglets médicaux personnalisés supprimés :"
+        "superuser_deleted_tabs_header": "Onglets médicaux personnalisés supprimés :",
+        "manager_date_label": "Voir la date :",
+        "manager_date_submit": "Aller"
     },
     "ka": {
         "home_index_h2_Welcome": "კეთილი იყოს თქვენი მობრძანება fEMR,",
@@ -2405,7 +2411,7 @@
         "admin_title": "ადმინის პანელი",
         "manager_trip_message": "მომხმარებელი ამჟამად არ არის დანიშნული მოგზაურობისთვის. ",
         "manager_trip_link": " მოგზაურობის გვერდი",
-        "manager_patients_overview": "დღეს შემოსული პაციენტების მიმოხილვა: ",
+        "manager_patients_overview": "შემოსული პაციენტების მიმოხილვა:",
         "patient_id": "პაციენტის ID",
         "search_btn": "ძიება",
         "title_medical_search": "სამედიცინო ძებნა",
@@ -2951,7 +2957,9 @@
         "social_history_label": "სოციალური ისტორია:",
         "pharmacy_replace_btn": "ჩანაცვლება",
         "superuser_fields_toggle_header": "ველის გადართვა",
-        "superuser_deleted_tabs_header": "წაშლილია მორგებული სამედიცინო ჩანართები:"
+        "superuser_deleted_tabs_header": "წაშლილია მორგებული სამედიცინო ჩანართები:",
+        "manager_date_label": "თარიღის ნახვა:",
+        "manager_date_submit": "წასვლა"
     },
     "ar": {
         "home_index_h2_Welcome": "مرحباً بكم في fEMR،",
@@ -3142,7 +3150,7 @@
         "admin_title": "لوحة التحكم الإدارية",
         "manager_trip_message": "المستخدم ليس مخصصاً حالياً لرحلة. لإدارة الرحلات يرجى زيارة صفحة الرحلة بواسطة مسؤول",
         "manager_trip_link": " صفحة الرحلة",
-        "manager_patients_overview": "نظرة عامة على المرضى الذين تم تسجيل دخولهم اليوم: ",
+        "manager_patients_overview": "نظرة عامة على المرضى المسجلين:",
         "patient_id": "رقم المريض",
         "search_btn": "بحث",
         "title_medical_search": "بحث طبي",
@@ -3689,7 +3697,9 @@
         "social_history_label": "التاريخ الاجتماعي:",
         "pharmacy_replace_btn": "يستعاض عن عبارة:",
         "superuser_fields_toggle_header": "Toggle field",
-        "superuser_deleted_tabs_header": "Deleted Custom Medical Tabs:"
+        "superuser_deleted_tabs_header": "Deleted Custom Medical Tabs:",
+        "manager_date_label": "عرض التاريخ:",
+        "manager_date_submit": "انتقال"
     },
     "az": {
         "home_index_h2_Welcome": "fEMR xoş gəlmisiniz,",
@@ -3880,7 +3890,7 @@
         "admin_title": "İdarəetmə Paneli",
         "manager_trip_message": "İstifadəçi hazırda səfərə təyin edilməyib. ",
         "manager_trip_link": " Səyahət Səhifəsi",
-        "manager_patients_overview": "Bu gün yoxlanılan xəstələrin icmalı: ",
+        "manager_patients_overview": "Yoxlanılan xəstələrin icmalı:",
         "patient_id": "Xəstə ID",
         "search_btn": "Axtar",
         "title_medical_search": "Tibbi axtarış",
@@ -4427,7 +4437,9 @@
         "social_history_label": "Sosial Tarix:",
         "pharmacy_replace_btn": "Daxil ol",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Deleted Xüsusi Tibbi Tablar:"
+        "superuser_deleted_tabs_header": "Deleted Xüsusi Tibbi Tablar:",
+        "manager_date_label": "Tarixi görün:",
+        "manager_date_submit": "Get"
     },
     "bg": {
         "home_index_h2_Welcome": "Добре дошли в fEMR,",
@@ -4618,7 +4630,7 @@
         "admin_title": "Административен панел",
         "manager_trip_message": "Потребителят в момента не е назначен за пътуване. ",
         "manager_trip_link": " Страница за пътуване",
-        "manager_patients_overview": "Преглед на регистрираните днес пациенти: ",
+        "manager_patients_overview": "Преглед на регистрираните пациенти:",
         "patient_id": "ID на пациента",
         "search_btn": "Търсене",
         "title_medical_search": "Медицинско търсене",
@@ -5165,7 +5177,9 @@
         "social_history_label": "Социална история:",
         "pharmacy_replace_btn": "Замяна",
         "superuser_fields_toggle_header": "Превключване на полето",
-        "superuser_deleted_tabs_header": "Изтриване на потребителски медицински подпрозорци:"
+        "superuser_deleted_tabs_header": "Изтриване на потребителски медицински подпрозорци:",
+        "manager_date_label": "Вижте дата:",
+        "manager_date_submit": "Към"
     },
     "bn": {
         "home_index_h2_Welcome": "fEMR স্বাগতম,",
@@ -5356,7 +5370,7 @@
         "admin_title": "অ্যাডমিন প্যানেল",
         "manager_trip_message": "ব্যবহারকারী বর্তমানে একটি ট্রিপ বরাদ্দ করা হয় না. ",
         "manager_trip_link": " ট্রিপ পৃষ্ঠা",
-        "manager_patients_overview": "আজ চেক ইন করা রোগীদের ওভারভিউ: ",
+        "manager_patients_overview": "চেক ইন করা রোগীদের ওভারভিউ:",
         "patient_id": "রোগীর আইডি",
         "search_btn": "অনুসন্ধান করুন",
         "title_medical_search": "মেডিকেল অনুসন্ধান",
@@ -5903,7 +5917,9 @@
         "social_history_label": "সামাজিক ইতিহাস:",
         "pharmacy_replace_btn": "প্রতিস্থাপন",
         "superuser_fields_toggle_header": "ক্ষেত্র পরিবর্তন করা হবে",
-        "superuser_deleted_tabs_header": "মুছে ফেলা স্বনির্বাচিত মেডিকেল ট্যাব:"
+        "superuser_deleted_tabs_header": "মুছে ফেলা স্বনির্বাচিত মেডিকেল ট্যাব:",
+        "manager_date_label": "তারিখ দেখুন:",
+        "manager_date_submit": "যান"
     },
     "bs": {
         "home_index_h2_Welcome": "Dobrodošli u fEMR,",
@@ -6094,7 +6110,7 @@
         "admin_title": "Admin Panel",
         "manager_trip_message": "Korisnik trenutno nije dodijeljen putovanju. ",
         "manager_trip_link": " Stranica putovanja",
-        "manager_patients_overview": "Pregled pacijenata prijavljenih danas: ",
+        "manager_patients_overview": "Pregled prijavljenih pacijenata:",
         "patient_id": "Patient ID",
         "search_btn": "Traži",
         "title_medical_search": "Medicinska pretraga",
@@ -6641,7 +6657,9 @@
         "social_history_label": "društvena historija:",
         "pharmacy_replace_btn": "Zamijenite",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Izbrisane prilagođene medicinske kartice:"
+        "superuser_deleted_tabs_header": "Izbrisane prilagođene medicinske kartice:",
+        "manager_date_label": "Pogledaj datum:",
+        "manager_date_submit": "Idi"
     },
     "cs": {
         "home_index_h2_Welcome": "Vítejte ve fEMR,",
@@ -6832,7 +6850,7 @@
         "admin_title": "administrátorská lišta",
         "manager_trip_message": "Uživatel není aktuálně přiřazen k cestě. ",
         "manager_trip_link": " Stránka výletů",
-        "manager_patients_overview": "Přehled dnes přihlášených pacientů: ",
+        "manager_patients_overview": "Přehled přihlášených pacientů:",
         "patient_id": "ID pacienta",
         "search_btn": "Vyhledávání",
         "title_medical_search": "Lékařské vyhledávání",
@@ -7379,7 +7397,9 @@
         "social_history_label": "Sociální historie:",
         "pharmacy_replace_btn": "Nahradit",
         "superuser_fields_toggle_header": "Přepnout pole",
-        "superuser_deleted_tabs_header": "Vymazáno vlastní lékařské karty:"
+        "superuser_deleted_tabs_header": "Vymazáno vlastní lékařské karty:",
+        "manager_date_label": "Zobrazit datum:",
+        "manager_date_submit": "Přejít"
     },
     "da": {
         "home_index_h2_Welcome": "Velkommen til fEMR,",
@@ -7570,7 +7590,7 @@
         "admin_title": "Admin panel",
         "manager_trip_message": "Brugeren er i øjeblikket ikke tildelt en rejse. ",
         "manager_trip_link": " Rejseside",
-        "manager_patients_overview": "Oversigt over patienter tjekket ind i dag: ",
+        "manager_patients_overview": "Oversigt over indcheckede patienter:",
         "patient_id": "Patient ID",
         "search_btn": "Søg",
         "title_medical_search": "Medicinsk søgning",
@@ -8117,7 +8137,9 @@
         "social_history_label": "Social historie:",
         "pharmacy_replace_btn": "Erstat",
         "superuser_fields_toggle_header": "Slå felt til og fra",
-        "superuser_deleted_tabs_header": "Slettet brugerdefinerede medicinske faneblade:"
+        "superuser_deleted_tabs_header": "Slettet brugerdefinerede medicinske faneblade:",
+        "manager_date_label": "Vis dato:",
+        "manager_date_submit": "Gå"
     },
     "de": {
         "home_index_h2_Welcome": "Willkommen bei fEMR,",
@@ -8309,7 +8331,7 @@
         "admin_title": "Administrationsmenü",
         "manager_trip_message": "Der Benutzer ist derzeit keiner Reise zugeordnet. ",
         "manager_trip_link": " Reiseseite",
-        "manager_patients_overview": "Übersicht der heute eingecheckten Patienten: ",
+        "manager_patients_overview": "Übersicht der eingecheckten Patienten:",
         "patient_id": "Patienten ID",
         "search_btn": "Suchen",
         "title_medical_search": "Medizinische Suche",
@@ -8855,7 +8877,9 @@
         "social_history_label": "Sozialgeschichte:",
         "pharmacy_replace_btn": "Ersetzen",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Gelöschte Custom Medical Tabs:"
+        "superuser_deleted_tabs_header": "Gelöschte Custom Medical Tabs:",
+        "manager_date_label": "Datum anzeigen:",
+        "manager_date_submit": "Los"
     },
     "el": {
         "home_index_h2_Welcome": "Καλώς ορίσατε στην fEMR,",
@@ -9046,7 +9070,7 @@
         "admin_title": "Πίνακας Διαχειριστή",
         "manager_trip_message": "Επί του παρόντος, ο χρήστης δεν έχει ανατεθεί σε ένα ταξίδι. ",
         "manager_trip_link": " Σελίδα ταξιδιού",
-        "manager_patients_overview": "Επισκόπηση ασθενών που ελέγχθηκαν σήμερα: ",
+        "manager_patients_overview": "Επισκόπηση εισαχθέντων ασθενών:",
         "patient_id": "Ταυτότητα ασθενούς",
         "search_btn": "Αναζήτηση",
         "title_medical_search": "Ιατρική Αναζήτηση",
@@ -9593,7 +9617,9 @@
         "social_history_label": "Κοινωνική Ιστορία:",
         "pharmacy_replace_btn": "Αντικατάσταση",
         "superuser_fields_toggle_header": "Εναλλαγή πεδίου",
-        "superuser_deleted_tabs_header": "Διαγραμμένες προσαρμοσμένες ιατρικές καρτέλες:"
+        "superuser_deleted_tabs_header": "Διαγραμμένες προσαρμοσμένες ιατρικές καρτέλες:",
+        "manager_date_label": "Προβολή ημερομηνίας:",
+        "manager_date_submit": "Μετάβαση"
     },
     "et": {
         "home_index_h2_Welcome": "Tere tulemast fEMR",
@@ -9784,7 +9810,7 @@
         "admin_title": "Administraatori paneel",
         "manager_trip_message": "Kasutaja ei ole praegu reisile määratud. ",
         "manager_trip_link": " Reisi leht",
-        "manager_patients_overview": "Ülevaade täna registreeritud patsientidest: ",
+        "manager_patients_overview": "Ülevaade registreeritud patsientidest:",
         "patient_id": "Patsiendi ID",
         "search_btn": "Otsing",
         "title_medical_search": "Meditsiiniline otsing",
@@ -10331,7 +10357,9 @@
         "social_history_label": "Sotsiaalajalugu:",
         "pharmacy_replace_btn": "Asenda",
         "superuser_fields_toggle_header": "Lülita välja",
-        "superuser_deleted_tabs_header": "Kustutatud kohandatud meditsiinilised kaardid:"
+        "superuser_deleted_tabs_header": "Kustutatud kohandatud meditsiinilised kaardid:",
+        "manager_date_label": "Kuva kuupäev:",
+        "manager_date_submit": "Mine"
     },
     "fa": {
         "home_index_h2_Welcome": "به fEMR خوش آمدید،",
@@ -10522,7 +10550,7 @@
         "admin_title": "پنل مدیریت",
         "manager_trip_message": "کاربر در حال حاضر به یک سفر اختصاص داده نشده است. ",
         "manager_trip_link": " صفحه سفر",
-        "manager_patients_overview": "بررسی اجمالی بیماران معاینه شده امروز: ",
+        "manager_patients_overview": "بررسی اجمالی بیماران مراجعه‌کننده:",
         "patient_id": "شناسه بیمار",
         "search_btn": "جستجو کردن",
         "title_medical_search": "جستجوی پزشکی",
@@ -11069,7 +11097,9 @@
         "social_history_label": "تاریخ اجتماعی:",
         "pharmacy_replace_btn": "جایگزین",
         "superuser_fields_toggle_header": "دانلود بازی Field",
-        "superuser_deleted_tabs_header": "رفع تب های پزشکی سفارشی:"
+        "superuser_deleted_tabs_header": "رفع تب های پزشکی سفارشی:",
+        "manager_date_label": "مشاهده تاریخ:",
+        "manager_date_submit": "برو"
     },
     "fi": {
         "home_index_h2_Welcome": "Tervetuloa fEMR,",
@@ -11260,7 +11290,7 @@
         "admin_title": "Ylläpitäjän paneeli",
         "manager_trip_message": "Käyttäjää ei ole tällä hetkellä määrätty matkalle. ",
         "manager_trip_link": " Matka-sivu",
-        "manager_patients_overview": "Yleiskatsaus tänään saapuneista potilaista: ",
+        "manager_patients_overview": "Yleiskatsaus saapuneista potilaista:",
         "patient_id": "Potilastunnus",
         "search_btn": "Hae",
         "title_medical_search": "Lääketieteellinen haku",
@@ -11807,7 +11837,9 @@
         "social_history_label": "Sosiaalinen historia:",
         "pharmacy_replace_btn": "Korvaa",
         "superuser_fields_toggle_header": "Vaihda kenttää",
-        "superuser_deleted_tabs_header": "Poistettu oma Medical välilehdet:"
+        "superuser_deleted_tabs_header": "Poistettu oma Medical välilehdet:",
+        "manager_date_label": "Näytä päivämäärä:",
+        "manager_date_submit": "Siirry"
     },
     "fil": {
         "home_index_h2_Welcome": "Maligayang pagdating sa fEMR,",
@@ -11998,7 +12030,7 @@
         "admin_title": "Admin Panel",
         "manager_trip_message": "Kasalukuyang hindi nakatalaga ang user sa isang biyahe. ",
         "manager_trip_link": " Pahina ng Biyahe",
-        "manager_patients_overview": "Pangkalahatang-ideya ng mga pasyenteng naka-check in ngayon: ",
+        "manager_patients_overview": "Pangkalahatang-ideya ng mga naka-check in na pasyente:",
         "patient_id": "ID ng pasyente",
         "search_btn": "Maghanap",
         "title_medical_search": "Medikal na Paghahanap",
@@ -12545,7 +12577,9 @@
         "social_history_label": "Kasaysayan ng Lipunan:",
         "pharmacy_replace_btn": "Palitan",
         "superuser_fields_toggle_header": "Larangan ng Togle",
-        "superuser_deleted_tabs_header": "Tinanggal na mga Tala sa Medisina:"
+        "superuser_deleted_tabs_header": "Tinanggal na mga Tala sa Medisina:",
+        "manager_date_label": "Tingnan ang petsa:",
+        "manager_date_submit": "Pumunta"
     },
     "he": {
         "home_index_h2_Welcome": "ברוכים הבאים fEMR",
@@ -12736,7 +12770,7 @@
         "admin_title": "פאנל הניהול",
         "manager_trip_message": "המשתמש אינו מוקצה כעת לטיול. ",
         "manager_trip_link": " דף טיול",
-        "manager_patients_overview": "סקירה כללית של חולים שנכנסו היום: ",
+        "manager_patients_overview": "סקירה כללית של חולים שנכנסו:",
         "patient_id": "זיהוי מטופל",
         "search_btn": "לחפש",
         "title_medical_search": "חיפוש רפואי",
@@ -13283,7 +13317,9 @@
         "social_history_label": "היסטוריה חברתית:",
         "pharmacy_replace_btn": "Replace",
         "superuser_fields_toggle_header": "מגרש שדה",
-        "superuser_deleted_tabs_header": "המונחים:"
+        "superuser_deleted_tabs_header": "המונחים:",
+        "manager_date_label": "הצג תאריך:",
+        "manager_date_submit": "עבור"
     },
     "hi": {
         "home_index_h2_Welcome": "fEMR में आपका स्वागत है",
@@ -13474,7 +13510,7 @@
         "admin_title": "व्यवस्थापक पैनल",
         "manager_trip_message": "उपयोगकर्ता को वर्तमान में किसी यात्रा के लिए नियुक्त नहीं किया गया है। ",
         "manager_trip_link": " यात्रा पृष्ठ",
-        "manager_patients_overview": "आज जांचे गए मरीजों का अवलोकन: ",
+        "manager_patients_overview": "जांचे गए मरीजों का अवलोकन:",
         "patient_id": "रोगी आईडी",
         "search_btn": "खोज",
         "title_medical_search": "चिकित्सा खोज",
@@ -14021,7 +14057,9 @@
         "social_history_label": "सामाजिक इतिहास:",
         "pharmacy_replace_btn": "बदलें",
         "superuser_fields_toggle_header": "टॉगल फील्ड",
-        "superuser_deleted_tabs_header": "हटाए गए कस्टम मेडिकल टैब:"
+        "superuser_deleted_tabs_header": "हटाए गए कस्टम मेडिकल टैब:",
+        "manager_date_label": "तारीख देखें:",
+        "manager_date_submit": "जाएं"
     },
     "hr": {
         "home_index_h2_Welcome": "Dobro došli u fEMR,",
@@ -14212,7 +14250,7 @@
         "admin_title": "upravljačka ploča",
         "manager_trip_message": "Korisnik trenutno nije dodijeljen putovanju. ",
         "manager_trip_link": " Stranica putovanja",
-        "manager_patients_overview": "Pregled pacijenata prijavljenih danas: ",
+        "manager_patients_overview": "Pregled prijavljenih pacijenata:",
         "patient_id": "ID pacijenta",
         "search_btn": "traži",
         "title_medical_search": "Medicinska pretraga",
@@ -14759,7 +14797,9 @@
         "social_history_label": "Socijalna povijest:",
         "pharmacy_replace_btn": "Zamijeniti",
         "superuser_fields_toggle_header": "Prebaci polje",
-        "superuser_deleted_tabs_header": "Izbrisane prilagođene medicinske kartice:"
+        "superuser_deleted_tabs_header": "Izbrisane prilagođene medicinske kartice:",
+        "manager_date_label": "Pogledaj datum:",
+        "manager_date_submit": "Idi"
     },
     "hu": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
@@ -14950,7 +14990,7 @@
         "admin_title": "Adminisztrációs Panel",
         "manager_trip_message": "A felhasználó jelenleg nincs hozzárendelve utazáshoz. ",
         "manager_trip_link": " Utazási oldal",
-        "manager_patients_overview": "A ma bejelentkezett betegek áttekintése: ",
+        "manager_patients_overview": "A bejelentkezett betegek áttekintése:",
         "patient_id": "Betegazonosító",
         "search_btn": "Keresés",
         "title_medical_search": "Orvosi keresés",
@@ -15497,7 +15537,9 @@
         "social_history_label": "Társadalomtörténet:",
         "pharmacy_replace_btn": "Csere",
         "superuser_fields_toggle_header": "Kikapcsolási mező",
-        "superuser_deleted_tabs_header": "Törölt egyéni orvosi tabs:"
+        "superuser_deleted_tabs_header": "Törölt egyéni orvosi tabs:",
+        "manager_date_label": "Dátum megtekintése:",
+        "manager_date_submit": "Ugrás"
     },
     "id": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
@@ -15688,7 +15730,7 @@
         "admin_title": "Adminisztrációs Panel",
         "manager_trip_message": "A felhasználó jelenleg nincs hozzárendelve utazáshoz. ",
         "manager_trip_link": " Utazási oldal",
-        "manager_patients_overview": "A ma bejelentkezett betegek áttekintése: ",
+        "manager_patients_overview": "Ikhtisar pasien yang check-in:",
         "patient_id": "Betegazonosító",
         "search_btn": "Keresés",
         "title_medical_search": "Orvosi keresés",
@@ -16235,7 +16277,9 @@
         "social_history_label": "Sejarah Sosial:",
         "pharmacy_replace_btn": "Ganti",
         "superuser_fields_toggle_header": "Kolom Jungkit",
-        "superuser_deleted_tabs_header": "Tab Medis Kustom Dihapus:"
+        "superuser_deleted_tabs_header": "Tab Medis Kustom Dihapus:",
+        "manager_date_label": "Lihat tanggal:",
+        "manager_date_submit": "Pergi"
     },
     "it": {
         "home_index_h2_Welcome": "Üdvözöljük a fEMR,",
@@ -16426,7 +16470,7 @@
         "admin_title": "Adminisztrációs Panel",
         "manager_trip_message": "A felhasználó jelenleg nincs hozzárendelve utazáshoz. ",
         "manager_trip_link": " Utazási oldal",
-        "manager_patients_overview": "A ma bejelentkezett betegek áttekintése: ",
+        "manager_patients_overview": "Panoramica dei check-in dei pazienti:",
         "patient_id": "Betegazonosító",
         "search_btn": "Keresés",
         "title_medical_search": "Orvosi keresés",
@@ -16973,7 +17017,9 @@
         "social_history_label": "Storia sociale:",
         "pharmacy_replace_btn": "Sostituire",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Tabelle mediche personalizzate cancellate:"
+        "superuser_deleted_tabs_header": "Tabelle mediche personalizzate cancellate:",
+        "manager_date_label": "Visualizza data:",
+        "manager_date_submit": "Vai"
     },
     "ja": {
         "home_index_h2_Welcome": "fEMR へようこそ",
@@ -17164,7 +17210,7 @@
         "admin_title": "管理パネル",
         "manager_trip_message": "ユーザーは現在旅行に割り当てられていません。",
         "manager_trip_link": " 旅行ページ",
-        "manager_patients_overview": "本日チェックインされた患者の概要: ",
+        "manager_patients_overview": "チェックインされた患者の概要:",
         "patient_id": "患者ID",
         "search_btn": "検索",
         "title_medical_search": "医療検索",
@@ -17711,7 +17757,9 @@
         "social_history_label": "社会の歴史:",
         "pharmacy_replace_btn": "リプレース",
         "superuser_fields_toggle_header": "トグルフィールド",
-        "superuser_deleted_tabs_header": "削除された注文の医学タブ:"
+        "superuser_deleted_tabs_header": "削除された注文の医学タブ:",
+        "manager_date_label": "日付を表示:",
+        "manager_date_submit": "移動"
     },
     "ko": {
         "home_index_h2_Welcome": "fEMR 오신 것을 환영합니다.",
@@ -17902,7 +17950,7 @@
         "admin_title": "관리자 패널",
         "manager_trip_message": "사용자가 현재 여행에 할당되어 있지 않습니다. ",
         "manager_trip_link": " 여행 페이지",
-        "manager_patients_overview": "오늘 체크인한 환자 개요: ",
+        "manager_patients_overview": "체크인한 환자 개요:",
         "patient_id": "환자번호",
         "search_btn": "찾다",
         "title_medical_search": "의료 검색",
@@ -18449,7 +18497,9 @@
         "social_history_label": "사회 역사:",
         "pharmacy_replace_btn": "기타 제품",
         "superuser_fields_toggle_header": "회사소개",
-        "superuser_deleted_tabs_header": "사용자 정의 의료 탭:"
+        "superuser_deleted_tabs_header": "사용자 정의 의료 탭:",
+        "manager_date_label": "날짜 보기:",
+        "manager_date_submit": "이동"
     },
     "pl": {
         "home_index_h2_Welcome": "Witamy w fEMR,",
@@ -18640,7 +18690,7 @@
         "admin_title": "Panel administratora",
         "manager_trip_message": "Użytkownik nie jest obecnie przypisany do podróży. ",
         "manager_trip_link": " Strona wycieczki",
-        "manager_patients_overview": "Przegląd pacjentów przyjętych dzisiaj: ",
+        "manager_patients_overview": "Przegląd przyjętych pacjentów:",
         "patient_id": "Identyfikator pacjenta",
         "search_btn": "Szukaj",
         "title_medical_search": "Wyszukiwanie medyczne",
@@ -19187,7 +19237,9 @@
         "social_history_label": "Historia społeczna:",
         "pharmacy_replace_btn": "Zastąp",
         "superuser_fields_toggle_header": "Włączenie / wyłączenie",
-        "superuser_deleted_tabs_header": "Usunięte karty medyczne:"
+        "superuser_deleted_tabs_header": "Usunięte karty medyczne:",
+        "manager_date_label": "Wyświetl datę:",
+        "manager_date_submit": "Idź"
     },
     "pt": {
         "home_index_h2_Welcome": "Bem-vindo ao fEMR,",
@@ -19378,7 +19430,7 @@
         "admin_title": "Painel de administração",
         "manager_trip_message": "O usuário não está atribuído a uma viagem no momento. ",
         "manager_trip_link": " Página de viagem",
-        "manager_patients_overview": "Visão geral dos pacientes internados hoje: ",
+        "manager_patients_overview": "Visão geral dos pacientes internados:",
         "patient_id": "ID do paciente",
         "search_btn": "Procurar",
         "title_medical_search": "Pesquisa Médica",
@@ -19925,7 +19977,9 @@
         "social_history_label": "História social:",
         "pharmacy_replace_btn": "Substituir",
         "superuser_fields_toggle_header": "Alternar o Campo",
-        "superuser_deleted_tabs_header": "Páginas médicas personalizadas apagadas:"
+        "superuser_deleted_tabs_header": "Páginas médicas personalizadas apagadas:",
+        "manager_date_label": "Ver data:",
+        "manager_date_submit": "Ir"
     },
     "ru": {
         "home_index_h2_Welcome": "Добро пожаловать в бета-версию fEMR,",
@@ -20116,7 +20170,7 @@
         "admin_title": "Панель администратора",
         "manager_trip_message": "Пользователь в настоящее время не назначен на поездку. ",
         "manager_trip_link": " Страница путешествия",
-        "manager_patients_overview": "Обзор пациентов, зарегистрировавшихся сегодня: ",
+        "manager_patients_overview": "Обзор зарегистрированных пациентов:",
         "patient_id": "Идентификатор пациента",
         "search_btn": "Поиск",
         "title_medical_search": "Медицинский поиск",
@@ -20663,7 +20717,9 @@
         "social_history_label": "Социальная история:",
         "pharmacy_replace_btn": "Заменить",
         "superuser_fields_toggle_header": "поле переключения",
-        "superuser_deleted_tabs_header": "Удаленные пользовательские медицинские вкладки:"
+        "superuser_deleted_tabs_header": "Удаленные пользовательские медицинские вкладки:",
+        "manager_date_label": "Просмотр даты:",
+        "manager_date_submit": "Перейти"
     },
     "sk": {
         "home_index_h2_Welcome": "Vitajte vo fEMR,",
@@ -20854,7 +20910,7 @@
         "admin_title": "Panel správcov",
         "manager_trip_message": "Používateľ momentálne nie je priradený k výletu. ",
         "manager_trip_link": " Stránka výletu",
-        "manager_patients_overview": "Prehľad dnes prihlásených pacientov: ",
+        "manager_patients_overview": "Prehľad prihlásených pacientov:",
         "patient_id": "ID pacienta",
         "search_btn": "Vyhľadávanie",
         "title_medical_search": "Lekárske vyhľadávanie",
@@ -21401,7 +21457,9 @@
         "social_history_label": "Sociálna história:",
         "pharmacy_replace_btn": "Nahradiť",
         "superuser_fields_toggle_header": "Prepnúť pole",
-        "superuser_deleted_tabs_header": "Vypustené vlastné lekárske karty:"
+        "superuser_deleted_tabs_header": "Vypustené vlastné lekárske karty:",
+        "manager_date_label": "Zobraziť dátum:",
+        "manager_date_submit": "Ísť"
     },
     "sv": {
         "home_index_h2_Welcome": "Välkommen till fEMR,",
@@ -21592,7 +21650,7 @@
         "admin_title": "Adminpanel",
         "manager_trip_message": "Användaren är för närvarande inte tilldelad en resa. ",
         "manager_trip_link": " Resesida",
-        "manager_patients_overview": "Översikt över patienter som checkade in idag: ",
+        "manager_patients_overview": "Översikt över incheckade patienter:",
         "patient_id": "Patient-ID",
         "search_btn": "Sök",
         "title_medical_search": "Medicinsk sökning",
@@ -22139,7 +22197,9 @@
         "social_history_label": "Social historia:",
         "pharmacy_replace_btn": "Ersätt",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Ta bort anpassade medicinska flikar:"
+        "superuser_deleted_tabs_header": "Ta bort anpassade medicinska flikar:",
+        "manager_date_label": "Visa datum:",
+        "manager_date_submit": "Gå"
     },
     "tr": {
         "home_index_h2_Welcome": "fEMR hoş geldiniz,",
@@ -22330,7 +22390,7 @@
         "admin_title": "Admin Paneli",
         "manager_trip_message": "Kullanıcı şu anda bir seyahate atanmamış. ",
         "manager_trip_link": " Gezi Sayfası",
-        "manager_patients_overview": "Bugün kontrol edilen hastalara genel bakış: ",
+        "manager_patients_overview": "Kontrol edilen hastalara genel bakış:",
         "patient_id": "Hasta Kimliği",
         "search_btn": "Aramak",
         "title_medical_search": "Tıbbi Arama",
@@ -22877,7 +22937,9 @@
         "social_history_label": "Sosyal Tarih:",
         "pharmacy_replace_btn": "Değişimi Değiştirin",
         "superuser_fields_toggle_header": "Toggle Field",
-        "superuser_deleted_tabs_header": "Özel Tıbbi Tablar:"
+        "superuser_deleted_tabs_header": "Özel Tıbbi Tablar:",
+        "manager_date_label": "Tarihi görüntüle:",
+        "manager_date_submit": "Git"
     },
     "vi": {
         "home_index_h2_Welcome": "Chào mừng bạn đến với fEMR,",
@@ -23068,7 +23130,7 @@
         "admin_title": "bảng quản trị",
         "manager_trip_message": "Người dùng hiện không được chỉ định cho một chuyến đi. ",
         "manager_trip_link": " Trang chuyến đi",
-        "manager_patients_overview": "Tổng hợp bệnh nhân đến khám hôm nay: ",
+        "manager_patients_overview": "Tổng hợp bệnh nhân đến khám:",
         "patient_id": "ID của Bệnh Nhân",
         "search_btn": "Tìm kiếm",
         "title_medical_search": "Tìm kiếm y tế",
@@ -23615,7 +23677,9 @@
         "social_history_label": "Lịch sử xã hội:",
         "pharmacy_replace_btn": "Thay thế",
         "superuser_fields_toggle_header": "Cửa sổ tới trường",
-        "superuser_deleted_tabs_header": "Xoá các thẻ y học riêng:"
+        "superuser_deleted_tabs_header": "Xoá các thẻ y học riêng:",
+        "manager_date_label": "Xem ngày:",
+        "manager_date_submit": "Đi"
     },
     "zh": {
         "home_index_h2_Welcome": "欢迎使用 fEMR，",
@@ -23806,7 +23870,7 @@
         "admin_title": "管理面板",
         "manager_trip_message": "用户当前未分配给行程。",
         "manager_trip_link": " 行程页面",
-        "manager_patients_overview": "今日就诊患者概况： ",
+        "manager_patients_overview": "就诊患者概况：",
         "patient_id": "患者 ID",
         "search_btn": "搜索",
         "title_medical_search": "医疗搜索",
@@ -24353,6 +24417,8 @@
         "social_history_label": "社会历史:",
         "pharmacy_replace_btn": "替换",
         "superuser_fields_toggle_header": "切换字段",
-        "superuser_deleted_tabs_header": "删除自定义医疗标签 :"
+        "superuser_deleted_tabs_header": "删除自定义医疗标签 :",
+        "manager_date_label": "查看日期：",
+        "manager_date_submit": "前往"
     }
 }

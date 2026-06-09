@@ -53,26 +53,22 @@ public class ManagerController extends Controller {
         this.searchService = searchService;
     }
 
-    public Result indexGet() {
+    public Result indexGet(String date) {
 
-//declares empty array lists  view model
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet viewModel = new IndexViewModelGet();
-        //if the user is not assigned to a trip renders outpage, with message to user
-        if (currentUser.getTripId() == null) {
 
+        if (currentUser.getTripId() == null) {
             return ok(index.render(currentUser, viewModel, assetsFinder));
         }
 
-        //Get the list of patient encounters that were created today, for the current trip and set them in the viewmodel
-        ServiceResponse<List<PatientEncounterItem>> patientEncounter = encounterService.retrieveCurrentDayPatientEncounters(currentUser.getTripId());
+        DateTime selectedDate = parseDate(date);
 
+        ServiceResponse<List<PatientEncounterItem>> patientEncounter = encounterService.retrievePatientEncountersForDate(currentUser.getTripId(), selectedDate);
         viewModel.setPatientEncounter(patientEncounter.getResponseObject());
 
-        //Get the mission trip and set the name of it in the viewmodel
         ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
         if (missionTripItemServiceResponse.hasErrors()){
-
             throw new RuntimeException();
         }
 
@@ -85,8 +81,7 @@ public class ManagerController extends Controller {
                 )
         );
 
-        //Get the current day to show the user what day the patients are being displayed for
-        viewModel.setUserFriendlyDate(dateUtils.getFriendlyInternationalDate(DateTime.now().toDate()));
+        viewModel.setIsoDate(selectedDate.toString("yyyy-MM-dd"));
 
         ServiceResponse<SettingItem> settingsResponse = searchService.retrieveSystemSettings();
         viewModel.setSettings(settingsResponse.getResponseObject());
@@ -95,19 +90,19 @@ public class ManagerController extends Controller {
 
     }
 
-    public Result dailyReportGet() {
+    public Result dailyReportGet(String date) {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         DailyReportViewModelGet viewModel = new DailyReportViewModelGet();
 
         if (currentUser.getTripId() == null) {
-            return redirect(femr.ui.controllers.manager.routes.ManagerController.indexGet());
+            return redirect(femr.ui.controllers.manager.routes.ManagerController.indexGet(null));
         }
 
         ServiceResponse<SettingItem> settingsResponse = searchService.retrieveSystemSettings();
         SettingItem settings = settingsResponse.getResponseObject();
         if (settings == null || !settings.isWhoReporting()) {
-            return redirect(femr.ui.controllers.manager.routes.ManagerController.indexGet());
+            return redirect(femr.ui.controllers.manager.routes.ManagerController.indexGet(null));
         }
 
         ServiceResponse<MissionTripItem> missionTripResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
@@ -122,7 +117,8 @@ public class ManagerController extends Controller {
             );
         }
 
-        ServiceResponse<DailyReportItem> reportResponse = dailyReportService.generateDailyReport(currentUser.getTripId(), DateTime.now());
+        DateTime selectedDate = parseDate(date);
+        ServiceResponse<DailyReportItem> reportResponse = dailyReportService.generateDailyReport(currentUser.getTripId(), selectedDate);
         if (!reportResponse.hasErrors()) {
             viewModel.setReportItem(reportResponse.getResponseObject());
         } else {
@@ -133,6 +129,16 @@ public class ManagerController extends Controller {
         viewModel.setWhoConfig(whoConfigResponse.hasErrors() ? new WhoReportConfigItem() : whoConfigResponse.getResponseObject());
 
         return ok(dailyReport.render(currentUser, viewModel, assetsFinder));
+    }
+
+    private DateTime parseDate(String date) {
+        if (date != null && !date.isEmpty()) {
+            try {
+                return org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(date);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        return DateTime.now();
     }
 
 

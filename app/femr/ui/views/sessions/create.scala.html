@@ -20,25 +20,44 @@
 
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = localStorage.getItem('languageCode') || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('session_sign_in_header', t.session_sign_in_header);
+                    setText('session_log_in_btn', t.session_log_in_btn);
+                    setText('session_create_account_btn', t.session_create_account_btn);
+                    setText('session_language_label', t.settings_language);
+                    setText('session_register_roles_label', t.session_register_roles_label);
+                });
+        });
+        </script>
     }
 
 @main("Login", styles = additionalStyles, scripts = additionalScripts, assets = assets) {
     <div class="signInRegister">
         <div id="login">
         @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
-                <h1>Please sign in</h1>
+                <h1 id="session_sign_in_header">Please sign in</h1>
                 @if(createForm != null && createForm.get.getEmail != null && createForm.get.getEmail != "" ) {
                     <input type="text" name="email" value='@createForm.get.getEmail' />
                 } else {
                     <input type="text" name="email" placeholder="Email" />
                 }
                 <input type="password" name="password" placeholder="Password" />
-                <input type="submit" value="Log in" />
+                <input type="submit" id="session_log_in_btn" value="Log in" />
         }
 
         @helper.form(action = SessionsController.editRegisterPost(), 'class -> "form-signin bottomButton") {
                 <h2> OR </h2>
-                <input type="submit" value="Create an account" />
+                <input type="submit" id="session_create_account_btn" value="Create an account" />
         }
 
         </div>
@@ -141,7 +160,7 @@
                     )
 
                     <div id="roleWrap" class="roleWrap">
-                        <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
+                        <label for="roles" id="session_register_roles_label">Roles<span id="roles" class="red bold">*</span></label>
                         <span class="errors"></span>
                         @for(error <- createForm("roles").errors) {
                             <p class="createUserError"> @error.message</p>

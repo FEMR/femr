@@ -16,6 +16,51 @@
         <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('inv_manage_switch_title', t.inv_manage_switch_title);
+                    setText('inv_manage_switch_desc', t.inv_manage_switch_desc);
+                    setText('inv_manage_mission_trip_label', t.inv_manage_mission_trip_label);
+                    setText('inv_manage_view_inventory_btn', t.inv_manage_view_inventory_btn);
+                    setText('inv_manage_formulary_title', t.inv_manage_formulary_title);
+                    setText('inv_manage_formulary_desc', t.inv_manage_formulary_desc);
+                    setText('inv_manage_export_csv_btn', t.inv_manage_export_csv_btn);
+                    document.querySelectorAll('.inv-manage-th-num').forEach(function(el) {
+                        if (t.inv_manage_th_num) el.textContent = t.inv_manage_th_num;
+                    });
+                    document.querySelectorAll('.inv-manage-th-medication').forEach(function(el) {
+                        if (t.inv_manage_th_medication) el.textContent = t.inv_manage_th_medication;
+                    });
+                    document.querySelectorAll('.inv-manage-th-current-qty').forEach(function(el) {
+                        if (t.inv_manage_th_current_qty) el.textContent = t.inv_manage_th_current_qty;
+                    });
+                    document.querySelectorAll('.inv-manage-th-initial-qty').forEach(function(el) {
+                        if (t.inv_manage_th_initial_qty) el.textContent = t.inv_manage_th_initial_qty;
+                    });
+                    document.querySelectorAll('.inv-manage-th-date-added').forEach(function(el) {
+                        if (t.inv_manage_th_date_added) el.textContent = t.inv_manage_th_date_added;
+                    });
+                    document.querySelectorAll('.inv-manage-th-added-by').forEach(function(el) {
+                        if (t.inv_manage_th_added_by) el.textContent = t.inv_manage_th_added_by;
+                    });
+                    document.querySelectorAll('.inv-manage-th-remove').forEach(function(el) {
+                        if (t.inv_manage_th_remove) el.textContent = t.inv_manage_th_remove;
+                    });
+                    document.querySelectorAll('.removeBtn').forEach(function(el) {
+                        if (t.inv_manage_remove_btn) el.textContent = t.inv_manage_remove_btn;
+                    });
+                });
+        });
+        </script>
     }
 
 @admin("Inventory - Formulary", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
@@ -27,15 +72,15 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title">Switch trip inventory</h2>
-                    <p class="admin-section__description">Choose another mission trip to review its formulary.</p>
+                    <h2 class="admin-section__title" id="inv_manage_switch_title">Switch trip inventory</h2>
+                    <p class="admin-section__description" id="inv_manage_switch_desc">Choose another mission trip to review its formulary.</p>
                 </div>
             </div>
             @helper.form(action = InventoryController.managePost()) {
                 <div class="admin-form admin-form--inline">
                     <div class="admin-form__row">
                         <div class="admin-form__field admin-form__field--compact">
-                            <label for="selectTripInventory">Mission trip</label>
+                            <label for="selectTripInventory" id="inv_manage_mission_trip_label">Mission trip</label>
                             <select id="selectTripInventory" name="selectedTrip">
                             @for(i <- 1 to viewModel.getMissionTripList.size) {
                                 @defining(viewModel.getMissionTripList.get(i - 1)) { trip =>
@@ -46,7 +91,7 @@
                         </div>
                         <button type="submit" class="admin-button admin-button--primary">
                             <span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>
-                            <span>View inventory</span>
+                            <span id="inv_manage_view_inventory_btn">View inventory</span>
                         </button>
                     </div>
                 </div>
@@ -56,13 +101,13 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title">Current formulary</h2>
-                    <p class="admin-section__description">Adjust quantities as medications are dispensed in pharmacy.</p>
+                    <h2 class="admin-section__title" id="inv_manage_formulary_title">Current formulary</h2>
+                    <p class="admin-section__description" id="inv_manage_formulary_desc">Adjust quantities as medications are dispensed in pharmacy.</p>
                 </div>
                 <div class="admin-section__actions">
                     <a class="admin-button admin-button--secondary" href="@InventoryController.exportGet(viewModel.getMissionTripItem.getId).url">
                         <span class="material-symbols-outlined" aria-hidden="true">download</span>
-                        <span>Export CSV</span>
+                        <span id="inv_manage_export_csv_btn">Export CSV</span>
                     </a>
                 </div>
             </div>
@@ -78,13 +123,13 @@
                 <table id="inventoryTable" class="admin-table display">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Medication</th>
-                            <th scope="col">Current quantity</th>
-                            <th scope="col">Initial quantity</th>
-                            <th scope="col">Date added</th>
-                            <th scope="col">Added by</th>
-                            <th scope="col">Remove</th>
+                            <th scope="col" class="inv-manage-th-num">#</th>
+                            <th scope="col" class="inv-manage-th-medication">Medication</th>
+                            <th scope="col" class="inv-manage-th-current-qty">Current quantity</th>
+                            <th scope="col" class="inv-manage-th-initial-qty">Initial quantity</th>
+                            <th scope="col" class="inv-manage-th-date-added">Date added</th>
+                            <th scope="col" class="inv-manage-th-added-by">Added by</th>
+                            <th scope="col" class="inv-manage-th-remove">Remove</th>
                         </tr>
                     </thead>
                     <tbody>

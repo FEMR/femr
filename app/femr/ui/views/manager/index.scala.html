@@ -29,8 +29,16 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div class="manager-section__heading">
-                    <h2 class="admin-section__title" id="manager_patients_overview">Overview of patients checked in today</h2>
-                    <p class="admin-section__description">Check-ins recorded on <span class="manager-date">@viewModelGet.getUserFriendlyDate</span>.</p>
+                    <h2 class="admin-section__title" id="manager_patients_overview">Patient check-in overview:</h2>
+@if(currentUser.getTripId != null) {
+                        <form class="manager-date-form" method="get" action="@ManagerController.indexGet(null)">
+                            <label class="manager-date-label" for="manager_date_input" id="manager_date_label">View date:</label>
+                            <input class="manager-date-input" type="date" id="manager_date_input" name="date"
+                                   value="@{Option(viewModelGet.getIsoDate).getOrElse("")}"
+                                   max="@{java.time.LocalDate.now().toString}" />
+                            <button class="admin-button admin-button--secondary manager-date-btn" type="submit" id="manager_date_submit">Go</button>
+                        </form>
+                    }
                 </div>
                 @if(currentUser.getTripId != null) {
                     @defining(Option(viewModelGet.getUserFriendlyTrip).map(_.trim).filter(_.nonEmpty).getOrElse("—")) { tripName =>
@@ -40,7 +48,11 @@
                         </div>
                     }
                     @if(viewModelGet.getSettings != null && viewModelGet.getSettings.isWhoReporting) {
-                        <a class="admin-button admin-button--primary" href="@ManagerController.dailyReportGet()">Open WHO Daily Report</a>
+                        @defining(Option(viewModelGet.getIsoDate).getOrElse("")) { isoDate =>
+                            <a class="admin-button admin-button--primary"
+                               href="@{if(isoDate.nonEmpty) ManagerController.dailyReportGet(isoDate) else ManagerController.dailyReportGet(null)}"
+                               id="manager_open_who_report">Open WHO Daily Report</a>
+                        }
                     }
                 }
             </div>
@@ -50,14 +62,14 @@
                     <table class="admin-table manager-table" id="managersTable">
                         <thead>
                             <tr>
-                                <th scope="col">Patient ID</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Patient Information</th>
-                                <th scope="col">Chief Complaint</th>
-                                <th scope="col">Triage Check-In</th>
-                                <th scope="col">Medical Check-In</th>
-                                <th scope="col">Pharmacy Check-In</th>
-                                <th scope="col">Total Time</th>
+                                <th scope="col" id="manager_th_patient_id">Patient ID</th>
+                                <th scope="col" id="manager_th_name">Name</th>
+                                <th scope="col" id="manager_th_patient_info">Patient Information</th>
+                                <th scope="col" id="manager_th_chief_complaint">Chief Complaint</th>
+                                <th scope="col" id="manager_th_triage_checkin">Triage Check-In</th>
+                                <th scope="col" id="manager_th_medical_checkin">Medical Check-In</th>
+                                <th scope="col" id="manager_th_pharmacy_checkin">Pharmacy Check-In</th>
+                                <th scope="col" id="manager_th_total_time">Total Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,19 +95,19 @@
                                         <div class="manager-table__patient-info">
                                             @if(patient != null && Option(patient.getSex).exists(_.trim.nonEmpty)) {
                                                 <div>
-                                                    <span class="manager-table__meta-label">Gender</span>
+                                                    <span class="manager-table__meta-label manager-meta-gender">Gender</span>
                                                     <span class="manager-table__meta-value">@patient.getSex</span>
                                                 </div>
                                             }
                                             @if(patient != null && patient.getAge() != null) {
                                                 <div>
-                                                    <span class="manager-table__meta-label">Age</span>
+                                                    <span class="manager-table__meta-label manager-meta-age">Age</span>
                                                     <span class="manager-table__meta-value">@patient.getAge</span>
                                                 </div>
                                             }
                                             @if(patient != null && Option(patient.getCity).exists(_.trim.nonEmpty)) {
                                                 <div>
-                                                    <span class="manager-table__meta-label">City</span>
+                                                    <span class="manager-table__meta-label manager-meta-city">City</span>
                                                     <span class="manager-table__meta-value">@patient.getCity</span>
                                                 </div>
                                             }
@@ -138,7 +150,7 @@
             } else {
                 <div class="admin-empty-state">
                     <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">flight</span>
-                    <h3 class="admin-empty-state__title">No active trip</h3>
+                    <h3 class="admin-empty-state__title" id="manager_no_active_trip">No active trip</h3>
                     <p class="admin-empty-state__description" id="manager_trip_message">
                         User is not currently assigned to a trip. To manage trips please have an Admin visit the
                         <a id="manager_trip_link" href="@TripController.manageGet()">Trip page</a>.

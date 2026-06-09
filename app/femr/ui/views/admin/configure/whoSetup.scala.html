@@ -6,70 +6,112 @@
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.ConfigureController
 
-@admin("WHO Report Setup", currentUser, assets = assets) {
+@additionalScripts = {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    const lang = "@{currentUser.getLanguageCode}" || 'en';
+                    const t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        const el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    function setPlaceholder(id, val) {
+                        const el = document.getElementById(id);
+                        if (el && val) el.placeholder = val;
+                    }
+                    setText('who_setup_title', t.who_setup_title);
+                    setText('who_setup_description', t.who_setup_description);
+                    setText('who_setup_save', t.who_setup_save);
+                    setText('who_team_information', t.who_team_information);
+                    setText('who_org_name_label', t.who_org_name);
+                    setText('who_team_type_label', t.who_team_type);
+                    setText('who_type1_mobile_span', t.who_type1_mobile);
+                    setText('who_type1_fixed_span', t.who_type1_fixed);
+                    setText('who_type2_span', t.who_type2);
+                    setText('who_type3_span', t.who_type3);
+                    setText('who_specialized_cell_span', t.who_specialized_cell);
+                    setText('who_contact_persons_label', t.who_contact_persons);
+                    setText('who_phone_number_label', t.who_phone_number);
+                    setText('who_email_label', t.who_email);
+                    setText('who_location_title', t.who_location);
+                    setText('who_state_label', t.who_state);
+                    setText('who_village_label', t.who_village);
+                    setText('who_facility_name_label', t.who_facility_name);
+                    setText('who_geo_tag_label', t.who_geo_tag);
+                    setPlaceholder('geoLatInput', t.who_latitude);
+                    setPlaceholder('geoLongInput', t.who_longitude);
+                });
+        });
+    </script>
+}
+
+@admin("WHO Report Setup", currentUser, scripts = additionalScripts, assets = assets) {
 
     <div class="admin-view">
         @helper.form(action = ConfigureController.whoSetupPost(tripId)) {
             <section class="admin-section">
                 <div class="admin-section__header">
                     <div>
-                        <h2 class="admin-section__title">WHO Report Configuration</h2>
-                        <p class="admin-section__description">
+                        <h2 class="admin-section__title" id="who_setup_title">WHO Report Configuration</h2>
+                        <p class="admin-section__description" id="who_setup_description">
                             These fields are shared across all daily reports. Fill them in once and they will be
                             pre-populated whenever the MDS Daily Report is opened. You can update them here at any time.
                         </p>
                     </div>
-                    <button type="submit" class="admin-button admin-button--primary">Save configuration</button>
+                    <button type="submit" class="admin-button admin-button--primary" id="who_setup_save">Save configuration</button>
                 </div>
 
                 <div class="admin-columns">
                     <div class="admin-card">
-                        <h3 class="admin-card__title">Team Information</h3>
+                        <h3 class="admin-card__title" id="who_team_information">Team Information</h3>
                         <div class="admin-card__body">
                             <div class="admin-form admin-form--stacked">
                                 <div class="admin-form__field">
-                                    <label for="orgName">Organization name</label>
+                                    <label for="orgName" id="who_org_name_label">Organization name</label>
                                     <input id="orgName" type="text" name="orgName" value="@{if(config != null && config.getOrgName != null) config.getOrgName else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label>Team type</label>
+                                    <label id="who_team_type_label">Team type</label>
                                     <div class="admin-checkbox-grid">
                                         <label class="admin-checkbox">
                                             <input type="checkbox" name="type1Mobile" value="true" @{if(config != null && config.isType1Mobile) "checked"} />
-                                            <span>Type 1 mobile</span>
+                                            <span id="who_type1_mobile_span">Type 1 mobile</span>
                                         </label>
                                         <label class="admin-checkbox">
                                             <input type="checkbox" name="type1Fixed" value="true" @{if(config != null && config.isType1Fixed) "checked"} />
-                                            <span>Type 1 fixed</span>
+                                            <span id="who_type1_fixed_span">Type 1 fixed</span>
                                         </label>
                                         <label class="admin-checkbox">
                                             <input type="checkbox" name="type2" value="true" @{if(config != null && config.isType2) "checked"} />
-                                            <span>Type 2</span>
+                                            <span id="who_type2_span">Type 2</span>
                                         </label>
                                         <label class="admin-checkbox">
                                             <input type="checkbox" name="type3" value="true" @{if(config != null && config.isType3) "checked"} />
-                                            <span>Type 3</span>
+                                            <span id="who_type3_span">Type 3</span>
                                         </label>
                                         <label class="admin-checkbox">
                                             <input type="checkbox" name="specializedCell" value="true" @{if(config != null && config.isSpecializedCell) "checked"} />
-                                            <span>Specialized cell</span>
+                                            <span id="who_specialized_cell_span">Specialized cell</span>
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label for="contactPersons">Contact person(s)</label>
+                                    <label for="contactPersons" id="who_contact_persons_label">Contact person(s)</label>
                                     <input id="contactPersons" type="text" name="contactPersons" value="@{if(config != null && config.getContactPersons != null) config.getContactPersons else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label for="phoneNo">Phone number</label>
+                                    <label for="phoneNo" id="who_phone_number_label">Phone number</label>
                                     <input id="phoneNo" type="text" name="phoneNo" value="@{if(config != null && config.getPhoneNo != null) config.getPhoneNo else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label for="email">Email</label>
+                                    <label for="email" id="who_email_label">Email</label>
                                     <input id="email" type="email" name="email" value="@{if(config != null && config.getEmail != null) config.getEmail else ""}" />
                                 </div>
                             </div>
@@ -77,32 +119,32 @@
                     </div>
 
                     <div class="admin-card">
-                        <h3 class="admin-card__title">Location</h3>
+                        <h3 class="admin-card__title" id="who_location_title">Location</h3>
                         <div class="admin-card__body">
                             <div class="admin-form admin-form--stacked">
                                 <div class="admin-form__field">
-                                    <label for="stateAdmin1">State etc.</label>
+                                    <label for="stateAdmin1" id="who_state_label">State etc.</label>
                                     <input id="stateAdmin1" type="text" name="stateAdmin1" value="@{if(config != null && config.getStateAdmin1 != null) config.getStateAdmin1 else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label for="villageAdmin3">Village etc.</label>
+                                    <label for="villageAdmin3" id="who_village_label">Village etc.</label>
                                     <input id="villageAdmin3" type="text" name="villageAdmin3" value="@{if(config != null && config.getVillageAdmin3 != null) config.getVillageAdmin3 else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label for="facilityName">Facility name</label>
+                                    <label for="facilityName" id="who_facility_name_label">Facility name</label>
                                     <input id="facilityName" type="text" name="facilityName" value="@{if(config != null && config.getFacilityName != null) config.getFacilityName else ""}" />
                                 </div>
 
                                 <div class="admin-form__field">
-                                    <label>Geo-tag</label>
+                                    <label id="who_geo_tag_label">Geo-tag</label>
                                     <div class="admin-form__row">
                                         <div class="admin-form__field admin-form__field--compact">
-                                            <input type="text" name="geoLat" value="@{if(config != null && config.getGeoLat != null) config.getGeoLat else ""}" placeholder="Latitude" />
+                                            <input id="geoLatInput" type="text" name="geoLat" value="@{if(config != null && config.getGeoLat != null) config.getGeoLat else ""}" placeholder="Latitude" />
                                         </div>
                                         <div class="admin-form__field admin-form__field--compact">
-                                            <input type="text" name="geoLong" value="@{if(config != null && config.getGeoLong != null) config.getGeoLong else ""}" placeholder="Longitude" />
+                                            <input id="geoLongInput" type="text" name="geoLong" value="@{if(config != null && config.getGeoLong != null) config.getGeoLong else ""}" placeholder="Longitude" />
                                         </div>
                                     </div>
                                 </div>

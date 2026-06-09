@@ -11,7 +11,7 @@ public class IndexViewModelGet {
     //store list of patient encounter itesm
     private List<PatientEncounterItem> encounterItem;
 
-    private String userFriendlyDate;
+    private String isoDate;
 
     private String userFriendlyTrip;
 
@@ -24,12 +24,12 @@ public class IndexViewModelGet {
         return encounterItem;
     }
 
-    public String getUserFriendlyDate() {
-        return userFriendlyDate;
+    public String getIsoDate() {
+        return isoDate;
     }
 
-    public void setUserFriendlyDate(String userFriendlyDate) {
-        this.userFriendlyDate = userFriendlyDate;
+    public void setIsoDate(String isoDate) {
+        this.isoDate = isoDate;
     }
 
     public String getUserFriendlyTrip() {

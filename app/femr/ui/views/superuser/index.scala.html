@@ -2,7 +2,25 @@
 
 @import femr.ui.views.html.layouts.admin
 
-@admin("SuperUser Panel", currentUser, assets = assets) {
-    <h3>Welcome, SuperUser. Choose an option to get started.</h3>
+@additionalScripts = {
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('@routes.Assets.versioned("json/languages.json")')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                var lang = "@{currentUser.getLanguageCode}" || 'en';
+                var t = data[lang] || data['en'];
+                function setText(id, val) {
+                    var el = document.getElementById(id);
+                    if (el && val) el.textContent = val;
+                }
+                setText('superuser_welcome', t.superuser_welcome);
+            });
+    });
+    </script>
+}
+
+@admin("SuperUser Panel", currentUser, scripts = additionalScripts, assets = assets) {
+    <h3 id="superuser_welcome">Welcome, SuperUser. Choose an option to get started.</h3>
 
 }

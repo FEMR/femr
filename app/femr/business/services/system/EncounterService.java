@@ -542,21 +542,21 @@ public class EncounterService implements IEncounterService {
     @Override
     public ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID)
     {
+        return retrievePatientEncountersForDate(tripID, DateTime.now());
+    }
+
+    public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncountersForDate(int tripID, DateTime date)
+    {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
-        //gets dates for today and tommorrow
-        DateTime today= DateTime.now();
-        today=today.withTimeAtStartOfDay();
-        DateTime tommorrow=today;
-        tommorrow=tommorrow.plusDays(1);
+        DateTime startOfDay = date.withTimeAtStartOfDay();
+        DateTime startOfNextDay = startOfDay.plusDays(1);
 
         try{
-            List<? extends IPatientEncounter> patient = patientEncounterRepository.retrievePatientEncounters(today, tommorrow, tripID);
+            List<? extends IPatientEncounter> patient = patientEncounterRepository.retrievePatientEncounters(startOfDay, startOfNextDay, tripID);
 
             for (IPatientEncounter patient1 : patient) {
-
                 patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));
-
             }
             response.setResponseObject(patientEncounterItems);
         }
@@ -564,8 +564,6 @@ public class EncounterService implements IEncounterService {
             response.addError("", ex.getMessage());
         }
         return response;
-
-
     }
 
     /**

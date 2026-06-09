@@ -159,6 +159,14 @@ public interface IEncounterService {
     ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID);
 
     /**
+     *Returns a list of PatientEncounters for a specific date
+     *@param tripID id of trip of current user, not null
+     *@param date the date to retrieve encounters for, not null
+     *@return List of PatientEncounterItems who were checked in on that date
+     */
+    ServiceResponse<List<PatientEncounterItem>> retrievePatientEncountersForDate(int tripID, org.joda.time.DateTime date);
+
+    /**
      * Deletes a problem that was submitted on the Medical page as part of a patient encounter
      *
      * @param encounterId id of the encounter, not null

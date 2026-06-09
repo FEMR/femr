@@ -10,20 +10,64 @@
         <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
     }
 
-@admin("Add Fields", currentUser, styles = additionalStyles, assets = assets) {
+    @additionalScripts = {
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('superuser_fields_current_header', t.superuser_fields_current_header);
+                    setText('superuser_fields_deleted_header', t.superuser_fields_deleted_header);
+                    setText('superuser_fields_add_edit_header', t.superuser_fields_add_edit_header);
+                    setText('superuser_fields_toggle_header', t.superuser_fields_toggle_header);
+                    setText('superuser_fields_toggle_hint', t.superuser_fields_toggle_hint);
+                    setText('superuser_fields_name_label', t.superuser_fields_name_label);
+                    setText('superuser_fields_type_label', t.superuser_fields_type_label);
+                    setText('superuser_fields_size_label', t.superuser_fields_size_label);
+                    setText('superuser_fields_order_label', t.superuser_fields_order_label);
+                    setText('superuser_fields_placeholder_label', t.superuser_fields_placeholder_label);
+                    setText('superuser_fields_toggle_name_label', t.superuser_fields_toggle_name_label);
+                    setText('superuser_fields_submit_btn', t.superuser_fields_submit_btn);
+                    document.querySelectorAll('.superuser-fields-th-label').forEach(function(el) {
+                        if (t.superuser_fields_th_label) el.textContent = t.superuser_fields_th_label;
+                    });
+                    document.querySelectorAll('.superuser-fields-th-type').forEach(function(el) {
+                        if (t.superuser_fields_th_type) el.textContent = t.superuser_fields_th_type;
+                    });
+                    document.querySelectorAll('.superuser-fields-th-size').forEach(function(el) {
+                        if (t.superuser_fields_th_size) el.textContent = t.superuser_fields_th_size;
+                    });
+                    document.querySelectorAll('.superuser-fields-th-order').forEach(function(el) {
+                        if (t.superuser_fields_th_order) el.textContent = t.superuser_fields_th_order;
+                    });
+                    document.querySelectorAll('.superuser-fields-th-placeholder').forEach(function(el) {
+                        if (t.superuser_fields_th_placeholder) el.textContent = t.superuser_fields_th_placeholder;
+                    });
+                });
+        });
+        </script>
+    }
+
+@admin("Add Fields", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
     <h1>Adding content to @viewModel.getName</h1>
     <div id="superUserWrap">
         <div class="halfPageTables">
 
-            <h3>Current Fields</h3>
+            <h3 id="superuser_fields_current_header">Current Fields</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Label</th>
-                        <th>Type</th>
-                        <th>Size</th>
-                        <th>Order</th>
-                        <th>Placeholder</th>
+                        <th class="superuser-fields-th-label">Label</th>
+                        <th class="superuser-fields-th-type">Type</th>
+                        <th class="superuser-fields-th-size">Size</th>
+                        <th class="superuser-fields-th-order">Order</th>
+                        <th class="superuser-fields-th-placeholder">Placeholder</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,13 +89,13 @@
             </table>
         </div>
         <div class="halfPageTables">
-            <h3>Deleted Fields</h3>
+            <h3 id="superuser_fields_deleted_header">Deleted Fields</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Field Label</th>
-                        <th>Field Type</th>
-                        <th>Field Size</th>
+                        <th class="superuser-fields-th-label">Field Label</th>
+                        <th class="superuser-fields-th-type">Field Type</th>
+                        <th class="superuser-fields-th-size">Field Size</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,11 +120,11 @@
     <div id="bottomFields">
     @helper.form(action = TabController.fieldsPost(viewModel.getName)) {
         <div class="halfPageForms">
-            <h4>Add/Edit Field</h4>
-            <label for="addName">Name:</label>
+            <h4 id="superuser_fields_add_edit_header">Add/Edit Field</h4>
+            <label for="addName" id="superuser_fields_name_label">Name:</label>
             <input type="text" class="fInput" name="addName" placeholder="Label"/>
             <br/>
-            <label for="addType">Type:</label>
+            <label for="addType" id="superuser_fields_type_label">Type:</label>
             @*<input type="text" class="fInput" name="addType" placeholder="Type"/>*@
             <select name="addType" class="fOption">
             @for(t <- 1 to viewModel.getCustomFieldTypes.size) {
@@ -89,7 +133,7 @@
             </select>
 
             <br/>
-            <label for="addSize">Size:</label>
+            <label for="addSize" id="superuser_fields_size_label">Size:</label>
             @*<input type="text" class="fInput" name="addSize" placeholder="Size"/>*@
             <select name="addSize" class="fOption">
             @for(s <- 1 to viewModel.getCustomFieldSizes.size) {
@@ -97,23 +141,23 @@
             }
             </select>
             <br/>
-            <label for="addOrder">Order:</label>
+            <label for="addOrder" id="superuser_fields_order_label">Order:</label>
             <input type="number" class="fInput" name="addOrder" placeholder="Order"/>
             <br/>
-            <label for="addPlaceholder">Placeholder:</label>
+            <label for="addPlaceholder" id="superuser_fields_placeholder_label">Placeholder:</label>
             <input type="text" class="fInput" name="addPlaceholder" placeholder="Placeholder"/>
         </div>
         <div class="halfPageForms">
-            <h4>Toggle Field</h4>
-            <p>Activate or Deactivate a field by name</p>
-            <label for="toggleName">Name</label>
+            <h4 id="superuser_fields_toggle_header">Toggle Field</h4>
+            <p id="superuser_fields_toggle_hint">Activate or Deactivate a field by name</p>
+            <label for="toggleName" id="superuser_fields_toggle_name_label">Name</label>
             <input type="text" class="fInput" name="toggleName"/>
             <br/>
 
         </div>
 
     </div>
-    <button type="submit" class="fButton" id="contentSubmit">Submit</button>
+    <button type="submit" class="fButton" id="superuser_fields_submit_btn">Submit</button>
 }
 
 }

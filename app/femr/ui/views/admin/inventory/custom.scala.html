@@ -12,6 +12,29 @@
 
     <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
     <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('@routes.Assets.versioned("json/languages.json")')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                var lang = "@{currentUser.getLanguageCode}" || 'en';
+                var t = data[lang] || data['en'];
+                function setText(id, val) {
+                    var el = document.getElementById(id);
+                    if (el && val) el.textContent = val;
+                }
+                setText('inv_custom_title', t.inv_custom_title);
+                setText('inv_custom_desc', t.inv_custom_desc);
+                setText('inv_custom_brand_label', t.inv_custom_brand_label);
+                setText('inv_custom_form_label', t.inv_custom_form_label);
+                setText('inv_custom_quantity_label', t.inv_custom_quantity_label);
+                setText('inv_custom_generic_label', t.inv_custom_generic_label);
+                setText('inv_custom_strength_label', t.inv_custom_strength_label);
+                setText('inv_custom_unit_label', t.inv_custom_unit_label);
+                setText('inv_custom_submit_btn', t.inv_custom_submit_btn);
+            });
+    });
+    </script>
 }
 
 @formFields() = {
@@ -22,12 +45,12 @@
 
     <div class="admin-form__row">
         <div class="admin-form__field fieldMedication">
-            <label for="medicationName">Brand</label>
+            <label for="medicationName" id="inv_custom_brand_label">Brand</label>
             <input type="text" class="fInput" id="medicationName" name="medicationName" placeholder="" />
         </div>
 
         <div class="admin-form__field fieldMedication">
-            <label for="medicationForm">Form</label>
+            <label for="medicationForm" id="inv_custom_form_label">Form</label>
             <select name="medicationForm" class="fOption">
                 @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
                     @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
@@ -38,7 +61,7 @@
         </div>
 
         <div class="admin-form__field fieldMedication">
-            <label for="medicationQuantity">Quantity</label>
+            <label for="medicationQuantity" id="inv_custom_quantity_label">Quantity</label>
             <input type="number" class="fInput text" name="medicationQuantity" placeholder="" />
         </div>
     </div>
@@ -47,17 +70,17 @@
         <div class="ingredientFields first">
             <div class="admin-form__row">
                 <div class="admin-form__field fieldMedication">
-                    <label for="medicationIngredient">Generic</label>
+                    <label for="medicationIngredient" id="inv_custom_generic_label">Generic</label>
                     <input type="text" name="medicationIngredient[]" class="fInput medicationIngredient" placeholder="" />
                 </div>
 
                 <div class="admin-form__field fieldMedication">
-                    <label for="medicationStrength">Strength</label>
+                    <label for="medicationStrength" id="inv_custom_strength_label">Strength</label>
                     <input type="number" name="medicationStrength[]" class="fInput medicationsStrength" placeholder="" />
                 </div>
 
                 <div class="admin-form__field fieldMedication">
-                    <label for="medicationUnit">Unit</label>
+                    <label for="medicationUnit" id="inv_custom_unit_label">Unit</label>
                     <select name="medicationUnit[]" class="fOption">
                         @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
                             @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
@@ -87,8 +110,8 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title">Add custom medication</h2>
-                    <p class="admin-section__description">If a medication is missing from the concept dictionary, add it to this formulary.</p>
+                    <h2 class="admin-section__title" id="inv_custom_title">Add custom medication</h2>
+                    <p class="admin-section__description" id="inv_custom_desc">If a medication is missing from the concept dictionary, add it to this formulary.</p>
                 </div>
             </div>
 
@@ -103,7 +126,7 @@
             }
 
             <div class="admin-section__actions">
-                <button class="admin-button admin-button--primary" id="submitMedicationButton" type="submit">Submit</button>
+                <button class="admin-button admin-button--primary" id="submitMedicationButton" type="submit"><span id="inv_custom_submit_btn">Submit</span></button>
             </div>
         </section>
     }

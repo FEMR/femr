@@ -14,24 +14,57 @@
         }
     }
 
+    @additionalScripts = {
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('updates_system_readiness_title', t.updates_system_readiness_title);
+                    setText('updates_system_readiness_desc', t.updates_system_readiness_desc);
+                    setText('updates_refresh_btn', t.updates_refresh_btn);
+                    setText('updates_network_status_title', t.updates_network_status_title);
+                    setText('updates_network_status_desc', t.updates_network_status_desc);
+                    setText('updates_kit_status_title', t.updates_kit_status_title);
+                    setText('updates_kit_status_desc', t.updates_kit_status_desc);
+                    setText('updates_lang_updates_title', t.updates_lang_updates_title);
+                    setText('updates_lang_updates_desc', t.updates_lang_updates_desc);
+                    setText('updates_maintenance_title', t.updates_maintenance_title);
+                    setText('updates_maintenance_desc', t.updates_maintenance_desc);
+                    setText('updates_database_title', t.updates_database_title);
+                    setText('updates_database_desc', t.updates_database_desc);
+                    setText('updates_backup_btn', t.updates_backup_btn);
+                    setText('updates_kit_updates_title', t.updates_kit_updates_title);
+                    setText('updates_kit_updates_desc', t.updates_kit_updates_desc);
+                });
+        });
+        </script>
+    }
+
 @downloadSpeed = @{
     val downloadMetric = Option(viewModel.getNetworkStatus.get("Download")).getOrElse("0")
     val numericPortion = downloadMetric.split(" ").headOption.getOrElse("0")
     Try(numericPortion.toFloat.toInt).getOrElse(0)
 }
 
-@admin("Updates", currentUser, assets = assets, message = additionalMessages) {
+@admin("Updates", currentUser, assets = assets, message = additionalMessages, scripts = additionalScripts) {
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">System Readiness</h2>
-                <p class="admin-section__description">Monitor connectivity and kit health to keep femr updates running smoothly.</p>
+                <h2 class="admin-section__title" id="updates_system_readiness_title">System Readiness</h2>
+                <p class="admin-section__description" id="updates_system_readiness_desc">Monitor connectivity and kit health to keep femr updates running smoothly.</p>
             </div>
             <div class="admin-section__actions">
                 @helper.form(action = UpdatesController.refreshInternetStatus(), 'method -> "GET", 'class -> "admin-inline-form") {
                     <button type="submit" class="admin-button admin-button--ghost">
                         <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
-                        <span>Refresh status</span>
+                        <span id="updates_refresh_btn">Refresh status</span>
                     </button>
                 }
             </div>
@@ -50,8 +83,8 @@
                 <article class="admin-card admin-card--status">
                     <div class="admin-card__header">
                         <div>
-                            <h3 class="admin-card__title">Network Status</h3>
-                            <p class="admin-card__description">Current internet performance reported from the clinic kit.</p>
+                            <h3 class="admin-card__title" id="updates_network_status_title">Network Status</h3>
+                            <p class="admin-card__description" id="updates_network_status_desc">Current internet performance reported from the clinic kit.</p>
                         </div>
                     </div>
 
@@ -103,8 +136,8 @@
             <article class="admin-card">
                 <div class="admin-card__header">
                     <div>
-                        <h3 class="admin-card__title">fEMR Kit Status</h3>
-                        <p class="admin-card__description">Hardware and service checks reported from field equipment.</p>
+                        <h3 class="admin-card__title" id="updates_kit_status_title">fEMR Kit Status</h3>
+                        <p class="admin-card__description" id="updates_kit_status_desc">Hardware and service checks reported from field equipment.</p>
                     </div>
                 </div>
 
@@ -152,8 +185,8 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Language Updates</h2>
-                <p class="admin-section__description">Choose which languages should receive translation package updates and review queued deployments.</p>
+                <h2 class="admin-section__title" id="updates_lang_updates_title">Language Updates</h2>
+                <p class="admin-section__description" id="updates_lang_updates_desc">Choose which languages should receive translation package updates and review queued deployments.</p>
             </div>
             <div class="admin-section__actions admin-section__actions--stacked">
                 <button type="button" class="admin-button admin-button--ghost" data-updates-action="init-languages">
@@ -278,8 +311,8 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Maintenance</h2>
-                <p class="admin-section__description">Back up the database and apply kit updates when they become available.</p>
+                <h2 class="admin-section__title" id="updates_maintenance_title">Maintenance</h2>
+                <p class="admin-section__description" id="updates_maintenance_desc">Back up the database and apply kit updates when they become available.</p>
             </div>
         </div>
 
@@ -287,8 +320,8 @@
             <article class="admin-card">
                 <div class="admin-card__header">
                     <div>
-                        <h3 class="admin-card__title">Database Status</h3>
-                        <p class="admin-card__description">Review the latest database backup details and trigger a new backup.</p>
+                        <h3 class="admin-card__title" id="updates_database_title">Database Status</h3>
+                        <p class="admin-card__description" id="updates_database_desc">Review the latest database backup details and trigger a new backup.</p>
                     </div>
                 </div>
 
@@ -308,7 +341,7 @@
                 @helper.form(action = UpdatesController.databasePost()) {
                     <button type="submit" class="admin-button admin-button--ghost">
                         <span class="material-symbols-outlined" aria-hidden="true">backup</span>
-                        <span>Back up now</span>
+                        <span id="updates_backup_btn">Back up now</span>
                     </button>
                 }
             </article>
@@ -316,8 +349,8 @@
             <article class="admin-card">
                 <div class="admin-card__header">
                     <div>
-                        <h3 class="admin-card__title">Kit Updates</h3>
-                        <p class="admin-card__description">Keep field kits up to date with the latest software releases.</p>
+                        <h3 class="admin-card__title" id="updates_kit_updates_title">Kit Updates</h3>
+                        <p class="admin-card__description" id="updates_kit_updates_desc">Keep field kits up to date with the latest software releases.</p>
                     </div>
                 </div>
 

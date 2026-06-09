@@ -15,6 +15,52 @@
     }
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('admin_create_user_title', t.admin_create_user_title);
+                    setText('admin_create_user_desc', t.admin_create_user_desc);
+                    setText('admin_create_back_to_users', t.admin_create_back_to_users);
+                    setText('admin_create_form_error', t.admin_create_form_error);
+                    setText('admin_create_email_label', t.admin_create_email_label);
+                    setText('admin_create_password_label', t.admin_create_password_label);
+                    setText('admin_create_password_hint', t.admin_create_password_hint);
+                    setText('admin_create_verify_password_label', t.admin_create_verify_password_label);
+                    setText('admin_create_first_name_label', t.admin_create_first_name_label);
+                    setText('admin_create_last_name_label', t.admin_create_last_name_label);
+                    setText('admin_create_about_label', t.admin_create_about_label);
+                    setText('admin_create_roles_label', t.admin_create_roles_label);
+                    setText('admin_create_trip_history_label', t.admin_create_trip_history_label);
+                    setText('admin_create_trip_history_hint', t.admin_create_trip_history_hint);
+                    setText('admin_create_add_to_trip_label', t.admin_create_add_to_trip_label);
+                    setText('admin_create_add_to_trip_btn', t.admin_create_add_to_trip_btn);
+                    setText('admin_create_no_trips_title', t.admin_create_no_trips_title);
+                    setText('admin_create_no_trips_desc', t.admin_create_no_trips_desc);
+                    setText('admin_create_submit_btn', t.admin_create_submit_btn);
+                    setText('admin_create_cancel_btn', t.admin_create_cancel_btn);
+                    document.querySelectorAll('.admin-create-th-organization').forEach(function(el) {
+                        if (t.admin_create_th_organization) el.textContent = t.admin_create_th_organization;
+                    });
+                    document.querySelectorAll('.admin-create-th-country').forEach(function(el) {
+                        if (t.admin_create_th_country) el.textContent = t.admin_create_th_country;
+                    });
+                    document.querySelectorAll('.admin-create-th-date').forEach(function(el) {
+                        if (t.admin_create_th_date) el.textContent = t.admin_create_th_date;
+                    });
+                    document.querySelectorAll('.admin-create-th-action').forEach(function(el) {
+                        if (t.admin_create_th_action) el.textContent = t.admin_create_th_action;
+                    });
+                });
+        });
+        </script>
     }
     @additionalMessages = {
     @for(message <- messages) {
@@ -34,13 +80,13 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Create User</h2>
-                <p class="admin-section__description">Set up a new teammate with access, credentials, and roles.</p>
+                <h2 class="admin-section__title" id="admin_create_user_title">Create User</h2>
+                <p class="admin-section__description" id="admin_create_user_desc">Set up a new teammate with access, credentials, and roles.</p>
             </div>
             <div class="admin-section__actions">
                 <a href="@UsersController.manageGet()" class="admin-button">
                     <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-                    <span>Back to users</span>
+                    <span id="admin_create_back_to_users">Back to users</span>
                 </a>
             </div>
         </div>
@@ -48,13 +94,13 @@
         @helper.form(action = UsersController.createPost(), 'name -> "createForm") {
             <div class="admin-form__alert" id="createUserFormSummary" role="alert" @if(!form.hasErrors) { style="display:none;" }>
                 @if(form.hasErrors) {
-                    Please fix the highlighted fields and try again.
+                    <span id="admin_create_form_error">Please fix the highlighted fields and try again.</span>
                 }
             </div>
 
             <div class="admin-form admin-form--stacked">
                 <div class="admin-form__field @if(!form("email").errors.isEmpty) {admin-form__field--invalid}">
-                    <label for="email">Email address <span class="admin-required" aria-hidden="true">*</span></label>
+                    <label for="email"><span id="admin_create_email_label">Email address</span> <span class="admin-required" aria-hidden="true">*</span></label>
                     @defining(form("email").getValue.orElse("")) { value =>
                         <input id="email" name="email" type="email" value="@value" placeholder="name@@example.com" />
                     }
@@ -67,9 +113,9 @@
 
                 <div class="admin-form__row">
                     <div class="admin-form__field @if(!form("password").errors.isEmpty) {admin-form__field--invalid}">
-                        <label for="password">Password <span class="admin-required" aria-hidden="true">*</span></label>
+                        <label for="password"><span id="admin_create_password_label">Password</span> <span class="admin-required" aria-hidden="true">*</span></label>
                         <input id="password" name="password" type="password" placeholder="Set a secure password" />
-                        <p class="admin-form__hint">Use at least 8 characters with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.</p>
+                        <p class="admin-form__hint" id="admin_create_password_hint">Use at least 8 characters with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.</p>
                         <span class="errors">
                             @if(!form("password").errors.isEmpty) {
                                 @form("password").errors.get(0).message
@@ -77,7 +123,7 @@
                         </span>
                     </div>
                     <div class="admin-form__field @if(!form("passwordVerify").errors.isEmpty) {admin-form__field--invalid}">
-                        <label for="passwordVerify">Verify password</label>
+                        <label for="passwordVerify" id="admin_create_verify_password_label">Verify password</label>
                         <input id="passwordVerify" name="passwordVerify" type="password" placeholder="Re-enter password" />
                         <span class="errors">
                             @if(!form("passwordVerify").errors.isEmpty) {
@@ -89,7 +135,7 @@
 
                 <div class="admin-form__row">
                     <div class="admin-form__field @if(!form("firstName").errors.isEmpty) {admin-form__field--invalid}">
-                        <label for="firstName">First name <span class="admin-required" aria-hidden="true">*</span></label>
+                        <label for="firstName"><span id="admin_create_first_name_label">First name</span> <span class="admin-required" aria-hidden="true">*</span></label>
                         @defining(form("firstName").getValue.orElse("")) { value =>
                             <input id="firstName" name="firstName" type="text" value="@value" placeholder="First name" />
                         }
@@ -100,7 +146,7 @@
                         </span>
                     </div>
                     <div class="admin-form__field">
-                        <label for="lastName">Last name</label>
+                        <label for="lastName" id="admin_create_last_name_label">Last name</label>
                         @defining(form("lastName").getValue.orElse("")) { value =>
                             <input id="lastName" name="lastName" type="text" value="@value" placeholder="Last name" />
                         }
@@ -109,7 +155,7 @@
                 </div>
 
                 <div class="admin-form__field">
-                    <label for="notes">About user</label>
+                    <label for="notes" id="admin_create_about_label">About user</label>
                     @defining(form("notes").getValue.orElse("")) { value =>
                         <textarea id="notes" name="notes" rows="3" placeholder="Add a short description">@value</textarea>
                     }
@@ -119,7 +165,7 @@
                 <div class="admin-form__field">
                     <div id="roleWrap" class="admin-form__fieldset @if(!form("roles").errors.isEmpty) {admin-form__field--invalid}">
                         <div class="admin-form__legend">
-                            <span>Roles</span>
+                            <span id="admin_create_roles_label">Roles</span>
                             <span class="admin-required" aria-hidden="true">*</span>
                         </div>
                         <span class="errors">
@@ -139,13 +185,13 @@
                 </div>
 
                 <div class="admin-form__field admin-form__fieldset">
-                    <div class="admin-form__legend">Trip history</div>
-                    <p class="admin-form__hint">Optionally assign trips now. You can remove any before creating the user.</p>
+                    <div class="admin-form__legend" id="admin_create_trip_history_label">Trip history</div>
+                    <p class="admin-form__hint" id="admin_create_trip_history_hint">Optionally assign trips now. You can remove any before creating the user.</p>
 
                     <div class="admin-form admin-form--inline">
                         <div class="admin-form__row">
                             <div class="admin-form__field admin-form__field--compact">
-                                <label for="createTripSelect">Add to trip</label>
+                                <label for="createTripSelect" id="admin_create_add_to_trip_label">Add to trip</label>
                                 <select id="createTripSelect" name="createTripSelect">
                                     @for(trip <- availableTripList) {
                                         @defining(Option(trip.getFriendlyTripTitle).getOrElse(
@@ -165,7 +211,7 @@
                             </div>
                             <button type="button" id="createAddTripBtn" class="admin-button admin-button--primary">
                                 <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                                <span>Add to trip</span>
+                                <span id="admin_create_add_to_trip_btn">Add to trip</span>
                             </button>
                         </div>
                     </div>
@@ -174,10 +220,10 @@
                         <table class="admin-table" id="createUserTripTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Organization</th>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col" class="admin-create-th-organization">Organization</th>
+                                    <th scope="col" class="admin-create-th-country">Country</th>
+                                    <th scope="col" class="admin-create-th-date">Date</th>
+                                    <th scope="col" class="admin-create-th-action">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="createTripTableBody">
@@ -198,15 +244,15 @@
 
                     <div class="admin-empty-state" id="createTripEmptyState" @if(selectedTripList.nonEmpty) { style="display:none;" }>
                         <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">flight</span>
-                        <h3 class="admin-empty-state__title">No trips selected</h3>
-                        <p class="admin-empty-state__description">Add trips above to assign access when this user is created.</p>
+                        <h3 class="admin-empty-state__title" id="admin_create_no_trips_title">No trips selected</h3>
+                        <p class="admin-empty-state__description" id="admin_create_no_trips_desc">Add trips above to assign access when this user is created.</p>
                     </div>
                 </div>
             </div>
 
             <div class="admin-section__actions">
-                <button class="admin-button admin-button--primary" id="addUserSubmitBtn" type="submit">Create user</button>
-                <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()">Cancel</a>
+                <button class="admin-button admin-button--primary" id="addUserSubmitBtn" type="submit"><span id="admin_create_submit_btn">Create user</span></button>
+                <a class="admin-button admin-button--ghost" href="@UsersController.manageGet()" id="admin_create_cancel_btn">Cancel</a>
             </div>
         }
     </section>

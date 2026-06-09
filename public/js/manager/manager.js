@@ -27,6 +27,27 @@
         updateChildTextContent('manager_trip_message', data[languageCode].manager_trip_message);
         updateTextContent('manager_trip_link', data[languageCode].manager_trip_link);
         updateTextContent('manager_patients_overview', data[languageCode].manager_patients_overview);
+        updateTextContent('manager_date_label', data[languageCode].manager_date_label);
+        updateTextContent('manager_date_submit', data[languageCode].manager_date_submit);
+        updateTextContent('manager_open_who_report', data[languageCode].manager_open_who_report);
+        updateTextContent('manager_th_patient_id', data[languageCode].manager_th_patient_id);
+        updateTextContent('manager_th_name', data[languageCode].manager_th_name);
+        updateTextContent('manager_th_patient_info', data[languageCode].manager_th_patient_info);
+        updateTextContent('manager_th_chief_complaint', data[languageCode].manager_th_chief_complaint);
+        updateTextContent('manager_th_triage_checkin', data[languageCode].manager_th_triage_checkin);
+        updateTextContent('manager_th_medical_checkin', data[languageCode].manager_th_medical_checkin);
+        updateTextContent('manager_th_pharmacy_checkin', data[languageCode].manager_th_pharmacy_checkin);
+        updateTextContent('manager_th_total_time', data[languageCode].manager_th_total_time);
+        updateTextContent('manager_no_active_trip', data[languageCode].manager_no_active_trip);
+        document.querySelectorAll('.manager-meta-gender').forEach(function(el) {
+            if (data[languageCode].manager_th_gender) el.textContent = data[languageCode].manager_th_gender;
+        });
+        document.querySelectorAll('.manager-meta-age').forEach(function(el) {
+            if (data[languageCode].manager_th_age) el.textContent = data[languageCode].manager_th_age;
+        });
+        document.querySelectorAll('.manager-meta-city').forEach(function(el) {
+            if (data[languageCode].manager_th_city) el.textContent = data[languageCode].manager_th_city;
+        });
     }
 
     function hydrateLanguage() {

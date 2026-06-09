@@ -15,6 +15,55 @@
         <script type = "text/javascript" src="@assets.path("js/pharmacy/pharmacyClientValidation.js")"></script>
         <script type = "text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type = "text/javascript"   src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('patient_diagnoses', t.patient_diagnoses);
+                    setText('pharmacy_review', t.pharmacy_review);
+                    setText('pharmacy_notes', t.pharmacy_notes);
+                    setText('pharmacy_medications', t.pharmacy_medications);
+                    setText('pharmacy_counseled_disclaimer', t.pharmacy_counseled_disclaimer);
+                    setText('pharmacy_submit', t.pharmacy_submit);
+                    setText('pharmacy_patient_history', t.pharmacy_patient_history);
+                    setText('pharmacy_view_in_medical', t.pharmacy_view_in_medical);
+                    document.querySelectorAll('.pharmacy-note-col').forEach(function(el) {
+                        if (t.pharmacy_note_col) el.textContent = t.pharmacy_note_col;
+                    });
+                    document.querySelectorAll('.pharmacy-prescriber-col').forEach(function(el) {
+                        if (t.pharmacy_prescriber_col) el.textContent = t.pharmacy_prescriber_col;
+                    });
+                    document.querySelectorAll('.replaceBtn').forEach(function(el) {
+                        if (t.pharmacy_replace_btn) el.textContent = t.pharmacy_replace_btn;
+                    });
+                    document.querySelectorAll('.pharm-prescriber-label').forEach(function(el) {
+                        if (t.pharmacy_prescriber_label) el.textContent = t.pharmacy_prescriber_label;
+                    });
+                    document.querySelectorAll('.pharm-current-qty-label').forEach(function(el) {
+                        if (t.pharmacy_current_qty_label) el.textContent = t.pharmacy_current_qty_label;
+                    });
+                    document.querySelectorAll('.pharm-prescription-label').forEach(function(el) {
+                        if (t.pharmacy_prescription_label) el.textContent = t.pharmacy_prescription_label;
+                    });
+                    document.querySelectorAll('.pharm-administration-label').forEach(function(el) {
+                        if (t.pharmacy_administration_label) el.textContent = t.pharmacy_administration_label;
+                    });
+                    document.querySelectorAll('.pharm-days-label').forEach(function(el) {
+                        if (t.pharmacy_days_label) el.textContent = t.pharmacy_days_label;
+                    });
+                    document.querySelectorAll('.pharm-amount-label').forEach(function(el) {
+                        if (t.pharmacy_amount_label) el.textContent = t.pharmacy_amount_label;
+                    });
+                });
+        });
+        </script>
     }
     @additionalStyles = {
 
@@ -32,7 +81,7 @@
                 <div class="femr-pharmacy__layout">
                     <div id="diagnosisWrap" class="femr-pharmacy__card">
                         <div class="femr-pharmacy__card-header">
-                            <h4 class="femr-pharmacy__card-title">Patient Diagnoses</h4>
+                            <h4 class="femr-pharmacy__card-title" id="patient_diagnoses">Patient Diagnoses</h4>
                         </div>
                         <div class="femr-pharmacy__card-body">
                             <ol class="problems femr-pharmacy__diagnoses">
@@ -50,13 +99,13 @@
 
                     <div id="medicationWrap" class="femr-pharmacy__card">
                         <div class="femr-pharmacy__card-header">
-                            <h4 class="femr-pharmacy__card-title">Pharmacy Review</h4>
+                            <h4 class="femr-pharmacy__card-title" id="pharmacy_review">Pharmacy Review</h4>
                         </div>
                         <div class="femr-pharmacy__card-body">
                             <div class="femr-pharmacy__panel">
-                                <h4 class="femr-pharmacy__section-title">Pharmacy Notes</h4>
+                                <h4 class="femr-pharmacy__section-title" id="pharmacy_notes">Pharmacy Notes</h4>
                                 <table class="noteTable femr-pharmacy__notes-table">
-                                <tr class="noteRow"><th width="70%">Note</th><th width="30%">Prescriber</th></tr>
+                                <tr class="noteRow"><th class="pharmacy-note-col" width="70%">Note</th><th class="pharmacy-prescriber-col" width="30%">Prescriber</th></tr>
                                 @if(viewModel.getNotes != null) {
                                     @for(y <- 1 to viewModel.getNotes.size) {
                                         @if(viewModel.getNotes.get(y - 1) != null) {
@@ -67,7 +116,7 @@
                                 </table>
                             </div>
                             <div class="femr-pharmacy__panel">
-                                <h4 class="femr-pharmacy__section-title">Medications</h4>
+                                <h4 class="femr-pharmacy__section-title" id="pharmacy_medications">Medications</h4>
                                 <ol id="medicationList" class="femr-pharmacy__medications">
                             @for(x <- 1 to viewModel.getPrescriptions.size) {
                                 @defining(viewModel.getPrescriptions.get(x - 1)) { prescription =>
@@ -79,16 +128,16 @@
                                         </div>
                                         <div class="femr-pharmacy__meta">
                                             <span id="prescriber">
-                                                Prescriber: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
+                                                <span class="pharm-prescriber-label">Prescriber: </span>@prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
                                         </div>
-                                        <div class="femr-pharmacy__meta medicationRemaining">Current Quantity: @prescription.getMedicationItem.getQuantityCurrent</div>
+                                        <div class="femr-pharmacy__meta medicationRemaining"><span class="pharm-current-qty-label">Current Quantity: </span>@prescription.getMedicationItem.getQuantityCurrent</div>
                                             <div class="lowMedication femr-pharmacy__low-stock">@prescription.getFormularyMessage</div>
                                         <div class="replacement hidden femr-pharmacy__replacement">
                                             <div class="prescription-grid prescriptionHeader">
-                                                <label class="prescription-field prescriptionName" for="prescription">Prescription</label>
-                                                <label class="prescription-field prescriptionAdministration">Administration</label>
-                                                <label class="prescription-field prescriptionAdministrationDays">Days</label>
-                                                <label class="prescription-field prescriptionAmount">Amount</label>
+                                                <label class="prescription-field prescriptionName pharm-prescription-label" for="prescription">Prescription</label>
+                                                <label class="prescription-field prescriptionAdministration pharm-administration-label">Administration</label>
+                                                <label class="prescription-field prescriptionAdministrationDays pharm-days-label">Days</label>
+                                                <label class="prescription-field prescriptionAmount pharm-amount-label">Amount</label>
                                             </div>
 
                                             @prescriptionRow( viewModel.getMedicationAdministrationItems, x-1, null )
@@ -105,17 +154,17 @@
                                 <input type="checkbox" name="disclaimer" value="1" required/>
                                 <input type="hidden" name="disclaimer" value="0" />
                                 <label for="disclaimer">
-                                    The patient was counseled on the risks and side effects of the medications dispensed.</label>
+                                    <span id="pharmacy_counseled_disclaimer">The patient was counseled on the risks and side effects of the medications dispensed.</span></label>
                                 <!--ISSUE#138 https://teamfemr.atlassian.net/browse/FEMR-138
                                  Contributed by Mohammad Alahmadi during the CEN5035 course at FSU -->
                             </div>
                             <div id="submitWrap" class="femr-pharmacy__actions">
                                 <button type="submit" id="pharmacySubmitBtn" class="femr-btn femr-btn--primary">
-                                    Submit</button>
+                                    <span id="pharmacy_submit">Submit</span></button>
 
                                 <a href="@{HistoryController.indexPatientGet(
-                                    Integer.toString(viewModel.getPatient.getId)).url}" class="femr-btn femr-btn--secondary" target="_blank">Patient History</a>
-                                <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="femr-btn femr-btn--secondary" target="_blank">View in Medical</a>
+                                    Integer.toString(viewModel.getPatient.getId)).url}" class="femr-btn femr-btn--secondary" target="_blank" id="pharmacy_patient_history">Patient History</a>
+                                <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="femr-btn femr-btn--secondary" target="_blank" id="pharmacy_view_in_medical">View in Medical</a>
                             </div>
 
                         </div>

@@ -907,47 +907,94 @@ $(document).on('click', '.deleteProblem', function (event) {
 
 // WHO Searchable Dropdown
 var whoDropdown = {
-    healthEventItemsHTML:
-        '<li class="who-group-header">Trauma</li>' +
-        '<li class="who-item" data-value="Major head/spine injury" data-id="1">Major head/spine injury</li>' +
-        '<li class="who-item" data-value="Major torso injury" data-id="2">Major torso injury</li>' +
-        '<li class="who-item" data-value="Major extremity injury" data-id="3">Major extremity injury</li>' +
-        '<li class="who-item" data-value="Moderate injury" data-id="4">Moderate injury</li>' +
-        '<li class="who-item" data-value="Minor injury" data-id="5">Minor injury</li>' +
-        '<li class="who-group-header">Infectious disease</li>' +
-        '<li class="who-item" data-value="Acute respiratory infection" data-id="6">Acute respiratory infection</li>' +
-        '<li class="who-item" data-value="Acute watery diarrhea" data-id="7">Acute watery diarrhea</li>' +
-        '<li class="who-item" data-value="Acute bloody diarrhea" data-id="8">Acute bloody diarrhea</li>' +
-        '<li class="who-item" data-value="Acute jaundice syndrome" data-id="9">Acute jaundice syndrome</li>' +
-        '<li class="who-item" data-value="Suspected measles" data-id="10">Suspected measles</li>' +
-        '<li class="who-item" data-value="Suspected meningitis" data-id="11">Suspected meningitis</li>' +
-        '<li class="who-item" data-value="Suspected tetanus" data-id="12">Suspected tetanus</li>' +
-        '<li class="who-item" data-value="Acute flaccid paralysis" data-id="13">Acute flaccid paralysis</li>' +
-        '<li class="who-item" data-value="Acute haemorrhagic fever" data-id="14">Acute haemorrhagic fever</li>' +
-        '<li class="who-item" data-value="Fever of unknown origin" data-id="15">Fever of unknown origin</li>' +
-        '<li class="who-group-header">Emergency</li>' +
-        '<li class="who-item" data-value="Surgical emergency (Non-trauma)" data-id="16">Surgical emergency (Non-trauma)</li>' +
-        '<li class="who-item" data-value="Medical emergency (Non-infectious)" data-id="17">Medical emergency (Non-infectious)</li>' +
-        '<li class="who-group-header">Other key diseases</li>' +
-        '<li class="who-item" data-value="Skin disease" data-id="18">Skin disease</li>' +
-        '<li class="who-item" data-value="Acute mental health problem" data-id="19">Acute mental health problem</li>' +
-        '<li class="who-item" data-value="Obstetric complications" data-id="20">Obstetric complications</li>' +
-        '<li class="who-item" data-value="Severe Acute Malnutrition (SAM)" data-id="21">Severe Acute Malnutrition (SAM)</li>' +
-        '<li class="who-item" data-value="Other diagnosis, not specified above" data-id="22">Other diagnosis, not specified above</li>',
+    // Maps data-value (English, stored in DB) to translation key
+    healthEventItems: [
+        { type: 'header', key: 'daily_report_trauma', fallback: 'Trauma' },
+        { type: 'item', value: 'Major head/spine injury', id: 1, key: 'who_event_major_head_spine' },
+        { type: 'item', value: 'Major torso injury', id: 2, key: 'who_event_major_torso' },
+        { type: 'item', value: 'Major extremity injury', id: 3, key: 'who_event_major_extremity' },
+        { type: 'item', value: 'Moderate injury', id: 4, key: 'who_event_moderate_injury' },
+        { type: 'item', value: 'Minor injury', id: 5, key: 'who_event_minor_injury' },
+        { type: 'header', key: 'daily_report_infectious_disease', fallback: 'Infectious disease' },
+        { type: 'item', value: 'Acute respiratory infection', id: 6, key: 'who_event_acute_respiratory' },
+        { type: 'item', value: 'Acute watery diarrhea', id: 7, key: 'who_event_watery_diarrhea' },
+        { type: 'item', value: 'Acute bloody diarrhea', id: 8, key: 'who_event_bloody_diarrhea' },
+        { type: 'item', value: 'Acute jaundice syndrome', id: 9, key: 'who_event_jaundice' },
+        { type: 'item', value: 'Suspected measles', id: 10, key: 'who_event_measles' },
+        { type: 'item', value: 'Suspected meningitis', id: 11, key: 'who_event_meningitis' },
+        { type: 'item', value: 'Suspected tetanus', id: 12, key: 'who_event_tetanus' },
+        { type: 'item', value: 'Acute flaccid paralysis', id: 13, key: 'who_event_flaccid_paralysis' },
+        { type: 'item', value: 'Acute haemorrhagic fever', id: 14, key: 'who_event_haemorrhagic_fever' },
+        { type: 'item', value: 'Fever of unknown origin', id: 15, key: 'who_event_fever_unknown' },
+        { type: 'header', key: 'daily_report_emergency', fallback: 'Emergency' },
+        { type: 'item', value: 'Surgical emergency (Non-trauma)', id: 16, key: 'who_event_surgical_emergency' },
+        { type: 'item', value: 'Medical emergency (Non-infectious)', id: 17, key: 'who_event_medical_emergency' },
+        { type: 'header', key: 'daily_report_other_key_diseases', fallback: 'Other key diseases' },
+        { type: 'item', value: 'Skin disease', id: 18, key: 'who_event_skin_disease' },
+        { type: 'item', value: 'Acute mental health problem', id: 19, key: 'who_event_mental_health' },
+        { type: 'item', value: 'Obstetric complications', id: 20, key: 'who_event_obstetric' },
+        { type: 'item', value: 'Severe Acute Malnutrition (SAM)', id: 21, key: 'who_event_sam' },
+        { type: 'item', value: 'Other diagnosis, not specified above', id: 22, key: 'who_event_other_diagnosis' }
+    ],
+
+    buildHealthEventItemsHTML: function() {
+        var t = (window.femrLanguageData && window.femrLanguageCode && window.femrLanguageData[window.femrLanguageCode])
+            ? window.femrLanguageData[window.femrLanguageCode]
+            : {};
+        return whoDropdown.healthEventItems.map(function(item) {
+            if (item.type === 'header') {
+                return '<li class="who-group-header">' + (t[item.key] || item.fallback) + '</li>';
+            }
+            return '<li class="who-item" data-value="' + item.value + '" data-id="' + item.id + '">' +
+                   (t[item.key] || item.value) + '</li>';
+        }).join('');
+    },
 
     buildHealthEventDropdown: function(index) {
+        var t = (window.femrLanguageData && window.femrLanguageCode && window.femrLanguageData[window.femrLanguageCode])
+            ? window.femrLanguageData[window.femrLanguageCode]
+            : {};
+        var placeholder = t.who_event_placeholder || '- WHO Health Event -';
         return '<div class="who-searchable-dropdown">' +
                '<div class="who-dropdown-toggle">' +
-               '<span class="who-dropdown-label">- WHO Health Event -</span>' +
+               '<span class="who-dropdown-label">' + placeholder + '</span>' +
                '<span class="caret"></span>' +
                '</div>' +
                '<div class="who-dropdown-menu">' +
                '<input type="text" class="who-search-input" placeholder=""/>' +
-               '<ul class="who-dropdown-list">' + whoDropdown.healthEventItemsHTML + '</ul>' +
+               '<ul class="who-dropdown-list">' + whoDropdown.buildHealthEventItemsHTML() + '</ul>' +
                '</div>' +
                '<input type="hidden" name="whoHealthEvents[' + index + ']" class="who-selected-value"/>' +
                '<input type="hidden" name="whoHealthEventIds[' + index + ']" class="who-selected-id"/>' +
                '</div>';
+    },
+
+    rebuildLabels: function(t) {
+        // Update labels in any already-rendered dropdowns
+        $('.who-dropdown-list .who-group-header, .who-dropdown-list .who-item').each(function() {
+            var $el = $(this);
+            if ($el.hasClass('who-group-header')) {
+                whoDropdown.healthEventItems.forEach(function(item) {
+                    if (item.type === 'header' && $el.text() === item.fallback) {
+                        $el.text(t[item.key] || item.fallback);
+                    }
+                });
+            } else {
+                var val = $el.data('value');
+                whoDropdown.healthEventItems.forEach(function(item) {
+                    if (item.type === 'item' && item.value === val && t[item.key]) {
+                        $el.text(t[item.key]);
+                    }
+                });
+            }
+        });
+        // Update placeholder labels that still show the default English text
+        $('.who-dropdown-toggle .who-dropdown-label').each(function() {
+            var $lbl = $(this);
+            if ($lbl.text() === '- WHO Health Event -') {
+                $lbl.text(t.who_event_placeholder || '- WHO Health Event -');
+            }
+        });
     },
 
     filter: function($input) {

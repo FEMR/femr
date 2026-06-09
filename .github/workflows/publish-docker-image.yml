@@ -1,10 +1,10 @@
-name: Docker Image Build Test
+name: Docker Image Build Test w/ DockerHub push
+# specifically intended for pushes to main branch 
 
 on:
   push:
-    branches-ignore: "master"
-  pull_request:  
-    branches-ignore: "master"
+    branches:
+      - master
 
 jobs:
   build_image_test:
@@ -60,5 +60,5 @@ jobs:
           platforms: ${{ matrix.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: false #Don't push to docker hub on prs and other branches
+          push: true #main branch should publish to dockerhub
           tags: teamfemrdev/teamfemr:latest

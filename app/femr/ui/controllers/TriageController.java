@@ -152,9 +152,8 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result indexPost(int id) {
-
-        final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class).bindFromRequest();
-        IndexViewModelPost viewModel = IndexViewModelForm.get();
+        Form<IndexViewModelPost> indexViewModelForm = formFactory.form(IndexViewModelPost.class).bindFromRequest();
+        IndexViewModelPost viewModel = indexViewModelForm.get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         //create a new patient
         //or get current patient for new encounter
@@ -164,9 +163,41 @@ public class TriageController extends Controller {
                 patientService, encounterService, photoService,
                 vitalService, searchService);
 
-        int patientId = process.execute();
+        try {
+            int patientId = process.execute();
+            return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientId)));
+        } catch (IllegalArgumentException ex) {
+            // Validation error (ex: birth date in the future). Re-render triage with a helpful message.
 
-        return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientId)));
+            // retrieve vitals so we can re-render the view
+            ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
+            if (vitalServiceResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            // get settings
+            ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
+            if (settingItemServiceResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            // get age classifications
+            ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+            if (patientAgeClassificationsResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+
+            IndexViewModelGet viewModelGet = new IndexViewModelGet();
+            viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+            viewModelGet.setPatient(new PatientItem());
+            viewModelGet.setSearchError(false);
+            viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
+            viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+
+            // show error via Play form errors
+            indexViewModelForm = indexViewModelForm.withError("age", ex.getMessage());
+            return badRequest(index.render(currentUser, viewModelGet, assetsFinder));
+        }
     }
   //  public Result deletePatientPost(int patientId, int deleteByUserID){
     public Result deletePatientPost(int patientId){
@@ -455,6 +486,13 @@ class PatientEncounterCreationProcess {
             patient.setBirth(calendar.getTime());
 
         }else if (viewModelPost.getAge() != null) {
+            // Birth date must not be in the future.
+            // (The UI uses an <input type="date"> with max=today, but enforce this server-side too.)
+            Date today = new Date();
+            if (viewModelPost.getAge().after(today)) {
+                // Bubble up to indexPost's error handler; prevents saving invalid DOB.
+                throw new IllegalArgumentException("Birth date cannot be in the future");
+            }
             patient.setBirth(viewModelPost.getAge());
         }else if(viewModelPost.getAgeClassification() != null){
 

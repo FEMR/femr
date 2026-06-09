@@ -398,6 +398,30 @@ public class MissionTripService implements IMissionTripService {
                         missionCity = missionCityRepository.create(missionCity);
                     }
 
+                    // Defensive de-duplication: if a trip with the same identifiers already exists,
+                    // return that existing trip instead of creating a duplicate.
+                    //
+                    // This guards against double form submissions / browser retries which can be
+                    // triggered in some admin flows (e.g., when WHO reporting setup redirect is skipped).
+                    ExpressionList<MissionTrip> duplicateTripExpressionList = QueryProvider.getMissionTripQuery()
+                            .where()
+                            .eq("missionTeam", missionTeam)
+                            .eq("missionCity", missionCity)
+                            .eq("startDate", tripItem.getTripStartDate())
+                            .eq("endDate", tripItem.getTripEndDate());
+                    IMissionTrip existingTrip = missionTripRepository.findOne(duplicateTripExpressionList);
+                    if (existingTrip != null) {
+                        TripItem existingTripItem = itemModelMapper.createTripItem(
+                                existingTrip.getMissionTeam().getName(),
+                                existingTrip.getMissionCity().getName(),
+                                existingTrip.getMissionCity().getMissionCountry().getName(),
+                                existingTrip.getStartDate(),
+                                existingTrip.getEndDate());
+                        existingTripItem.setId(existingTrip.getId());
+                        response.setResponseObject(existingTripItem);
+                        return response;
+                    }
+
 
                     IMissionTrip missionTrip = dataModelMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), missionCity, missionTeam);
                     missionTrip = missionTripRepository.create(missionTrip);

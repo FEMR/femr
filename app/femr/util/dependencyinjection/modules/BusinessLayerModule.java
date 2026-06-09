@@ -21,7 +21,9 @@ package femr.util.dependencyinjection.modules;
 import com.google.inject.AbstractModule;
 import femr.business.services.core.*;
 import femr.business.services.system.*;
+import femr.business.wrappers.sessions.ISessionContext;
 import femr.business.wrappers.sessions.ISessionHelper;
+import femr.business.wrappers.sessions.PlaySessionContext;
 import femr.business.wrappers.sessions.SessionHelper;
 
 public class BusinessLayerModule extends AbstractModule {
@@ -42,6 +44,7 @@ public class BusinessLayerModule extends AbstractModule {
         bind(IResearchService.class).to(ResearchService.class);
         bind(IRoleService.class).to(RoleService.class);
         bind(ISearchService.class).to(SearchService.class);
+        bind(ISessionContext.class).to(PlaySessionContext.class);
         bind(ISessionHelper.class).to(SessionHelper.class);
         bind(ISessionService.class).to(SessionService.class);
         bind(IUserService.class).to(UserService.class);

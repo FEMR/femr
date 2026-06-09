@@ -18,30 +18,22 @@
 */
 package femr.business.wrappers.sessions;
 
-import com.google.inject.Inject;
+import static play.mvc.Controller.session;
 
-public class SessionHelper implements ISessionHelper {
-
-    private final ISessionContext sessionContext;
-
-    @Inject
-    public SessionHelper(ISessionContext sessionContext) {
-        this.sessionContext = sessionContext;
-    }
+public class PlaySessionContext implements ISessionContext {
 
     @Override
-    public int getInt(String sessionKey) {
-        String value = sessionContext.get(sessionKey);
-        return value != null ? Integer.parseInt(value) : 0;
+    public String get(String sessionKey) {
+        return session(sessionKey);
     }
 
     @Override
     public void set(String sessionKey, String sessionObject) {
-        sessionContext.set(sessionKey, sessionObject);
+        session(sessionKey, sessionObject);
     }
 
     @Override
-    public void delete(String sessionKey) {
-        sessionContext.remove(sessionKey);
+    public void remove(String sessionKey) {
+        session().remove(sessionKey);
     }
 }

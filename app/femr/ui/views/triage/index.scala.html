@@ -368,7 +368,7 @@
                                 <div class="femr-age-separator"><span class="orSpan">OR</span></div>
                                 <div class="generalInfoInput femr-field femr-field--stack" id="birthDateWrapper">
                                     <label id="birthDateLabel" for="birthDateInput"><span data-i18n-text="true">Birth Date</span> <span class="femr-required">*</span></label>
-                                    <input type="date" class="fInput femr-input" id="birthDateInput" name="age" value="@{if(viewModel != null && viewModel.getPatient.getBirth != null) { new java.text.SimpleDateFormat("yyyy-MM-dd").format(viewModel.getPatient.getBirth) } else { "" }}" />
+                                    <input type="date" class="fInput femr-input" id="birthDateInput" name="age" max="@{new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())}" value="@{if(viewModel != null && viewModel.getPatient.getBirth != null) { new java.text.SimpleDateFormat("yyyy-MM-dd").format(viewModel.getPatient.getBirth) } else { "" }}" />
                                 </div>
                             </div>
                             <div class="generalInfoInput femr-field femr-field--stack femr-field--full">

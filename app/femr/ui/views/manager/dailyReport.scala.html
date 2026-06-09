@@ -8,13 +8,168 @@
     <link rel="stylesheet" href="@assets.path("css/manager/dailyReport.css")">
 }
 
-@main("EMT-MDS Daily Report", currentUser, styles = additionalStyles, assets = assets) {
+@additionalScripts = {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    const lang = "@{currentUser.getLanguageCode}" || 'en';
+                    const t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        const el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    function setPlaceholder(id, val) {
+                        const el = document.getElementById(id);
+                        if (el && val) el.placeholder = val;
+                    }
+                    // Header
+                    setText('dr_who_title', t.daily_report_who);
+                    setText('dr_main_title', t.daily_report_title);
+                    // Team Information
+                    setText('dr_team_info_title', t.who_team_information);
+                    setText('dr_org_name_label', t.daily_report_org_name);
+                    setText('dr_team_name_label', t.daily_report_team_name);
+                    setText('dr_type1_mobile', t.who_type1_mobile);
+                    setText('dr_type1_fixed', t.who_type1_fixed);
+                    setText('dr_type2', t.who_type2);
+                    setText('dr_type3', t.who_type3);
+                    setText('dr_specialized_cell', t.who_specialized_cell);
+                    setText('dr_contact_persons_label', t.daily_report_contact_persons);
+                    setText('dr_phone_label', t.daily_report_phone);
+                    setText('dr_email_label', t.daily_report_email);
+                    setText('dr_departure_label', t.daily_report_departure);
+                    // Location
+                    setText('dr_location_title', t.daily_report_location);
+                    setText('dr_date_activity_label', t.daily_report_date_activity);
+                    setText('dr_time_reporting_label', t.daily_report_time_reporting);
+                    setText('dr_state_label', t.daily_report_state);
+                    setText('dr_city_label', t.daily_report_city_etc);
+                    setText('dr_village_label', t.daily_report_village);
+                    setText('dr_facility_label', t.daily_report_facility);
+                    setText('dr_geo_tag_label', t.daily_report_geo_tag);
+                    setText('dr_lat_label', t.daily_report_lat);
+                    setText('dr_long_label', t.daily_report_long);
+                    // Daily Summary
+                    setText('dr_daily_summary_title', t.daily_report_daily_summary);
+                    setText('dr_patient_bed_count', t.daily_report_patient_bed_count);
+                    setText('dr_patients_subheader', t.daily_report_patients);
+                    setText('dr_total_consultations', t.daily_report_total_consultations);
+                    setText('dr_new_admission', t.daily_report_new_admission);
+                    setText('dr_live_birth', t.daily_report_live_birth);
+                    setText('dr_bed_subheader', t.daily_report_bed);
+                    setText('dr_total_bed_capacity', t.daily_report_total_bed_capacity);
+                    setText('dr_empty_inpatient', t.daily_report_empty_inpatient);
+                    setText('dr_empty_icu', t.daily_report_empty_icu);
+                    setText('dr_mds_statistics', t.daily_report_mds_statistics);
+                    setText('dr_outcome_subheader', t.daily_report_outcome);
+                    setText('dr_discharge_no_followup', t.daily_report_discharge_no_followup);
+                    setText('dr_discharge_with_followup', t.daily_report_discharge_with_followup);
+                    setText('dr_discharge_against_advice', t.daily_report_discharge_against_advice);
+                    setText('dr_referral', t.daily_report_referral);
+                    setText('dr_dead_on_arrival', t.daily_report_dead_on_arrival);
+                    setText('dr_death_facility', t.daily_report_death_facility);
+                    setText('dr_long_term_rehab', t.daily_report_long_term_rehab);
+                    setText('dr_relation_subheader', t.daily_report_relation);
+                    setText('dr_directly_related', t.daily_report_directly_related);
+                    setText('dr_indirectly_related', t.daily_report_indirectly_related);
+                    setText('dr_not_related', t.daily_report_not_related);
+                    setText('dr_protection_subheader', t.daily_report_protection);
+                    setText('dr_vulnerable_child', t.daily_report_vulnerable_child);
+                    setText('dr_vulnerable_adult', t.daily_report_vulnerable_adult);
+                    setText('dr_sgbv', t.daily_report_sgbv);
+                    setText('dr_violence', t.daily_report_violence);
+                    // Demographics
+                    setText('dr_demographics_title', t.daily_report_demographics);
+                    setText('dr_th_no', t.daily_report_no);
+                    setText('dr_th_age_categories', t.daily_report_age_categories);
+                    setText('dr_th_total', t.daily_report_total);
+                    setText('dr_male_label', t.daily_report_male);
+                    setText('dr_female_nonpreg_label', t.daily_report_female_nonpreg);
+                    setText('dr_female_preg_label', t.daily_report_female_preg);
+                    // Health Events & Procedures
+                    setText('dr_health_events_title', t.daily_report_health_events_procedures);
+                    setText('dr_th_health_events', t.daily_report_health_events);
+                    setText('dr_th_procedure', t.daily_report_procedure_header);
+                    setText('dr_trauma_cat', t.daily_report_trauma);
+                    setText('dr_major_head_spine', t.who_event_major_head_spine);
+                    setText('dr_major_torso', t.who_event_major_torso);
+                    setText('dr_major_extremity', t.who_event_major_extremity);
+                    setText('dr_moderate_injury', t.who_event_moderate_injury);
+                    setText('dr_minor_injury', t.who_event_minor_injury);
+                    setText('dr_infectious_cat', t.daily_report_infectious_disease);
+                    setText('dr_acute_respiratory', t.who_event_acute_respiratory);
+                    setText('dr_watery_diarrhea', t.who_event_watery_diarrhea);
+                    setText('dr_bloody_diarrhea', t.who_event_bloody_diarrhea);
+                    setText('dr_jaundice', t.who_event_jaundice);
+                    setText('dr_measles', t.who_event_measles);
+                    setText('dr_meningitis', t.who_event_meningitis);
+                    setText('dr_tetanus', t.who_event_tetanus);
+                    setText('dr_flaccid_paralysis', t.who_event_flaccid_paralysis);
+                    setText('dr_haemorrhagic_fever', t.who_event_haemorrhagic_fever);
+                    setText('dr_fever_unknown', t.who_event_fever_unknown);
+                    setText('dr_additional_cat', t.daily_report_additional);
+                    setText('dr_emergency_cat', t.daily_report_emergency);
+                    setText('dr_surgical_emergency', t.who_event_surgical_emergency);
+                    setText('dr_medical_emergency', t.who_event_medical_emergency);
+                    setText('dr_other_diseases_cat', t.daily_report_other_key_diseases);
+                    setText('dr_skin_disease', t.who_event_skin_disease);
+                    setText('dr_mental_health', t.who_event_mental_health);
+                    setText('dr_obstetric', t.who_event_obstetric);
+                    setText('dr_sam', t.who_event_sam);
+                    setText('dr_other_diagnosis', t.who_event_other_diagnosis);
+                    setText('dr_proc_major', t.who_proc_major);
+                    setText('dr_proc_amputation', t.who_proc_amputation);
+                    setText('dr_proc_minor', t.who_proc_minor);
+                    setText('dr_proc_nvd', t.who_proc_nvd);
+                    setText('dr_proc_csection', t.who_proc_csection);
+                    setText('dr_proc_obstetrics_others', t.who_proc_obstetrics_others);
+                    // Needs and Risks
+                    setText('dr_needs_risks_title', t.daily_report_needs_risks);
+                    setText('dr_free_text_subtitle', t.daily_report_free_text);
+                    setText('dr_immediate_report_cat', t.daily_report_immediate_report);
+                    setText('dr_unexpected_death', t.daily_report_unexpected_death);
+                    setText('dr_notifiable_disease', t.daily_report_notifiable_disease);
+                    setText('dr_protection_issues', t.daily_report_protection_issues);
+                    setText('dr_critical_incident', t.daily_report_critical_incident);
+                    setText('dr_any_other_issue', t.daily_report_any_other_issue);
+                    setText('dr_community_risks_cat', t.daily_report_community_risks);
+                    setText('dr_wash', t.daily_report_wash);
+                    setText('dr_community_infectious', t.daily_report_community_infectious);
+                    setText('dr_environmental_risk', t.daily_report_environmental_risk);
+                    setText('dr_shelter', t.daily_report_shelter);
+                    setText('dr_food_insecurity', t.daily_report_food_insecurity);
+                    setText('dr_operational_cat', t.daily_report_operational_constraints);
+                    setText('dr_logistics', t.daily_report_logistics);
+                    setText('dr_supply', t.daily_report_supply);
+                    setText('dr_human_resources', t.daily_report_human_resources);
+                    setText('dr_finance', t.daily_report_finance);
+                    setText('dr_others', t.daily_report_others);
+                    // Placeholders for additional events
+                    ['dr_additional1_name','dr_additional2_name','dr_additional3_name','dr_additional4_name'].forEach(function(id) {
+                        setPlaceholder(id, t.daily_report_additional_event);
+                    });
+                    // Footnotes
+                    setText('dr_footnote1', t.daily_report_footnote1);
+                    setText('dr_footnote2', t.daily_report_footnote2);
+                    setText('dr_footnote3', t.daily_report_footnote3);
+                    setText('dr_footnote4', t.daily_report_footnote4);
+                    // Actions
+                    setText('dr_print_btn', t.daily_report_print);
+                    setText('dr_export_btn', t.daily_report_export);
+                });
+        });
+    </script>
+}
+
+@main("EMT-MDS Daily Report", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
 <div class="mds-report-container">
 
     <div class="mds-report-header">
-        <p class="mds-version">World Health Organization</p>
-        <h2>MDS Daily Reporting Form</h2>
+        <p class="mds-version" id="dr_who_title">World Health Organization</p>
+        <h2 id="dr_main_title">MDS Daily Reporting Form</h2>
     </div>
 
     <form id="dailyReportForm" method="post">
@@ -24,12 +179,12 @@
 
             <!-- Team Information (left) -->
             <div class="mds-panel mds-panel-team">
-                <div class="mds-panel-title">Team Information</div>
+                <div class="mds-panel-title" id="dr_team_info_title">Team Information</div>
 
                 <div class="mds-field-row">
                     <label class="mds-label">a</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Organization name:</span>
+                        <span class="mds-field-name" id="dr_org_name_label">Organization name:</span>
                         <input type="text" class="mds-input" name="organizationName"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getOrgName != null) viewModel.getWhoConfig.getOrgName else ""}" />
                     </div>
@@ -38,7 +193,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">b</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Team name:</span>
+                        <span class="mds-field-name" id="dr_team_name_label">Team name:</span>
                         <input type="text" class="mds-input" name="teamName"
                                value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getTeamName != null) viewModel.getReportItem.getTeamName else ""}" />
                     </div>
@@ -49,11 +204,11 @@
                     <div class="mds-field-group mds-team-types">
                         <table class="mds-type-table">
                             <tr>
-                                <th>Type 1 mobile</th>
-                                <th>Type 1 fixed</th>
-                                <th>Type 2</th>
-                                <th>Type 3</th>
-                                <th>Specialized cell</th>
+                                <th id="dr_type1_mobile">Type 1 mobile</th>
+                                <th id="dr_type1_fixed">Type 1 fixed</th>
+                                <th id="dr_type2">Type 2</th>
+                                <th id="dr_type3">Type 3</th>
+                                <th id="dr_specialized_cell">Specialized cell</th>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" name="type1mobile" @{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.isType1Mobile) "checked"} /></td>
@@ -69,7 +224,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">d</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Contact Person(s) name(s):</span>
+                        <span class="mds-field-name" id="dr_contact_persons_label">Contact Person(s) name(s):</span>
                         <input type="text" class="mds-input" name="contactPersons"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getContactPersons != null) viewModel.getWhoConfig.getContactPersons else ""}" />
                     </div>
@@ -78,7 +233,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">e</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Phone No.:</span>
+                        <span class="mds-field-name" id="dr_phone_label">Phone No.:</span>
                         <input type="text" class="mds-input" name="phoneNo"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getPhoneNo != null) viewModel.getWhoConfig.getPhoneNo else ""}" />
                     </div>
@@ -87,7 +242,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">f</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Email:</span>
+                        <span class="mds-field-name" id="dr_email_label">Email:</span>
                         <input type="email" class="mds-input" name="email"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getEmail != null) viewModel.getWhoConfig.getEmail else ""}" />
                     </div>
@@ -96,7 +251,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">g</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Estimated date of departure <small>(dd/mm/yyyy)</small>:</span>
+                        <span class="mds-field-name" id="dr_departure_label">Estimated date of departure <small>(dd/mm/yyyy)</small>:</span>
                         <input type="text" class="mds-input" name="departureDate"
                                value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getDepartureDate != null) viewModel.getReportItem.getDepartureDate else ""}" />
                     </div>
@@ -105,12 +260,12 @@
 
             <!-- Location & Date (right) -->
             <div class="mds-panel mds-panel-location">
-                <div class="mds-panel-title mds-location-title">Location &dagger;</div>
+                <div class="mds-panel-title mds-location-title" id="dr_location_title">Location &dagger;</div>
 
                 <div class="mds-field-row">
                     <label class="mds-label">h</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Date of activity <small>(dd/mm/yyyy)</small>:</span>
+                        <span class="mds-field-name" id="dr_date_activity_label">Date of activity <small>(dd/mm/yyyy)</small>:</span>
                         <input type="text" class="mds-input" name="dateOfActivity"
                                value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getReportDate != null) viewModel.getReportItem.getReportDate else ""}" />
                     </div>
@@ -119,7 +274,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">i</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Time of reporting <small>(hh:mm 24h)</small>:</span>
+                        <span class="mds-field-name" id="dr_time_reporting_label">Time of reporting <small>(hh:mm 24h)</small>:</span>
                         <input type="text" class="mds-input" id="timeOfReporting" name="timeOfReporting" placeholder="00:00" />
                     </div>
                 </div>
@@ -127,7 +282,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">j</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">State etc.:</span>
+                        <span class="mds-field-name" id="dr_state_label">State etc.:</span>
                         <input type="text" class="mds-input" name="stateAdmin1"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getStateAdmin1 != null) viewModel.getWhoConfig.getStateAdmin1 else ""}" />
                     </div>
@@ -136,7 +291,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">k</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">City etc.:</span>
+                        <span class="mds-field-name" id="dr_city_label">City etc.:</span>
                         <input type="text" class="mds-input" name="cityAdmin2"
                                value="@{if(viewModel.getReportItem != null && viewModel.getReportItem.getTripCity != null) viewModel.getReportItem.getTripCity else ""}" />
                     </div>
@@ -145,7 +300,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">l</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Village etc.:</span>
+                        <span class="mds-field-name" id="dr_village_label">Village etc.:</span>
                         <input type="text" class="mds-input" name="villageAdmin3"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getVillageAdmin3 != null) viewModel.getWhoConfig.getVillageAdmin3 else ""}" />
                     </div>
@@ -154,7 +309,7 @@
                 <div class="mds-field-row">
                     <label class="mds-label">m</label>
                     <div class="mds-field-group">
-                        <span class="mds-field-name">Facility name:</span>
+                        <span class="mds-field-name" id="dr_facility_label">Facility name:</span>
                         <input type="text" class="mds-input" name="facilityName"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getFacilityName != null) viewModel.getWhoConfig.getFacilityName else ""}" />
                     </div>
@@ -163,11 +318,11 @@
                 <div class="mds-field-row">
                     <label class="mds-label">n</label>
                     <div class="mds-field-group mds-geotag-row">
-                        <span class="mds-field-name">Geo-tag:</span>
-                        <span class="mds-sublabel">Lat</span>
+                        <span class="mds-field-name" id="dr_geo_tag_label">Geo-tag:</span>
+                        <span class="mds-sublabel" id="dr_lat_label">Lat</span>
                         <input type="text" class="mds-input-sm" name="geoLat"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getGeoLat != null) viewModel.getWhoConfig.getGeoLat else ""}" />
-                        <span class="mds-sublabel">Long</span>
+                        <span class="mds-sublabel" id="dr_long_label">Long</span>
                         <input type="text" class="mds-input-sm" name="geoLong"
                                value="@{if(viewModel.getWhoConfig != null && viewModel.getWhoConfig.getGeoLong != null) viewModel.getWhoConfig.getGeoLong else ""}" />
                     </div>
@@ -177,45 +332,45 @@
 
         <!-- ===== SECTION 2: DAILY SUMMARY ===== -->
         <div class="mds-section">
-            <div class="mds-section-header mds-header-daily">Daily Summary</div>
+            <div class="mds-section-header mds-header-daily" id="dr_daily_summary_title">Daily Summary</div>
 
             <div class="mds-daily-summary-grid">
 
                 <!-- Left: Patient & Bed counts -->
                 <div class="mds-daily-left">
-                    <div class="mds-subsection-label">Number of Patient / Bed Count</div>
+                    <div class="mds-subsection-label" id="dr_patient_bed_count">Number of Patient / Bed Count</div>
                     <table class="mds-summary-table">
-                        <tr class="mds-subheader-row"><td colspan="3"><strong>Patients</strong></td></tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong id="dr_patients_subheader">Patients</strong></td></tr>
                         <tr>
                             <td class="mds-num-col">o</td>
-                            <td>Total Number of new consultations *</td>
+                            <td><span id="dr_total_consultations">Total Number of new consultations *</span></td>
                             <td><input type="number" class="mds-num-input" name="totalNewConsultations"
                                        value="@{if(viewModel.getReportItem != null) viewModel.getReportItem.getTotalEncounters else 0}" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">p</td>
-                            <td>New admission (=MDS540)</td>
+                            <td><span id="dr_new_admission">New admission (=MDS540)</span></td>
                             <td><input type="number" class="mds-num-input" name="newAdmissions" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">q</td>
-                            <td>Live Birth</td>
+                            <td><span id="dr_live_birth">Live Birth</span></td>
                             <td><input type="number" class="mds-num-input" name="liveBirths" /></td>
                         </tr>
-                        <tr class="mds-subheader-row"><td colspan="3"><strong>Bed</strong></td></tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong id="dr_bed_subheader">Bed</strong></td></tr>
                         <tr>
                             <td class="mds-num-col">r</td>
-                            <td>Total bed capacity</td>
+                            <td><span id="dr_total_bed_capacity">Total bed capacity</span></td>
                             <td><input type="number" class="mds-num-input" name="totalBedCapacity" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">s</td>
-                            <td>Empty inpatient bed (Non-ICU)</td>
+                            <td><span id="dr_empty_inpatient">Empty inpatient bed (Non-ICU)</span></td>
                             <td><input type="number" class="mds-num-input" name="emptyInpatientBed" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">t</td>
-                            <td>Empty Intensive Care Unit Bed (ICU)</td>
+                            <td><span id="dr_empty_icu">Empty Intensive Care Unit Bed (ICU)</span></td>
                             <td><input type="number" class="mds-num-input" name="emptyICUBed" /></td>
                         </tr>
                     </table>
@@ -223,42 +378,42 @@
 
                 <!-- Middle: MDS Statistics / Outcome -->
                 <div class="mds-daily-middle">
-                    <div class="mds-subsection-label">MDS statistics</div>
+                    <div class="mds-subsection-label" id="dr_mds_statistics">MDS statistics</div>
                     <table class="mds-summary-table">
-                        <tr class="mds-subheader-row"><td colspan="3"><strong>Outcome</strong></td></tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong id="dr_outcome_subheader">Outcome</strong></td></tr>
                         <tr>
                             <td class="mds-num-col">36</td>
-                            <td>Discharge without medical follow-up</td>
+                            <td><span id="dr_discharge_no_followup">Discharge without medical follow-up</span></td>
                             <td><input type="number" class="mds-num-input" name="dischargeNoFollowup" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">37</td>
-                            <td>Discharge with medical follow-up</td>
+                            <td><span id="dr_discharge_with_followup">Discharge with medical follow-up</span></td>
                             <td><input type="number" class="mds-num-input" name="dischargeWithFollowup" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">38</td>
-                            <td>Discharge against medical advice</td>
+                            <td><span id="dr_discharge_against_advice">Discharge against medical advice</span></td>
                             <td><input type="number" class="mds-num-input" name="dischargeAgainstAdvice" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">39</td>
-                            <td>Referral</td>
+                            <td><span id="dr_referral">Referral</span></td>
                             <td><input type="number" class="mds-num-input" name="referral" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">40</td>
-                            <td>Dead on arrival</td>
+                            <td><span id="dr_dead_on_arrival">Dead on arrival</span></td>
                             <td><input type="number" class="mds-num-input" name="deadOnArrival" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">41</td>
-                            <td>Death within facility *</td>
+                            <td><span id="dr_death_facility">Death within facility *</span></td>
                             <td><input type="number" class="mds-num-input" name="deathWithinFacility" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">42</td>
-                            <td>Requiring long term rehabilitation *</td>
+                            <td><span id="dr_long_term_rehab">Requiring long term rehabilitation *</span></td>
                             <td><input type="number" class="mds-num-input" name="longTermRehab" /></td>
                         </tr>
                     </table>
@@ -267,41 +422,41 @@
                 <!-- Right: Relation & Protection -->
                 <div class="mds-daily-right">
                     <table class="mds-summary-table">
-                        <tr class="mds-subheader-row"><td colspan="3"><strong>Relation</strong></td></tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong id="dr_relation_subheader">Relation</strong></td></tr>
                         <tr>
                             <td class="mds-num-col">44</td>
-                            <td>Directly related to event</td>
+                            <td><span id="dr_directly_related">Directly related to event</span></td>
                             <td><input type="number" class="mds-num-input" name="directlyRelated" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">45</td>
-                            <td>Indirectly related to event</td>
+                            <td><span id="dr_indirectly_related">Indirectly related to event</span></td>
                             <td><input type="number" class="mds-num-input" name="indirectlyRelated" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">46</td>
-                            <td>Not related to event</td>
+                            <td><span id="dr_not_related">Not related to event</span></td>
                             <td><input type="number" class="mds-num-input" name="notRelated" /></td>
                         </tr>
-                        <tr class="mds-subheader-row"><td colspan="3"><strong>Protection</strong></td></tr>
+                        <tr class="mds-subheader-row"><td colspan="3"><strong id="dr_protection_subheader">Protection</strong></td></tr>
                         <tr>
                             <td class="mds-num-col">47</td>
-                            <td>Vulnerable child *</td>
+                            <td><span id="dr_vulnerable_child">Vulnerable child *</span></td>
                             <td><input type="number" class="mds-num-input" name="vulnerableChild" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">48</td>
-                            <td>Vulnerable adult *</td>
+                            <td><span id="dr_vulnerable_adult">Vulnerable adult *</span></td>
                             <td><input type="number" class="mds-num-input" name="vulnerableAdult" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">49</td>
-                            <td>Sexual Gender Based Violence (SGBV) *</td>
+                            <td><span id="dr_sgbv">Sexual Gender Based Violence (SGBV) *</span></td>
                             <td><input type="number" class="mds-num-input" name="sgbv" /></td>
                         </tr>
                         <tr>
                             <td class="mds-num-col">50</td>
-                            <td>Violence (non-SGBV) *</td>
+                            <td><span id="dr_violence">Violence (non-SGBV) *</span></td>
                             <td><input type="number" class="mds-num-input" name="violenceNonSgbv" /></td>
                         </tr>
                     </table>
@@ -312,25 +467,25 @@
 
         <!-- ===== SECTION 3: DEMOGRAPHICS ===== -->
         <div class="mds-section">
-            <div class="mds-section-header mds-header-demo">Demographic — MDS statistics</div>
+            <div class="mds-section-header mds-header-demo" id="dr_demographics_title">Demographic — MDS statistics</div>
             <table class="mds-demo-table" id="demoTable">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Age Categories</th>
+                        <th id="dr_th_no">No.</th>
+                        <th id="dr_th_age_categories">Age Categories</th>
                         <th>&lt;1</th>
                         <th>1–4</th>
                         <th>5–17</th>
                         <th>18–64</th>
                         <th>65+</th>
-                        <th>Total</th>
+                        <th id="dr_th_total">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     @defining(if(viewModel.getReportItem != null) viewModel.getReportItem else new femr.common.models.DailyReportItem()) { r =>
                     <tr>
                         <td>1</td>
-                        <td>Male</td>
+                        <td id="dr_male_label">Male</td>
                         <td><input type="number" class="mds-num-input" name="maleUnder1" @if(r.getMaleUnder1 > 0){value="@r.getMaleUnder1"} /></td>
                         <td><input type="number" class="mds-num-input" name="male1to4" @if(r.getMale1To4 > 0){value="@r.getMale1To4"} /></td>
                         <td><input type="number" class="mds-num-input" name="male5to17" @if(r.getMale5To17 > 0){value="@r.getMale5To17"} /></td>
@@ -340,7 +495,7 @@
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td>Female non-preg.</td>
+                        <td id="dr_female_nonpreg_label">Female non-preg.</td>
                         <td><input type="number" class="mds-num-input" name="femaleNpUnder1" @if(r.getFemaleNonPregnantUnder1 > 0){value="@r.getFemaleNonPregnantUnder1"} /></td>
                         <td><input type="number" class="mds-num-input" name="femaleNp1to4" @if(r.getFemaleNonPregnant1To4 > 0){value="@r.getFemaleNonPregnant1To4"} /></td>
                         <td><input type="number" class="mds-num-input" name="femaleNp5to17" @if(r.getFemaleNonPregnant5To17 > 0){value="@r.getFemaleNonPregnant5To17"} /></td>
@@ -350,7 +505,7 @@
                     </tr>
                     <tr>
                         <td>3</td>
-                        <td>Female pregnant</td>
+                        <td id="dr_female_preg_label">Female pregnant</td>
                         <td class="mds-cell-grey"></td>
                         <td class="mds-cell-grey"></td>
                         <td><input type="number" class="mds-num-input" name="femalePreg5to17" @if(r.getFemalePregnant5To17 > 0){value="@r.getFemalePregnant5To17"} /></td>
@@ -368,14 +523,14 @@
 
             <!-- Health Events & Procedures (left) -->
             <div class="mds-panel mds-panel-events">
-                <div class="mds-section-header mds-header-events">Health Events and Procedure — MDS statistics</div>
+                <div class="mds-section-header mds-header-events" id="dr_health_events_title">Health Events and Procedure — MDS statistics</div>
 
                 <!-- Health Events table -->
                 <table class="mds-events-table" id="healthEventsTable">
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th colspan="2">Health Events</th>
+                            <th colspan="2" id="dr_th_health_events">Health Events</th>
                             <th>&lt;5</th>
                             <th>&ge;5</th>
                             <th>Total</th>
@@ -385,8 +540,8 @@
                         @defining(if(viewModel.getReportItem != null && viewModel.getReportItem.getWhoHealthEventCounts != null) viewModel.getReportItem.getWhoHealthEventCounts else new java.util.HashMap[String, java.util.Map[String, Integer]]()) { eventCounts =>
                         @defining((name: String) => { val m = eventCounts.get(name); if(m != null) m else new java.util.HashMap[String, Integer]() }) { agFor =>
                         <!-- Trauma -->
-                        <tr class="mds-category-row"><td>4</td><td class="mds-category-label" rowspan="5">Trauma</td>
-                            <td>Major head/spine injury</td>
+                        <tr class="mds-category-row"><td>4</td><td class="mds-category-label" rowspan="5" id="dr_trauma_cat">Trauma</td>
+                            <td id="dr_major_head_spine">Major head/spine injury</td>
                             @defining(agFor("Major head/spine injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_majorHeadSpine_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_majorHeadSpine_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -394,7 +549,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>5</td><td>Major torso injury</td>
+                            <td>5</td><td id="dr_major_torso">Major torso injury</td>
                             @defining(agFor("Major torso injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_majorTorso_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_majorTorso_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -402,7 +557,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>6</td><td>Major extremity injury</td>
+                            <td>6</td><td id="dr_major_extremity">Major extremity injury</td>
                             @defining(agFor("Major extremity injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_majorExtremity_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_majorExtremity_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -410,7 +565,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>7</td><td>Moderate injury</td>
+                            <td>7</td><td id="dr_moderate_injury">Moderate injury</td>
                             @defining(agFor("Moderate injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_moderateInjury_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_moderateInjury_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -418,7 +573,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>8</td><td>Minor injury</td>
+                            <td>8</td><td id="dr_minor_injury">Minor injury</td>
                             @defining(agFor("Minor injury")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_minorInjury_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_minorInjury_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -427,8 +582,8 @@
                         </tr>
 
                         <!-- Infectious Disease -->
-                        <tr class="mds-category-row"><td>9</td><td class="mds-category-label" rowspan="10">Infectious disease</td>
-                            <td>Acute respiratory infection</td>
+                        <tr class="mds-category-row"><td>9</td><td class="mds-category-label" rowspan="10" id="dr_infectious_cat">Infectious disease</td>
+                            <td id="dr_acute_respiratory">Acute respiratory infection</td>
                             @defining(agFor("Acute respiratory infection")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_acuteRespiratory_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_acuteRespiratory_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -436,7 +591,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>10</td><td>Acute watery diarrhea</td>
+                            <td>10</td><td id="dr_watery_diarrhea">Acute watery diarrhea</td>
                             @defining(agFor("Acute watery diarrhea")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_wateryDiarrhea_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_wateryDiarrhea_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -444,7 +599,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>11</td><td>Acute bloody diarrhea</td>
+                            <td>11</td><td id="dr_bloody_diarrhea">Acute bloody diarrhea</td>
                             @defining(agFor("Acute bloody diarrhea")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_bloodyDiarrhea_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_bloodyDiarrhea_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -452,7 +607,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>12</td><td>Acute jaundice syndrome</td>
+                            <td>12</td><td id="dr_jaundice">Acute jaundice syndrome</td>
                             @defining(agFor("Acute jaundice syndrome")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_jaundice_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_jaundice_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -460,7 +615,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>13</td><td>Suspected measles</td>
+                            <td>13</td><td id="dr_measles">Suspected measles</td>
                             @defining(agFor("Suspected measles")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_measles_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_measles_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -468,7 +623,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>14</td><td>Suspected meningitis</td>
+                            <td>14</td><td id="dr_meningitis">Suspected meningitis</td>
                             @defining(agFor("Suspected meningitis")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_meningitis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_meningitis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -476,7 +631,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>15</td><td>Suspected tetanus</td>
+                            <td>15</td><td id="dr_tetanus">Suspected tetanus</td>
                             @defining(agFor("Suspected tetanus")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_tetanus_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_tetanus_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -484,7 +639,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>16</td><td>Acute flaccid paralysis</td>
+                            <td>16</td><td id="dr_flaccid_paralysis">Acute flaccid paralysis</td>
                             @defining(agFor("Acute flaccid paralysis")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_flaccidParalysis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_flaccidParalysis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -492,7 +647,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>17</td><td>Acute haemorrhagic fever</td>
+                            <td>17</td><td id="dr_haemorrhagic_fever">Acute haemorrhagic fever</td>
                             @defining(agFor("Acute haemorrhagic fever")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_haemorrhagicFever_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_haemorrhagicFever_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -500,7 +655,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>18</td><td>Fever of unknown origin</td>
+                            <td>18</td><td id="dr_fever_unknown">Fever of unknown origin</td>
                             @defining(agFor("Fever of unknown origin")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_feverUnknown_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_feverUnknown_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -509,34 +664,34 @@
                         </tr>
 
                         <!-- Additional § -->
-                        <tr class="mds-category-row"><td>19</td><td class="mds-category-label" rowspan="4">Additional §</td>
-                            <td><input type="text" class="mds-input-full" name="ev_additional1_name" placeholder="Additional event..." /></td>
+                        <tr class="mds-category-row"><td>19</td><td class="mds-category-label" rowspan="4" id="dr_additional_cat">Additional §</td>
+                            <td><input type="text" class="mds-input-full" name="ev_additional1_name" id="dr_additional1_name" placeholder="Additional event..." /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional1_lt5" /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional1_gte5" /></td>
                             <td class="mds-total-cell">0</td>
                         </tr>
                         <tr>
-                            <td>20</td><td><input type="text" class="mds-input-full" name="ev_additional2_name" placeholder="Additional event..." /></td>
+                            <td>20</td><td><input type="text" class="mds-input-full" name="ev_additional2_name" id="dr_additional2_name" placeholder="Additional event..." /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional2_lt5" /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional2_gte5" /></td>
                             <td class="mds-total-cell">0</td>
                         </tr>
                         <tr>
-                            <td>21</td><td><input type="text" class="mds-input-full" name="ev_additional3_name" placeholder="Additional event..." /></td>
+                            <td>21</td><td><input type="text" class="mds-input-full" name="ev_additional3_name" id="dr_additional3_name" placeholder="Additional event..." /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional3_lt5" /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional3_gte5" /></td>
                             <td class="mds-total-cell">0</td>
                         </tr>
                         <tr>
-                            <td>22</td><td><input type="text" class="mds-input-full" name="ev_additional4_name" placeholder="Additional event..." /></td>
+                            <td>22</td><td><input type="text" class="mds-input-full" name="ev_additional4_name" id="dr_additional4_name" placeholder="Additional event..." /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional4_lt5" /></td>
                             <td><input type="number" class="mds-num-input" name="ev_additional4_gte5" /></td>
                             <td class="mds-total-cell">0</td>
                         </tr>
 
                         <!-- Emergency -->
-                        <tr class="mds-category-row"><td>23</td><td class="mds-category-label" rowspan="2">Emrg.</td>
-                            <td>Surgical emergency (Non-trauma)</td>
+                        <tr class="mds-category-row"><td>23</td><td class="mds-category-label" rowspan="2" id="dr_emergency_cat">Emrg.</td>
+                            <td id="dr_surgical_emergency">Surgical emergency (Non-trauma)</td>
                             @defining(agFor("Surgical emergency (Non-trauma)")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_surgicalEmergency_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_surgicalEmergency_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -544,7 +699,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>24</td><td>Medical emergency (Non-infectious)</td>
+                            <td>24</td><td id="dr_medical_emergency">Medical emergency (Non-infectious)</td>
                             @defining(agFor("Medical emergency (Non-infectious)")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_medicalEmergency_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_medicalEmergency_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -553,8 +708,8 @@
                         </tr>
 
                         <!-- Other key diseases -->
-                        <tr class="mds-category-row"><td>25</td><td class="mds-category-label" rowspan="5">Other key diseases</td>
-                            <td>Skin disease</td>
+                        <tr class="mds-category-row"><td>25</td><td class="mds-category-label" rowspan="5" id="dr_other_diseases_cat">Other key diseases</td>
+                            <td id="dr_skin_disease">Skin disease</td>
                             @defining(agFor("Skin disease")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_skinDisease_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_skinDisease_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -562,7 +717,7 @@
                             }
                         </tr>
                         <tr><td>26</td>
-                            <td>Acute mental health problem</td>
+                            <td id="dr_mental_health">Acute mental health problem</td>
                             @defining(agFor("Acute mental health problem")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_mentalHealth_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_mentalHealth_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -570,7 +725,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>27</td><td>Obstetric complications</td>
+                            <td>27</td><td id="dr_obstetric">Obstetric complications</td>
                             @defining(agFor("Obstetric complications")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_obstetric_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_obstetric_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -578,7 +733,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>28</td><td>Severe Acute Malnutrition (SAM) *</td>
+                            <td>28</td><td id="dr_sam">Severe Acute Malnutrition (SAM) *</td>
                             @defining(agFor("Severe Acute Malnutrition (SAM)")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_sam_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_sam_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -586,7 +741,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>29</td><td>Other diagnosis, not specified above</td>
+                            <td>29</td><td id="dr_other_diagnosis">Other diagnosis, not specified above</td>
                             @defining(agFor("Other diagnosis not specified above")) { ag =>
                             <td><input type="number" class="mds-num-input" name="ev_otherDiagnosis_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="ev_otherDiagnosis_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -603,7 +758,7 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th colspan="2">Procedure</th>
+                            <th colspan="2" id="dr_th_procedure">Procedure</th>
                             <th>&lt;5</th>
                             <th>&ge;5</th>
                             <th>Total</th>
@@ -613,7 +768,7 @@
                         @defining(if(viewModel.getReportItem != null && viewModel.getReportItem.getWhoProcedureCounts != null) viewModel.getReportItem.getWhoProcedureCounts else new java.util.HashMap[String, java.util.Map[String, Integer]]()) { procCounts =>
                         @defining((name: String) => { val m = procCounts.get(name); if(m != null) m else new java.util.HashMap[String, Integer]() }) { paFor =>
                         <tr>
-                            <td>30</td><td colspan="2">Major procedure (excluding MDS31)</td>
+                            <td>30</td><td colspan="2" id="dr_proc_major">Major procedure (excluding MDS31)</td>
                             @defining(paFor("Major procedure")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_major_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_major_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -621,7 +776,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>31</td><td colspan="2">Limb amputation excluding digits *</td>
+                            <td>31</td><td colspan="2" id="dr_proc_amputation">Limb amputation excluding digits *</td>
                             @defining(paFor("Limb amputation excluding digits")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_amputation_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_amputation_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -629,7 +784,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>32</td><td colspan="2">Minor surgical procedure</td>
+                            <td>32</td><td colspan="2" id="dr_proc_minor">Minor surgical procedure</td>
                             @defining(paFor("Minor surgical procedure")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_minor_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_minor_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -637,7 +792,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>33</td><td colspan="2">Normal Vaginal Delivery (NVD)</td>
+                            <td>33</td><td colspan="2" id="dr_proc_nvd">Normal Vaginal Delivery (NVD)</td>
                             @defining(paFor("Normal Vaginal Delivery (NVD)")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_nvd_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_nvd_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -645,7 +800,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>34</td><td colspan="2">Caesarean section</td>
+                            <td>34</td><td colspan="2" id="dr_proc_csection">Caesarean section</td>
                             @defining(paFor("Caesarean section")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_csection_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_csection_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -653,7 +808,7 @@
                             }
                         </tr>
                         <tr>
-                            <td>35</td><td colspan="2">Obstetrics others</td>
+                            <td>35</td><td colspan="2" id="dr_proc_obstetrics_others">Obstetrics others</td>
                             @defining(paFor("Obstetrics others")) { ag =>
                             <td><input type="number" class="mds-num-input" name="proc_obsOther_lt5" @if(ag.get("lt5") != null && ag.get("lt5") > 0){value="@ag.get("lt5")"} /></td>
                             <td><input type="number" class="mds-num-input" name="proc_obsOther_gte5" @if(ag.get("gte5") != null && ag.get("gte5") > 0){value="@ag.get("gte5")"} /></td>
@@ -668,88 +823,88 @@
 
             <!-- Needs and Risks (right) -->
             <div class="mds-panel mds-panel-risks">
-                <div class="mds-section-header mds-header-risks">Needs and Risks</div>
-                <p class="mds-risks-subtitle">Free text reporting to EMTCC / MOH on the following issues.</p>
+                <div class="mds-section-header mds-header-risks" id="dr_needs_risks_title">Needs and Risks</div>
+                <p class="mds-risks-subtitle" id="dr_free_text_subtitle">Free text reporting to EMTCC / MOH on the following issues.</p>
 
                 <!-- Immediate report / Community Risks / Operational Constraints -->
                 <table class="mds-risks-table">
                     <tbody>
                         <tr class="mds-category-row">
                             <td class="mds-risk-num-cell">51</td>
-                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Immediate report</td>
-                            <td class="mds-risk-label">Unexpected death *</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5" id="dr_immediate_report_cat">Immediate report</td>
+                            <td class="mds-risk-label" id="dr_unexpected_death">Unexpected death *</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_51" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">52</td>
-                            <td class="mds-risk-label">Notifiable disease *</td>
+                            <td class="mds-risk-label" id="dr_notifiable_disease">Notifiable disease *</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_52" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">53</td>
-                            <td class="mds-risk-label">Protection issues #</td>
+                            <td class="mds-risk-label" id="dr_protection_issues">Protection issues #</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_53" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">54</td>
-                            <td class="mds-risk-label">Critical incident to EMT and/or community</td>
+                            <td class="mds-risk-label" id="dr_critical_incident">Critical incident to EMT and/or community</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_54" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">55</td>
-                            <td class="mds-risk-label">Any other issue requiring immediate reporting</td>
+                            <td class="mds-risk-label" id="dr_any_other_issue">Any other issue requiring immediate reporting</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_55" /></td>
                         </tr>
                         <tr class="mds-category-row">
                             <td class="mds-risk-num-cell">56</td>
-                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Community Risks</td>
-                            <td class="mds-risk-label">WASH</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5" id="dr_community_risks_cat">Community Risks</td>
+                            <td class="mds-risk-label" id="dr_wash">WASH</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_56" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">57</td>
-                            <td class="mds-risk-label">Community / suspected over infectious disease</td>
+                            <td class="mds-risk-label" id="dr_community_infectious">Community / suspected over infectious disease</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_57" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">58</td>
-                            <td class="mds-risk-label">Environmental risk / exposure</td>
+                            <td class="mds-risk-label" id="dr_environmental_risk">Environmental risk / exposure</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_58" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">59</td>
-                            <td class="mds-risk-label">Shelter / Non food items</td>
+                            <td class="mds-risk-label" id="dr_shelter">Shelter / Non food items</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_59" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">60</td>
-                            <td class="mds-risk-label">Food insecurity</td>
+                            <td class="mds-risk-label" id="dr_food_insecurity">Food insecurity</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_60" /></td>
                         </tr>
                         <tr class="mds-category-row">
                             <td class="mds-risk-num-cell">61</td>
-                            <td class="mds-category-label mds-category-label-risk" rowspan="5">Operational constraints</td>
-                            <td class="mds-risk-label">Logistics / operational support</td>
+                            <td class="mds-category-label mds-category-label-risk" rowspan="5" id="dr_operational_cat">Operational constraints</td>
+                            <td class="mds-risk-label" id="dr_logistics">Logistics / operational support</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_61" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">62</td>
-                            <td class="mds-risk-label">Supply</td>
+                            <td class="mds-risk-label" id="dr_supply">Supply</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_62" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">63</td>
-                            <td class="mds-risk-label">Human resources</td>
+                            <td class="mds-risk-label" id="dr_human_resources">Human resources</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_63" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">64</td>
-                            <td class="mds-risk-label">Finance</td>
+                            <td class="mds-risk-label" id="dr_finance">Finance</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_64" /></td>
                         </tr>
                         <tr>
                             <td class="mds-risk-num-cell">65</td>
-                            <td class="mds-risk-label">Others</td>
+                            <td class="mds-risk-label" id="dr_others">Others</td>
                             <td class="mds-risk-check"><input type="checkbox" name="risk_65" /></td>
                         </tr>
                     </tbody>
@@ -774,16 +929,16 @@
 
         <!-- ===== FOOTER NOTES ===== -->
         <div class="mds-footnotes">
-            <p>* Line list (including detailed information) should be submitted with this MDS form to relevant authorities.</p>
-            <p>§ Additionals are used for context specific reporting items indicated by the relevant authorities e.g. Malaria / Dengue / TB / Leptospirosis / Rabies / Hazmat etc.</p>
-            <p># Protection issues to be reported confidentially to appropriate authority or protection cluster in locally agreed manner.</p>
-            <p>&dagger; Submit one form per one activity day and location.</p>
+            <p id="dr_footnote1">* Line list (including detailed information) should be submitted with this MDS form to relevant authorities.</p>
+            <p id="dr_footnote2">§ Additionals are used for context specific reporting items indicated by the relevant authorities e.g. Malaria / Dengue / TB / Leptospirosis / Rabies / Hazmat etc.</p>
+            <p id="dr_footnote3"># Protection issues to be reported confidentially to appropriate authority or protection cluster in locally agreed manner.</p>
+            <p id="dr_footnote4">&dagger; Submit one form per one activity day and location.</p>
         </div>
 
         <!-- ===== ACTIONS ===== -->
         <div class="mds-actions">
-            <button type="button" class="fButton femr-btn femr-btn--secondary" onclick="window.print()">Print Form</button>
-            <button type="button" class="fButton femr-btn femr-btn--primary" onclick="exportToCSV()">Export</button>
+            <button type="button" class="fButton femr-btn femr-btn--secondary" onclick="window.print()" id="dr_print_btn">Print Form</button>
+            <button type="button" class="fButton femr-btn femr-btn--primary" onclick="exportToCSV()" id="dr_export_btn">Export</button>
         </div>
 
     </form>

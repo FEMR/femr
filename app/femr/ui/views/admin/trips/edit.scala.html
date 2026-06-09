@@ -14,13 +14,47 @@
 
     <script type="text/javascript" src="@assets.path("js/libraries/select2.min.js")"></script>
     <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(response => response.json())
+                .then(data => {
+                    const lang = "@{currentUser.getLanguageCode}" || 'en';
+                    const t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        const el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('trips_edit_configure_who', t.trips_edit_configure_who);
+                    setText('trips_edit_trip_overview', t.trips_edit_trip_overview);
+                    setText('trips_edit_trip_overview_desc', t.trips_edit_trip_overview_desc);
+                    setText('trips_edit_trip_identifiers', t.trips_edit_trip_identifiers);
+                    setText('trips_edit_destination', t.trips_edit_destination);
+                    setText('trips_edit_schedule', t.trips_edit_schedule);
+                    setText('trips_edit_manage_participants', t.trips_edit_manage_participants);
+                    setText('trips_edit_manage_participants_desc', t.trips_edit_manage_participants_desc);
+                    setText('trips_edit_add_users_card', t.trips_edit_add_users_card);
+                    setText('trips_edit_select_add_label', t.trips_edit_select_add);
+                    setText('trips_edit_add_btn', t.trips_edit_add_btn);
+                    setText('trips_edit_remove_users_card', t.trips_edit_remove_users_card);
+                    setText('trips_edit_select_remove_label', t.trips_edit_select_remove);
+                    setText('trips_edit_remove_btn', t.trips_edit_remove_btn);
+                    setText('trips_edit_users_on_trip', t.trips_edit_users_on_trip);
+                    setText('trips_edit_roster_desc', t.trips_edit_roster_desc);
+                    setText('trips_edit_th_first', t.trips_edit_first_name);
+                    setText('trips_edit_th_last', t.trips_edit_last_name);
+                    setText('trips_edit_th_email', t.trips_edit_email_col);
+                    setText('trips_edit_th_about', t.trips_edit_about);
+                });
+        });
+    </script>
 }
 
 @admin("Trips - Manage Trips - Edit Trip", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
     @if(viewModel.isWhoReportingEnabled) {
         <div style="overflow: hidden; margin-bottom: 10px;">
-            <a href="@ConfigureController.whoSetupGet(viewModel.getTripId)" class="fButton femr-btn femr-btn--primary" style="white-space: nowrap;">Configure WHO Report</a>
+            <a href="@ConfigureController.whoSetupGet(viewModel.getTripId)" class="fButton femr-btn femr-btn--primary" style="white-space: nowrap;" id="trips_edit_configure_who">Configure WHO Report</a>
         </div>
     }
 
@@ -28,28 +62,28 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title">Trip overview</h2>
-                    <p class="admin-section__description">Review key details for the selected trip before updating participants.</p>
+                    <h2 class="admin-section__title" id="trips_edit_trip_overview">Trip overview</h2>
+                    <p class="admin-section__description" id="trips_edit_trip_overview_desc">Review key details for the selected trip before updating participants.</p>
                 </div>
             </div>
 
             <div class="admin-columns">
                 <div class="admin-card">
-                    <h3 class="admin-card__title">Trip identifiers</h3>
+                    <h3 class="admin-card__title" id="trips_edit_trip_identifiers">Trip identifiers</h3>
                     <div class="admin-card__body">
                         <div><strong>ID:</strong> @trip.getId</div>
                         <div><strong>Team:</strong> @trip.getTeamName</div>
                     </div>
                 </div>
                 <div class="admin-card">
-                    <h3 class="admin-card__title">Destination</h3>
+                    <h3 class="admin-card__title" id="trips_edit_destination">Destination</h3>
                     <div class="admin-card__body">
                         <div><strong>City:</strong> @trip.getTripCity</div>
                         <div><strong>Country:</strong> @trip.getTripCountry</div>
                     </div>
                 </div>
                 <div class="admin-card">
-                    <h3 class="admin-card__title">Schedule</h3>
+                    <h3 class="admin-card__title" id="trips_edit_schedule">Schedule</h3>
                     <div class="admin-card__body">
                         <div><strong>Start:</strong> @trip.getFriendlyTripStartDate</div>
                         <div><strong>End:</strong> @trip.getFriendlyTripEndDate</div>
@@ -64,18 +98,18 @@
         <section class="admin-section">
             <div class="admin-section__header">
                 <div>
-                    <h2 class="admin-section__title">Manage trip participants</h2>
-                    <p class="admin-section__description">Add new volunteers or remove existing members from this trip.</p>
+                    <h2 class="admin-section__title" id="trips_edit_manage_participants">Manage trip participants</h2>
+                    <p class="admin-section__description" id="trips_edit_manage_participants_desc">Add new volunteers or remove existing members from this trip.</p>
                 </div>
             </div>
 
             <div class="admin-columns">
                 <div class="admin-card">
-                    <h3 class="admin-card__title">Add users</h3>
+                    <h3 class="admin-card__title" id="trips_edit_add_users_card">Add users</h3>
                     <div class="admin-card__body">
                         <div class="admin-form admin-form--stacked">
                             <div class="admin-form__field">
-                                <label for="addUsersSelect2">Select users to add</label>
+                                <label for="addUsersSelect2" id="trips_edit_select_add_label">Select users to add</label>
                                 <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
                                 @defining(viewModel.getAllUsers) { allUsers =>
                                     @for(i <- 1 to allUsers.size) {
@@ -87,16 +121,16 @@
                         </div>
                     </div>
                     <div class="admin-card__actions">
-                        <button type="submit" class="admin-button admin-button--secondary">Add</button>
+                        <button type="submit" class="admin-button admin-button--secondary" id="trips_edit_add_btn">Add</button>
                     </div>
                 </div>
 
                 <div class="admin-card">
-                    <h3 class="admin-card__title">Remove users</h3>
+                    <h3 class="admin-card__title" id="trips_edit_remove_users_card">Remove users</h3>
                     <div class="admin-card__body">
                         <div class="admin-form admin-form--stacked">
                             <div class="admin-form__field">
-                                <label for="removeUsersSelect2">Select users to remove</label>
+                                <label for="removeUsersSelect2" id="trips_edit_select_remove_label">Select users to remove</label>
                                 <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
                                     @defining(viewModel.getUsers) { users =>
                                         @for(i <- 1 to users.size) {
@@ -108,7 +142,7 @@
                         </div>
                     </div>
                     <div class="admin-card__actions">
-                        <button type="submit" class="admin-button">Remove</button>
+                        <button type="submit" class="admin-button" id="trips_edit_remove_btn">Remove</button>
                     </div>
                 </div>
             </div>
@@ -119,8 +153,8 @@
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">Users on this trip</h2>
-                <p class="admin-section__description">Current roster of participants assigned to the mission.</p>
+                <h2 class="admin-section__title" id="trips_edit_users_on_trip">Users on this trip</h2>
+                <p class="admin-section__description" id="trips_edit_roster_desc">Current roster of participants assigned to the mission.</p>
             </div>
         </div>
 
@@ -128,10 +162,10 @@
             <table id="usersTripTable" class="admin-table">
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>About</th>
+                        <th id="trips_edit_th_first">First Name</th>
+                        <th id="trips_edit_th_last">Last Name</th>
+                        <th id="trips_edit_th_email">Email</th>
+                        <th id="trips_edit_th_about">About</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -152,4 +186,3 @@
 
 
 }
-

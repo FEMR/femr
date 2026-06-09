@@ -10,19 +10,71 @@
     @additionalScripts = {
         <script type="text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
         <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+        <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('@routes.Assets.versioned("json/languages.json")')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var lang = "@{currentUser.getLanguageCode}" || 'en';
+                    var t = data[lang] || data['en'];
+                    function setText(id, val) {
+                        var el = document.getElementById(id);
+                        if (el && val) el.textContent = val;
+                    }
+                    setText('admin_users_title', t.admin_users_title);
+                    setText('admin_users_desc', t.admin_users_desc);
+                    setText('admin_users_add_user', t.admin_users_add_user);
+                    setText('admin_users_no_users_title', t.admin_users_no_users_title);
+                    setText('admin_users_no_users_desc', t.admin_users_no_users_desc);
+                    document.querySelectorAll('.admin-users-th-name').forEach(function(el) {
+                        if (t.admin_users_th_name) el.textContent = t.admin_users_th_name;
+                    });
+                    document.querySelectorAll('.admin-users-th-email').forEach(function(el) {
+                        if (t.admin_users_th_email) el.textContent = t.admin_users_th_email;
+                    });
+                    document.querySelectorAll('.admin-users-th-roles').forEach(function(el) {
+                        if (t.admin_users_th_roles) el.textContent = t.admin_users_th_roles;
+                    });
+                    document.querySelectorAll('.admin-users-th-about').forEach(function(el) {
+                        if (t.admin_users_th_about) el.textContent = t.admin_users_th_about;
+                    });
+                    document.querySelectorAll('.admin-users-th-last-login').forEach(function(el) {
+                        if (t.admin_users_th_last_login) el.textContent = t.admin_users_th_last_login;
+                    });
+                    document.querySelectorAll('.admin-users-th-password-age').forEach(function(el) {
+                        if (t.admin_users_th_password_age) el.textContent = t.admin_users_th_password_age;
+                    });
+                    document.querySelectorAll('.admin-users-th-status').forEach(function(el) {
+                        if (t.admin_users_th_status) el.textContent = t.admin_users_th_status;
+                    });
+                    document.querySelectorAll('.admin-users-th-actions').forEach(function(el) {
+                        if (t.admin_users_th_actions) el.textContent = t.admin_users_th_actions;
+                    });
+                    document.querySelectorAll('.admin-status--inactive').forEach(function(el) {
+                        if (t.admin_users_status_inactive) el.textContent = t.admin_users_status_inactive;
+                    });
+                    document.querySelectorAll('.admin-status--active').forEach(function(el) {
+                        if (t.admin_users_status_active) el.textContent = t.admin_users_status_active;
+                    });
+                    document.querySelectorAll('.admin-users-edit-btn').forEach(function(el) {
+                        if (t.admin_users_edit_btn) el.textContent = t.admin_users_edit_btn;
+                    });
+                });
+        });
+        </script>
     }
 
 @admin("Users", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
     <section class="admin-section">
         <div class="admin-section__header">
             <div>
-                <h2 class="admin-section__title">User Directory</h2>
-                <p class="admin-section__description">Review accounts, adjust permissions, and keep your team up to date.</p>
+                <h2 class="admin-section__title" id="admin_users_title">User Directory</h2>
+                <p class="admin-section__description" id="admin_users_desc">Review accounts, adjust permissions, and keep your team up to date.</p>
             </div>
             <div class="admin-section__actions">
                 <a href="@UsersController.createGet()" class="admin-button admin-button--secondary">
                     <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
-                    <span>Add user</span>
+                    <span id="admin_users_add_user">Add user</span>
                 </a>
             </div>
         </div>
@@ -30,22 +82,22 @@
         @if(viewModelGet.getUsers.isEmpty) {
             <div class="admin-empty-state">
                 <span class="material-symbols-outlined admin-empty-state__icon" aria-hidden="true">group</span>
-                <h3 class="admin-empty-state__title">No users yet</h3>
-                <p class="admin-empty-state__description">Create an account to begin granting access to femr.</p>
+                <h3 class="admin-empty-state__title" id="admin_users_no_users_title">No users yet</h3>
+                <p class="admin-empty-state__description" id="admin_users_no_users_desc">Create an account to begin granting access to femr.</p>
             </div>
         } else {
             <div class="admin-table-wrap" role="region" aria-label="User directory">
                 <table class="admin-table" id="userTable">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Roles</th>
-                            <th scope="col">About</th>
-                            <th scope="col">Last login</th>
-                            <th scope="col">Password age</th>
-                            <th scope="col">Status</th>
-                            <th scope="col" class="admin-table__actions-heading">Actions</th>
+                            <th scope="col" class="admin-users-th-name">Name</th>
+                            <th scope="col" class="admin-users-th-email">Email</th>
+                            <th scope="col" class="admin-users-th-roles">Roles</th>
+                            <th scope="col" class="admin-users-th-about">About</th>
+                            <th scope="col" class="admin-users-th-last-login">Last login</th>
+                            <th scope="col" class="admin-users-th-password-age">Password age</th>
+                            <th scope="col" class="admin-users-th-status">Status</th>
+                            <th scope="col" class="admin-table__actions-heading admin-users-th-actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,7 +137,7 @@
                                 <td class="admin-table__actions">
                                     <a href="@UsersController.editGet(user.getId)" class="admin-button admin-button--ghost">
                                         <span class="material-symbols-outlined" aria-hidden="true">edit</span>
-                                        <span>Edit</span>
+                                        <span class="admin-users-edit-btn">Edit</span>
                                     </a>
                                     @if(user.getEmail != "admin") {
                                         @toggleButton(!user.isDeleted, user.getId)

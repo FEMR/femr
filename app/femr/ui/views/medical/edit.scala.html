@@ -35,7 +35,9 @@
                             .then(response => response.json())
                             .then(data => {
                                 languageData = data;
+                                window.femrLanguageData = data;
                                 const initialLanguage = localStorage.getItem('languageCode') || 'en';
+                                window.femrLanguageCode = initialLanguage;
                                 //const initialLanguage = currentUser.getLanguageCode();
                                 updateLanguage(initialLanguage);
                             });
@@ -159,6 +161,22 @@
                         const patientSearch = document.getElementById("patientSearch");
                         if (patientSearch) {
                             patientSearch.placeholder = languageData[language].home_index_div_ID;
+                        }
+
+                        // WHO Procedure dropdown items
+                        const t = languageData[language];
+                        if (t.who_proc_major) updateTextContent('who_proc_major_item', t.who_proc_major);
+                        if (t.who_proc_amputation) updateTextContent('who_proc_amputation_item', t.who_proc_amputation);
+                        if (t.who_proc_minor) updateTextContent('who_proc_minor_item', t.who_proc_minor);
+                        if (t.who_proc_nvd) updateTextContent('who_proc_nvd_item', t.who_proc_nvd);
+                        if (t.who_proc_csection) updateTextContent('who_proc_csection_item', t.who_proc_csection);
+                        if (t.who_proc_obstetrics_others) updateTextContent('who_proc_obstetrics_others_item', t.who_proc_obstetrics_others);
+                        const procLabel = document.getElementById('who_proc_placeholder_label');
+                        if (procLabel && t.who_proc_placeholder && procLabel.textContent.trim() === '- WHO Procedure -') {
+                            procLabel.textContent = t.who_proc_placeholder;
+                        }
+                        if (typeof whoDropdown !== 'undefined') {
+                            whoDropdown.rebuildLabels(t);
                         }
                     }
                 });

@@ -4,7 +4,7 @@
     <div class="form-group femr-field">
         <label for="btnAddPhoto" class="control-label" id="partials_medical_tabs_photo_Add">Add Photo:</label>
         <div id="photoInputContainer">
-            <input type="file" class="form-control femr-input" onchange="imageInputChange ( this )" placeholder="Choose Image" />
+            <input type="file" class="form-control femr-input" onchange="imageInputChange ( this )" placeholder="Choose Image" data-i18n-placeholder="medical_photo_choose_image" />
         </div>
     </div>
     <div id="patientImageList" class="femr-photo-grid">
@@ -15,10 +15,10 @@
                 <p name="photoDescription" >@photoRec.getImageDesc</p>
                 <div class="femr-photo-card__actions">
                     <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med femr-btn femr-btn--ghost">
-                        <span class="glyphicon glyphicon-edit"></span> Edit Description
+                        <span class="glyphicon glyphicon-edit"></span> <span data-i18n="medical_photo_edit_description">Edit Description</span>
                     </button>
                     <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med femr-btn femr-btn--danger">
-                        <span class="glyphicon glyphicon-trash"></span> Delete
+                        <span class="glyphicon glyphicon-trash"></span> <span data-i18n="partials_medical_tabs_photo_Delete">Delete</span>
                     </button>
                 </div>
                 <p>@photoRec.getImageDate</p>

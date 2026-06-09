@@ -103,7 +103,7 @@
 
 }
 
-@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history"), assets = assets) {
+@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history", currentUser.getLanguageCode), assets = assets) {
     @if(viewModel.getPatientItems.size > 1) {
         <div class="encounterInfoWrap backgroundForWrap">
             <div class="row well well-sm">

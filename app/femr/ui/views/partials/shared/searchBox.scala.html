@@ -6,6 +6,14 @@
 <script>
         document.addEventListener('DOMContentLoaded', function(event) {
             let languageData;
+            const searchMessageKeys = {
+                "No prescriptions found for that patient": "pharmacy_search_no_prescriptions",
+                "That patient's encounter has been closed.": "search_error_encounter_closed",
+                "That patient has already been seen today. Would you like to edit their encounter?": "search_error_patient_seen_today",
+                "No record found for that patient": "search_error_no_record_found"
+            };
+            const patientSavedPattern = /^Patient information for (.+) \(id: ([^)]+)\) was saved successfully\.$/;
+
             fetch('@routes.Assets.versioned("json/languages.json")')
                     .then(response => response.json())
                     .then(data => {
@@ -16,22 +24,46 @@
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
-                if (element) {
+                if (element && value) {
                     element.textContent = value;
                 }
             }
 
             function updateLanguage(languageCode = "en") {
-                localStorage.setItem('languageCode', languageCode);
-                updateTextContent("search_btn", languageData[languageCode].search_btn);
+                const language = languageData[languageCode] ? languageCode : "en";
+                const strings = Object.assign({}, languageData.en || {}, languageData[language] || {});
+                const pageKey = "@page".toLowerCase();
+
+                localStorage.setItem('languageCode', language);
+                updateTextContent("search_box_title", strings["title_" + pageKey + "_search"]);
+                updateTextContent("search_btn", strings.search_btn);
+                updateTextContent("search_yes", strings.search_yes);
+                updateTextContent("search_no", strings.search_no);
+
                 const searchBtnElement = document.getElementsByClassName("idSearch")
-                if (searchBtnElement) {
-                    searchBtnElement[0].textContent = languageData[languageCode].search_btn
+                if (searchBtnElement.length) {
+                    searchBtnElement[0].textContent = strings.search_btn
                 }
                 const patientIDSearch = document.getElementById("id");
                 if (patientIDSearch) {
-                    patientIDSearch.placeholder = languageData[languageCode].patient_id;
+                    patientIDSearch.placeholder = strings.patient_id;
                 }
+
+                document.querySelectorAll("[data-search-message]").forEach(function(messageElement) {
+                    const message = messageElement.getAttribute("data-search-message");
+                    const savedPatientMatch = patientSavedPattern.exec(message);
+                    if (savedPatientMatch && strings.search_success_patient_saved) {
+                        messageElement.textContent = strings.search_success_patient_saved
+                            .replace("{name}", savedPatientMatch[1])
+                            .replace("{id}", savedPatientMatch[2]);
+                        return;
+                    }
+
+                    const messageKey = searchMessageKeys[message];
+                    if (messageKey && strings[messageKey]) {
+                        messageElement.textContent = strings[messageKey];
+                    }
+                });
             }
         });
 </script>
@@ -47,11 +79,11 @@
         <input type="number" class="fButtonSearch femr-input femr-search__input" id="id" name="id" value="@patientId" readonly/>
 
 
-        <p class="femr-search__message">@message</p>
+        <p class="femr-search__message" id="search_box_message" data-search-message="@message">@message</p>
 
             <div class="femr-search__actions">
-                <a href="/medical/edit/@patientId" class="fButton fOtherButton fYesButton femr-btn femr-btn--primary">Yes</a>
-                <a href="/medical" class="fButton fOtherButton fNoButton femr-btn femr-btn--ghost">No</a>
+                <a href="/medical/edit/@patientId" class="fButton fOtherButton fYesButton femr-btn femr-btn--primary" id="search_yes">Yes</a>
+                <a href="/medical" class="fButton fOtherButton fNoButton femr-btn femr-btn--ghost" id="search_no">No</a>
             </div>
 
 
@@ -60,7 +92,7 @@
         <label for="id" class="hidden">Patient ID</label>
         <input type="number" class="fButtonSearch femr-input femr-search__input" id="id" name="id" placeholder="Patient ID">
 
-        <p class="femr-search__message">@message</p>
+        <p class="femr-search__message" id="search_box_message" data-search-message="@message">@message</p>
         @*idSearch used to validate id via client*@
     <button type="submit" class="idSearch fLandingSearchButton femr-btn femr-btn--primary femr-search__submit">Search</button>
     }

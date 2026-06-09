@@ -1,10 +1,14 @@
+const triageValidationText = (key, fallback) => {
+    return (window.femrTranslationStrings && window.femrTranslationStrings[key]) || fallback;
+};
+
 const validatePatientInformation = () => {
     var patientInformation = triageFields.patientInformation;//located in triage.js
     var isPatientInformationValid = true;
 
     //validate First Name
     if (!patientInformation.firstName.val().toString().trim()) {
-        patientInformation.firstName.attr("placeholder", "Required Input");
+        patientInformation.firstName.attr("placeholder", triageValidationText("triage_required_input", "Required Input"));
         $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
     }
@@ -14,7 +18,7 @@ const validatePatientInformation = () => {
 
     //validate Last Name
     if (!$.trim(patientInformation.lastName.val())) {
-        patientInformation.lastName.attr("placeholder", "Required Input");
+        patientInformation.lastName.attr("placeholder", triageValidationText("triage_required_input", "Required Input"));
         $(patientInformation.lastName).parent(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
     }
@@ -24,7 +28,7 @@ const validatePatientInformation = () => {
 
     //validate City
     if (!patientInformation.city.val().toString().trim()) {
-        patientInformation.city.attr("placeholder", "Required Input");
+        patientInformation.city.attr("placeholder", triageValidationText("triage_required_input", "Required Input"));
         $(patientInformation.city).parents(".generalInfoInput").addClass("has-errors");
         triageFieldValidator.isValid = isPatientInformationValid = false;
     }

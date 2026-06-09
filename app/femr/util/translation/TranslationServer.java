@@ -6,6 +6,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
 
@@ -105,7 +108,7 @@ public class TranslationServer {
             File log = new File(logPath);
             try {
                 log.createNewFile();
-                ProcessBuilder pb = new ProcessBuilder("python3", absPath, timeout);
+                ProcessBuilder pb = buildPythonProcess(absPath, timeout);
                 pb.redirectOutput(log);
                 pb.redirectErrorStream(true);
                 pb.start();
@@ -118,5 +121,45 @@ public class TranslationServer {
 
         }
         System.out.println("Translation server running!");
+    }
+
+    private static ProcessBuilder buildPythonProcess(String scriptPath, String timeout) throws IOException {
+        List<List<String>> candidates = Arrays.asList(
+                Arrays.asList("python3"),
+                Arrays.asList("python"),
+                Arrays.asList("py", "-3")
+        );
+
+        IOException lastException = null;
+        for (List<String> candidate : candidates) {
+            try {
+                if (isPythonCommandAvailable(candidate)) {
+                    List<String> command = new ArrayList<>(candidate);
+                    command.add(scriptPath);
+                    command.add(timeout);
+                    return new ProcessBuilder(command);
+                }
+            } catch (IOException e) {
+                lastException = e;
+            }
+        }
+
+        if (lastException != null) {
+            throw lastException;
+        }
+        throw new IOException("No Python executable found. Install Python or add it to PATH.");
+    }
+
+    private static boolean isPythonCommandAvailable(List<String> commandPrefix) throws IOException {
+        List<String> versionCommand = new ArrayList<>(commandPrefix);
+        versionCommand.add("--version");
+
+        try {
+            Process process = new ProcessBuilder(versionCommand).redirectErrorStream(true).start();
+            return process.waitFor() == 0;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted while locating Python executable.", e);
+        }
     }
 }

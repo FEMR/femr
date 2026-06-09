@@ -1,22 +1,54 @@
+function getAdminLanguageData() {
+    var url = window.femrLanguageUrl || "/assets/json/languages.json";
+    var userLanguage = window.femrLanguageCode;
+    var storedLanguage = localStorage.getItem("languageCode");
 
-// Called by each trips page's language fetch callback with translated DataTables strings.
-// Falls back to empty language object if fetch fails (each page's .catch calls initTripsTables({})).
+    return $.getJSON(url).then(function(data) {
+        var language = data[userLanguage] ? userLanguage : (data[storedLanguage] ? storedLanguage : "en");
+        localStorage.setItem("languageCode", language);
+        return $.extend({}, data.en || {}, data[language] || {});
+    }, function() {
+        return {};
+    });
+}
+
+function dataTableLanguage(strings) {
+    return {
+        sLengthMenu: (strings.datatable_show || "Show") + " _MENU_ " + (strings.datatable_entries || "entries"),
+        sSearch: (strings.datatable_search || "Search") + ":",
+        sInfo: strings.datatable_info || "Showing _START_ to _END_ of _TOTAL_ entries",
+        sInfoEmpty: strings.datatable_info_empty || "Showing 0 to 0 of 0 entries",
+        sInfoFiltered: strings.datatable_info_filtered || "(filtered from _MAX_ total entries)",
+        sEmptyTable: strings.datatable_empty_table || "No data available in table",
+        sZeroRecords: strings.datatable_zero_records || "No matching records found",
+        oPaginate: {
+            sPrevious: strings.datatable_previous || "Previous",
+            sNext: strings.datatable_next || "Next"
+        }
+    };
+}
+
 window.initTripsSelect2 = function(addPlaceholder, removePlaceholder) {
-    if ($('#addUsersSelect2').length > 0) {
-        $('#addUsersSelect2').select2({ placeholder: addPlaceholder || 'Add users here' });
+    var $addUsers = $('#addUsersSelect2');
+    var $removeUsers = $('#removeUsersSelect2');
+
+    if ($addUsers.length > 0 && !$addUsers.data('select2')) {
+        $addUsers.select2({ placeholder: addPlaceholder || 'Add users here' });
     }
-    if ($('#removeUsersSelect2').length > 0) {
-        $('#removeUsersSelect2').select2({ placeholder: removePlaceholder || 'Remove users here' });
+    if ($removeUsers.length > 0 && !$removeUsers.data('select2')) {
+        $removeUsers.select2({ placeholder: removePlaceholder || 'Remove users here' });
     }
 };
 
 window.initTripsTables = function(dtLang) {
-    if (!$.fn.DataTable) return;
-    var lang = dtLang || {};
-    ['#tripTable', '#cityTable', '#teamTable'].forEach(function(id) {
-        var $t = $(id);
-        if ($t.length && !$.fn.DataTable.isDataTable(id)) {
-            $t.DataTable({ language: lang });
+    if (!$.fn.DataTable) {
+        return;
+    }
+
+    ['#tripTable', '#cityTable', '#teamTable'].forEach(function(tableId) {
+        var $table = $(tableId);
+        if ($table.length > 0 && !$.fn.DataTable.isDataTable(tableId)) {
+            $table.DataTable({ language: dtLang || {} });
         }
     });
 };
@@ -38,6 +70,12 @@ $(document).ready(function(){
         }
     });
 
-    // Select2 init is handled by window.initTripsSelect2, called from edit.scala.html's fetch callback.
+    getAdminLanguageData().then(function(strings) {
+        window.initTripsTables(dataTableLanguage(strings));
+        window.initTripsSelect2(
+            strings.trips_select2_add_users || "Add users here",
+            strings.trips_select2_remove_users || "Remove users here"
+        );
+    });
 
 });

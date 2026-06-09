@@ -11,59 +11,55 @@
 
     @additionalScripts = {
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                fetch('@routes.Assets.versioned("json/languages.json")')
+                        .then(response => response.json())
+                        .then(data => {
+                            const userLanguage = '@{currentUser.getLanguageCode}';
+                            const storedLanguage = localStorage.getItem('languageCode');
+                            const languageCode = data[userLanguage] ? userLanguage : storedLanguage;
+                            const language = data[languageCode] ? languageCode : 'en';
+                            const strings = Object.assign({}, data.en || {}, data[language] || {});
+
+                            window.femrTranslationStrings = strings;
+                            localStorage.setItem('languageCode', language);
+
+                            document.querySelectorAll('[data-i18n]').forEach(function(element) {
+                                const key = element.getAttribute('data-i18n');
+                                if (strings[key]) {
+                                    element.textContent = strings[key];
+                                }
+                            });
+
+                            const formularyMessageKeys = {
+                                'Medication is not found in the formulary': 'pharmacies_edit_formulary_missing',
+                                'Not Enough Medication Remaining to Dispense!': 'pharmacies_edit_formulary_not_enough'
+                            };
+                            document.querySelectorAll('[data-formulary-message]').forEach(function(element) {
+                                const key = formularyMessageKeys[element.getAttribute('data-formulary-message')];
+                                if (key && strings[key]) {
+                                    element.textContent = strings[key];
+                                }
+                            });
+
+                            const overviewTitle = document.getElementById('partials_medical_Overview_Patient');
+                            if (overviewTitle) {
+                                const idMatch = overviewTitle.textContent.match(/Patient ID:\s*(.+)$/);
+                                const patientId = idMatch ? idMatch[1] : '';
+                                const pageName = strings.langCode_pharmacy || strings.pharmacies_edit_Pharmacy || 'Pharmacy';
+                                const patientIdLabel = strings.patient_id || 'Patient ID';
+                                overviewTitle.textContent = (strings.partials_medical_Overview_Patient || 'Patient Overview').trim()
+                                    + ' - ' + pageName + ' - ' + patientIdLabel + ': ' + patientId;
+                            }
+                        })
+                        .catch(function() {});
+            });
+        </script>
         <script type = "text/javascript" src="@assets.path("js/pharmacy/pharmacy.js")"></script>
         <script type = "text/javascript" src="@assets.path("js/pharmacy/pharmacyClientValidation.js")"></script>
         <script type = "text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
         <script type = "text/javascript"   src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
-        <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('@routes.Assets.versioned("json/languages.json")')
-                .then(function(response) { return response.json(); })
-                .then(function(data) {
-                    var lang = "@{currentUser.getLanguageCode}" || 'en';
-                    var t = data[lang] || data['en'];
-                    function setText(id, val) {
-                        var el = document.getElementById(id);
-                        if (el && val) el.textContent = val;
-                    }
-                    setText('patient_diagnoses', t.patient_diagnoses);
-                    setText('pharmacy_review', t.pharmacy_review);
-                    setText('pharmacy_notes', t.pharmacy_notes);
-                    setText('pharmacy_medications', t.pharmacy_medications);
-                    setText('pharmacy_counseled_disclaimer', t.pharmacy_counseled_disclaimer);
-                    setText('pharmacy_submit', t.pharmacy_submit);
-                    setText('pharmacy_patient_history', t.pharmacy_patient_history);
-                    setText('pharmacy_view_in_medical', t.pharmacy_view_in_medical);
-                    document.querySelectorAll('.pharmacy-note-col').forEach(function(el) {
-                        if (t.pharmacy_note_col) el.textContent = t.pharmacy_note_col;
-                    });
-                    document.querySelectorAll('.pharmacy-prescriber-col').forEach(function(el) {
-                        if (t.pharmacy_prescriber_col) el.textContent = t.pharmacy_prescriber_col;
-                    });
-                    document.querySelectorAll('.replaceBtn').forEach(function(el) {
-                        if (t.pharmacy_replace_btn) el.textContent = t.pharmacy_replace_btn;
-                    });
-                    document.querySelectorAll('.pharm-prescriber-label').forEach(function(el) {
-                        if (t.pharmacy_prescriber_label) el.textContent = t.pharmacy_prescriber_label;
-                    });
-                    document.querySelectorAll('.pharm-current-qty-label').forEach(function(el) {
-                        if (t.pharmacy_current_qty_label) el.textContent = t.pharmacy_current_qty_label;
-                    });
-                    document.querySelectorAll('.pharm-prescription-label').forEach(function(el) {
-                        if (t.pharmacy_prescription_label) el.textContent = t.pharmacy_prescription_label;
-                    });
-                    document.querySelectorAll('.pharm-administration-label').forEach(function(el) {
-                        if (t.pharmacy_administration_label) el.textContent = t.pharmacy_administration_label;
-                    });
-                    document.querySelectorAll('.pharm-days-label').forEach(function(el) {
-                        if (t.pharmacy_days_label) el.textContent = t.pharmacy_days_label;
-                    });
-                    document.querySelectorAll('.pharm-amount-label').forEach(function(el) {
-                        if (t.pharmacy_amount_label) el.textContent = t.pharmacy_amount_label;
-                    });
-                });
-        });
-        </script>
     }
     @additionalStyles = {
 
@@ -71,7 +67,7 @@
         <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
     }
 
-@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy"), assets = assets) {
+@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy", currentUser.getLanguageCode), assets = assets) {
     <div id="pharmacyContentWrap" class="femr-pharmacy">
 
         @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, viewModel.getSettings, "Pharmacy - " + "Patient ID: " + viewModel.getPatient.getId)
@@ -81,7 +77,7 @@
                 <div class="femr-pharmacy__layout">
                     <div id="diagnosisWrap" class="femr-pharmacy__card">
                         <div class="femr-pharmacy__card-header">
-                            <h4 class="femr-pharmacy__card-title" id="patient_diagnoses">Patient Diagnoses</h4>
+                            <h4 class="femr-pharmacy__card-title" data-i18n="pharmacies_edit_patient_diagnoses">Patient Diagnoses</h4>
                         </div>
                         <div class="femr-pharmacy__card-body">
                             <ol class="problems femr-pharmacy__diagnoses">
@@ -99,13 +95,13 @@
 
                     <div id="medicationWrap" class="femr-pharmacy__card">
                         <div class="femr-pharmacy__card-header">
-                            <h4 class="femr-pharmacy__card-title" id="pharmacy_review">Pharmacy Review</h4>
+                            <h4 class="femr-pharmacy__card-title" data-i18n="pharmacies_edit_review">Pharmacy Review</h4>
                         </div>
                         <div class="femr-pharmacy__card-body">
                             <div class="femr-pharmacy__panel">
-                                <h4 class="femr-pharmacy__section-title" id="pharmacy_notes">Pharmacy Notes</h4>
+                                <h4 class="femr-pharmacy__section-title" data-i18n="pharmacies_edit_notes">Pharmacy Notes</h4>
                                 <table class="noteTable femr-pharmacy__notes-table">
-                                <tr class="noteRow"><th class="pharmacy-note-col" width="70%">Note</th><th class="pharmacy-prescriber-col" width="30%">Prescriber</th></tr>
+                                <tr class="noteRow"><th width="70%" data-i18n="pharmacies_edit_Note">Note</th><th width="30%" data-i18n="pharmacies_edit_Prescriber">Prescriber</th></tr>
                                 @if(viewModel.getNotes != null) {
                                     @for(y <- 1 to viewModel.getNotes.size) {
                                         @if(viewModel.getNotes.get(y - 1) != null) {
@@ -116,28 +112,28 @@
                                 </table>
                             </div>
                             <div class="femr-pharmacy__panel">
-                                <h4 class="femr-pharmacy__section-title" id="pharmacy_medications">Medications</h4>
+                                <h4 class="femr-pharmacy__section-title" data-i18n="pharmacies_edit_medications">Medications</h4>
                                 <ol id="medicationList" class="femr-pharmacy__medications">
                             @for(x <- 1 to viewModel.getPrescriptions.size) {
                                 @defining(viewModel.getPrescriptions.get(x - 1)) { prescription =>
                                     <li class="prescription femr-pharmacy__medication" id="med@(x-1)" data-medID="@prescription.getMedicationID">
                                         <input type="text" class="hidden" name="prescriptions[@(x-1)].id" value="@prescription.getId"/>
-                                        <button type="button" class="replaceBtn femr-btn femr-btn--secondary femr-pharmacy__replace-btn">Replace</button>
+                                        <button type="button" class="replaceBtn femr-btn femr-btn--secondary femr-pharmacy__replace-btn" data-i18n="pharmacies_edit_Replace">Replace</button>
                                         <div>
                                             <span>@prescription.printFullPrescriptionName </span>
                                         </div>
                                         <div class="femr-pharmacy__meta">
                                             <span id="prescriber">
-                                                <span class="pharm-prescriber-label">Prescriber: </span>@prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
+                                                <span data-i18n="pharmacies_edit_Prescriber">Prescriber</span>: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
                                         </div>
-                                        <div class="femr-pharmacy__meta medicationRemaining"><span class="pharm-current-qty-label">Current Quantity: </span>@prescription.getMedicationItem.getQuantityCurrent</div>
-                                            <div class="lowMedication femr-pharmacy__low-stock">@prescription.getFormularyMessage</div>
+                                        <div class="femr-pharmacy__meta medicationRemaining"><span data-i18n="pharmacies_edit_Current">Current Quantity:</span> @prescription.getMedicationItem.getQuantityCurrent</div>
+                                            <div class="lowMedication femr-pharmacy__low-stock" data-formulary-message="@prescription.getFormularyMessage">@prescription.getFormularyMessage</div>
                                         <div class="replacement hidden femr-pharmacy__replacement">
                                             <div class="prescription-grid prescriptionHeader">
-                                                <label class="prescription-field prescriptionName pharm-prescription-label" for="prescription">Prescription</label>
-                                                <label class="prescription-field prescriptionAdministration pharm-administration-label">Administration</label>
-                                                <label class="prescription-field prescriptionAdministrationDays pharm-days-label">Days</label>
-                                                <label class="prescription-field prescriptionAmount pharm-amount-label">Amount</label>
+                                                <label class="prescription-field prescriptionName" for="prescription" data-i18n="pharmacies_edit_Prescription">Prescription</label>
+                                                <label class="prescription-field prescriptionAdministration" data-i18n="pharmacies_edit_Administration">Administration</label>
+                                                <label class="prescription-field prescriptionAdministrationDays" data-i18n="pharmacies_edit_Days">Days</label>
+                                                <label class="prescription-field prescriptionAmount" data-i18n="pharmacies_edit_Amount">Amount</label>
                                             </div>
 
                                             @prescriptionRow( viewModel.getMedicationAdministrationItems, x-1, null )
@@ -153,18 +149,18 @@
                             <div id="disclaimerWrap" class="femr-pharmacy__disclaimer">
                                 <input type="checkbox" name="disclaimer" value="1" required/>
                                 <input type="hidden" name="disclaimer" value="0" />
-                                <label for="disclaimer">
-                                    <span id="pharmacy_counseled_disclaimer">The patient was counseled on the risks and side effects of the medications dispensed.</span></label>
+                                <label for="disclaimer" data-i18n="pharmacies_edit_The">
+                                    The patient was counseled on the risks and side effects of the medications dispensed.</label>
                                 <!--ISSUE#138 https://teamfemr.atlassian.net/browse/FEMR-138
                                  Contributed by Mohammad Alahmadi during the CEN5035 course at FSU -->
                             </div>
                             <div id="submitWrap" class="femr-pharmacy__actions">
-                                <button type="submit" id="pharmacySubmitBtn" class="femr-btn femr-btn--primary">
-                                    <span id="pharmacy_submit">Submit</span></button>
+                                <button type="submit" id="pharmacySubmitBtn" class="femr-btn femr-btn--primary" data-i18n="pharmacies_edit_Submit">
+                                    Submit</button>
 
                                 <a href="@{HistoryController.indexPatientGet(
-                                    Integer.toString(viewModel.getPatient.getId)).url}" class="femr-btn femr-btn--secondary" target="_blank" id="pharmacy_patient_history">Patient History</a>
-                                <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="femr-btn femr-btn--secondary" target="_blank" id="pharmacy_view_in_medical">View in Medical</a>
+                                    Integer.toString(viewModel.getPatient.getId)).url}" class="femr-btn femr-btn--secondary" target="_blank" data-i18n="pharmacies_edit_Patient">Patient History</a>
+                                <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="femr-btn femr-btn--secondary" target="_blank" data-i18n="pharmacies_edit_View">View in Medical</a>
                             </div>
 
                         </div>

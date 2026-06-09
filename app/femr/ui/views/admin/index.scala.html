@@ -20,32 +20,35 @@
 
             function updateTextContent(elementId, value) {
                 const element = document.getElementById(elementId);
-                if (element) {
+                if (element && value) {
                     element.textContent = value;
                 }
             }
 
             function updateLanguage(languageCode = "en") {
-                localStorage.setItem('languageCode', languageCode);
-                updateTextContent("admin_welcome", languageData[languageCode].admin_welcome);
-                updateTextContent("admin_card_configure", languageData[languageCode].admin_configure);
-                updateTextContent("admin_card_inventory", languageData[languageCode].admin_inventory);
-                updateTextContent("admin_card_trips", languageData[languageCode].admin_trips);
-                updateTextContent("admin_card_users", languageData[languageCode].admin_users);
-                updateTextContent("admin_card_updates", languageData[languageCode].admin_updates);
-                updateTextContent("admin_open_configure", languageData[languageCode].admin_open_configure);
-                updateTextContent("admin_open_inventory", languageData[languageCode].admin_open_inventory);
-                updateTextContent("admin_open_trips", languageData[languageCode].admin_open_trips);
-                updateTextContent("admin_open_users", languageData[languageCode].admin_open_users);
-                updateTextContent("admin_open_updates", languageData[languageCode].admin_open_updates);
-                updateTextContent("admin_open_tabs", languageData[languageCode].admin_open_tabs);
-                updateTextContent("admin_card_tabs", languageData[languageCode].admin_card_tabs);
-                updateTextContent("admin_card_configure_desc", languageData[languageCode].admin_card_configure_desc);
-                updateTextContent("admin_card_inventory_desc", languageData[languageCode].admin_card_inventory_desc);
-                updateTextContent("admin_card_trips_desc", languageData[languageCode].admin_card_trips_desc);
-                updateTextContent("admin_card_users_desc", languageData[languageCode].admin_card_users_desc);
-                updateTextContent("admin_card_updates_desc", languageData[languageCode].admin_card_updates_desc);
-                updateTextContent("admin_card_tabs_desc", languageData[languageCode].admin_card_tabs_desc);
+                const locale = languageData[languageCode] ? languageCode : "en";
+                const strings = Object.assign({}, languageData.en || {}, languageData[locale] || {});
+
+                localStorage.setItem('languageCode', locale);
+                updateTextContent("admin_welcome", strings.admin_welcome);
+                updateTextContent("admin_card_configure", strings.admin_configure);
+                updateTextContent("admin_configure_description", strings.admin_configure_description);
+                updateTextContent("admin_configure_cta", strings.admin_configure_cta);
+                updateTextContent("admin_card_inventory", strings.admin_inventory);
+                updateTextContent("admin_inventory_description", strings.admin_inventory_description);
+                updateTextContent("admin_inventory_cta", strings.admin_inventory_cta);
+                updateTextContent("admin_card_trips", strings.admin_trips);
+                updateTextContent("admin_trips_description", strings.admin_trips_description);
+                updateTextContent("admin_trips_cta", strings.admin_trips_cta);
+                updateTextContent("admin_card_users", strings.admin_users);
+                updateTextContent("admin_users_description", strings.admin_users_description);
+                updateTextContent("admin_users_cta", strings.admin_users_cta);
+                updateTextContent("admin_card_updates", strings.admin_updates);
+                updateTextContent("admin_updates_description", strings.admin_updates_description);
+                updateTextContent("admin_updates_cta", strings.admin_updates_cta);
+                updateTextContent("admin_card_tabs", strings.admin_tabs);
+                updateTextContent("admin_tabs_description", strings.admin_tabs_description);
+                updateTextContent("admin_tabs_cta", strings.admin_tabs_cta);
             }
         });
 </script>
@@ -60,45 +63,45 @@
             <div class="admin-action-grid__item">
                 <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">tune</span>
                 <h3 class="admin-action-grid__title" id="admin_card_configure">Configure</h3>
-                <p class="admin-action-grid__description" id="admin_card_configure_desc">Control kit-wide feature toggles and system behaviour.</p>
+                <p class="admin-action-grid__description" id="admin_configure_description">Control kit-wide feature toggles and system behaviour.</p>
                 <a class="admin-action-grid__cta" href="@ConfigureController.manageGet()">
-                    <span id="admin_open_configure">Open Configure</span>
+                    <span id="admin_configure_cta">Open Configure</span>
                 </a>
             </div>
 
             <div class="admin-action-grid__item">
                 <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">inventory_2</span>
                 <h3 class="admin-action-grid__title" id="admin_card_inventory">Inventory</h3>
-                <p class="admin-action-grid__description" id="admin_card_inventory_desc">Manage formulary items, adjust quantities, and export trip data.</p>
+                <p class="admin-action-grid__description" id="admin_inventory_description">Manage formulary items, adjust quantities, and export trip data.</p>
                 <a class="admin-action-grid__cta" href="@InventoryController.manageGet(0)">
-                    <span id="admin_open_inventory">Manage Inventory</span>
+                    <span id="admin_inventory_cta">Manage Inventory</span>
                 </a>
             </div>
 
             <div class="admin-action-grid__item">
                 <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">flight_takeoff</span>
                 <h3 class="admin-action-grid__title" id="admin_card_trips">Trips</h3>
-                <p class="admin-action-grid__description" id="admin_card_trips_desc">Create teams and trips, assign members, and keep destinations up to date.</p>
+                <p class="admin-action-grid__description" id="admin_trips_description">Create teams and trips, assign members, and keep destinations up to date.</p>
                 <a class="admin-action-grid__cta" href="@TripController.manageGet()">
-                    <span id="admin_open_trips">Plan Trips</span>
+                    <span id="admin_trips_cta">Plan Trips</span>
                 </a>
             </div>
 
             <div class="admin-action-grid__item">
                 <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">group</span>
                 <h3 class="admin-action-grid__title" id="admin_card_users">Users</h3>
-                <p class="admin-action-grid__description" id="admin_card_users_desc">Invite teammates, adjust roles, and maintain account access.</p>
+                <p class="admin-action-grid__description" id="admin_users_description">Invite teammates, adjust roles, and maintain account access.</p>
                 <a class="admin-action-grid__cta" href="@UsersController.manageGet()">
-                    <span id="admin_open_users">Manage Users</span>
+                    <span id="admin_users_cta">Manage Users</span>
                 </a>
             </div>
 
             <div class="admin-action-grid__item">
                 <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">system_update</span>
                 <h3 class="admin-action-grid__title" id="admin_card_updates">Updates</h3>
-                <p class="admin-action-grid__description" id="admin_card_updates_desc">Monitor kit health, trigger backups, and manage language packages.</p>
+                <p class="admin-action-grid__description" id="admin_updates_description">Monitor kit health, trigger backups, and manage language packages.</p>
                 <a class="admin-action-grid__cta" href="@UpdatesController.manageGet()">
-                    <span id="admin_open_updates">Review Updates</span>
+                    <span id="admin_updates_cta">Review Updates</span>
                 </a>
             </div>
 
@@ -106,9 +109,9 @@
                 <div class="admin-action-grid__item">
                     <span class="material-symbols-outlined admin-action-grid__icon" aria-hidden="true">tab</span>
                     <h3 class="admin-action-grid__title" id="admin_card_tabs">Tabs</h3>
-                    <p class="admin-action-grid__description" id="admin_card_tabs_desc">Configure superuser tab visibility and advanced settings.</p>
+                    <p class="admin-action-grid__description" id="admin_tabs_description">Configure superuser tab visibility and advanced settings.</p>
                     <a class="admin-action-grid__cta" href="@TabController.manageGet()">
-                        <span id="admin_open_tabs">Open Tabs</span>
+                        <span id="admin_tabs_cta">Open Tabs</span>
                     </a>
                 </div>
             }

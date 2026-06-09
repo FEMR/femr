@@ -15,6 +15,10 @@ window.addEventListener('keydown',function(e){
     }
 },true);
 
+function medicalText(key, fallback) {
+    return (window.femrTranslationStrings && window.femrTranslationStrings[key]) || fallback;
+}
+
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
     newProblems: $('input[name].newProblems'),
@@ -388,7 +392,7 @@ $(document).ready(function () {
                 if(listTranslated[0]["text"] === "Translation Unavailable"){
                     //option 1 - end buffering
                         $("#loading").remove();
-                        $("#toggleBtn").text("Unavailable");
+                        $("#toggleBtn").text(medicalText("medical_translation_unavailable", "Unavailable"));
                 }
                 else if (listTranslated[0]["text"] === "Delimiter Error") {
                     console.log("backup translation required out of 16 tabs ", listTranslated.length, " recovered");
@@ -401,7 +405,7 @@ $(document).ready(function () {
                                 if (i === jsonObj.length - 1) {
                                     // end buffering on last field
                                     $("#loading").remove();
-                                    $("#toggleBtn").text("Show Original");
+                                    $("#toggleBtn").text(medicalText("medical_show_original", "Show Original"));
                                 }
                                 var textOut = JSON.parse(response.translation)[0]["text"]
                                 populateField(textOut, jsonObj, response.fromLanguageIsRtl, response.toLanguageIsRtl, i);
@@ -414,7 +418,7 @@ $(document).ready(function () {
             }
                 else{
                     $("#loading").remove();
-                    $("#toggleBtn").text("Show Original");
+                    $("#toggleBtn").text(medicalText("medical_show_original", "Show Original"));
 
                     // for each field populate them
                     for (let i = 0; i < jsonObj.length; i++) {
@@ -450,7 +454,7 @@ $(document).ready(function () {
 
     // toggle translated text
     $('#toggleBtn').click(function () {
-        if (this.innerHTML === "Show Original" || this.innerHTML === "↻") {
+        if ($.trim($(this).text()) === medicalText("medical_show_original", "Show Original") || this.innerHTML.charCodeAt(0) === 8635) {
             // toggle complaint
             var oldText = $(jsonObj[0].id).text();
             var newText = $(jsonObj[0].id + "Store").text();
@@ -542,7 +546,7 @@ $(document).ready(function () {
                 if (typeof window.femrApplyTranslations === 'function') window.femrApplyTranslations();
             },
             error: function () {
-                alert("Error. Please make sure you are connected to fEMR.");
+                alert(medicalText("medical_connection_error", "Error. Please make sure you are connected to fEMR."));
             }
         })
 
@@ -570,7 +574,7 @@ $(document).ready(function () {
 
         var isValid = (typeof vitalClientValidator === 'function') ? vitalClientValidator(patientVitals) : true;
         if (!isValid) {
-            alert("Please correct highlighted vitals before saving.");
+            alert(medicalText("medical_vitals_validation_error", "Please correct highlighted vitals before saving."));
             return;
         }
 
@@ -608,7 +612,7 @@ $(document).ready(function () {
                 }
             });
         }).fail(function () {
-            alert("Unable to save vitals right now. Please try again.");
+            alert(medicalText("medical_vitals_save_error", "Unable to save vitals right now. Please try again."));
         });
     });
 
@@ -741,7 +745,7 @@ function setupModal(titleText, descText, imgSrcVal, onSave) {
         $('#modalImg').parent(
 
 
-        ).append("<p>Image Preview is not supported in your browser.</p>")
+        ).append("<p>" + medicalText("medical_photo_preview_unsupported", "Image Preview is not supported in your browser.") + "</p>")
     }
     if (titleText != null) {
         $('#myModalLabel').text(titleText);
@@ -767,7 +771,7 @@ function addNewPortrait() {
         newPortrait.find('> div > img').replaceWith($('#modalImg').clone(true));
     } else {
         newPortrait.find('> div > img').remove();
-        newPortrait.find('> div').append("<p>Image Preview is not supported in your browser.</p>")
+        newPortrait.find('> div').append("<p>" + medicalText("medical_photo_preview_unsupported", "Image Preview is not supported in your browser.") + "</p>")
     }
 
     //Clear the id
@@ -792,12 +796,12 @@ function addNewPortrait() {
 }
 
 function replaceFileInputControl() {
-    $('#photoInputContainer').html('<input type="file" class="form-control femr-input" onchange="imageInputChange(this)" placeholder="Choose Image" />');
+    $('#photoInputContainer').html('<input type="file" class="form-control femr-input" onchange="imageInputChange(this)" placeholder="' + medicalText("medical_photo_choose_image", "Choose Image") + '" />');
 }
 
 function imageInputChange(evt) {
     setDynamicImage(evt, "#modalImg");
-    setupModal("New Photo", "", null, function () {
+    setupModal(medicalText("medical_photo_new_photo", "New Photo"), "", null, function () {
         //remove warnings from modal
         $('#modalImg').parent().find('p').remove();
         addNewPortrait();
@@ -818,7 +822,7 @@ function portraitEdit(e) {
     var srcVal = rootDiv.find('> > img').first().prop('src');
 
     //Set modal text:
-    setupModal("Edit Description", descText, srcVal, function () {
+    setupModal(medicalText("medical_photo_edit_description", "Edit Description"), descText, srcVal, function () {
 
         var newDesc = $('#modalTextEntry').val();
         if (descText != newDesc) {
@@ -837,7 +841,7 @@ function portraitEdit(e) {
 }
 
 function portraitDelete(e) {
-    var b = confirm("Are you sure you would like to delete this photo?");
+    var b = confirm(medicalText("medical_photo_delete_confirm", "Are you sure you would like to delete this photo?"));
     if (b === true) {
         //get a reference to the root div element (move up five places in this case)
         var rootDiv = $(e).parent().parent().parent().parent().parent().first();

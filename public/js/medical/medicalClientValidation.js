@@ -2,6 +2,10 @@
 var medicalFieldValidator = {
     isValid : true,
     errors: [],
+    translate: function(key, fallback) {
+        var strings = window.femrTranslationStrings || {};
+        return strings[key] || fallback;
+    },
     validatePrescriptions : function(){
         var prescriptions = [];
         prescriptionFeature.refreshSelectors();
@@ -21,7 +25,10 @@ var medicalFieldValidator = {
         var last = prescriptions[0];
         for (var i=1; i<prescriptions.length; i++){
             if (prescriptions[i] == last && prescriptions[i] != ''){
-                medicalFieldValidator.errors.push("Duplicate prescriptions can not be submitted.");
+                medicalFieldValidator.errors.push(medicalFieldValidator.translate(
+                    "prescription_validation_duplicate",
+                    "Duplicate prescriptions can not be submitted."
+                ));
             }
             last = prescriptions[i];
         }

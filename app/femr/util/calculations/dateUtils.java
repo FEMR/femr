@@ -27,6 +27,8 @@ import play.Logger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -137,7 +139,7 @@ public class dateUtils {
         LocalDate now = new LocalDate();
         Months months = Months.monthsBetween(birthdate, now);
 
-        return months.getMonths();
+        return months.getMonths() % 12;
     }
 
     public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {

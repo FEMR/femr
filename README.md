@@ -9,17 +9,13 @@
 
 ### Description
 
-fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.
+fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://femr.global) for more information and a live demo.
 
 ### Community
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
 3. [Team FEMR](https://femr.global/)
 4. [Confluence](https://calpoly-se-capstone.atlassian.net/wiki/spaces/fEMR/pages/45809675/START+HERE+What+is+fEMR)
-
-### tEMR Community
-1. [JIRA](https://platinum.cscaws.com:8443/projects/TEMR/summary)
-2. [Cal Poly JIRA](https://calpoly-se-capstone.atlassian.net/jira/software/projects/FEMR/summary)
 
 ### Dependencies
 

@@ -401,18 +401,33 @@ public class InventoryController extends Controller {
 
         Http.MultipartFormData formData = request().body().asMultipartFormData();
 
+        if (formData == null || formData.getFiles().isEmpty()) {
+            System.out.println("CSV import failed: no file was uploaded.");
+            flash("error", "Please choose a CSV file to upload.");
+            return redirect("/admin/inventory/" + tripId);
+        }
+
         // ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
         Http.MultipartFormData.FilePart uploadedFile = (Http.MultipartFormData.FilePart) formData.getFiles().get(0);
+
+        if (uploadedFile.getFilename() == null
+                || uploadedFile.getFilename().trim().isEmpty()) {
+            System.out.println("CSV import failed: no file was selected.");
+            flash("error", "Please choose a CSV file to upload.");
+            return redirect("/admin/inventory/" + tripId);
+        }
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile(),currentUser);
 
-        if (formData != null && !importServiceResponse.hasErrors()) {
+        if (!importServiceResponse.hasErrors()) {
             return redirect("/admin/inventory/" + tripId);
         } else {
             System.out.println("CSV import failed: "
                     + importServiceResponse.getErrors());
+            flash("error",
+                    "The CSV could not be imported. Check its column headers and values, then try again.");
             return redirect("/admin/inventory/" + tripId);
         }
     }

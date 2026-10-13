@@ -94,6 +94,12 @@
 
     @inventoryMenu(viewModel.getMissionTripItem)
 
+    @if(flash.containsKey("error")) {
+        <div class="alert alert-danger" role="alert">
+            @flash.get("error")
+        </div>
+    }
+
     @if(currentUser.getTripId != null && viewModel.getMissionTripItem != null) {
 
         <section class="admin-section">

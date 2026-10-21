@@ -36,15 +36,20 @@ import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.BurnRate;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.CSVParser;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
+import org.apache.commons.csv.CSVRecord;
 import org.ejml.simple.SimpleMatrix;
 import org.joda.time.DateTime;
 import play.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class InventoryService implements IInventoryService {
 
@@ -395,111 +400,68 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser) {
 
         ServiceResponse<String> response = new ServiceResponse<>();
-        List<InventoryExportItem> newMedicationInventory = new ArrayList<>();
         List<? extends IMedicationInventory> existentMedicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
-        try {
-            File myObj = (File) file;
-            Scanner myReader = new Scanner(myObj);
-            Pattern pattern = Pattern.compile(",");
-            if (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                String[] items = pattern.split(data);
-                if (!items[0].equals("Medication") || !items[1].equals("Quantity")) {
-                    response.addError("", "CSV file header is not valid ...");
-                    return response;
-                }
-            }
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                String[] items = pattern.split(data);
-                String name;
-                name = currentUser.getLastName() + ", " + currentUser.getFirstName();
-                boolean medExists = false;
-                IMedicationInventory newMedication = null;
-                for (IMedicationInventory med : existentMedicationInventory) {
-                    MedicationItem medHelper = itemModelMapper.createMedicationItem(med.getMedication(), 0, 0, null, null, null);
-                    if (medHelper.getFullName().contains(items[0])) {
-                        medExists = true;
-                        newMedication = med;
-                        break;
-                    } else {
-                        medExists = false;
-                    }
-                }
-                InventoryExportItem finalMed;
+        Map<String, IMedicationInventory> iMedicationInventoryByFullname = new HashMap<>();
+        String createdBy = String.format("%s, %s", currentUser.getLastName(), currentUser.getFirstName());
+        File myObj = (File) file;
 
+        try (Reader reader = Files.newBufferedReader(myObj.toPath(), StandardCharsets.UTF_8)) {
+            String[] expectedHeaders = new String[] {"Medication", "Quantity"};
+            List<CSVRecord> records = CSVParser.parse(reader, expectedHeaders);
 
-                if (medExists == true) {
-                    //update the drug
-                    ServiceResponse<MedicationItem> medicationItemServiceResponse;
-                    medicationItemServiceResponse = createOrUpdateMedicationInventory(
-                            newMedication.getMedication().getId(),
-                            tripId,
-                            Integer.parseInt(items[1]),
-                            Integer.parseInt(items[1]) == 0 ?
-                                    newMedication.getTimeAdded() :
-                                    DateTime.now(), name);
-                    if (!medicationItemServiceResponse.hasErrors()) {
-                        finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
-                                newMedication.getMedication(), newMedication.getQuantityCurrent(), newMedication.getQuantityInitial(), newMedication.getIsDeleted(),
-                                Integer.parseInt(items[1]) == 0 ?
-                                        newMedication.getTimeAdded().toString() :
-                                        DateTime.now().toString(), name));
-                    } else {
-                        response.addError("", String.valueOf((medicationItemServiceResponse.getErrors().values())));
-                        return response;
-                    }
-                } else {
-                    //add the drug
-                    IMedication medication = medicationRepository.createNewMedication(items[0]);
-                    ServiceResponse<MedicationItem> medicationItemServiceResponse;
-                    medicationItemServiceResponse = createOrUpdateMedicationInventory(
-                            medication.getId(),
-                            tripId,
-                            Integer.parseInt(items[1]),
-                            DateTime.now(), name);
-                    if (true) {
-                        finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
-                                medication, Integer.parseInt(items[1]), Integer.parseInt(items[1]), null,
-                                DateTime.now().toString(), name));
-                    } else {
-                        response.addError("", String.valueOf(medicationItemServiceResponse.getErrors().values()));
-                        return response;
-                    }
-                }
-
-                newMedicationInventory.add(finalMed);
-
-
-            }
-            myReader.close();
-            List<InventoryExportItem> newMedicationInventoryHelper = new ArrayList<>();
             for (IMedicationInventory med : existentMedicationInventory) {
-                for (InventoryExportItem newMed : newMedicationInventory) {
-                    MedicationItem medHelper = itemModelMapper.createMedicationItem(med.getMedication(), 0, 0, null, null, null);
-                    if (!medHelper.getFullName().equals(newMed.getName())) {
-                        String name;
-                        name = currentUser.getLastName() + ", " + currentUser.getFirstName();
-                        newMedicationInventoryHelper.add(
-                                new InventoryExportItem(itemModelMapper.createMedicationItem(
-                                        med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),
-                                        med.getTimeAdded().toString(), name))
-                        );
+                MedicationItem medHelper = itemModelMapper.createMedicationItem(med.getMedication(), 0, 0, null, null, null);
+                // Full names of medications without ingredients or a form end in a space, but the parser trims CSV values
+                iMedicationInventoryByFullname.put(medHelper.getFullName().trim(), med);
 
+                Logger.debug(String.format("%d: %s", med.getId(), medHelper.getFullName()));
+            }
+
+            for (CSVRecord record : records) {
+                try {
+                    String medication = record.get("Medication");
+                    int quantity = Integer.parseInt(record.get("Quantity"));
+
+                    // TODO: Currently, if the medication name isn't an exact match, create a new entry. May want to update this later
+                    IMedicationInventory entry = iMedicationInventoryByFullname.get(medication);
+                    boolean entryExists = (entry != null);
+                    int medicationId = entryExists
+                            ? entry.getMedication().getId()
+                            : medicationRepository.createNewMedication(medication).getId();
+                    DateTime timeAdded = entryExists
+                            ? quantity != 0
+                                ? DateTime.now()
+                                : entry.getTimeAdded()
+                            : DateTime.now();
+
+                    ServiceResponse<MedicationItem> medicationItemServiceResponse;
+                    medicationItemServiceResponse = createOrUpdateMedicationInventory(
+                            medicationId,
+                            tripId,
+                            quantity,
+                            timeAdded,
+                            createdBy
+                    );
+                    if (medicationItemServiceResponse.hasErrors()) {
+                        // TODO: Regroup on how to deal with errors for creating/updating the inventory
+                        response.addError("", String.valueOf((medicationItemServiceResponse.getErrors().values())));
+                    } else if (!entryExists) {
+                        // Key by the CSV text so later rows with the same name update this entry instead of creating a duplicate medication
+                        iMedicationInventoryByFullname.put(
+                                medication,
+                                medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId)
+                        );
                     }
+                } catch (NumberFormatException ex) {
+                    // TODO: Update the field of the error to be the row number (may have to update loop to standard for)
+                    response.addError("", ex.getMessage());
                 }
             }
-
-            for (InventoryExportItem med : newMedicationInventoryHelper) {
-                newMedicationInventory.add(med);
-            }
-            response.setResponseObject(newMedicationInventory.toString());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             response.addError("", ex.getMessage());
         }
 
         return response;
-
     }
 
     public int sum(int[] arr){

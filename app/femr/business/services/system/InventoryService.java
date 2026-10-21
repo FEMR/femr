@@ -39,6 +39,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.CSVParser;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
+import femr.util.stringhelpers.InventoryCsv;
 import org.apache.commons.csv.CSVRecord;
 import org.ejml.simple.SimpleMatrix;
 import org.joda.time.DateTime;
@@ -59,6 +60,7 @@ public class InventoryService implements IInventoryService {
     private final IItemModelMapper itemModelMapper;
     private final IBurnRateRepository burnRateRepository;
     private final IPrescriptionRepository prescriptionRepository;
+    private final java.util.function.Supplier<io.ebean.Transaction> transactionFactory;
 
     @Inject
     public InventoryService(IMedicationRepository medicationRepository,
@@ -68,7 +70,15 @@ public class InventoryService implements IInventoryService {
                             IBurnRateRepository burnRateRepository,
                             IPrescriptionRepository prescriptionRepository
     ) {
+        this(medicationRepository, userRepository, dataModelMapper, itemModelMapper,
+                burnRateRepository, prescriptionRepository, io.ebean.Ebean::beginTransaction);
+    }
 
+    InventoryService(IMedicationRepository medicationRepository, IUserRepository userRepository,
+                     IDataModelMapper dataModelMapper, IItemModelMapper itemModelMapper,
+                     IBurnRateRepository burnRateRepository, IPrescriptionRepository prescriptionRepository,
+                     java.util.function.Supplier<io.ebean.Transaction> transactionFactory) {
+        this.transactionFactory = transactionFactory;
         this.burnRateRepository = burnRateRepository;
         this.medicationRepository = medicationRepository;
         this.userRepository = userRepository;
@@ -372,19 +382,12 @@ public class InventoryService implements IInventoryService {
         }
 
 
-        // Convert export list to json
-        Gson gson = new Gson();
-        GsonFlattener parser = new GsonFlattener();
-        List<Map<String, String>> flatJson = parser.parse(gson.toJsonTree(inventoryExport).getAsJsonArray());
-
-
-        // Convert json to CSV
-        CSVWriterGson writer = new CSVWriterGson();
-        String csvString = writer.getAsCSV(flatJson, InventoryExportItem.getFieldOrder());
-
-
         ServiceResponse<String> response = new ServiceResponse<>();
-        response.setResponseObject(csvString.toString());
+        try {
+            response.setResponseObject(InventoryCsv.write(inventoryExport));
+        } catch (java.io.IOException ex) {
+            response.addError("export", "Could not write the inventory file.");
+        }
 
 
         return response;
@@ -398,7 +401,23 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser) {
+        ServiceResponse<String> response = new ServiceResponse<>();
+        try (java.io.BufferedReader reader = Files.newBufferedReader(((File) file).toPath(), StandardCharsets.UTF_8)) {
+            String header = reader.readLine();
+            if (header != null && header.startsWith("\uFEFF")) {
+                header = header.substring(1);
+            }
+            if ("Medication,Quantity".equals(header)) {
+                return importMedicationQuantityCSV(tripId, file, currentUser);
+            }
+            return importExportedInventoryCSV(tripId, file);
+        } catch (IOException ex) {
+            response.addError("file", "Could not read the inventory file.");
+            return response;
+        }
+    }
 
+    private ServiceResponse<String> importMedicationQuantityCSV(int tripId, Object file, CurrentUser currentUser) {
         ServiceResponse<String> response = new ServiceResponse<>();
         List<? extends IMedicationInventory> existentMedicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
         Map<String, IMedicationInventory> iMedicationInventoryByFullname = new HashMap<>();
@@ -453,14 +472,65 @@ public class InventoryService implements IInventoryService {
                         );
                     }
                 } catch (NumberFormatException ex) {
-                    // TODO: Update the field of the error to be the row number (may have to update loop to standard for)
                     response.addError("", ex.getMessage());
                 }
             }
         } catch (IOException ex) {
             response.addError("", ex.getMessage());
         }
+        return response;
+    }
 
+    private ServiceResponse<String> importExportedInventoryCSV(int tripId, Object file) {
+        ServiceResponse<String> response = new ServiceResponse<>();
+        try {
+            List<InventoryCsv.Row> rows;
+            try (java.io.Reader reader = java.nio.file.Files.newBufferedReader(
+                    ((File) file).toPath(), java.nio.charset.StandardCharsets.UTF_8)) {
+                rows = InventoryCsv.read(reader);
+            }
+            try (io.ebean.Transaction transaction = transactionFactory.get()) {
+                List<? extends IMedicationInventory> inventories =
+                        medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
+                Map<Integer, IMedicationInventory> byId = new HashMap<>();
+                for (IMedicationInventory inventory : inventories) {
+                    int id = inventory.getMedication().getId();
+                    if (byId.put(id, inventory) != null) {
+                        throw new IllegalArgumentException("Multiple inventory records exist for medication ID " + id + ".");
+                    }
+                }
+                // Resolve and validate every row before changing any database record.
+                for (InventoryCsv.Row row : rows) {
+                    IMedicationInventory inventory = byId.get(row.medicationId);
+                    if (inventory == null) {
+                        throw new IllegalArgumentException("Row " + row.number
+                                + ": medication ID " + row.medicationId + " is not in this trip's active inventory.");
+                    }
+                    String expectedName = itemModelMapper.createMedicationItem(
+                            inventory.getMedication(), 0, 0, null, null, null).getFullName();
+                    if (expectedName == null || !expectedName.trim().equals(row.medicationName)) {
+                        throw new IllegalArgumentException("Row " + row.number + ": Medication does not match ID "
+                                + row.medicationId + ". Export a fresh inventory file.");
+                    }
+                }
+                for (InventoryCsv.Row row : rows) {
+                    IMedicationInventory inventory = byId.get(row.medicationId);
+                    inventory.setQuantityCurrent(row.quantity);
+                    if (medicationRepository.saveMedicationInventory(inventory) == null) {
+                        throw new IllegalStateException("Could not save medication ID " + row.medicationId + ".");
+                    }
+                }
+                transaction.commit();
+            }
+            response.setResponseObject("Updated " + rows.size() + " inventory quantities.");
+        } catch (IllegalArgumentException ex) {
+            response.addError("validation", ex.getMessage());
+        } catch (java.io.IOException ex) {
+            response.addError("file", "Could not read the inventory file. Check UTF-8 encoding and quoted fields.");
+        } catch (Exception ex) {
+            Logger.error("Inventory import failed", ex);
+            response.addError("database", "Inventory could not be saved. No quantities were changed.");
+        }
         return response;
     }
 

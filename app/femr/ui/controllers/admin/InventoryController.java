@@ -380,13 +380,17 @@ public class InventoryController extends Controller {
     public Result exportGet(int tripId) {
 
       ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
+      if (exportServiceResponse.hasErrors()) {
+          flash("error", "The inventory file could not be exported.");
+          return redirect("/admin/inventory/" + tripId);
+      }
 
       SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
       String timestamp = format.format(new Date());
       String csvFileName = "inventory-"+timestamp+".csv";
       response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
 
-      return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
+      return ok(exportServiceResponse.getResponseObject()).as("text/csv; charset=utf-8");
     }
 
 
@@ -419,6 +423,11 @@ public class InventoryController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        if (!uploadedFile.getFilename().toLowerCase(java.util.Locale.ROOT).endsWith(".csv")) {
+            flash("error", "Choose a comma-delimited .csv inventory file.");
+            return redirect("/admin/inventory/" + tripId);
+        }
+
         ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile(),currentUser);
 
         if (!importServiceResponse.hasErrors()) {
@@ -426,8 +435,7 @@ public class InventoryController extends Controller {
         } else {
             System.out.println("CSV import failed: "
                     + importServiceResponse.getErrors());
-            flash("error",
-                    "The CSV could not be imported. Check its column headers and values, then try again.");
+            flash("error", String.join(" ", importServiceResponse.getErrors().values()));
             return redirect("/admin/inventory/" + tripId);
         }
     }
